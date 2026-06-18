@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Road Warrior EV - Rider Registration & Management</title>
+    <meta name="description" content="Road Warrior EV - Register as a delivery rider, track your points, referrals, and compete on the leaderboard.">
+    <!-- Open Graph for WhatsApp/Link Previews -->
+    <meta property="og:title" content="Road Warrior EV - Join and Earn!" />
+    <meta property="og:description" content="Register using my referral link to start earning points and rewards today!" />
+    <meta property="og:image" content="https://roadwarriorev.com/og-image.png" />
+    <meta property="og:url" content="https://roadwarriorev.com/" />
+    <meta property="og:type" content="website" />
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+    <style>
+        /* ===== ADDITIONAL STYLES FOR NEW FEATURES ===== */
+
+        /* Multi-step form progress */
+        .form-progress {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 1.5rem;
+            padding: 0 0.5rem;
+            overflow-x: auto;
+        }
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            min-width: 40px;
+            position: relative;
+            cursor: default;
+        }
+        .progress-step::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: -50%;
+            width: 100%;
+            height: 2px;
+            background: var(--card-border);
+            z-index: 0;
+        }
+        .progress-step:first-child::before { display: none; }
+        .progress-step.done::before { background: var(--primary-color); }
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        .progress-step.active .step-circle {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.2);
+        }
+        .progress-step.done .step-circle {
+            border-color: var(--success-color);
+            background: var(--success-color);
+            color: white;
+        }
+        .step-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .progress-step.active .step-label { color: var(--primary-color); }
+        .progress-step.done .step-label { color: var(--success-color); }
+
+        /* Form sections */
+        .form-section {
+            display: none;
+            animation: fadeInUp 0.3s ease;
+        }
+        .form-section.active { display: block; }
+        select.form-control {
+            appearance: none;
+            background-color: rgba(255, 255, 255, 0.02);
+            color: var(--text-primary);
+            font-weight: 500;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1em;
+            padding-right: 2.5rem;
+            transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s, color 0.2s;
+        }
+        select.form-control option {
+            background-color: #0f172a;
+            color: #f3f4f6;
+        }
+        select.form-control:focus {
+            background-color: rgba(0, 0, 0, 0.2);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
+        }
+        select.form-control.selected {
+            background-color: rgba(59, 130, 246, 0.1);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        }
+        select.form-control.selected:focus {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
+        }
+        .section-title-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(249,115,22,0.15));
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: var(--border-radius-sm);
+            padding: 0.4rem 0.9rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Checkbox group */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid var(--card-border);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+        .checkbox-item:hover { border-color: var(--primary-color); background: rgba(59,130,246,0.05); }
+        .checkbox-item input[type="checkbox"] { accent-color: var(--primary-color); width: 16px; height: 16px; cursor: pointer; }
+        .checkbox-item.checked { border-color: var(--primary-color); background: rgba(59,130,246,0.08); }
+
+        /* Radio group */
+        .radio-group { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+        .radio-group.inline { flex-direction: row; flex-wrap: wrap; }
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 0.9rem;
+            border: 1px solid var(--card-border);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+        .radio-item:hover { border-color: var(--primary-color); background: rgba(59,130,246,0.05); }
+        .radio-item input[type="radio"] { accent-color: var(--primary-color); width: 16px; height: 16px; cursor: pointer; }
+        .radio-item.selected { border-color: var(--primary-color); background: rgba(59,130,246,0.08); }
+
+        /* Success registration panel */
+        .success-panel {
+            text-align: center;
+            padding: 2rem;
+            animation: fadeInUp 0.5s ease;
+        }
+        .success-panel .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: bounceIn 0.6s ease;
+        }
+        .referral-code-display {
+            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(249,115,22,0.1));
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius-md);
+            padding: 1.25rem;
+            margin: 1.25rem 0;
+            font-family: monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: var(--primary-color);
+        }
+
+        /* Admin tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 0;
+        }
+        .admin-tab {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+            white-space: nowrap;
+        }
+        .admin-tab:hover { color: var(--text-primary); }
+        .admin-tab.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+
+        /* Segment tags */
+        .tag-pill {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin: 2px;
+            white-space: nowrap;
+        }
+        .tag-hot-ev { background: rgba(249,115,22,0.2); color: #f97316; border: 1px solid rgba(249,115,22,0.4); }
+        .tag-insurance { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.4); }
+        .tag-retrofit { background: rgba(139,92,246,0.2); color: #8b5cf6; border: 1px solid rgba(139,92,246,0.4); }
+        .tag-petrol { background: rgba(251,191,36,0.2); color: #fbbf24; border: 1px solid rgba(251,191,36,0.4); }
+        .tag-ev { background: rgba(16,185,129,0.2); color: #10b981; border: 1px solid rgba(16,185,129,0.4); }
+        .tag-swing { background: rgba(59,130,246,0.2); color: #3b82f6; border: 1px solid rgba(59,130,246,0.4); }
+        .tag-personal-ins { background: rgba(244,63,94,0.15); color: #f43f5e; border: 1px solid rgba(244,63,94,0.3); }
+        .tag-bike-ins { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+        .tag-ev-sale { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+        .tag-ev-rental { background: rgba(59,130,246,0.15); color: #3b82f6; border: 1px solid rgba(59,130,246,0.3); }
+        .tag-product { background: rgba(99,102,241,0.15); color: #6366f1; border: 1px solid rgba(99,102,241,0.3); }
+
+        /* Score page */
+        .score-lookup-card { max-width: 500px; margin: 2rem auto; }
+        .score-display { text-align: center; padding: 2rem; }
+        .score-big { font-size: 4rem; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #3b82f6, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .referral-code-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: var(--border-radius-md);
+            padding: 0.75rem 1.25rem;
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: 2px;
+            margin: 1rem auto;
+        }
+
+        /* Milestone progress */
+        .milestone-track {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--card-border);
+            border-radius: var(--border-radius-md);
+            padding: 1rem 1.25rem;
+            margin-top: 1rem;
+        }
+        .milestone-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .milestone-row:last-child { border-bottom: none; }
+        .milestone-icon { font-size: 1.4rem; min-width: 30px; text-align: center; }
+        .milestone-bar-wrap { flex: 1; }
+        .milestone-bar { height: 6px; background: var(--card-border); border-radius: 3px; overflow: hidden; }
+        .milestone-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #3b82f6, #f97316); transition: width 0.5s ease; }
+
+        /* QR code container */
+        #qrCodeContainer { display: flex; justify-content: center; align-items: center; min-height: 140px; }
+        #qrCodeContainer canvas, #qrCodeContainer img { border-radius: 8px; }
+
+        /* WhatsApp success section */
+        .whatsapp-confirm {
+            background: rgba(37,211,102,0.08);
+            border: 1px solid rgba(37,211,102,0.3);
+            border-radius: var(--border-radius-md);
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+        }
+        .whatsapp-confirm h4 { color: #25D366; display: flex; align-items: center; gap: 0.5rem; }
+
+        /* Mobile form optimizations */
+        @media (max-width: 600px) {
+            .checkbox-group { grid-template-columns: 1fr; }
+            .radio-group.inline { flex-direction: column; }
+            .form-progress { gap: 0; padding: 0; }
+            .step-label { display: none; }
+        }
+
+        /* Admin tab panels */
+        .admin-panel { display: none; }
+        .admin-panel.active { display: block; animation: fadeInUp 0.3s ease; }
+
+        /* Conditional section animation */
+        .conditional-section {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .conditional-section.hidden-section {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+        .conditional-section.visible-section {
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            60% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+    <!-- Analytics scripts removed to prevent hanging load times -->
+
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand" onclick="navigateTo('/home')">
+            <div class="rw-logo">RW</div>
+            <span class="brand-text">Road Warrior EV</span>
+        </div>
+        <ul class="navbar-nav">
+            <li class="nav-item"><a href="/home" class="nav-link active" id="navHome" onclick="handleNavLinkClick(event, '/home')"><i class="fas fa-home"></i> <span data-i18n="nav_home">Home</span></a></li>
+            <li class="nav-item"><a href="/score" class="nav-link" id="navScore" onclick="handleNavLinkClick(event, '/score')"><i class="fas fa-trophy"></i> <span data-i18n="nav_score">Score</span></a></li>
+
+            <li class="nav-item"><a href="/dashboard" class="nav-link" id="navDashboard" onclick="handleNavLinkClick(event, '/dashboard')"><i class="fas fa-chart-line"></i> <span data-i18n="nav_dashboard">Dashboard</span></a></li>
+            <li class="nav-item"><a href="/profile" class="nav-link" id="navProfile" onclick="handleNavLinkClick(event, '/profile')"><i class="fas fa-user"></i> <span data-i18n="nav_profile">Profile</span></a></li>
+            <li class="nav-item"><a href="/admin" class="nav-link" id="navAdmin" onclick="handleNavLinkClick(event, '/admin')"><i class="fas fa-cog"></i> <span data-i18n="nav_admin">Admin</span></a></li>
+        </ul>
+        <div class="navbar-end">
+            <select class="lang-select" onchange="changeLanguage(this.value)" id="langSelector">
+                <option value="en">🇺🇸 English</option>
+                <option value="hi">🇮🇳 हिंदी</option>
+                <option value="kn">🇮🇳 ಕನ್ನಡ</option>
+            </select>
+            <button class="btn btn-icon" id="themeToggleBtn" onclick="cycleTheme()" style="background:transparent; border:none; color:var(--text-primary); font-size:1.2rem; cursor:pointer;" title="Change Theme"><i class="fas fa-palette"></i></button>
+            <button class="btn btn-primary btn-small" id="loginLogoutBtn" onclick="toggleAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login</span></button>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- ======= SECTION 1: HOME / REGISTER VIEW ======= -->
+        <section id="home-view" class="section-view active">
+            <div class="row" id="authLayout" style="margin-top:1rem; justify-content: center; align-items: flex-start;">
+
+                <!-- Auth/Register Card -->
+                <div class="card" id="authBox" style="width: 100%; max-width: 600px; margin: 0 auto;">
+
+                    <!-- Login Form -->
+                    <div id="loginCard">
+                        <div class="card-header" style="border:none; padding-bottom:0;">
+                            <h2 class="card-title" data-i18n="login_title"><i class="fas fa-sign-in-alt"></i> Login</h2>
+                        </div>
+                        <div class="card-body" style="margin-top:1rem;">
+                            <form id="loginForm" onsubmit="handleLogin(event)">
+                                <div style="display:flex; gap:1rem; margin-bottom:1rem; border-bottom:1px solid var(--card-border); padding-bottom:0.5rem;">
+                                    <label><input type="radio" name="loginMethod" value="password" checked onchange="toggleLoginMethod()"> Password</label>
+                                    <label><input type="radio" name="loginMethod" value="otp" onchange="toggleLoginMethod()"> OTP</label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="loginPhone">Phone Number</label>
+                                    <div style="position: relative; display: flex; align-items: center; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: var(--border-radius-md); padding: 0 12px;">
+                                        <span style="color: var(--text-secondary); font-weight: 500; margin-right: 8px;">+91</span>
+                                        <input type="tel" id="loginPhone" style="border: none; background: transparent; outline: none; flex: 1; padding: 0.875rem 0; font-size: 0.975rem; color: var(--text-primary);" placeholder="9876543210" maxlength="10" required oninput="validateLoginPhone(this)">
+                                        <i id="loginPhoneErrorIcon" class="fas fa-times-circle" style="color: var(--danger-color); display: none; font-size: 1.1rem; margin-left: 8px;"></i>
+                                    </div>
+                                    <small id="loginPhoneWarning" style="color:var(--warning-color); display:none; margin-top:4px;"><i class="fas fa-exclamation-circle"></i> Only numbers are allowed</small>
+                                    <div id="loginErrorMsg" class="error-message" style="color: var(--warning-color); margin-top:0.5rem; display:none; font-size:0.875rem;"><i class="fas fa-exclamation-triangle"></i> <span id="loginErrorText"></span></div>
+                                </div>
+                                <div class="form-group" id="loginPasswordGroup">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <label for="loginPassword" data-i18n="label_password">Password</label>
+                                        <a href="#" onclick="showRiderForgotForm()" style="font-size: 0.8rem; color: var(--primary-color);">Forgot Password?</a>
+                                    </div>
+                                    <div style="position: relative;">
+                                        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                                        <i id="toggleLoginPwd" class="fas fa-eye" style="position: absolute; right: 12px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('loginPassword', 'toggleLoginPwd')"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="loginOtpGroup" style="display:none;">
+                                    <div style="display:flex; gap:0.5rem;">
+                                        <input type="text" id="loginOtp" class="form-control" placeholder="Enter OTP">
+                                        <button type="button" class="btn btn-secondary" onclick="sendMockOtp()" id="sendOtpBtn">Send OTP</button>
+                                    </div>
+                                    <small id="otpSentMsg" style="color:var(--primary-color); display:none; margin-top:4px;">OTP sent! (mock: use 123456)</small>
+                                </div>
+
+                                <button type="submit" id="loginBtn" class="btn btn-primary w-100" style="margin-top:0.5rem;"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login</span></button>
+                            </form>
+                            <p style="text-align:center; margin-top:1.5rem; color:var(--text-secondary);" id="loginRegisterText">
+                                <span data-i18n="no_account">Don't have an account?</span> <a href="#" style="color:var(--primary-color); font-weight:600; text-decoration:none;" onclick="toggleAuthCards(event)" data-i18n="register_link">Register here</a>
+                            </p>
+
+                            <!-- Rider Forgot Password Form -->
+                            <form id="riderForgotForm" onsubmit="handleRiderPasswordReset(event)" style="display:none;">
+                                <h4 style="margin-bottom:1rem;"><i class="fas fa-unlock-alt"></i> Reset Password</h4>
+                                <div class="form-group">
+                                    <label for="riderForgotPhone">Phone Number</label>
+                                    <div style="position: relative; display: flex; align-items: center; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: var(--border-radius-md); padding: 0 12px;">
+                                        <span style="color: var(--text-secondary); font-weight: 500; margin-right: 8px;">+91</span>
+                                        <input type="tel" id="riderForgotPhone" style="border: none; background: transparent; outline: none; flex: 1; padding: 0.875rem 0; font-size: 0.975rem; color: var(--text-primary);" placeholder="9876543210" maxlength="10" required oninput="validateLoginPhone(this)">
+                                    </div>
+                                    <small id="riderForgotPhoneWarning" style="color:var(--warning-color); display:none; margin-top:4px;"><i class="fas fa-exclamation-circle"></i> Only numbers are allowed</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="riderForgotOtp">Enter OTP</label>
+                                    <input type="text" id="riderForgotOtp" class="form-control" placeholder="6-digit OTP (Mock: 123456)" pattern="[0-9]{6}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="riderForgotNewPassword">New Password</label>
+                                    <div style="position: relative;">
+                                        <input type="password" id="riderForgotNewPassword" class="form-control" placeholder="Enter new password" required>
+                                        <i id="toggleRiderResetPwd" class="fas fa-eye" style="position: absolute; right: 12px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('riderForgotNewPassword', 'toggleRiderResetPwd')"></i>
+                                    </div>
+                                </div>
+                                <div id="riderForgotErrorMsg" style="display:none; color:var(--danger-color); background:rgba(239, 68, 68, 0.1); padding:0.75rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;">
+                                    <i class="fas fa-exclamation-triangle"></i> <span id="riderForgotErrorText"></span>
+                                </div>
+                                <button type="submit" id="riderResetBtn" class="btn btn-primary w-100"><i class="fas fa-key"></i> Reset Password</button>
+                                <div class="text-center" style="margin-top: 1rem;">
+                                    <a href="#" onclick="showRiderLoginForm()" style="color: var(--text-secondary); font-size: 0.9rem;">Back to Login</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Multi-Step Registration Form -->
+                    <div id="registerCard" style="display:none;">
+                        <div class="card-header" style="border:none; padding-bottom:0;">
+                            <h2 class="card-title" data-i18n="register_title"><i class="fas fa-user-plus"></i> Rider Registration</h2>
+                        </div>
+                        <div class="card-body" style="margin-top:1rem;">
+
+                            <!-- Registration Form Content -->
+                            <div id="registrationFormContent">
+
+                            <!-- SECTION A: Basic Profile -->
+                            <div class="single-page-section" id="regSection1" style="margin-bottom:2rem;">
+                                <div class="section-title-badge"><i class="fas fa-user"></i> <span data-i18n="sec_a_title">Section A — Basic Profile</span></div>
+                                <div class="form-group">
+                                    <label for="regFullName" data-i18n="label_fullname">Full Name</label>
+                                    <input type="text" id="regFullName" class="form-control" placeholder="Ramesh Kumar" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regPhone"><span data-i18n="label_whatsapp">WhatsApp Number</span> (10 digits)</label>
+                                    <div style="position:relative; display:flex; align-items:center;">
+                                        <span style="position:absolute; left:1rem; font-weight:500; color:var(--text-secondary); pointer-events:none;">+91</span>
+                                        <input type="tel" id="regPhone" class="form-control" placeholder="9876543210" maxlength="10" required style="padding-left:3.2rem; padding-right:2.5rem;" oninput="validateRegPhone(this)">
+                                        <span id="phoneValIcon" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); display:none;">
+                                            <i class="fas fa-check-circle text-success-color" id="phoneCheckIcon" style="display:none;"></i>
+                                            <i class="fas fa-times-circle text-danger-color" id="phoneCrossIcon" style="display:none;"></i>
+                                        </span>
+                                    </div>
+                                    <span id="phoneErrMsg" class="error-message hidden"><i class="fas fa-times-circle"></i> <span data-i18n="phone_error">Phone must be 10 digits</span></span>
+                                    <span id="dupPhoneMsg" class="error-message hidden" style="color:#f97316;"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="phone_dup">This phone is already registered!</span></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regPassword" data-i18n="label_password">Password</label>
+                                    <div style="position:relative;">
+                                        <input type="password" id="regPassword" class="form-control" placeholder="Create password" minlength="8" required style="padding-right:2.5rem;" oninput="validateRegPassword(this)">
+                                        <span onclick="togglePasswordVisibility('regPassword', this)" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); cursor:pointer; color:var(--text-secondary);">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                    <span id="passErrMsg" class="error-message hidden" style="color:#f97316; margin-top:0.5rem; display:block;"><i class="fas fa-exclamation-circle"></i> Password must be at least 8 characters</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regState">State</label>
+                                    <select id="regState" class="form-control" required onchange="onRegStateChange()">
+                                        <option value="">Select State</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Delhi">Delhi</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="West Bengal">West Bengal</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <input type="text" id="regStateOther" class="form-control" placeholder="Enter State" style="display:none; margin-top:0.5rem;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="regCity" data-i18n="label_city">City</label>
+                                    <select id="regCity" class="form-control" required onchange="onRegCityChange()" disabled>
+                                        <option value="" data-i18n="select_city">Select your city</option>
+                                    </select>
+                                    <input type="text" id="regCityOther" class="form-control" placeholder="Enter City" style="display:none; margin-top:0.5rem;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="regPincode">Pincode</label>
+                                    <select id="regPincode" class="form-control" required onchange="handleOtherDropdown(this, 'regPincodeOther')" disabled>
+                                        <option value="">Select pincode</option>
+                                    </select>
+                                    <input type="text" id="regPincodeOther" class="form-control" placeholder="Type pincode (e.g. 560001)" style="display:none; margin-top:0.5rem;" pattern="[0-9]{6}" maxlength="6" title="Please enter a 6-digit valid pincode">
+                                </div>
+                                <div class="form-group" style="position:relative; z-index:10;">
+                                    <label for="regPlatform" data-i18n="label_platform">Delivery Platform</label>
+                                    
+                                    <!-- Custom Dropdown Container -->
+                                    <div class="custom-select-wrapper" id="platformCustomSelect">
+                                        <div class="custom-select form-control" onclick="togglePlatformDropdown()" style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; background-color:rgba(255, 255, 255, 0.02);">
+                                            <div id="platformSelectedText" style="display:flex; align-items:center; gap:10px;">
+                                                <span data-i18n="select_platform">Select platform</span>
+                                            </div>
+                                            <i class="fas fa-chevron-down" style="color:var(--text-secondary); font-size:0.8rem;"></i>
+                                        </div>
+                                        
+                                        <ul class="custom-options" id="platformDropdownList" style="display:none; position:absolute; top:100%; left:0; width:100%; background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--border-radius-md); margin-top:0.25rem; padding:0; list-style:none; z-index:100; max-height:250px; overflow-y:auto; backdrop-filter:blur(10px); box-shadow:var(--shadow);">
+                                            <li onclick="selectPlatform('Swiggy', 'https://logo.clearbit.com/swiggy.com')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s;">
+                                                <img src="https://logo.clearbit.com/swiggy.com" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23f96e2a\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>S</text></svg>'" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Swiggy
+                                            </li>
+                                            <li onclick="selectPlatform('Zomato', 'https://logo.clearbit.com/zomato.com')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s;">
+                                                <img src="https://logo.clearbit.com/zomato.com" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23e23744\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>Z</text></svg>'" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Zomato
+                                            </li>
+                                            <li onclick="selectPlatform('Blinkit', 'https://logo.clearbit.com/blinkit.com')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s;">
+                                                <img src="https://logo.clearbit.com/blinkit.com" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23f8cb46\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23000\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>B</text></svg>'" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Blinkit
+                                            </li>
+                                            <li onclick="selectPlatform('Porter', 'https://logo.clearbit.com/porter.in')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s;">
+                                                <img src="https://logo.clearbit.com/porter.in" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%232d62e1\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>P</text></svg>'" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Porter
+                                            </li>
+                                            <li onclick="selectPlatform('Dunzo', 'https://logo.clearbit.com/dunzo.com')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s;">
+                                                <img src="https://logo.clearbit.com/dunzo.com" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%2300d290\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>D</text></svg>'" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Dunzo
+                                            </li>
+                                            <li onclick="selectPlatform('Other', '')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; transition:background 0.2s;">
+                                                <div style="width:24px; height:24px; border-radius:4px; background:var(--card-border); display:flex; align-items:center; justify-content:center;"><i class="fas fa-ellipsis-h" style="font-size:12px; color:var(--text-secondary);"></i></div> Other
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <!-- Hidden actual select for form submission and validation -->
+                                    <select id="regPlatform" class="form-control" style="display:none;" required onchange="handleOtherDropdown(this, 'regPlatformOther')">
+                                        <option value="">Select platform</option>
+                                        <option value="Swiggy">Swiggy</option>
+                                        <option value="Zomato">Zomato</option>
+                                        <option value="Blinkit">Blinkit</option>
+                                        <option value="Porter">Porter</option>
+                                        <option value="Dunzo">Dunzo</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    
+                                    <input type="text" id="regPlatformOther" class="form-control" placeholder="Enter Platform" style="display:none; margin-top:0.5rem;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="regExp" data-i18n="label_exp">Years of Experience</label>
+                                    <select id="regExp" class="form-control" required>
+                                        <option value="">Select experience</option>
+                                        <option value="0-1">0-1 Years</option>
+                                        <option value="1-3">1-3 Years</option>
+                                        <option value="3-5">3-5 Years</option>
+                                        <option value="5+">5+ Years</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- SECTION B: Current Vehicle -->
+                            <div class="single-page-section" id="regSection2" style="margin-bottom:2rem;">
+                                <div class="section-title-badge"><i class="fas fa-motorcycle"></i> <span data-i18n="sec_b_title">Section B — Current Vehicle</span></div>
+                                <div class="form-group">
+                                    <label data-i18n="label_vehicle_type">Vehicle Type</label>
+                                    <div class="radio-group inline" id="vehicleTypeGroup">
+                                        <label class="radio-item"><input type="radio" name="vehicleType" value="Petrol two-wheeler" onchange="onVehicleTypeChange(this.value)"> 🛵 <span data-i18n="vt_petrol">Petrol Two-Wheeler</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleType" value="Electric two-wheeler" onchange="onVehicleTypeChange(this.value)"> ⚡ <span data-i18n="vt_electric">Electric Two-Wheeler</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleType" value="Other" onchange="onVehicleTypeChange(this.value)"> 🚲 <span data-i18n="vt_other">Other</span></label>
+                                    </div>
+                                    <input type="text" id="regVehicleTypeOther" class="form-control" placeholder="Enter Vehicle Type" style="display:none; margin-top:0.5rem;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="regVehicleModel" data-i18n="label_vehicle_model">Vehicle Brand & Model <span style="color:var(--text-secondary); font-size:0.8rem;">(optional)</span></label>
+                                    <select id="regVehicleModel" class="form-control" onchange="handleOtherDropdown(this, 'regVehicleModelOther')">
+                                        <option value="">Select Brand/Model</option>
+                                    </select>
+                                    <input type="text" id="regVehicleModelOther" class="form-control" placeholder="Enter Brand & Model" style="display:none; margin-top:0.5rem;">
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="label_fuel_method">How do you fuel/charge?</label>
+                                    <div class="radio-group inline">
+                                        <label class="radio-item"><input type="radio" name="fuelMethod" value="Petrol pump" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> ⛽ <span data-i18n="fm_petrol">Petrol Pump</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelMethod" value="Home charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🏠 <span data-i18n="fm_home">Home Charging</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelMethod" value="Battery swapping station" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔋 <span data-i18n="fm_swap">Battery Swap</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelMethod" value="Other" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔌 <span data-i18n="fm_other">Other</span></label>
+                                    </div>
+                                    <input type="text" id="regFuelMethodOther" class="form-control" placeholder="Specify fuel/charge method" style="display:none; margin-top:0.5rem;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="regFuelExp" data-i18n="label_fuel_expense">Weekly Fuel/Charge Expense (₹)</label>
+                                    <input type="number" id="regFuelExp" class="form-control" placeholder="e.g. 600" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="regMaintExp" data-i18n="label_maint_expense">Monthly Maintenance Expense (₹)</label>
+                                    <input type="number" id="regMaintExp" class="form-control" placeholder="e.g. 300" min="0">
+                                </div>
+                            </div>
+
+                            <!-- SECTION C: Challenges -->
+                            <div class="single-page-section" id="regSection3" style="margin-bottom:2rem;">
+                                <div class="section-title-badge"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="sec_c_title">Section C — Challenges & Pain Points</span></div>
+                                <div class="form-group conditional-section" id="generalChallengesSection">
+                                    <label data-i18n="label_top_challenges">Top Challenges (select up to 3)</label>
+                                    <div class="checkbox-group" id="challengesGroup">
+                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="High fuel cost"> ⛽ <span data-i18n="ch_fuel">High fuel cost</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="Frequent breakdown"> 🔧 <span data-i18n="ch_breakdown">Frequent breakdown</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="No nearby charging station"> 🔌 <span data-i18n="ch_charging">No nearby charging station</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="Battery range anxiety"> 📉 <span data-i18n="ch_range">Battery range anxiety</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="Repair costs"> 💸 <span data-i18n="ch_repair">Repair costs</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="Long refuelling time"> ⏱️ <span data-i18n="ch_refuel">Long refuelling time</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
+                                    </div>
+                                    <input type="text" id="regChallengesOther" class="form-control" placeholder="Specify challenge" style="display:none; margin-top:0.5rem;">
+                                </div>
+
+                                <!-- EV-specific challenges (conditional) -->
+                                <div class="form-group conditional-section hidden-section" id="evChallengesSection">
+                                    <label data-i18n="label_ev_challenges">EV Specific Challenges</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-item"><input type="checkbox" name="evChallenges" value="Battery drains too fast"> ⚡ <span data-i18n="evc_drain">Battery drains too fast</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="evChallenges" value="Swapping station too far"> 📍 <span data-i18n="evc_swap">Swapping station too far</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="evChallenges" value="Long charging time at home"> 🏠 <span data-i18n="evc_charge">Long charging time at home</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="evChallenges" value="Vehicle not powerful enough"> 💪 <span data-i18n="evc_power">Vehicle not powerful enough</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="evChallenges" value="Service centre not nearby"> 🔧 <span data-i18n="evc_service">Service centre not nearby</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="evChallenges" value="Other" onchange="toggleOtherCheckbox(this, 'regEvChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
+                                    </div>
+                                    <input type="text" id="regEvChallengesOther" class="form-control" placeholder="Specify EV challenge" style="display:none; margin-top:0.5rem;">
+                                </div>
+
+                                <!-- Petrol-specific challenges (conditional) -->
+                                <div class="form-group conditional-section hidden-section" id="petrolChallengesSection">
+                                    <label data-i18n="label_petrol_challenges">Petrol Specific Challenges</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-item"><input type="checkbox" name="petrolChallenges" value="Fuel price too high"> 💰 <span data-i18n="pc_price">Fuel price too high</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="petrolChallenges" value="Frequent engine issues"> 🔧 <span data-i18n="pc_engine">Frequent engine issues</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="petrolChallenges" value="Pollution fine risk"> 🌫️ <span data-i18n="pc_pollution">Pollution fine risk</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="petrolChallenges" value="High servicing cost"> 💸 <span data-i18n="pc_service">High servicing cost</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="petrolChallenges" value="Other" onchange="toggleOtherCheckbox(this, 'regPetrolChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
+                                    </div>
+                                    <input type="text" id="regPetrolChallengesOther" class="form-control" placeholder="Specify petrol challenge" style="display:none; margin-top:0.5rem;">
+                                </div>
+
+                            </div>
+
+                            <!-- SECTION D: Insurance -->
+                            <div class="single-page-section" id="regSection4" style="margin-bottom:2rem;">
+                                <div class="section-title-badge"><i class="fas fa-shield-alt"></i> <span data-i18n="sec_d_title">Section D — Insurance</span></div>
+                                <div class="form-group">
+                                    <label data-i18n="label_accidental_ins">Do you have accidental insurance?</label>
+                                    <div class="radio-group inline">
+                                        <label class="radio-item"><input type="radio" name="hasAccidental" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
+                                        <label class="radio-item"><input type="radio" name="hasAccidental" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="label_health_ins">Do you have personal health insurance?</label>
+                                    <div class="radio-group inline">
+                                        <label class="radio-item"><input type="radio" name="hasHealth" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
+                                        <label class="radio-item"><input type="radio" name="hasHealth" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="label_paid_pocket">Have you ever paid out-of-pocket for an accident?</label>
+                                    <div class="radio-group inline">
+                                        <label class="radio-item"><input type="radio" name="paidPocket" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
+                                        <label class="radio-item"><input type="radio" name="paidPocket" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SECTION E: Openness to Change -->
+                            <div class="single-page-section" id="regSection5" style="margin-bottom:2rem;">
+                                <div class="section-title-badge"><i class="fas fa-bolt"></i> <span data-i18n="sec_e_title">Section E — Openness to EV</span></div>
+                                <div class="form-group">
+                                    <label data-i18n="label_open_ev">Are you open to switching to an EV?</label>
+                                    <div class="radio-group inline">
+                                        <label class="radio-item"><input type="radio" name="openEV" value="Yes" onchange="toggleOpenEV(this.value)"> ⚡ <span data-i18n="ev_yes">Yes</span></label>
+                                        <label class="radio-item"><input type="radio" name="openEV" value="No" onchange="toggleOpenEV(this.value)"> 🚫 <span data-i18n="ev_no">No</span></label>
+                                        <label class="radio-item"><input type="radio" name="openEV" value="Already on EV" onchange="toggleOpenEV(this.value)"> ✅ <span data-i18n="ev_already">Already on EV</span></label>
+                                        <label class="radio-item"><input type="radio" name="openEV" value="Need more information" onchange="toggleOpenEV(this.value)"> ℹ️ <span data-i18n="ev_more_info">Need more info</span></label>
+                                    </div>
+                                </div>
+                                <div id="evSwitchFollowup" style="display:none;">
+                                    <div class="form-group">
+                                        <label data-i18n="label_switch_triggers">What would make you switch? (multi-select)</label>
+                                        <div class="checkbox-group">
+                                            <label class="checkbox-item"><input type="checkbox" name="switchTriggers" value="Lower rental cost"> 💰 <span data-i18n="st_rental">Lower rental cost</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" name="switchTriggers" value="Better battery range"> 📱 <span data-i18n="st_range">Better battery range</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" name="switchTriggers" value="Swap stations nearby"> 🔋 <span data-i18n="st_swap">Swap stations nearby</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" name="switchTriggers" value="Income guarantee"> 📈 <span data-i18n="st_income">Income guarantee</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" name="switchTriggers" value="Employer subsidy"> 🏢 <span data-i18n="st_subsidy">Employer subsidy</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" name="switchTriggers" value="Other"> 📝 <span data-i18n="ch_other">Other</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label data-i18n="label_interests">Would you be interested in:</label>
+                                        <div class="radio-group">
+                                            <label class="radio-item"><input type="radio" name="interests" value="EV rental offer"> ⚡ <span data-i18n="int_ev">EV Rental Offer</span></label>
+                                            <label class="radio-item"><input type="radio" name="interests" value="Insurance quote"> 🛡️ <span data-i18n="int_ins">Insurance Quote</span></label>
+                                            <label class="radio-item"><input type="radio" name="interests" value="Retrofit information"> 🔧 <span data-i18n="int_retrofit">Retrofit Information</span></label>
+                                            <label class="radio-item"><input type="radio" name="interests" value="All of the above"> 🌟 <span data-i18n="int_all">All of the above</span></label>
+                                            <label class="radio-item"><input type="radio" name="interests" value="None"> — <span data-i18n="int_none">None</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SECTION F: Referral -->
+                            <div class="single-page-section" id="regSection6" style="margin-bottom:2rem;">
+                                <div class="section-title-badge"><i class="fas fa-share-alt"></i> <span data-i18n="sec_f_title">Section F — Referral</span></div>
+
+                                <!-- Shown only when NO referral link was used -->
+                                <div id="referralQuestionBlock">
+                                    <div class="form-group">
+                                        <label data-i18n="label_referred_by">Were you referred by another rider?</label>
+                                        <div class="radio-group inline">
+                                            <label class="radio-item"><input type="radio" name="referredBy" value="yes" onchange="toggleReferralInput('yes')"> ✅ <span data-i18n="opt_yes">Yes</span></label>
+                                            <label class="radio-item"><input type="radio" name="referredBy" value="no" onchange="toggleReferralInput('no')"> ❌ <span data-i18n="opt_no">No</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group conditional-section hidden-section" id="referralCodeInputSection">
+                                        <label for="regReferralCode" data-i18n="label_referral_code">Referral Code of the rider who referred you</label>
+                                        <input type="text" id="regReferralCode" class="form-control" placeholder="e.g. RW-4821" style="text-transform:uppercase; letter-spacing:2px; font-family:monospace; font-size:1.1rem;">
+                                        <small style="color:var(--text-secondary);"><i class="fas fa-info-circle"></i> <span data-i18n="ref_code_hint">The person who shared this app with you</span></small>
+                                    </div>
+                                </div>
+
+                                <!-- Shown when user came via referral link — question is hidden -->
+                                <div id="referralAppliedBadge" style="display:none; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:12px; padding:1rem 1.25rem; display:none; align-items:center; gap:0.75rem;">
+                                    <i class="fas fa-check-circle" style="color:var(--success-color); font-size:1.3rem;"></i>
+                                    <div>
+                                        <div style="font-weight:600; color:var(--success-color);">Referral Applied!</div>
+                                        <div style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">Referral code <strong id="appliedReferralCodeText" style="color:var(--text-primary);"></strong> has been automatically applied.</div>
+                                    </div>
+                                </div>
+                                <div style="background:rgba(37,211,102,0.05); border:1px solid rgba(37,211,102,0.2); border-radius:var(--border-radius-md); padding:1rem; margin-bottom:1rem;">
+                                    <p style="font-size:0.875rem; color:var(--text-secondary); margin:0;">
+                                        <i class="fab fa-whatsapp" style="color:#25D366;"></i> <span data-i18n="whatsapp_hint">After registration, you'll receive a WhatsApp confirmation with your referral code.</span>
+                                    </p>
+                                </div>
+                                <button type="button" class="btn btn-primary w-100" style="background:linear-gradient(135deg,#3b82f6,#f97316);" onclick="submitRegistration()" id="submitRegBtn">
+                                    <i class="fas fa-check-circle"></i> <span data-i18n="btn_submit_reg">Complete Registration</span>
+                                </button>
+                            </div>
+                            </div>
+
+                            <!-- SUCCESS PANEL -->
+                            <div class="form-section" id="regSuccessPanel">
+                                <div class="success-panel">
+                                    <div class="success-icon">🎉</div>
+                                    <h2 style="font-family:'Outfit',sans-serif; font-size:1.75rem; font-weight:800;" data-i18n="success_title">Registration Complete!</h2>
+                                    <p style="color:var(--text-secondary); margin-top:0.5rem;" data-i18n="success_subtitle">Welcome to Road Warrior Pro. You start with <strong style="color:var(--primary-color);">10 points</strong>!</p>
+                                    <div class="referral-code-display" id="successReferralCode">RW-XXXX</div>
+                                    <p style="font-size:0.8rem; color:var(--text-secondary);" data-i18n="share_code_hint">Share this code with other riders to earn 5 points per referral</p>
+                                    <div class="whatsapp-confirm" id="whatsappConfirmBox">
+                                        <h4><i class="fab fa-whatsapp"></i> <span data-i18n="wa_confirm_title">WhatsApp Confirmation</span></h4>
+                                        <p id="whatsappMsgPreview" style="font-size:0.85rem; margin:0.5rem 0; font-style:italic;"></p>
+                                        <a id="whatsappSendLink" href="#" target="_blank" class="btn btn-success w-100" style="background:#25D366; border-color:#25D366; margin-top:0.75rem;">
+                                            <i class="fab fa-whatsapp"></i> <span data-i18n="btn_send_whatsapp">Share Link with Other Riders via WhatsApp</span>
+                                        </a>
+                                    </div>
+                                    <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
+                                        <button class="btn btn-primary" style="flex:1;" onclick="goBackToLogin(event)"><i class="fas fa-sign-in-alt"></i> <span data-i18n="btn_goto_login">Go back to Login</span></button>
+                                        <button class="btn btn-secondary" style="flex:1;" onclick="navigateTo('/score')"><i class="fas fa-trophy"></i> <span data-i18n="btn_view_score">View Score</span></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p style="text-align:center; margin-top:1rem; color:var(--text-secondary);" id="loginSwitchLink">
+                                <span data-i18n="have_account">Already have an account?</span> <a href="#" style="color:var(--primary-color); font-weight:600; text-decoration:none;" onclick="toggleAuthCards(event)" data-i18n="login_link">Login here</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+
+        <!-- ======= SECTION 2: SCORE (PUBLIC) VIEW ======= -->
+        <section id="score-view" class="section-view">
+            <div class="flex-between mb-4">
+                <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="score_title"><i class="fas fa-trophy text-warning-color"></i> Score & Leaderboard</h2>
+                <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
+            </div>
+
+            <!-- Phone Lookup (Public, no login needed) -->
+            <div class="score-lookup-card" style="max-width: 100%; margin: 0 auto 2rem auto;">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3 class="card-title" data-i18n="title_score_lookup"><i class="fas fa-search text-primary-color"></i> Check Your Score</h3>
+                    </div>
+                    <div class="card-body">
+                        <p style="color:var(--text-secondary); font-size:0.875rem; margin-bottom:1rem;" data-i18n="score_lookup_hint">Enter your registered WhatsApp number to see your points and referral count.</p>
+                        <div style="display:flex; gap:0.75rem;">
+                            <input type="tel" id="scoreLookupPhone" class="form-control" placeholder="9876543210" maxlength="10" style="flex:1;">
+                            <button class="btn btn-primary" onclick="lookupScore()"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div id="scoreLookupResult" style="margin-top:1rem; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="card mb-4" style="background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(249,115,22,0.15)); border-color:rgba(59,130,246,0.3);">
+                <div class="card-body">
+                    <div class="flex-between">
+                        <div>
+                            <h3 style="font-family:'Outfit',sans-serif; font-size:1.5rem;" data-i18n="rank_heading">Your Global Ranking</h3>
+                            <p style="color:var(--text-secondary); margin-top:0.25rem;" data-i18n="rank_description">Complete deliveries and refer friends to climb the leaderboard.</p>
+                        </div>
+                        <div class="text-right">
+                            <span style="font-size:2.75rem;">🏅</span>
+                            <div style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" id="userRankValue">--</div>
+                            <p style="font-size:0.75rem; color:var(--text-secondary); text-transform:uppercase;" data-i18n="active_standing">Standings</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-5">
+                <div class="card-header">
+                    <h3 class="card-title" data-i18n="title_leaderboard_table"><i class="fas fa-list-ol text-primary-color"></i> Top Performers</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width:80px;" data-i18n="tbl_rank">Rank</th>
+                                    <th data-i18n="tbl_name">Name</th>
+                                    <th data-i18n="tbl_city">City</th>
+                                    <th data-i18n="tbl_referrals">Referrals</th>
+                                    <th data-i18n="tbl_points">Points</th>
+                                    <th data-i18n="tbl_tags">Tags</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboardTableBody">
+                                <!-- Rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title" data-i18n="title_achievements"><i class="fas fa-medal text-warning-color"></i> Achievement Badges</h3>
+                </div>
+                <div class="card-body">
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1.5rem;" id="achievementsGrid"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======= SECTION 3: MY VEHICLES VIEW ======= -->
+        <section id="vehicles-view" class="section-view">
+            <div class="flex-between mb-4">
+                <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="vehicles_title"><i class="fas fa-car text-primary-color"></i> My Vehicles</h2>
+                <div class="flex gap-2">
+                    <button class="btn btn-primary btn-small" onclick="openModal('vehicleModal')"><i class="fas fa-plus"></i> <span data-i18n="act_add_vehicle">Add Vehicle</span></button>
+                    <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
+                </div>
+            </div>
+            <div class="row cols-2" id="vehiclesGrid"></div>
+            <div class="card mt-5">
+                <div class="card-header">
+                    <h3 class="card-title" data-i18n="title_insurance_tracker"><i class="fas fa-file-contract text-warning-color"></i> Insurance & Documents</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="tbl_vehicle">Vehicle</th>
+                                    <th data-i18n="tbl_provider">Insurance Provider</th>
+                                    <th data-i18n="tbl_policy">Policy Number</th>
+                                    <th data-i18n="tbl_expiry">Expiry Date</th>
+                                    <th data-i18n="tbl_status">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="insuranceTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======= SECTION 4: DASHBOARD VIEW ======= -->
+        <section id="dashboard-view" class="section-view">
+            <div class="flex-between mb-4">
+                <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="dashboard_title"><i class="fas fa-chart-line text-primary-color"></i> Rider Dashboard</h2>
+                <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
+            </div>
+            <div class="row cols-3" id="statsGrid">
+                <div class="stat-box"><span class="stat-icon">👥</span><div class="stat-value" id="totalReferrals">0</div><div class="stat-label" data-i18n="stat_referrals">Total Referrals</div><div class="stat-change positive"><i class="fas fa-caret-up"></i> +10%</div></div>
+                <div class="stat-box"><span class="stat-icon">⭐</span><div class="stat-value" id="riderRating">5.0</div><div class="stat-label" data-i18n="stat_rating">Rider Rating</div><div class="stat-change positive"><i class="fas fa-caret-up"></i> +0.1</div></div>
+                <div class="stat-box"><span class="stat-icon">🏆</span><div class="stat-value" id="totalPoints">10</div><div class="stat-label" data-i18n="stat_points">Total Points</div><div class="stat-change positive"><i class="fas fa-award"></i> Active</div></div>
+            </div>
+            <div class="card mb-5">
+                <div class="card-header"><h3 class="card-title" data-i18n="quick_actions"><i class="fas fa-bolt text-warning-color"></i> Quick Actions</h3></div>
+                <div class="card-body" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.25rem;">
+                    <button class="btn btn-primary" onclick="openModal('vehicleModal')"><i class="fas fa-motorcycle"></i> <span data-i18n="act_add_vehicle">Add Vehicle</span></button>
+                    <button class="btn btn-secondary" onclick="navigateTo('/profile')"><i class="fas fa-user-edit"></i> <span data-i18n="act_edit_profile">Edit Profile</span></button>
+                    <button class="btn btn-secondary" onclick="navigateTo('/score')"><i class="fas fa-medal"></i> <span data-i18n="act_leaderboard">View Rankings</span></button>
+                </div>
+            </div>
+            <div class="row cols-2 mb-5">
+                <div class="card"><div class="card-header"><h3 class="card-title" data-i18n="chart_weekly_referrals"><i class="fas fa-chart-bar text-primary-color"></i> Weekly Referrals</h3></div><div class="card-body"><canvas id="referralsChart" style="max-height:280px;"></canvas></div></div>
+                <div class="card"><div class="card-header"><h3 class="card-title" data-i18n="chart_weekly_points"><i class="fas fa-chart-line text-success-color"></i> Points Earned Trend</h3></div><div class="card-body"><canvas id="pointsChart" style="max-height:280px;"></canvas></div></div>
+            </div>
+            <div style="max-width: 800px; margin: 0 auto 2.5rem auto;">
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title" data-i18n="chart_cities_referral"><i class="fas fa-map-marker-alt text-danger-color"></i> Referrals by City</h3></div>
+                    <div class="card-body"><canvas id="citiesChart" style="max-height:300px;"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======= SECTION 5: PROFILE VIEW ======= -->
+        <section id="profile-view" class="section-view">
+            <div class="flex-between mb-4">
+                <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="profile_title"><i class="fas fa-user-circle text-primary-color"></i> My Profile</h2>
+                <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
+            </div>
+            <div style="margin-bottom: 2rem;">
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title" data-i18n="title_profile_info"><i class="fas fa-id-card text-primary-color"></i> Basic Information</h3></div>
+                    <div class="card-body">
+                        <form id="profileForm" onsubmit="updateProfileInfo(event)">
+                            <div class="form-group"><label for="profileName" data-i18n="label_fullname">Full Name</label><input type="text" id="profileName" class="form-control" required></div>
+                            <div class="form-group"><label for="profileEmail" data-i18n="label_email">Email</label><input type="email" id="profileEmail" class="form-control" readonly style="opacity:0.6; cursor:not-allowed;"></div>
+                            <div class="form-group"><label for="profilePhone" data-i18n="label_phone">Phone</label><input type="tel" id="profilePhone" class="form-control" maxlength="10" required></div>
+                            <div class="form-group"><label for="profileCity" data-i18n="label_city">City</label>
+                                <select id="profileCity" class="form-control" required>
+                                    <option value="Bangalore">Bangalore</option><option value="Mysore">Mysore</option>
+                                    <option value="Mumbai">Mumbai</option><option value="Pune">Pune</option>
+                                    <option value="Delhi">Delhi</option><option value="Hyderabad">Hyderabad</option>
+                                    <option value="Chennai">Chennai</option><option value="Kolkata">Kolkata</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100" id="profileSubmitBtn"><i class="fas fa-save"></i> <span data-i18n="btn_save">Save Changes</span></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referral Program Card -->
+            <div class="card">
+                <div class="card-header"><h3 class="card-title" data-i18n="title_referral"><i class="fas fa-share-alt text-warning-color"></i> Referral Program</h3></div>
+                <div class="card-body">
+                    <div class="row cols-2" style="margin-bottom:0;">
+                        <div>
+                            <div class="form-group mb-4">
+                                <label data-i18n="label_ref_code">Your Referral Code & Link</label>
+                                <div style="display:flex; gap:1rem; margin-bottom:1rem; align-items:center;">
+                                    <div class="referral-code-badge" id="referralCodeDisplay" style="flex:1; justify-content:center;">RW-XXXX</div>
+                                    <button class="btn btn-primary btn-small" onclick="copyReferralCode()"><i class="fas fa-copy"></i> <span data-i18n="btn_copy">Copy</span></button>
+                                </div>
+                                <input type="text" id="referralLinkInput" class="form-control" readonly style="font-family:monospace; font-size:0.8rem; margin-bottom:0.75rem;">
+                                <button class="btn btn-success w-100" onclick="shareToWhatsApp()" style="background:#25D366; border-color:#25D366;">
+                                    <i class="fab fa-whatsapp" style="font-size:1.1rem;"></i> <span data-i18n="btn_share_whatsapp">Share via WhatsApp</span>
+                                </button>
+                            </div>
+                            <div class="row cols-2" style="margin-bottom:0;">
+                                <div class="stat-box" style="padding:1rem;">
+                                    <div class="stat-value" id="referralCount">0</div>
+                                    <div class="stat-label" data-i18n="label_successful_referrals">Referrals</div>
+                                </div>
+                                <div class="stat-box" style="padding:1rem;">
+                                    <div class="stat-value" id="profileTotalPoints">0</div>
+                                    <div class="stat-label" data-i18n="stat_points">Total Points</div>
+                                </div>
+                            </div>
+                            <div class="milestone-track" style="margin-top:1rem;">
+                                <div style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.75rem;"><span data-i18n="label_milestone_progress">Milestone Progress</span> (<span id="milestoneReferralsLabel">0</span> Referrals)</div>
+                                <div class="milestone-row">
+                                    <div class="milestone-icon">🏅</div>
+                                    <div class="milestone-bar-wrap">
+                                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:3px;">
+                                            <span data-i18n="m10">10 Referrals → +100 pts</span>
+                                            <span id="m10Progress">0/10</span>
+                                        </div>
+                                        <div class="milestone-bar"><div class="milestone-fill" id="m10Bar" style="width:0%;"></div></div>
+                                    </div>
+                                </div>
+                                <div class="milestone-row">
+                                    <div class="milestone-icon">🏆</div>
+                                    <div class="milestone-bar-wrap">
+                                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:3px;">
+                                            <span data-i18n="m25">25 Referrals → +300 pts</span>
+                                            <span id="m25Progress">0/25</span>
+                                        </div>
+                                        <div class="milestone-bar"><div class="milestone-fill" id="m25Bar" style="width:0%;"></div></div>
+                                    </div>
+                                </div>
+                                <div class="milestone-row">
+                                    <div class="milestone-icon">🎰</div>
+                                    <div class="milestone-bar-wrap">
+                                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:3px;">
+                                            <span data-i18n="m50">50 Referrals → +500 pts + Lucky Draw</span>
+                                            <span id="m50Progress">0/50</span>
+                                        </div>
+                                        <div class="milestone-bar"><div class="milestone-fill" id="m50Bar" style="width:0%;"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- QR Code -->
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(255,255,255,0.02); border:1px dashed var(--card-border); border-radius:var(--border-radius-md); padding:1.5rem; text-align:center;">
+                            <div style="background:white; padding:0.75rem; border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.25); margin-bottom:0.75rem;">
+                                <div id="qrCodeContainer"></div>
+                            </div>
+                            <span style="font-size:0.8rem; color:var(--text-secondary); font-weight:500;" data-i18n="qr_scan_hint">Scan QR to Register instantly</span>
+                            <small style="color:var(--text-secondary); font-size:0.7rem; margin-top:4px;" data-i18n="qr_offline_hint">Share offline at petrol pumps & delivery hubs</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======= SECTION 5.5: ADMIN LOGIN VIEW ======= -->
+        <section id="admin-login-view" class="section-view">
+            <div style="display: flex; min-height: 75vh; align-items: center; justify-content: center;">
+                <div class="card" style="width: 100%; max-width: 450px; margin: 0 auto; border: 1px solid var(--border-color);">
+                    <div class="card-header text-center" style="border:none; padding-bottom:0;">
+                        <h2 class="card-title" id="adminAuthTitle"><i class="fas fa-lock text-primary-color"></i> Admin Login</h2>
+                        <p style="color:var(--text-secondary); margin-top:0.5rem;" id="adminAuthSubtitle">Enter credentials to access the admin panel.</p>
+                    </div>
+                    <div class="card-body" style="margin-top:1rem;">
+                        
+                        <!-- LOGIN FORM -->
+                        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+                            <div class="form-group">
+                                <label for="adminEmail">Email Address</label>
+                                <input type="email" id="adminEmail" class="form-control" placeholder="admin@roadwarrior.pro" required oninput="validateAdminEmail(this)">
+                                <small id="adminEmailWarning" style="color:var(--warning-color); display:none; margin-top:4px;"><i class="fas fa-exclamation-circle"></i> Please enter a valid email address</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="adminPassword">Password</label>
+                                <div style="position: relative;">
+                                    <input type="password" id="adminPassword" class="form-control" placeholder="Enter password" required>
+                                    <i id="toggleAdminPwd" class="fas fa-eye" style="position: absolute; right: 12px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('adminPassword', 'toggleAdminPwd')"></i>
+                                </div>
+                            </div>
+                            <div id="adminLoginErrorMsg" style="display:none; color:var(--danger-color); background:rgba(239, 68, 68, 0.1); padding:0.75rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;">
+                                <i class="fas fa-exclamation-triangle"></i> <span id="adminLoginErrorText"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top:0.5rem;" id="adminLoginBtn">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </button>
+                            
+                            <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.9rem;">
+                                <a href="#" onclick="showAdminForgotForm(event)" style="color: var(--primary-color); text-decoration: none;">Forgot Password?</a>
+                                <a href="#" id="setupAdminLink" onclick="showAdminSetupForm(event)" style="color: var(--primary-color); text-decoration: none; display: none;">Setup Admin Account</a>
+                            </div>
+                        </form>
+
+                        <!-- SETUP FORM -->
+                        <form id="adminSetupForm" onsubmit="handleAdminSetup(event)" style="display:none;">
+                            <div class="form-group">
+                                <label for="setupAdminEmail">Email Address</label>
+                                <input type="email" id="setupAdminEmail" class="form-control" placeholder="admin@roadwarrior.pro" required oninput="validateAdminEmail(this)">
+                                <small id="setupAdminEmailWarning" style="color:var(--warning-color); display:none; margin-top:4px;"><i class="fas fa-exclamation-circle"></i> Please enter a valid email address</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="setupAdminPassword">New Password</label>
+                                <div style="position: relative;">
+                                    <input type="password" id="setupAdminPassword" class="form-control" placeholder="Create a secure password" required minlength="6">
+                                    <i id="toggleSetupAdminPwd" class="fas fa-eye" style="position: absolute; right: 12px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('setupAdminPassword', 'toggleSetupAdminPwd')"></i>
+                                </div>
+                            </div>
+                            <div id="adminSetupErrorMsg" style="display:none; color:var(--danger-color); background:rgba(239, 68, 68, 0.1); padding:0.75rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;">
+                                <i class="fas fa-exclamation-triangle"></i> <span id="adminSetupErrorText"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top:0.5rem;" id="adminSetupBtn">
+                                <i class="fas fa-user-shield"></i> Create Admin
+                            </button>
+                            <div style="text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+                                <a href="#" onclick="showAdminLoginForm(event)" style="color: var(--text-secondary); text-decoration: none;">Back to Login</a>
+                            </div>
+                        </form>
+
+                        <!-- FORGOT PASSWORD FORM -->
+                        <form id="adminForgotForm" onsubmit="requestAdminPasswordReset(event)" style="display:none;">
+                            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">Enter your email address. We will send an OTP via email to reset your password.</p>
+                            <div class="form-group">
+                                <label for="forgotAdminEmail">Email Address</label>
+                                <input type="email" id="forgotAdminEmail" class="form-control" placeholder="admin@roadwarrior.pro" required oninput="validateAdminEmail(this)">
+                                <small id="forgotAdminEmailWarning" style="color:var(--warning-color); display:none; margin-top:4px;"><i class="fas fa-exclamation-circle"></i> Please enter a valid email address</small>
+                            </div>
+                            <div id="adminForgotErrorMsg" style="display:none; color:var(--danger-color); background:rgba(239, 68, 68, 0.1); padding:0.75rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;">
+                                <i class="fas fa-exclamation-triangle"></i> <span id="adminForgotErrorText"></span>
+                            </div>
+                            <div id="adminForgotSuccessMsg" style="display:none; color:var(--success-color); background:rgba(16, 185, 129, 0.1); padding:0.75rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;">
+                                <i class="fas fa-check-circle"></i> OTP sent successfully!
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top:0.5rem;" id="adminForgotBtn">
+                                <i class="fas fa-paper-plane"></i> Send OTP
+                            </button>
+                            <div style="text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+                                <a href="#" onclick="showAdminLoginForm(event)" style="color: var(--text-secondary); text-decoration: none;">Back to Login</a>
+                            </div>
+                        </form>
+
+                        <!-- RESET PASSWORD (OTP) FORM -->
+                        <form id="adminResetForm" onsubmit="verifyAdminOTP(event)" style="display:none;">
+                            <div class="form-group">
+                                <label for="resetAdminOtp">Enter OTP</label>
+                                <input type="text" id="resetAdminOtp" class="form-control" placeholder="6-digit OTP" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="resetAdminPassword">New Password</label>
+                                <div style="position: relative;">
+                                    <input type="password" id="resetAdminPassword" class="form-control" placeholder="Enter new password" required minlength="6">
+                                    <i id="toggleResetAdminPwd" class="fas fa-eye" style="position: absolute; right: 12px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('resetAdminPassword', 'toggleResetAdminPwd')"></i>
+                                </div>
+                            </div>
+                            <div id="adminResetErrorMsg" style="display:none; color:var(--danger-color); background:rgba(239, 68, 68, 0.1); padding:0.75rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;">
+                                <i class="fas fa-exclamation-triangle"></i> <span id="adminResetErrorText"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top:0.5rem;" id="adminResetBtn">
+                                <i class="fas fa-key"></i> Reset Password
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======= SECTION 6: ADMIN VIEW ======= -->
+        <section id="admin-view" class="section-view">
+            <div class="flex-between mb-4">
+                <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="admin_title"><i class="fas fa-cog text-primary-color"></i> Admin Dashboard</h2>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
+                    <button class="btn btn-outline" style="padding: 0.4rem 1rem; border-color: var(--danger-color); color: var(--danger-color);" onclick="handleAdminLogout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Platform Stats -->
+            <div class="row cols-4" id="adminStatsGrid">
+                <div class="stat-box"><span class="stat-icon">👥</span><div class="stat-value" id="adminTotalRiders">0</div><div class="stat-label" data-i18n="adm_riders">Registered Users</div></div>
+                <div class="stat-box"><span class="stat-icon">⚡</span><div class="stat-value" id="adminEVRiders">0</div><div class="stat-label" data-i18n="adm_ev_riders">EV Riders</div></div>
+                <div class="stat-box"><span class="stat-icon">🔴</span><div class="stat-value" id="adminHotLeads">0</div><div class="stat-label" data-i18n="adm_hot_leads">Hot EV Leads</div></div>
+                <div class="stat-box"><span class="stat-icon">🛡️</span><div class="stat-value" id="adminInsLeads">0</div><div class="stat-label" data-i18n="adm_ins_leads">Insurance Leads</div></div>
+            </div>
+
+            <!-- Admin Tabs -->
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="switchAdminTab('allRiders')" data-i18n="tab_all_riders">All Riders</button>
+                <button class="admin-tab" onclick="switchAdminTab('evLeads')" data-i18n="tab_ev_leads">🔥 Hot EV Leads</button>
+                <button class="admin-tab" onclick="switchAdminTab('insLeads')" data-i18n="tab_ins_leads">🛡️ Insurance Leads</button>
+                <button class="admin-tab" onclick="switchAdminTab('topReferrers')" data-i18n="tab_top_referrers">🏆 Top Referrers</button>
+                <button class="admin-tab" onclick="switchAdminTab('cityStats')" data-i18n="tab_city_stats">🏙️ City Stats</button>
+                <button class="admin-tab" onclick="switchAdminTab('auditor')"><i class="fas fa-search-dollar"></i> Website Auditor</button>
+            </div>
+
+            <!-- Tab: All Riders -->
+            <div class="admin-panel active" id="panel-allRiders">
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title" data-i18n="title_riders_directory"><i class="fas fa-users text-primary-color"></i> All Riders Registry</h3></div>
+                    <div class="card-body">
+                        <!-- Lead Segmentation Filter & Export Row -->
+                        <div class="flex-between mb-3" style="gap: 1rem; flex-wrap: wrap; align-items: center; background: rgba(255,255,255,0.02); padding: 0.75rem 1rem; border-radius: var(--border-radius-sm); border: 1px solid var(--card-border);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Lead Segment:</span>
+                                <select id="adminLeadFilter" class="form-control" style="width: auto; min-width: 240px; padding: 0.4rem 2rem 0.4rem 0.75rem; font-size: 0.85rem; height: auto;" onchange="filterAdminRiders()">
+                                    <option value="ALL">All Registered Riders</option>
+                                    <option value="PERSONAL_INSURANCE_LEAD">PERSONAL_INSURANCE_LEAD</option>
+                                    <option value="BIKE_INSURANCE_LEAD">BIKE_INSURANCE_LEAD</option>
+                                    <option value="EV_SALE_LEAD">EV_SALE_LEAD</option>
+                                    <option value="EV_RENTAL_LEAD">EV_RENTAL_LEAD</option>
+                                    <option value="RETROFIT_LEAD">RETROFIT_LEAD</option>
+                                    <option value="PRODUCT_LEAD">PRODUCT_LEAD</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="downloadLeadsCSV()" style="padding: 0.45rem 1.25rem; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; height: auto; border-radius: 6px;">
+                                <i class="fas fa-download"></i> <span data-i18n="btn_download_csv">Download CSV</span>
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead><tr>
+                                    <th data-i18n="tbl_name">Name</th>
+                                    <th data-i18n="tbl_city">City</th>
+                                    <th data-i18n="tbl_phone">Phone</th>
+                                    <th data-i18n="tbl_vehicle_type">Vehicle</th>
+                                    <th data-i18n="tbl_points">Points</th>
+                                    <th data-i18n="tbl_referrals">Referrals</th>
+                                    <th data-i18n="tbl_tags">Segment Tags</th>
+                                </tr></thead>
+                                <tbody id="adminRidersTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: EV Leads -->
+            <div class="admin-panel" id="panel-evLeads">
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-bolt text-warning-color"></i> Hot EV Leads — Riders Open to EV Switch</h3></div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead><tr>
+                                    <th data-i18n="tbl_name">Name</th>
+                                    <th data-i18n="tbl_city">City</th>
+                                    <th data-i18n="tbl_phone">Phone</th>
+                                    <th>Current Vehicle</th>
+                                    <th>EV Openness</th>
+                                    <th>Switch Triggers</th>
+                                </tr></thead>
+                                <tbody id="evLeadsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Insurance Leads -->
+            <div class="admin-panel" id="panel-insLeads">
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-shield-alt text-danger-color"></i> Insurance Leads — Riders Without Coverage</h3></div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead><tr>
+                                    <th data-i18n="tbl_name">Name</th>
+                                    <th data-i18n="tbl_city">City</th>
+                                    <th data-i18n="tbl_phone">Phone</th>
+                                    <th>Accidental Ins.</th>
+                                    <th>Health Ins.</th>
+                                    <th>Paid Out-of-Pocket</th>
+                                </tr></thead>
+                                <tbody id="insLeadsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Top Referrers -->
+            <div class="admin-panel" id="panel-topReferrers">
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-trophy text-warning-color"></i> Top Referrers Leaderboard</h3></div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead><tr>
+                                    <th>Rank</th>
+                                    <th data-i18n="tbl_name">Name</th>
+                                    <th data-i18n="tbl_city">City</th>
+                                    <th>Referral Code</th>
+                                    <th data-i18n="tbl_referrals">Referrals</th>
+                                    <th data-i18n="tbl_points">Points</th>
+                                    <th>Milestones</th>
+                                </tr></thead>
+                                <tbody id="topReferrersTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: City Stats -->
+            <div class="admin-panel" id="panel-cityStats">
+                <div class="row cols-2">
+                    <div class="card">
+                        <div class="card-header"><h3 class="card-title"><i class="fas fa-map-marker-alt text-danger-color"></i> City-wise Breakdown</h3></div>
+                        <div class="card-body"><canvas id="adminCityChart" style="max-height:300px;"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3 class="card-title"><i class="fas fa-motorcycle text-primary-color"></i> Vehicle Type Distribution</h3></div>
+                        <div class="card-body"><canvas id="adminVehicleChart" style="max-height:300px;"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Website Auditor -->
+            <div class="admin-panel" id="panel-auditor">
+                <div class="card mb-4" style="border: 2px solid #6366f1;">
+                    <div class="card-header"><h3 class="card-title" style="color: #6366f1;"><i class="fas fa-magic"></i> Run New Audit</h3></div>
+                    <div class="card-body">
+                        <form id="auditorForm" onsubmit="runWebsiteAudit(event)">
+                            <div class="form-group">
+                                <label for="auditUrl">Website URL to Audit</label>
+                                <div style="display:flex; gap:1rem;">
+                                    <input type="url" id="auditUrl" class="form-control" placeholder="https://example.com" required style="flex:1;">
+                                    <button type="submit" class="btn btn-primary" style="background:#6366f1; border-color:#6366f1;" id="auditBtn"><i class="fas fa-play"></i> Run 25 Checks</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div id="auditorResults" style="display:none;">
+                    <div class="row cols-4" id="auditorScoresGrid"></div>
+                    <div class="row cols-2 mt-4">
+                        <div class="card">
+                            <div class="card-header"><h3 class="card-title"><i class="fas fa-list-check"></i> Audit Checklist</h3></div>
+                            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                <table class="table">
+                                    <thead><tr><th>Category</th><th>Check</th><th>Status</th></tr></thead>
+                                    <tbody id="auditorChecklistBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><h3 class="card-title"><i class="fas fa-lightbulb text-warning-color"></i> Recommendations</h3></div>
+                            <div class="card-body">
+                                <ul id="auditorRecommendations" style="padding-left:1.5rem; line-height:1.6;"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- Delivery Modal -->
+    <div id="deliveryModal" class="modal">
+        <div class="modal-content animate-in">
+            <div class="modal-header">
+                <h2 class="modal-title" data-i18n="modal_new_delivery"><i class="fas fa-truck-loading"></i> Register New Delivery</h2>
+                <button class="modal-close" onclick="closeModal('deliveryModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="deliveryForm" onsubmit="handleCreateDelivery(event)">
+                    <div class="form-group"><label for="pickupLocation" data-i18n="label_pickup">Pickup Address</label><input type="text" id="pickupLocation" class="form-control" required></div>
+                    <div class="form-group"><label for="dropoffLocation" data-i18n="label_dropoff">Dropoff Address</label><input type="text" id="dropoffLocation" class="form-control" required></div>
+                    <div class="form-group"><label for="deliveryType" data-i18n="label_delivery_type">Delivery Type</label>
+                        <select id="deliveryType" class="form-control"><option value="food">Food</option><option value="parcel">Parcel</option><option value="document">Document</option><option value="other">Other</option></select>
+                    </div>
+                    <div class="form-group"><label for="deliveryAmount" data-i18n="label_fare">Estimated Earnings (₹)</label><input type="number" id="deliveryAmount" class="form-control" value="120" min="20" required></div>
+                    <div style="display:flex; gap:1rem; justify-content:flex-end; margin-top:1.5rem;">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('deliveryModal')" data-i18n="btn_cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> <span data-i18n="btn_create">Register Order</span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Modal -->
+    <div id="vehicleModal" class="modal">
+        <div class="modal-content animate-in">
+            <div class="modal-header">
+                <h2 class="modal-title" data-i18n="modal_add_vehicle"><i class="fas fa-motorcycle"></i> Add New Vehicle</h2>
+                <button class="modal-close" onclick="closeModal('vehicleModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="vehicleForm" onsubmit="handleAddVehicle(event)">
+                    <div class="form-group"><label for="vehicleType" data-i18n="label_vehicle_type">Vehicle Type</label>
+                        <select id="vehicleType" class="form-control" required><option value="">Select type</option><option value="bike">Bike</option><option value="scooter">Scooter</option><option value="car">Car</option><option value="van">Van</option></select>
+                    </div>
+                    <div class="form-group"><label for="licensePlate" data-i18n="label_plate">License Plate</label><input type="text" id="licensePlate" class="form-control" required></div>
+                    <div class="form-group"><label for="vehicleColor" data-i18n="label_color">Color</label><input type="text" id="vehicleColor" class="form-control" required></div>
+                    <div class="form-group"><label for="vehicleMake" data-i18n="label_make">Make</label><input type="text" id="vehicleMake" class="form-control" required></div>
+                    <div class="form-group"><label for="vehicleModel" data-i18n="label_model">Model</label><input type="text" id="vehicleModel" class="form-control" required></div>
+                    <div style="display:flex; gap:1rem; justify-content:flex-end; margin-top:1.5rem;">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('vehicleModal')" data-i18n="btn_cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> <span data-i18n="btn_add">Add Vehicle</span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    
+<script src="/js/app.js?v=2" defer></script>
+</body>
+</html>

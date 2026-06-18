@@ -1,0 +1,16 @@
+# Road Warrior EV
+
+Road Warrior EV is a platform for delivery riders. It offers a secure, streamlined onboarding process with gamified referrals, points, and rewards.
+
+## Description
+This application allows riders from platforms like Swiggy, Zomato, and Blinkit to register, declare their vehicles (petrol or EV), track their pain points, and explore EV rental or retrofit solutions. It provides a real-time leaderboard, dashboard analytics, and gamified milestones.
+
+## Features
+- **Rider Onboarding**: Comprehensive profiling covering vehicle type, fuel cost, and EV interests.
+- **Referral Engine**: Riders earn points by referring others, unlocking milestones (10, 25, 50 referrals).
+- **Score Page**: Real-time ranking, points display, and QR code for referrals.
+- **Admin Dashboard**: Advanced insights, segmentation, and lead intelligence.
+- **Multilingual Support**: Supports English, Hindi, and Kannada.
+
+## Technologies
+Node.js, Express, Supabase (PostgreSQL), Vanilla JS, Chart.js.

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login — Road Warrior EV</title>
+    <meta name="description" content="Admin portal for Road Warrior EV. Restricted access only.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg-primary: #0d0f18;
+            --bg-secondary: #13172b;
+            --bg-card: #1a1f35;
+            --border-color: rgba(255,255,255,0.08);
+            --primary: #6c63ff;
+            --primary-glow: rgba(108,99,255,0.3);
+            --danger: #ef4444;
+            --danger-bg: rgba(239,68,68,0.1);
+            --success: #10b981;
+            --success-bg: rgba(16,185,129,0.1);
+            --warning: #f59e0b;
+            --text-primary: #f0f0f8;
+            --text-secondary: #8b8fa8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            background-image: radial-gradient(ellipse at 20% 50%, rgba(108,99,255,0.07) 0%, transparent 60%),
+                              radial-gradient(ellipse at 80% 20%, rgba(16,185,129,0.05) 0%, transparent 60%);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .logo-icon {
+            width: 64px; height: 64px;
+            background: linear-gradient(135deg, var(--primary), #4ade80);
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 0.75rem;
+            box-shadow: 0 8px 32px var(--primary-glow);
+        }
+        .logo h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; }
+        .logo span { font-size: 0.85rem; color: var(--text-secondary); }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .card-header .icon-wrap {
+            width: 52px; height: 52px;
+            background: rgba(108,99,255,0.15);
+            border: 1px solid rgba(108,99,255,0.3);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin: 0 auto 1rem;
+        }
+        .card-header h2 { font-size: 1.5rem; font-weight: 700; }
+        .card-header p { color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.4rem; }
+
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block; font-size: 0.85rem; font-weight: 500;
+            color: var(--text-secondary); margin-bottom: 0.5rem;
+        }
+        .form-group .label-row {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .form-group .label-row label { margin-bottom: 0; }
+        .form-group .label-row a {
+            font-size: 0.8rem; color: var(--primary); text-decoration: none;
+        }
+        .form-group .label-row a:hover { text-decoration: underline; }
+
+        input[type="email"], input[type="password"], input[type="text"] {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+        .input-wrap { position: relative; }
+        .input-wrap input { padding-right: 2.8rem; }
+        .input-wrap .eye {
+            position: absolute; right: 12px; top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer; color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        small.warn {
+            display: none; margin-top: 5px;
+            color: var(--warning); font-size: 0.8rem;
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .alert-error { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+        .alert-success { background: var(--success-bg); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
+
+        .btn {
+            width: 100%;
+            padding: 0.85rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: opacity 0.2s, transform 0.1s;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #8b83ff);
+            color: #fff;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+        .btn-primary:hover:not(:disabled) { opacity: 0.9; }
+
+        .links-row {
+            display: flex; justify-content: space-between;
+            margin-top: 1rem; font-size: 0.875rem;
+        }
+        .links-row a { color: var(--primary); text-decoration: none; }
+        .links-row a:hover { text-decoration: underline; }
+        .links-row .muted { color: var(--text-secondary); }
+
+        .back-home {
+            text-align: center; margin-top: 2rem;
+            font-size: 0.85rem; color: var(--text-secondary);
+        }
+        .back-home a { color: var(--primary); text-decoration: none; }
+
+        .divider {
+            border: none; border-top: 1px solid var(--border-color);
+            margin: 1.5rem 0;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px);
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem; border-radius: 10px; font-size: 0.9rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease; z-index: 9999;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="logo">
+        <div class="logo-icon">🚗</div>
+        <h1>Road Warrior EV</h1>
+        <span>Admin Portal</span>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="icon-wrap"><i class="fas fa-lock"></i></div>
+            <h2 id="authTitle">Admin Login</h2>
+            <p id="authSubtitle">Enter your credentials to access the admin panel</p>
+        </div>
+
+        <!-- ===== LOGIN FORM ===== -->
+        <form id="loginForm" onsubmit="doLogin(event)">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="loginEmail" placeholder="admin@example.com" required oninput="validateEmail(this, 'loginEmailWarn')">
+                <small class="warn" id="loginEmailWarn"><i class="fas fa-exclamation-circle"></i> Please enter a valid email address</small>
+            </div>
+            <div class="form-group">
+                <div class="label-row">
+                    <label>Password</label>
+                    <a href="#" onclick="showForm('forgotForm'); return false;">Forgot Password?</a>
+                </div>
+                <div class="input-wrap">
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    <i class="fas fa-eye eye" onclick="togglePwd('loginPassword', this)"></i>
+                </div>
+            </div>
+            <div class="alert alert-error" id="loginError"><i class="fas fa-exclamation-triangle"></i><span id="loginErrorText"></span></div>
+            <button type="submit" class="btn btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+            <div class="links-row">
+                <span class="muted"></span>
+            </div>
+        </form>
+
+        <!-- ===== SETUP FORM REMOVED ===== -->
+
+        <!-- ===== FORGOT FORM ===== -->
+        <form id="forgotForm" onsubmit="doForgot(event)" style="display:none;">
+            <p style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:1.25rem;">Enter your admin email. An OTP will be sent to reset your password.</p>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="forgotEmail" placeholder="admin@example.com" required oninput="validateEmail(this, 'forgotEmailWarn')">
+                <small class="warn" id="forgotEmailWarn"><i class="fas fa-exclamation-circle"></i> Please enter a valid email address</small>
+            </div>
+            <div class="alert alert-error" id="forgotError"><i class="fas fa-exclamation-triangle"></i><span id="forgotErrorText"></span></div>
+            <div class="alert alert-success" id="forgotSuccess" style="display:none;"><i class="fas fa-check-circle"></i> OTP sent! Check your inbox.</div>
+            <button type="submit" class="btn btn-primary" id="forgotBtn"><i class="fas fa-paper-plane"></i> Send OTP</button>
+            <div class="links-row">
+                <a href="#" class="muted" onclick="showForm('loginForm'); return false;"><i class="fas fa-arrow-left"></i> Back to Login</a>
+                <a href="#" onclick="showForm('resetForm'); return false;">Enter OTP →</a>
+            </div>
+        </form>
+
+        <!-- ===== RESET FORM ===== -->
+        <form id="resetForm" onsubmit="doReset(event)" style="display:none;">
+            <div class="form-group">
+                <label>Enter OTP</label>
+                <input type="text" id="resetOtp" placeholder="6-digit code from email" required>
+            </div>
+            <div class="form-group">
+                <label>New Password</label>
+                <div class="input-wrap">
+                    <input type="password" id="resetPassword" placeholder="Min. 6 characters" required minlength="6">
+                    <i class="fas fa-eye eye" onclick="togglePwd('resetPassword', this)"></i>
+                </div>
+            </div>
+            <div class="alert alert-error" id="resetError"><i class="fas fa-exclamation-triangle"></i><span id="resetErrorText"></span></div>
+            <button type="submit" class="btn btn-primary" id="resetBtn"><i class="fas fa-key"></i> Reset Password</button>
+            <div class="links-row">
+                <a href="#" class="muted" onclick="showForm('loginForm'); return false;"><i class="fas fa-arrow-left"></i> Back to Login</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="back-home">
+        <a href="/"><i class="fas fa-home"></i> Back to Home</a>
+    </div>
+
+    <div id="toast"></div>
+
+<script>
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let currentForgotEmail = '';
+
+    // ---- Helpers ----
+    function showForm(id) {
+        ['loginForm','setupForm','forgotForm','resetForm'].forEach(f => {
+            document.getElementById(f).style.display = (f === id) ? 'block' : 'none';
+        });
+        const titles = {
+            loginForm:  ['Admin Login', 'Enter your credentials to access the admin panel'],
+            setupForm:  ['Setup Admin', 'Create the one-time admin account'],
+            forgotForm: ['Forgot Password', 'Reset your admin password via OTP'],
+            resetForm:  ['Reset Password', 'Enter the OTP sent to your email'],
+        };
+        document.getElementById('authTitle').textContent = titles[id][0];
+        document.getElementById('authSubtitle').textContent = titles[id][1];
+    }
+
+    function togglePwd(inputId, icon) {
+        const el = document.getElementById(inputId);
+        el.type = el.type === 'password' ? 'text' : 'password';
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    }
+
+    function validateEmail(input, warnId) {
+        const ok = EMAIL_RE.test(input.value.trim());
+        const w = document.getElementById(warnId);
+        w.style.display = (!ok && input.value.trim()) ? 'block' : 'none';
+    }
+
+    function showErr(boxId, textId, msg) {
+        const box = document.getElementById(boxId);
+        document.getElementById(textId).textContent = msg;
+        box.style.display = 'flex';
+    }
+    function hideErr(boxId) { document.getElementById(boxId).style.display = 'none'; }
+
+    function showToast(msg, type='info') {
+        const t = document.getElementById('toast');
+        t.style.color = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--text-primary)';
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function setBusy(btnId, busy, label) {
+        const btn = document.getElementById(btnId);
+        btn.disabled = busy;
+        if (busy) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Please wait...';
+        else btn.innerHTML = label;
+    }
+
+    // ---- Check admin status on load ----
+    async function init() {
+        // If already logged in as admin, go to dashboard
+        const token = localStorage.getItem('adminToken');
+        if (token) {
+            window.location.href = '/?view=admin-dashboard';
+            return;
+        }
+        try {
+            const res = await fetch('/auth/admin/status');
+            const data = await res.json();
+            if (data.success && !data.adminExists) {
+                document.getElementById('setupLink').style.display = 'inline';
+            }
+        } catch(e) {}
+    }
+
+    // ---- LOGIN ----
+    async function doLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        if (!EMAIL_RE.test(email)) {
+            validateEmail(document.getElementById('loginEmail'), 'loginEmailWarn');
+            return;
+        }
+        hideErr('loginError');
+        setBusy('loginBtn', true, '');
+        try {
+            const res = await fetch('/auth/admin/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                localStorage.setItem('adminToken', data.token);
+                localStorage.setItem('adminRole', data.role);
+                showToast('Login successful! Redirecting...', 'success');
+                setTimeout(() => { window.location.href = '/?view=admin-dashboard'; }, 800);
+            } else {
+                showErr('loginError', 'loginErrorText', data.error || 'Login failed');
+            }
+        } catch(err) {
+            showErr('loginError', 'loginErrorText', 'Network error: ' + err.message);
+        } finally {
+            setBusy('loginBtn', false, '<i class="fas fa-sign-in-alt"></i> Login');
+        }
+    }
+
+    // ---- SETUP REMOVED ----
+
+    // ---- FORGOT ----
+    async function doForgot(e) {
+        e.preventDefault();
+        const email = document.getElementById('forgotEmail').value.trim();
+        if (!EMAIL_RE.test(email)) {
+            validateEmail(document.getElementById('forgotEmail'), 'forgotEmailWarn');
+            return;
+        }
+        currentForgotEmail = email;
+        hideErr('forgotError');
+        document.getElementById('forgotSuccess').style.display = 'none';
+        setBusy('forgotBtn', true, '');
+        try {
+            const res = await fetch('/auth/admin/forgot-password', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('forgotSuccess').style.display = 'flex';
+            } else {
+                showErr('forgotError', 'forgotErrorText', data.error || 'Failed to send OTP');
+            }
+        } catch(err) {
+            showErr('forgotError', 'forgotErrorText', 'Network error: ' + err.message);
+        } finally {
+            setBusy('forgotBtn', false, '<i class="fas fa-paper-plane"></i> Send OTP');
+        }
+    }
+
+    // ---- RESET ----
+    async function doReset(e) {
+        e.preventDefault();
+        const email = currentForgotEmail || document.getElementById('forgotEmail')?.value.trim();
+        const otp = document.getElementById('resetOtp').value;
+        const newPassword = document.getElementById('resetPassword').value;
+        hideErr('resetError');
+        setBusy('resetBtn', true, '');
+        try {
+            const res = await fetch('/auth/admin/reset-password', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, otp, newPassword })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('Password reset! Please login.', 'success');
+                showForm('loginForm');
+            } else {
+                showErr('resetError', 'resetErrorText', data.error || 'Reset failed');
+            }
+        } catch(err) {
+            showErr('resetError', 'resetErrorText', 'Network error: ' + err.message);
+        } finally {
+            setBusy('resetBtn', false, '<i class="fas fa-key"></i> Reset Password');
+        }
+    }
+
+    init();
+</script>
+</body>
+</html>
