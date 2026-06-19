@@ -279,8 +279,7 @@ html, body {
   width: 100%;
   min-height: 100%;
   font-family: 'Inter', sans-serif;
-  background-color: #ffffff !important;
-  background-image: none !important;
+  background: linear-gradient(160deg, #1a2e1a 0%, #0f1f0f 100%) !important;
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
