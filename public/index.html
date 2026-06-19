@@ -93,8 +93,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
     <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
-    <!-- reCAPTCHA -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         /* ===== ADDITIONAL STYLES FOR NEW FEATURES ===== */
 
@@ -202,19 +200,19 @@
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
         }
         .section-title-badge {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 0.5rem;
-            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(249,115,22,0.15));
-            border: 1px solid rgba(59,130,246,0.3);
-            border-radius: var(--border-radius-sm);
-            padding: 0.4rem 0.9rem;
-            font-size: 0.8rem;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--border-radius-md);
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
             font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 1.25rem;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         /* Checkbox group */
@@ -450,7 +448,25 @@
                 <option value="hi">🇮🇳 हिंदी</option>
                 <option value="kn">🇮🇳 ಕನ್ನಡ</option>
             </select>
-            <button class="btn btn-icon" id="themeToggleBtn" onclick="cycleTheme()" style="background:transparent; border:none; color:#ffffff; font-size:1.2rem; cursor:pointer;" title="Change Theme"><i class="fas fa-palette"></i></button>
+            <select class="lang-select" id="themeSelector" onchange="setTheme(this.value)" style="margin-right: 0.5rem; background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff); -webkit-background-clip: text; color: transparent; font-weight: bold;">
+                <option value="default" style="background-color: #ffffff; color: #000000;">🟢 Default</option>
+                <option value="pink-teal" style="background-color: #ffffff; color: #000000;">🌸 Pink Teal</option>
+                <option value="orange-yellow" style="background-color: #ffffff; color: #000000;">🔥 Orange Yellow</option>
+                <option value="fuchsia-grey" style="background-color: #ffffff; color: #000000;">🟣 Fuchsia Grey</option>
+                <option value="green-red" style="background-color: #ffffff; color: #000000;">🍉 Green Red</option>
+                <option value="cream-black" style="background-color: #ffffff; color: #000000;">☕ Cream Black</option>
+                <option value="black-white" style="background-color: #ffffff; color: #000000;">🎹 Black White</option>
+                <option value="dark-pink" style="background-color: #ffffff; color: #000000;">🌺 Dark Pink</option>
+                <option value="blue-mint" style="background-color: #ffffff; color: #000000;">🧊 Blue Mint</option>
+                <option value="red-black" style="background-color: #ffffff; color: #000000;">🔴 Red Black</option>
+                <option value="green-tangerine" style="background-color: #ffffff; color: #000000;">🍊 Green Tangerine</option>
+                <option value="neon-trio" style="background-color: #ffffff; color: #000000;">✨ Neon Trio</option>
+                <option value="yellow-green" style="background-color: #ffffff; color: #000000;">🍋 Yellow Green</option>
+                <option value="sky-blue" style="background-color: #ffffff; color: #000000;">☁️ Sky Blue</option>
+                <option value="lime-white" style="background-color: #ffffff; color: #000000;" selected>🍈 Lime White</option>
+                <option value="beige-grey" style="background-color: #ffffff; color: #000000;">🪨 Beige Grey</option>
+                <option value="pastel-purple" style="background-color: #ffffff; color: #000000;">🪻 Pastel Purple</option>
+            </select>
             <button class="btn btn-primary btn-small" id="loginLogoutBtn" onclick="toggleAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login</span></button>
         </div>
     </nav>
@@ -551,7 +567,6 @@
 
                             <!-- Registration Form Content -->
                             <div id="registrationFormContent">
-
                             <!-- SECTION A: Basic Profile -->
                             <div class="single-page-section" id="regSection1" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-user"></i> <span data-i18n="sec_a_title">Section A — Basic Profile</span></div>
@@ -581,6 +596,15 @@
                                         </span>
                                     </div>
                                     <span id="passErrMsg" class="error-message hidden" style="color:#f97316; margin-top:0.5rem; display:block;"><i class="fas fa-exclamation-circle"></i> Password must be at least 8 characters</span>
+                                    <div class="password-strength-meter" style="margin-top:0.5rem; display:none;" id="pwdStrengthContainer">
+                                        <div style="display:flex; height:6px; gap:4px; margin-bottom:4px;">
+                                            <div id="pwdBar1" style="flex:1; background:#e5e7eb; border-radius:3px; transition:background 0.3s;"></div>
+                                            <div id="pwdBar2" style="flex:1; background:#e5e7eb; border-radius:3px; transition:background 0.3s;"></div>
+                                            <div id="pwdBar3" style="flex:1; background:#e5e7eb; border-radius:3px; transition:background 0.3s;"></div>
+                                            <div id="pwdBar4" style="flex:1; background:#e5e7eb; border-radius:3px; transition:background 0.3s;"></div>
+                                        </div>
+                                        <small id="pwdStrengthText" style="color:var(--text-secondary); font-size:0.75rem; font-weight:600;">Password strength</small>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="regState">State</label>
@@ -597,11 +621,8 @@
                                     <input type="text" id="regCityOther" class="form-control" placeholder="Enter City" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
                                 </div>
                                 <div class="form-group">
-                                    <label for="regPincode">Pincode</label>
-                                    <select id="regPincode" class="form-control" required onchange="handleOtherDropdown(this, 'regPincodeOther')" disabled>
-                                        <option value="">Select pincode</option>
-                                    </select>
-                                    <input type="text" id="regPincodeOther" class="form-control" placeholder="Type pincode (e.g. 560001)" style="display:none; margin-top:0.5rem;" pattern="[0-9]{6}" maxlength="6" title="Please enter a 6-digit valid pincode">
+                                    <label for="regPincode" data-i18n="label_pincode">Pincode</label>
+                                    <input type="text" id="regPincode" class="form-control" required placeholder="Type pincode (e.g. 560001)" pattern="[0-9]{6}" maxlength="6" title="Please enter a 6-digit valid pincode">
                                 </div>
                                 <div class="form-group" style="position:relative; z-index:10;">
                                     <label for="regPlatform" data-i18n="label_platform">Delivery Platform</label>
@@ -842,9 +863,7 @@
                                         <i class="fab fa-whatsapp" style="color:#25D366;"></i> <span data-i18n="whatsapp_hint">After registration, you'll receive a WhatsApp confirmation with your referral code.</span>
                                     </p>
                                 </div>
-                                <div class="form-group">
-                                    <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
-                                </div>
+
                                 <button type="button" class="btn btn-primary w-100" style="background:linear-gradient(135deg,#3b82f6,#f97316);" onclick="submitRegistration()" id="submitRegBtn">
                                     <i class="fas fa-check-circle"></i> <span data-i18n="btn_submit_reg">Complete Registration</span>
                                 </button>
@@ -867,7 +886,7 @@
                                         </a>
                                     </div>
                                     <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
-                                        <button class="btn btn-primary" style="flex:1;" onclick="goBackToLogin(event)"><i class="fas fa-sign-in-alt"></i> <span data-i18n="btn_goto_login">Go back to Login</span></button>
+                                        <button class="btn btn-primary" style="flex:1;" onclick="loginAfterRegister()"><i class="fas fa-tachometer-alt"></i> <span data-i18n="btn_goto_dashboard">Go to Dashboard</span></button>
                                         <button class="btn btn-secondary" style="flex:1;" onclick="navigateTo('/score')"><i class="fas fa-trophy"></i> <span data-i18n="btn_view_score">View Score</span></button>
                                     </div>
                                 </div>

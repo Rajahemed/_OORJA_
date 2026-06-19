@@ -27,7 +27,9 @@ app.use(helmet({
                       "https://www.clarity.ms",
                       "https://www.googletagmanager.com",
                       "https://www.google-analytics.com",
-                      "https://cdn.jsdelivr.net"],
+                      "https://cdn.jsdelivr.net",
+                      "https://www.google.com/recaptcha/",
+                      "https://www.gstatic.com/recaptcha/"],
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc:      ["'self'", "'unsafe-inline'",
                       "https://cdnjs.cloudflare.com",
@@ -46,7 +48,10 @@ app.use(helmet({
                       "https://www.google-analytics.com",
                       "https://analytics.google.com",
                       "https://region1.google-analytics.com",
-                      "https://api.resend.com"]
+                      "https://api.resend.com"],
+      frameSrc:      ["'self'",
+                      "https://www.google.com/recaptcha/",
+                      "https://recaptcha.google.com/recaptcha/"]
     }
   },
   crossOriginEmbedderPolicy: false

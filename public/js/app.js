@@ -417,7 +417,7 @@ async function loadVisitorAnalytics() {
     if (analyticsChartsLoaded) return;
 
     try {
-        const token = sessionStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt') || localStorage.getItem('adminToken') || localStorage.getItem('adminJwt');
         const headers = { Authorization: `Bearer ${token}` };
 
         const [overviewRes, trafficRes] = await Promise.all([
@@ -522,7 +522,7 @@ async function loadEmailLeads() {
     if (!tbody) return;
 
     try {
-        const token = sessionStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt') || localStorage.getItem('adminToken') || localStorage.getItem('adminJwt');
         const res = await originalFetch.call(window, '/api/admin/analytics/leads', {
             credentials: 'same-origin',
             headers: { Authorization: `Bearer ${token}` }
@@ -945,6 +945,7 @@ async function loadEmailLeads() {
             if (selectElem.value === 'Other') {
                 input.style.display = 'block';
                 input.required = true;
+                setTimeout(() => input.focus(), 50);
             } else {
                 input.style.display = 'none';
                 input.required = false;
@@ -964,7 +965,12 @@ async function loadEmailLeads() {
     
     function cycleTheme() {
         currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
-        const newTheme = THEMES[currentThemeIndex];
+        setTheme(THEMES[currentThemeIndex]);
+    }
+
+    function setTheme(newTheme) {
+        if (!THEMES.includes(newTheme)) return;
+        currentThemeIndex = THEMES.indexOf(newTheme);
         
         if (newTheme === 'default') {
             document.body.removeAttribute('data-theme');
@@ -973,27 +979,28 @@ async function loadEmailLeads() {
         }
         localStorage.setItem('roadwarrior_theme', newTheme);
         
-        const icon = document.querySelector('#themeToggleBtn i');
-        if (icon) {
-            if (newTheme === 'cream-black' || newTheme === 'black-white') icon.className = 'fas fa-adjust';
-            else icon.className = 'fas fa-palette';
-        }
+        const selector = document.getElementById('themeSelector');
+        if (selector) selector.value = newTheme;
     }
 
     // Apply saved theme on load
     window.addEventListener('DOMContentLoaded', () => {
         let savedTheme = localStorage.getItem('roadwarrior_theme');
         
-        if (savedTheme && THEMES.includes(savedTheme)) {
-            currentThemeIndex = THEMES.indexOf(savedTheme);
-            if (savedTheme !== 'default') {
-                document.body.setAttribute('data-theme', savedTheme);
-            }
-            const icon = document.querySelector('#themeToggleBtn i');
-            if (icon) {
-                if (savedTheme === 'cream-black' || savedTheme === 'black-white') icon.className = 'fas fa-adjust';
-                else icon.className = 'fas fa-palette';
-            }
+        if (!savedTheme || !THEMES.includes(savedTheme)) {
+            savedTheme = 'lime-white'; // Set lime-white as the default
+        }
+        
+        currentThemeIndex = THEMES.indexOf(savedTheme);
+        if (savedTheme !== 'default') {
+            document.body.setAttribute('data-theme', savedTheme);
+        }
+        const selector = document.getElementById('themeSelector');
+        if (selector) selector.value = savedTheme;
+        const icon = document.querySelector('#themeToggleBtn i');
+        if (icon) {
+            if (savedTheme === 'cream-black' || savedTheme === 'black-white') icon.className = 'fas fa-adjust';
+            else icon.className = 'fas fa-palette';
         }
     });
 
@@ -1045,26 +1052,7 @@ async function loadEmailLeads() {
     }
 
     function onRegCityChange() {
-        const state = document.getElementById('regState').value;
         const citySelect = document.getElementById('regCity');
-        const pinSelect = document.getElementById('regPincode');
-        
-        const city = citySelect.value;
-        pinSelect.innerHTML = '<option value="">Select pincode</option>';
-        
-        if (state && city && LOCATION_DATA[state] && LOCATION_DATA[state][city]) {
-            LOCATION_DATA[state][city].forEach(pin => {
-                pinSelect.innerHTML += `<option value="${pin}">${pin}</option>`;
-            });
-            pinSelect.innerHTML += '<option value="Other">Other</option>';
-            pinSelect.disabled = false;
-        } else if (city === 'Other') {
-            pinSelect.innerHTML += '<option value="Other">Other</option>';
-            pinSelect.disabled = false;
-        } else {
-            pinSelect.disabled = true;
-        }
-        
         handleOtherDropdown(citySelect, 'regCityOther');
     }
 
@@ -1111,6 +1099,12 @@ async function loadEmailLeads() {
         else if (activeTab === 'score') loadLeaderboardData();
         else if (activeTab === 'profile') loadProfileData();
         else if (activeTab === 'admin') loadAdminData();
+
+        // Footer visibility - only show on home page
+        const siteFooter = document.getElementById('site-footer');
+        if (siteFooter) {
+            siteFooter.style.display = (activeTab === 'home') ? 'block' : 'none';
+        }
     }
 
     function refreshActiveView() {
@@ -1154,12 +1148,25 @@ async function loadEmailLeads() {
     function updateAuthNavbarState() {
         const btn = document.getElementById('loginLogoutBtn');
         const lang = localStorage.getItem('selectedLang') || 'en';
+        
+        const navScore = document.getElementById('navScore');
+        const navDashboard = document.getElementById('navDashboard');
+        const navProfile = document.getElementById('navProfile');
+
         if (isLoggedIn) {
             btn.innerHTML = `<i class="fas fa-sign-out-alt"></i> <span>${TRANSLATIONS[lang].logout}</span>`;
             btn.classList.replace('btn-primary', 'btn-secondary');
+            
+            if (navScore) navScore.parentElement.style.display = '';
+            if (navDashboard) navDashboard.parentElement.style.display = '';
+            if (navProfile) navProfile.parentElement.style.display = '';
         } else {
             btn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>${TRANSLATIONS[lang].login}</span>`;
             btn.classList.replace('btn-secondary', 'btn-primary');
+            
+            if (navScore) navScore.parentElement.style.display = 'none';
+            if (navDashboard) navDashboard.parentElement.style.display = 'none';
+            if (navProfile) navProfile.parentElement.style.display = 'none';
         }
     }
 
@@ -1202,6 +1209,158 @@ async function loadEmailLeads() {
             updateAuthNavbarState(); navigateTo('/home');
         });
     }
+
+    function validateFullRegistrationForm() {
+        let isValid = true;
+        let firstInvalidField = null;
+
+        const setInvalid = (el, customUI) => {
+            isValid = false;
+            const targetUI = customUI || el;
+            targetUI.style.border = '2px solid var(--danger-color)';
+            if (!firstInvalidField) firstInvalidField = targetUI;
+            
+            const clearBorder = () => targetUI.style.border = '';
+            el.addEventListener('change', clearBorder, { once: true });
+            el.addEventListener('input', clearBorder, { once: true });
+        };
+
+        for (let step = 1; step <= 6; step++) {
+            const sec = document.getElementById('regSection' + step);
+            if (!sec) continue;
+
+            if (step === 1) {
+                // Check required fields for Profile section
+                const reqs = ['regFullName', 'regPhone', 'regPassword', 'regState', 'regCity', 'regPincode', 'regPlatform', 'regExp'];
+                reqs.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    
+                    let isFieldValid = true;
+                    if (!el.value.trim()) isFieldValid = false;
+                    
+                    if (id === 'regPhone' && (el.value.trim().length !== 10 || !/^[6-9]/.test(el.value.trim()))) isFieldValid = false;
+                    if (id === 'regPassword' && el.value.length < 8) isFieldValid = false;
+                    
+                    if (!isFieldValid) {
+                        if (id === 'regPlatform') {
+                            const customSelect = document.querySelector('#platformCustomSelect .custom-select');
+                            if (customSelect) setInvalid(el, customSelect);
+                        } else {
+                            setInvalid(el);
+                        }
+                    }
+                });
+                // "Other" text fields
+                sec.querySelectorAll('input[type="text"][id$="Other"]').forEach(el => {
+                    if (el.style.display !== 'none' && !el.value.trim()) setInvalid(el);
+                });
+            }
+            else if (step === 2) {
+                const vt = sec.querySelector('input[name="vehicleType"]:checked');
+                if (!vt) {
+                    const group = document.getElementById('vehicleTypeGroup') || sec.querySelector('input[name="vehicleType"]').closest('.radio-group');
+                    if (group) {
+                        group.style.border = '2px solid var(--danger-color)';
+                        group.style.padding = '0.5rem';
+                        group.style.borderRadius = 'var(--border-radius-md)';
+                        isValid = false;
+                        if (!firstInvalidField) firstInvalidField = group;
+                        sec.querySelectorAll('input[name="vehicleType"]').forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                    }
+                } else if (vt.value === 'Other' && !document.getElementById('regVehicleTypeOther').value.trim()) {
+                    setInvalid(document.getElementById('regVehicleTypeOther'));
+                }
+
+                const fm = sec.querySelector('input[name="fuelMethod"]:checked');
+                if (!fm) {
+                    const group = sec.querySelector('input[name="fuelMethod"]').closest('.radio-group');
+                    if (group) {
+                        group.style.border = '2px solid var(--danger-color)';
+                        group.style.padding = '0.5rem';
+                        group.style.borderRadius = 'var(--border-radius-md)';
+                        isValid = false;
+                        if (!firstInvalidField) firstInvalidField = group;
+                        sec.querySelectorAll('input[name="fuelMethod"]').forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                    }
+                } else if (fm.value === 'Other' && !document.getElementById('regFuelMethodOther').value.trim()) {
+                    setInvalid(document.getElementById('regFuelMethodOther'));
+                }
+            }
+            else if (step === 3) {
+                sec.querySelectorAll('input[type="text"][id$="Other"]').forEach(el => {
+                    if (el.style.display !== 'none' && !el.value.trim()) setInvalid(el);
+                });
+            }
+            else if (step === 4) {
+                ['hasAccidental', 'hasHealth', 'paidPocket'].forEach(name => {
+                    if (!sec.querySelector(`input[name="${name}"]:checked`)) {
+                        const radios = sec.querySelectorAll(`input[name="${name}"]`);
+                        if (radios.length > 0) {
+                            const group = radios[0].closest('.radio-group');
+                            if (group) {
+                                group.style.border = '2px solid var(--danger-color)';
+                                group.style.padding = '0.5rem';
+                                group.style.borderRadius = 'var(--border-radius-md)';
+                                isValid = false;
+                                if (!firstInvalidField) firstInvalidField = group;
+                                radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                            }
+                        }
+                    }
+                });
+            }
+            else if (step === 5) {
+                if (!sec.querySelector(`input[name="openEV"]:checked`)) {
+                    const radios = sec.querySelectorAll(`input[name="openEV"]`);
+                    if (radios.length > 0) {
+                        const group = radios[0].closest('.radio-group');
+                        if (group) {
+                            group.style.border = '2px solid var(--danger-color)';
+                            group.style.padding = '0.5rem';
+                            group.style.borderRadius = 'var(--border-radius-md)';
+                            isValid = false;
+                            if (!firstInvalidField) firstInvalidField = group;
+                            radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                        }
+                    }
+                }
+                sec.querySelectorAll('input[type="text"][id$="Other"]').forEach(el => {
+                    if (el.style.display !== 'none' && !el.value.trim()) setInvalid(el);
+                });
+            }
+            else if (step === 6) {
+                if (document.getElementById('referralQuestionBlock').style.display !== 'none') {
+                    if (!sec.querySelector(`input[name="referredBy"]:checked`)) {
+                        const radios = sec.querySelectorAll(`input[name="referredBy"]`);
+                        if (radios.length > 0) {
+                            const group = radios[0].closest('.radio-group');
+                            if (group) {
+                                group.style.border = '2px solid var(--danger-color)';
+                                group.style.padding = '0.5rem';
+                                group.style.borderRadius = 'var(--border-radius-md)';
+                                isValid = false;
+                                if (!firstInvalidField) firstInvalidField = group;
+                                radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                            }
+                        }
+                    } else if (sec.querySelector(`input[name="referredBy"]:checked`).value === 'yes' && !document.getElementById('regReferralCode').value.trim()) {
+                        setInvalid(document.getElementById('regReferralCode'));
+                    }
+                }
+            }
+        }
+
+        if (!isValid) {
+            showToast('Please complete required fields before submitting', 'error');
+            if (firstInvalidField && firstInvalidField.scrollIntoView) {
+                firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        return isValid;
+    }
+
+
 
     // ===== AUTH FORMS =====
     function toggleAuthCards(e) {
@@ -1397,10 +1556,60 @@ async function loadEmailLeads() {
 
     function validateRegPassword(input) {
         const err = document.getElementById('passErrMsg');
-        if (input.value.length > 0 && input.value.length < 8) {
+        const pwdStr = document.getElementById('pwdStrengthContainer');
+        const text = document.getElementById('pwdStrengthText');
+        const b1 = document.getElementById('pwdBar1');
+        const b2 = document.getElementById('pwdBar2');
+        const b3 = document.getElementById('pwdBar3');
+        const b4 = document.getElementById('pwdBar4');
+
+        const val = input.value;
+        if (val.length > 0 && val.length < 8) {
             err.classList.remove('hidden');
         } else {
             err.classList.add('hidden');
+        }
+
+        if (!pwdStr) return; // fail-safe
+
+        if (val.length === 0) {
+            pwdStr.style.display = 'none';
+            return;
+        }
+        
+        pwdStr.style.display = 'block';
+        
+        let strength = 0;
+        if (val.length >= 8) strength++;
+        if (/[A-Z]/.test(val) && /[a-z]/.test(val)) strength++;
+        if (/[0-9]/.test(val)) strength++;
+        if (/[^A-Za-z0-9]/.test(val)) strength++;
+        
+        const resetBars = () => {
+            [b1, b2, b3, b4].forEach(b => b.style.background = '#e5e7eb');
+        };
+        
+        resetBars();
+        
+        if (strength <= 1) {
+            text.innerText = 'Weak - add numbers & symbols';
+            text.style.color = '#ef4444';
+            b1.style.background = '#ef4444';
+        } else if (strength === 2) {
+            text.innerText = 'Fair - could be stronger';
+            text.style.color = '#f59e0b';
+            b1.style.background = '#f59e0b';
+            b2.style.background = '#f59e0b';
+        } else if (strength === 3) {
+            text.innerText = 'Good password';
+            text.style.color = '#10b981';
+            b1.style.background = '#10b981';
+            b2.style.background = '#10b981';
+            b3.style.background = '#10b981';
+        } else {
+            text.innerText = 'Strong password';
+            text.style.color = '#059669';
+            [b1, b2, b3, b4].forEach(b => b.style.background = '#059669');
         }
     }
 
@@ -1410,6 +1619,7 @@ async function loadEmailLeads() {
         if (value === 'Other') {
             vtOther.style.display = 'block';
             vtOther.required = true;
+            setTimeout(() => vtOther.focus(), 50);
         } else {
             vtOther.style.display = 'none';
             vtOther.required = false;
@@ -1497,6 +1707,7 @@ async function loadEmailLeads() {
         const el = document.getElementById(targetId);
         if(input.value === 'Other' && input.checked) {
             el.style.display = 'block';
+            setTimeout(() => el.focus(), 50);
         } else {
             el.style.display = 'none';
         }
@@ -1506,6 +1717,7 @@ async function loadEmailLeads() {
         const el = document.getElementById(targetId);
         if(input.checked) {
             el.style.display = 'block';
+            setTimeout(() => el.focus(), 50);
         } else {
             el.style.display = 'none';
         }
@@ -1529,12 +1741,9 @@ async function loadEmailLeads() {
     async function onRegStateChange() {
         const stateSelect = document.getElementById('regState');
         const citySelect = document.getElementById('regCity');
-        const pinSelect = document.getElementById('regPincode');
         
         const state = stateSelect.value;
         citySelect.innerHTML = '<option value="">Loading Cities...</option>';
-        pinSelect.innerHTML = '<option value="">Select pincode</option>';
-        pinSelect.disabled = true;
         
         if (state && state !== 'Other') {
             try {
@@ -1560,37 +1769,8 @@ async function loadEmailLeads() {
         handleOtherDropdown(stateSelect, 'regStateOther');
     }
 
-    async function onRegCityChange() {
-        const state = document.getElementById('regState').value;
-        const citySelect = document.getElementById('regCity');
-        const pinSelect = document.getElementById('regPincode');
-        
-        const city = citySelect.value;
-        pinSelect.innerHTML = '<option value="">Loading Pincodes...</option>';
-        
-        if (state && city && state !== 'Other' && city !== 'Other') {
-            try {
-                const res = await fetch(`/api/locations/pincodes/${state}/${city}`);
-                const data = await res.json();
-                pinSelect.innerHTML = '<option value="">Select Pincode</option>';
-                if (data.success) {
-                    data.data.forEach(pin => {
-                        pinSelect.innerHTML += `<option value="${pin}">${pin}</option>`;
-                    });
-                }
-                pinSelect.innerHTML += '<option value="Other">Other</option>';
-                pinSelect.disabled = false;
-            } catch(e) { console.error('Error fetching pincodes', e); }
-        } else if (city === 'Other') {
-            pinSelect.innerHTML = '<option value="">Select Pincode</option><option value="Other">Other</option>';
-            pinSelect.disabled = false;
-        } else {
-            pinSelect.innerHTML = '<option value="">Select pincode</option>';
-            pinSelect.disabled = true;
-        }
-        
-        handleOtherDropdown(citySelect, 'regCityOther');
-    }
+    // The static onRegCityChange handles the change logic (defined above).
+    // Removed the fetch-based onRegCityChange since pincodes are now direct input.
     
     window.onRegStateChange = onRegStateChange;
     window.onRegCityChange = onRegCityChange;
@@ -1606,43 +1786,17 @@ async function loadEmailLeads() {
         let city = document.getElementById('regCity').value;
         if (city === 'Other') city = document.getElementById('regCityOther').value.trim();
         let pincode = document.getElementById('regPincode').value;
-        if (pincode === 'Other') pincode = document.getElementById('regPincodeOther').value.trim();
         let platform = document.getElementById('regPlatform').value;
         if (platform === 'Other') platform = document.getElementById('regPlatformOther').value.trim();
         
         const exp = document.getElementById('regExp').value;
         const pass = document.getElementById('regPassword').value;
 
-        const recaptchaToken = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
-
-        // Validate all visible "Other" text fields
-        let missingOtherField = false;
-        document.querySelectorAll('input[type="text"][id$="Other"]').forEach(el => {
-            if (el.style.display === 'block') {
-                if (!el.value.trim()) {
-                    missingOtherField = true;
-                    el.style.border = '2px solid var(--danger-color)';
-                } else {
-                    el.style.border = '';
-                }
-            }
-        });
-
-        if (missingOtherField) {
-            showToast('Please fill in the required "Other" text fields', 'error');
+        
+        if (!validateFullRegistrationForm()) {
             return;
         }
 
-        if (!name) { showToast('Please enter your full name', 'error'); return; }
-        if (phone.length !== 10 || !/^[6-9]/.test(phone)) { showToast('Phone must be 10 digits starting with 6-9', 'error'); return; }
-        if (!state) { showToast('Please select your state', 'error'); return; }
-        if (!city) { showToast('Please select your city', 'error'); return; }
-        if (!pincode) { showToast('Please select your pincode', 'error'); return; }
-        if (!platform) { showToast('Please select your delivery platform', 'error'); return; }
-        if (exp === '') { showToast('Please select your experience', 'error'); return; }
-        if (!pass) { showToast('Please set a password', 'error'); return; }
-        if (pass.length < 8) { showToast('Password must be at least 8 characters', 'error'); return; }
-        // Frontend reCAPTCHA check removed; backend will validate it conditionally.
 
         const btn = document.getElementById('submitRegBtn');
         btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
@@ -1656,7 +1810,6 @@ async function loadEmailLeads() {
         const referredByCode = hiddenCode || (referredBy === 'yes' ? '' : null) || localStorage.getItem('pendingReferralCode') || null;
 
         const payload = {
-            recaptchaToken: recaptchaToken,
             fullName: name,
             phone: phone,
             state: state,

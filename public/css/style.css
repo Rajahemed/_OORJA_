@@ -516,9 +516,9 @@ html, body {
 label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: 500;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
 }
 
 .form-control {
@@ -528,6 +528,7 @@ label {
   border-radius: var(--border-radius-md);
   font-family: inherit;
   font-size: 1rem;
+  font-weight: 600;
   transition: all 0.3s;
   background-color: var(--card-bg);
   color: var(--text-primary);
@@ -1200,7 +1201,7 @@ select.form-control option {
     font-size: 16px;
   }
   .brand-text {
-    font-size: 17px;
+    display: none; /* Hide brand text on mobile */
   }
   .nav-link {
     padding: 0.5rem 0.625rem;

@@ -124,8 +124,21 @@ router.get('/locations/states', (req, res) => {
 
 router.get('/locations/cities/:state', (req, res) => {
   try {
-    const stateData = bp.getByState(req.params.state);
-    const cities = [...new Set(stateData.map(s => s.district || s.city))].filter(Boolean).sort();
+    const state = req.params.state;
+    let cities = [];
+    if (state.toLowerCase() === 'karnataka') {
+      cities = [
+        'Bagalkot', 'Ballari', 'Belagavi', 'Bengaluru Rural', 'Bengaluru Urban', 
+        'Bidar', 'Chamarajanagar', 'Chikkaballapur', 'Chikkamagaluru', 'Chitradurga', 
+        'Dakshina Kannada', 'Davangere', 'Dharwad', 'Gadag', 'Hassan', 'Haveri', 
+        'Kalaburagi', 'Kodagu', 'Kolar', 'Koppal', 'Mandya', 'Mysuru', 'Raichur', 
+        'Ramanagara', 'Shivamogga', 'Tumakuru', 'Udupi', 'Uttara Kannada', 
+        'Vijayapura', 'Yadgir', 'Vijayanagara'
+      ].sort();
+    } else {
+      const stateData = bp.getByState(state);
+      cities = [...new Set(stateData.map(s => s.district || s.city))].filter(Boolean).sort();
+    }
     res.json({ success: true, data: cities });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -179,26 +192,8 @@ router.post('/riders/register', async (req, res) => {
       // Section G
       consentPrivacy, consentMarketing, consentTerms,
       // Language preference
-      language,
-      // Security
-      recaptchaToken
+      language
     } = req.body;
-
-    // Verify reCAPTCHA
-    if (process.env.RECAPTCHA_SECRET_KEY && process.env.RECAPTCHA_SECRET_KEY !== 'your_recaptcha_secret_key') {
-      if (!recaptchaToken || recaptchaToken === '') {
-        return res.status(400).json({ success: false, error: 'Please complete the reCAPTCHA verification' });
-      }
-      try {
-        const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`;
-        const recaptchaRes = await axios.post(verifyUrl);
-        if (!recaptchaRes.data.success) {
-          return res.status(400).json({ success: false, error: 'reCAPTCHA verification failed. Please try again.' });
-        }
-      } catch (error) {
-        return res.status(500).json({ success: false, error: 'Error validating reCAPTCHA' });
-      }
-    }
 
     if (!fullName || !phone || !state || !city || !pincode) {
       return res.status(400).json({ success: false, error: 'Full name, phone, state, city, and pincode are required' });
