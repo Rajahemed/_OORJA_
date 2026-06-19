@@ -1,16 +1,25 @@
 # Road Warrior EV
 
-Road Warrior EV is a platform for delivery riders. It offers a secure, streamlined onboarding process with gamified referrals, points, and rewards.
+## Business Description
+Road Warrior Pro is India's leading platform empowering delivery riders from Swiggy, Zomato, Blinkit, and others to transition to Electric Vehicles (EVs). We help riders increase their income, track their performance via a unified dashboard, and earn rewards through a comprehensive referral program.
 
-## Description
-This application allows riders from platforms like Swiggy, Zomato, and Blinkit to register, declare their vehicles (petrol or EV), track their pain points, and explore EV rental or retrofit solutions. It provides a real-time leaderboard, dashboard analytics, and gamified milestones.
+## Services
+- Delivery Rider Registration & Onboarding
+- EV Transition Assistance & Resources
+- Analytics Dashboard for Riders (Earnings, Trips, Referrals)
+- Referral Program with Monetary Rewards & Milestones
+- Support for multiple Indian languages (English, Hindi, Kannada)
 
-## Features
-- **Rider Onboarding**: Comprehensive profiling covering vehicle type, fuel cost, and EV interests.
-- **Referral Engine**: Riders earn points by referring others, unlocking milestones (10, 25, 50 referrals).
-- **Score Page**: Real-time ranking, points display, and QR code for referrals.
-- **Admin Dashboard**: Advanced insights, segmentation, and lead intelligence.
-- **Multilingual Support**: Supports English, Hindi, and Kannada.
+## Important URLs
+- Homepage: https://roadwarrior.pro/
+- Rider Dashboard: https://roadwarrior.pro/dashboard
+- Login: https://roadwarrior.pro/login
+- Registration: https://roadwarrior.pro/register
+- Privacy Policy: https://roadwarrior.pro/privacy
 
-## Technologies
-Node.js, Express, Supabase (PostgreSQL), Vanilla JS, Chart.js.
+## Contact Details
+- Company: Road Warrior Pro
+- Email: contact@roadwarriorev.com
+- Phone: +91 6360 483 386
+- Address: 123 EV Tech Park, Bengaluru, India
+- WhatsApp Support: https://wa.me/916360483386

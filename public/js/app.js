@@ -2,20 +2,37 @@
 // --- Security: CSRF Protection & Global Fetch Override ---
 
 let csrfToken = '';
-fetch('/api/csrf-token', { credentials: 'same-origin' }).then(r => r.json()).then(data => {
-    csrfToken = data.csrfToken;
-}).catch(e => console.error('Failed to load CSRF token'));
+// Use a promise so mutating requests wait for the token to be available
+let csrfTokenReady = (function fetchCsrfToken() {
+    return fetch('/api/csrf-token', { credentials: 'same-origin' })
+        .then(r => r.json())
+        .then(data => {
+            csrfToken = data.csrfToken;
+        })
+        .catch(e => {
+            console.error('Failed to load CSRF token, retrying in 1s...', e);
+            return new Promise(resolve => setTimeout(resolve, 1000))
+                .then(() => fetch('/api/csrf-token', { credentials: 'same-origin' }))
+                .then(r => r.json())
+                .then(data => { csrfToken = data.csrfToken; })
+                .catch(e2 => console.error('CSRF token fetch failed after retry:', e2));
+        });
+})();
 
 const originalFetch = window.fetch;
 window.fetch = async function() {
     let [resource, config] = arguments;
     config = config || {};
     config.credentials = 'same-origin';
-    if(config.method && (config.method.toUpperCase() === 'POST' || config.method.toUpperCase() === 'PUT' || config.method.toUpperCase() === 'DELETE')) {
+
+    const method = (config.method || 'GET').toUpperCase();
+    if (method === 'POST' || method === 'PUT' || method === 'DELETE' || method === 'PATCH') {
+        // Wait for CSRF token to be ready before sending mutating request
+        await csrfTokenReady;
         config.headers = config.headers || {};
         config.headers['CSRF-Token'] = csrfToken;
     }
-    
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     config.signal = controller.signal;
@@ -48,6 +65,508 @@ window.onunhandledrejection = function(event) {
         showToast(`Request Failed: ${msg}`, 'error');
     }
 };
+
+// ============================================================
+// ANALYTICS & VISITOR INTELLIGENCE SYSTEM
+// ============================================================
+
+// --- Client Config (GA4 ID + Clarity ID served safely from server) ---
+let RW_GA_ID      = '';
+let RW_CLARITY_ID = '';
+let analyticsConfigLoaded = false;
+
+async function loadClientConfig() {
+    try {
+        const r = await originalFetch.call(window, '/api/client-config', { credentials: 'same-origin' });
+        const cfg = await r.json();
+        RW_GA_ID      = cfg.GA_MEASUREMENT_ID  || '';
+        RW_CLARITY_ID = cfg.CLARITY_PROJECT_ID || '';
+        analyticsConfigLoaded = true;
+    } catch(e) {
+        console.warn('[analytics] Could not load client config:', e.message);
+    }
+}
+
+// --- Consent Management ---
+const CONSENT_KEY = 'rw_consent_v1';
+let analyticsConsent = false;
+let marketingConsent  = false;
+
+function getConsent() {
+    try {
+        const stored = localStorage.getItem(CONSENT_KEY);
+        return stored ? JSON.parse(stored) : null;
+    } catch { return null; }
+}
+
+function saveConsent(analytics, marketing) {
+    analyticsConsent = analytics;
+    marketingConsent  = marketing;
+    localStorage.setItem(CONSENT_KEY, JSON.stringify({
+        analytics, marketing, timestamp: Date.now()
+    }));
+    if (analytics) {
+        loadClientConfig().then(() => {
+            initGA4();
+            initClarity();
+            initVisitorTracking();
+        });
+    }
+    hideCookieBanner();
+}
+
+function acceptAllCookies() {
+    saveConsent(true, true);
+}
+
+function acceptEssentialOnly() {
+    saveConsent(false, false);
+}
+
+function openCookieSettings() {
+    const panel = document.getElementById('cookieSettingsPanel');
+    if (panel) {
+        const isOpen = panel.style.display === 'block';
+        panel.style.display = isOpen ? 'none' : 'block';
+        const btn = document.getElementById('cookieSettingsToggle');
+        if (btn) btn.textContent = isOpen ? 'Manage ▾' : 'Manage ▴';
+    }
+}
+
+function saveCookieSettings() {
+    const analytics = document.getElementById('cookieAnalytics')?.checked || false;
+    const marketing  = document.getElementById('cookieMarketing')?.checked  || false;
+    saveConsent(analytics, marketing);
+}
+
+function showCookieBanner() {
+    const banner = document.getElementById('cookieConsentBanner');
+    if (banner) banner.classList.add('show');
+}
+
+function hideCookieBanner() {
+    const banner = document.getElementById('cookieConsentBanner');
+    if (banner) banner.classList.remove('show');
+}
+
+function initConsentBanner() {
+    const consent = getConsent();
+    if (consent) {
+        analyticsConsent = consent.analytics;
+        marketingConsent  = consent.marketing;
+        if (consent.analytics) {
+            loadClientConfig().then(() => {
+                initGA4();
+                initClarity();
+                initVisitorTracking();
+            });
+        }
+        hideCookieBanner();
+    } else {
+        // Delay banner appearance slightly to avoid jarring on first load
+        setTimeout(showCookieBanner, 1500);
+    }
+}
+
+// --- Google Analytics 4 ---
+function initGA4() {
+    const gaId = RW_GA_ID;
+    if (!gaId || !gaId.startsWith('G-') || gaId === 'G-PLACEHOLDER') {
+        console.warn('[GA4] Measurement ID not configured. Find it at GA4 Admin > Data Streams > Measurement ID (G-XXXXXXXX format).');
+        return;
+    }
+    if (window._ga4Loaded) return;
+    window._ga4Loaded = true;
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+    document.head.appendChild(script);
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function() { dataLayer.push(arguments); };
+    gtag('js', new Date());
+    gtag('config', gaId, {
+        anonymize_ip:    true,
+        send_page_view:  false  // we manually track SPA page views
+    });
+    console.log('[GA4] Initialized with ID:', gaId);
+}
+
+function trackPageView(page) {
+    if (window.gtag && analyticsConsent && RW_GA_ID.startsWith('G-')) {
+        gtag('event', 'page_view', {
+            page_path:  page || window.location.pathname,
+            page_title: document.title
+        });
+    }
+}
+
+// Reusable Global event tracker — call this from anywhere in app.js
+function trackEvent(eventName, params) {
+    if (!analyticsConsent) return;
+    
+    // GA4 & Google Ads
+    if (window.gtag) gtag('event', eventName, params || {});
+    
+    // Meta Pixel
+    if (window.fbq) {
+        if (eventName === 'sign_up') fbq('track', 'CompleteRegistration', params || {});
+        else if (eventName === 'login') fbq('track', 'Login', params || {});
+        else if (eventName === 'generate_lead') fbq('track', 'Lead', params || {});
+        else fbq('trackCustom', eventName, params || {});
+    }
+    
+    // Tawk.to
+    if (window.Tawk_API && window.Tawk_API.addEvent) {
+        Tawk_API.addEvent(eventName, params || {});
+    }
+}
+
+// --- Microsoft Clarity ---
+function initClarity() {
+    const clarityId = RW_CLARITY_ID;
+    if (!clarityId || window._clarityLoaded) return;
+    window._clarityLoaded = true;
+    (function(c, l, a, r, i, t, y) {
+        c[a] = c[a] || function() { (c[a].q = c[a].q || []).push(arguments); };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = 'https://www.clarity.ms/tag/' + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
+    })(window, document, 'clarity', 'script', clarityId);
+    console.log('[Clarity] Initialized with ID:', clarityId);
+}
+
+// --- Visitor Fingerprinting ---
+let visitorId = '';
+let sessionId = '';
+
+function _rwGenerateId() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+}
+
+function _rwGetBrowser() {
+    const ua = navigator.userAgent;
+    if (/Edg\//.test(ua))                          return 'Edge';
+    if (/OPR\/|Opera\//.test(ua))                  return 'Opera';
+    if (/Chrome\//.test(ua))                        return 'Chrome';
+    if (/Firefox\//.test(ua))                       return 'Firefox';
+    if (/Safari\//.test(ua) && !/Chrome/.test(ua)) return 'Safari';
+    return 'Other';
+}
+
+function _rwGetOS() {
+    const ua = navigator.userAgent;
+    if (/Windows/.test(ua))              return 'Windows';
+    if (/iPhone|iPad/.test(ua))          return 'iOS';
+    if (/Android/.test(ua))              return 'Android';
+    if (/Mac OS/.test(ua))               return 'macOS';
+    if (/Linux/.test(ua))                return 'Linux';
+    return 'Other';
+}
+
+function _rwGetDeviceType() {
+    const ua = navigator.userAgent;
+    if (/Tablet|iPad/.test(ua))                   return 'tablet';
+    if (/Mobile|Android|iPhone/.test(ua))         return 'mobile';
+    return 'desktop';
+}
+
+function initVisitorTracking() {
+    // Get or create persistent anonymous visitor ID
+    visitorId = localStorage.getItem('rw_visitor_id');
+    if (!visitorId) {
+        visitorId = _rwGenerateId();
+        localStorage.setItem('rw_visitor_id', visitorId);
+    }
+    sessionId = _rwGenerateId(); // fresh session each page load
+
+    const payload = {
+        visitor_id:       visitorId,
+        session_id:       sessionId,
+        language:         navigator.language || 'en',
+        browser:          _rwGetBrowser(),
+        operating_system: _rwGetOS(),
+        device_type:      _rwGetDeviceType(),
+        screen_resolution: `${screen.width}x${screen.height}`,
+        referral_source:  document.referrer || 'direct',
+        landing_page:     window.location.pathname + window.location.search,
+        current_page:     window.location.pathname
+    };
+
+    // Fire and forget — silent fail so it never blocks the page
+    fetch('/api/visitor/track', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload)
+    }).catch(() => {});
+}
+
+// ============================================================
+// LEAD CAPTURE MODAL
+// ============================================================
+function openLeadModal() {
+    const modal = document.getElementById('leadCaptureModal');
+    if (modal) {
+        modal.classList.add('show');
+        trackEvent('lead_modal_open', { source: 'fab_button' });
+    }
+}
+
+function closeLeadModal() {
+    const modal = document.getElementById('leadCaptureModal');
+    if (modal) modal.classList.remove('show');
+}
+
+// Close modal on backdrop click
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('leadCaptureModal');
+    if (modal && e.target === modal) closeLeadModal();
+});
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeLeadModal();
+});
+
+async function submitLeadForm(event) {
+    event.preventDefault();
+    const form       = document.getElementById('leadCaptureForm');
+    const btn        = document.getElementById('leadSubmitBtn');
+    const errDiv     = document.getElementById('leadFormError');
+    const successDiv = document.getElementById('leadFormSuccess');
+
+    const fullName = document.getElementById('leadName')?.value?.trim();
+    const email    = document.getElementById('leadEmail')?.value?.trim();
+    const phone    = document.getElementById('leadPhone')?.value?.trim();
+    const message  = document.getElementById('leadMessage')?.value?.trim();
+    const consent  = document.getElementById('leadConsent')?.checked;
+
+    if (errDiv) errDiv.style.display = 'none';
+
+    if (!fullName || fullName.length < 2) {
+        if (errDiv) { errDiv.textContent = 'Please enter your full name.'; errDiv.style.display = 'block'; }
+        return;
+    }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        if (errDiv) { errDiv.textContent = 'Please enter a valid email address.'; errDiv.style.display = 'block'; }
+        return;
+    }
+    if (!consent) {
+        if (errDiv) { errDiv.textContent = 'Please agree to receive communications from us.'; errDiv.style.display = 'block'; }
+        return;
+    }
+    if (!phone || !/^[6-9]\d{9}$/.test(phone)) {
+        if (errDiv) { errDiv.textContent = 'Please enter a valid 10-digit Indian mobile number.'; errDiv.style.display = 'block'; }
+        return;
+    }
+
+    btn.disabled   = true;
+    btn.innerHTML  = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+    try {
+        const response = await fetch('/api/leads/capture', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({
+                full_name:         fullName,
+                email:             email,
+                phone:             phone || '',
+                message:           message || '',
+                source:            'website_modal',
+                consent_marketing: consent,
+                visitor_id:        visitorId || ''
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            if (form)       form.style.display       = 'none';
+            if (successDiv) successDiv.style.display = 'block';
+            trackEvent('lead_captured', { source: 'website_modal', has_phone: !!phone });
+            setTimeout(closeLeadModal, 4000);
+        } else {
+            if (errDiv) {
+                errDiv.textContent = data.error || 'Submission failed. Please try again.';
+                errDiv.style.display = 'block';
+            }
+        }
+    } catch (e) {
+        if (errDiv) {
+            errDiv.textContent = 'Network error. Please check your connection and try again.';
+            errDiv.style.display = 'block';
+        }
+    } finally {
+        btn.disabled  = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Get Free Consultation';
+    }
+}
+
+// ============================================================
+// ADMIN ANALYTICS TABS
+// ============================================================
+let analyticsChartsLoaded = false;
+
+async function loadVisitorAnalytics() {
+    if (analyticsChartsLoaded) return;
+
+    try {
+        const token = sessionStorage.getItem('adminToken');
+        const headers = { Authorization: `Bearer ${token}` };
+
+        const [overviewRes, trafficRes] = await Promise.all([
+            originalFetch.call(window, '/api/admin/analytics/overview', { credentials: 'same-origin', headers }),
+            originalFetch.call(window, '/api/admin/analytics/traffic?range=7d', { credentials: 'same-origin', headers })
+        ]);
+
+        const overview = await overviewRes.json();
+        const traffic  = await trafficRes.json();
+
+        if (overview.success) {
+            const d = overview.data;
+            document.getElementById('metricTotalVisitors').textContent = d.totalVisitors.toLocaleString();
+            document.getElementById('metricTotalLeads').textContent    = d.totalLeads.toLocaleString();
+            document.getElementById('metricSessions').textContent      = d.totalSessions.toLocaleString();
+            document.getElementById('metricConversion').textContent    = d.conversionRate + '%';
+
+            // Device breakdown chart
+            const deviceCtx = document.getElementById('deviceBreakdownChart');
+            if (deviceCtx && window.Chart) {
+                const deviceLabels = Object.keys(d.deviceBreakdown);
+                const deviceValues = Object.values(d.deviceBreakdown);
+                new Chart(deviceCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: deviceLabels.map(l => l.charAt(0).toUpperCase() + l.slice(1)),
+                        datasets: [{
+                            data: deviceValues,
+                            backgroundColor: ['#6c47ff', '#00d4ff', '#f59e0b'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 } } } }
+                    }
+                });
+            }
+
+            // Browser breakdown chart
+            const browserCtx = document.getElementById('browserBreakdownChart');
+            if (browserCtx && window.Chart) {
+                const browserLabels = Object.keys(d.browserBreakdown);
+                const browserValues = Object.values(d.browserBreakdown);
+                new Chart(browserCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: browserLabels,
+                        datasets: [{
+                            data: browserValues,
+                            backgroundColor: ['#6c47ff', '#00d4ff', '#4ade80', '#f59e0b', '#f87171'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 } } } }
+                    }
+                });
+            }
+        }
+
+        // Daily traffic chart
+        if (traffic.success) {
+            const trafficCtx = document.getElementById('dailyTrafficChart');
+            if (trafficCtx && window.Chart) {
+                const daily = traffic.data.dailyData || [];
+                new Chart(trafficCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: daily.map(d => d.date),
+                        datasets: [{
+                            label: 'Sessions',
+                            data:  daily.map(d => d.sessions),
+                            backgroundColor: 'rgba(108, 71, 255, 0.6)',
+                            borderColor: '#6c47ff',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#94a3b8' } } },
+                        scales: {
+                            x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                            y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                        }
+                    }
+                });
+            }
+        }
+
+        analyticsChartsLoaded = true;
+
+    } catch (e) {
+        console.error('[admin] loadVisitorAnalytics error:', e);
+    }
+}
+
+async function loadEmailLeads() {
+    const tbody = document.getElementById('emailLeadsTableBody');
+    if (!tbody) return;
+
+    try {
+        const token = sessionStorage.getItem('adminToken');
+        const res = await originalFetch.call(window, '/api/admin/analytics/leads', {
+            credentials: 'same-origin',
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+            tbody.innerHTML = `<tr><td colspan="8" style="color:var(--danger-color);text-align:center;">${data.error}</td></tr>`;
+            return;
+        }
+
+        const leads = data.data.leads || [];
+        if (leads.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-secondary);">No leads captured yet.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = leads.map(lead => {
+            const emails = lead.emailStatus || [];
+            const getStatus = (dayIndex) => {
+                // campaigns are ordered by delay_days: 0=day0, 1=day7, 2=day15
+                const log = emails[dayIndex];
+                if (!log) return `<span class="lead-status-badge pending">—</span>`;
+                const cls = log.status === 'sent' ? 'sent' : log.status === 'failed' ? 'failed' : log.status === 'skipped' ? 'skipped' : 'pending';
+                const icons = { sent: '✓', failed: '✗', pending: '⏳', skipped: '—' };
+                return `<span class="lead-status-badge ${cls}">${icons[cls] || '?'} ${log.status}</span>`;
+            };
+            const date = lead.created_at ? new Date(lead.created_at).toLocaleDateString('en-IN') : '—';
+            return `<tr>
+                <td>${lead.full_name || '—'}</td>
+                <td style="font-size:0.85rem;">${lead.email || '—'}</td>
+                <td>${lead.phone || '—'}</td>
+                <td><small style="background:rgba(108,71,255,0.1);padding:2px 8px;border-radius:50px;color:#a78bfa;">${lead.source || 'website'}</small></td>
+                <td>${getStatus(0)}</td>
+                <td>${getStatus(1)}</td>
+                <td>${getStatus(2)}</td>
+                <td style="font-size:0.8rem;color:var(--text-secondary);">${date}</td>
+            </tr>`;
+        }).join('');
+
+    } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="8" style="color:var(--danger-color);text-align:center;">Error loading leads: ${e.message}</td></tr>`;
+    }
+}
 
 
     // ===== TRANSLATIONS (EN / HI / KN) =====
@@ -380,7 +899,21 @@ window.onunhandledrejection = function(event) {
         changeLanguage(savedLang);
 
         loadSession();
+        // Global event listener for Contact tracking (WhatsApp & Phone)
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a');
+            if (!link) return;
+            
+            const href = link.getAttribute('href') || '';
+            if (href.startsWith('tel:')) {
+                trackEvent('generate_lead', { type: 'phone_call' });
+            } else if (href.includes('wa.me/')) {
+                trackEvent('generate_lead', { type: 'whatsapp_chat' });
+            }
+        });
+
         window.addEventListener('popstate', handlePopState);
+        updateAuthNavbarState();
         routeSPA(window.location.pathname);
     });
 
@@ -547,12 +1080,19 @@ window.onunhandledrejection = function(event) {
         else if (path === '/score') activeTab = 'score';
         else if (path === '/profile') activeTab = 'profile';
         else if (path === '/admin') activeTab = 'admin';
+        else if (path === '/privacy') activeTab = 'privacy';
+
+        const fullUrl = window.location.origin + path;
+        const canTag = document.querySelector('link[rel="canonical"]');
+        if (canTag) canTag.href = fullUrl;
+        const ogUrl = document.querySelector('meta[property="og:url"]');
+        if (ogUrl) ogUrl.content = fullUrl;
 
         // Score page is public — no login check
-        if (activeTab === 'admin' && !(localStorage.getItem('adminToken') || localStorage.getItem('adminJwt'))) {
+        if (activeTab === 'admin' && !(sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt'))) {
             activeTab = 'admin-login';
             checkAdminExists();
-        } else if (activeTab !== 'home' && activeTab !== 'score' && activeTab !== 'admin-login' && !isLoggedIn) {
+        } else if (activeTab !== 'home' && activeTab !== 'score' && activeTab !== 'admin-login' && activeTab !== 'admin' && activeTab !== 'privacy' && !isLoggedIn) {
             showToast('Please login or register first.', 'warning');
             navigateTo('/home'); return;
         }
@@ -581,6 +1121,7 @@ window.onunhandledrejection = function(event) {
         else if (path === '/score') tab = 'score';
         else if (path === '/profile') tab = 'profile';
         else if (path === '/admin') tab = 'admin';
+        else if (path === '/privacy') tab = 'privacy';
         if (tab === 'dashboard') loadDashboardData();
         else if (tab === 'vehicles') loadVehiclesData();
         else if (tab === 'score') loadLeaderboardData();
@@ -600,8 +1141,14 @@ window.onunhandledrejection = function(event) {
                 currentUser = result.data; isLoggedIn = true;
                 updateAuthNavbarState();
                 if (['/', '/home', '/login', '/register'].includes(window.location.pathname)) navigateTo('/dashboard');
-            } else logoutUser();
-        }).catch(() => logoutUser());
+            } else {
+                if (result.error === 'Rider not found') logoutUser();
+                else showToast(`Session verification error: ${result.error}`, 'warning');
+            }
+        }).catch(err => {
+            console.error('Session load error:', err);
+            showToast('Warning: Offline or server unreachable.', 'warning');
+        });
     }
 
     function updateAuthNavbarState() {
@@ -616,7 +1163,22 @@ window.onunhandledrejection = function(event) {
         }
     }
 
-    function toggleAuth() { isLoggedIn ? logoutUser() : navigateTo('/home'); }
+    function toggleAuth() { 
+        if (isLoggedIn) {
+            logoutUser();
+        } else {
+            navigateTo('/home');
+            const login = document.getElementById('loginCard');
+            const reg = document.getElementById('registerCard');
+            const switchLink = document.getElementById('loginSwitchLink');
+            if (login && reg) {
+                login.style.display = 'block';
+                reg.style.display = 'none';
+                if (switchLink) switchLink.style.display = 'block';
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
 
     function togglePasswordVisibility(inputId, spanElem) {
         const input = document.getElementById(inputId);
@@ -696,6 +1258,7 @@ window.onunhandledrejection = function(event) {
                 localStorage.setItem('riderId', result.riderId);
                 localStorage.setItem('sessionId', result.sessionId);
                 fetchRiderProfile(result.riderId);
+                trackEvent('login', { method: payload.loginMethod });
                 btn.innerHTML = origText;
                 btn.disabled = false;
             } else {
@@ -948,6 +1511,93 @@ window.onunhandledrejection = function(event) {
         }
     }
 
+    async function fetchStates() {
+        try {
+            const res = await fetch('/api/locations/states');
+            const data = await res.json();
+            if (data.success) {
+                const select = document.getElementById('regState');
+                select.innerHTML = '<option value="">Select State</option>';
+                data.data.forEach(st => {
+                    select.innerHTML += `<option value="${st}">${st}</option>`;
+                });
+                select.innerHTML += '<option value="Other">Other</option>';
+            }
+        } catch(e) { console.error('Error fetching states', e); }
+    }
+
+    async function onRegStateChange() {
+        const stateSelect = document.getElementById('regState');
+        const citySelect = document.getElementById('regCity');
+        const pinSelect = document.getElementById('regPincode');
+        
+        const state = stateSelect.value;
+        citySelect.innerHTML = '<option value="">Loading Cities...</option>';
+        pinSelect.innerHTML = '<option value="">Select pincode</option>';
+        pinSelect.disabled = true;
+        
+        if (state && state !== 'Other') {
+            try {
+                const res = await fetch(`/api/locations/cities/${state}`);
+                const data = await res.json();
+                citySelect.innerHTML = '<option value="">Select City</option>';
+                if (data.success) {
+                    data.data.forEach(city => {
+                        citySelect.innerHTML += `<option value="${city}">${city}</option>`;
+                    });
+                }
+                citySelect.innerHTML += '<option value="Other">Other</option>';
+                citySelect.disabled = false;
+            } catch(e) { console.error('Error fetching cities', e); }
+        } else if (state === 'Other') {
+            citySelect.innerHTML = '<option value="">Select City</option><option value="Other">Other</option>';
+            citySelect.disabled = false;
+        } else {
+            citySelect.innerHTML = '<option value="">Select your city</option>';
+            citySelect.disabled = true;
+        }
+        
+        handleOtherDropdown(stateSelect, 'regStateOther');
+    }
+
+    async function onRegCityChange() {
+        const state = document.getElementById('regState').value;
+        const citySelect = document.getElementById('regCity');
+        const pinSelect = document.getElementById('regPincode');
+        
+        const city = citySelect.value;
+        pinSelect.innerHTML = '<option value="">Loading Pincodes...</option>';
+        
+        if (state && city && state !== 'Other' && city !== 'Other') {
+            try {
+                const res = await fetch(`/api/locations/pincodes/${state}/${city}`);
+                const data = await res.json();
+                pinSelect.innerHTML = '<option value="">Select Pincode</option>';
+                if (data.success) {
+                    data.data.forEach(pin => {
+                        pinSelect.innerHTML += `<option value="${pin}">${pin}</option>`;
+                    });
+                }
+                pinSelect.innerHTML += '<option value="Other">Other</option>';
+                pinSelect.disabled = false;
+            } catch(e) { console.error('Error fetching pincodes', e); }
+        } else if (city === 'Other') {
+            pinSelect.innerHTML = '<option value="">Select Pincode</option><option value="Other">Other</option>';
+            pinSelect.disabled = false;
+        } else {
+            pinSelect.innerHTML = '<option value="">Select pincode</option>';
+            pinSelect.disabled = true;
+        }
+        
+        handleOtherDropdown(citySelect, 'regCityOther');
+    }
+    
+    window.onRegStateChange = onRegStateChange;
+    window.onRegCityChange = onRegCityChange;
+    
+    // Call fetchStates on load
+    setTimeout(() => { fetchStates(); }, 500);
+
     function submitRegistration() {
         const name = document.getElementById('regFullName').value.trim();
         const phone = document.getElementById('regPhone').value.trim();
@@ -956,11 +1606,32 @@ window.onunhandledrejection = function(event) {
         let city = document.getElementById('regCity').value;
         if (city === 'Other') city = document.getElementById('regCityOther').value.trim();
         let pincode = document.getElementById('regPincode').value;
+        if (pincode === 'Other') pincode = document.getElementById('regPincodeOther').value.trim();
         let platform = document.getElementById('regPlatform').value;
         if (platform === 'Other') platform = document.getElementById('regPlatformOther').value.trim();
         
         const exp = document.getElementById('regExp').value;
         const pass = document.getElementById('regPassword').value;
+
+        const recaptchaToken = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
+
+        // Validate all visible "Other" text fields
+        let missingOtherField = false;
+        document.querySelectorAll('input[type="text"][id$="Other"]').forEach(el => {
+            if (el.style.display === 'block') {
+                if (!el.value.trim()) {
+                    missingOtherField = true;
+                    el.style.border = '2px solid var(--danger-color)';
+                } else {
+                    el.style.border = '';
+                }
+            }
+        });
+
+        if (missingOtherField) {
+            showToast('Please fill in the required "Other" text fields', 'error');
+            return;
+        }
 
         if (!name) { showToast('Please enter your full name', 'error'); return; }
         if (phone.length !== 10 || !/^[6-9]/.test(phone)) { showToast('Phone must be 10 digits starting with 6-9', 'error'); return; }
@@ -971,6 +1642,7 @@ window.onunhandledrejection = function(event) {
         if (exp === '') { showToast('Please select your experience', 'error'); return; }
         if (!pass) { showToast('Please set a password', 'error'); return; }
         if (pass.length < 8) { showToast('Password must be at least 8 characters', 'error'); return; }
+        if (!recaptchaToken) { showToast('Please complete the reCAPTCHA verification', 'error'); return; }
 
         const btn = document.getElementById('submitRegBtn');
         btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
@@ -984,6 +1656,7 @@ window.onunhandledrejection = function(event) {
         const referredByCode = hiddenCode || (referredBy === 'yes' ? '' : null) || localStorage.getItem('pendingReferralCode') || null;
 
         const payload = {
+            recaptchaToken: recaptchaToken,
             fullName: name,
             phone: phone,
             state: state,
@@ -1020,6 +1693,7 @@ window.onunhandledrejection = function(event) {
                 localStorage.removeItem('pendingReferralCode');
                 currentUser = result.data.rider;
                 registeredRiderId = result.data.riderId;
+                trackEvent('sign_up', { method: 'website', platform: platform });
 
                 // Show success
                 document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
@@ -1159,7 +1833,9 @@ window.onunhandledrejection = function(event) {
             if (idx !== -1) userRank = idx + 1;
         }
         document.getElementById('userRankValue').textContent = userRank;
-        tbody.innerHTML = riders.map((r, idx) => {
+        
+        const top10 = riders.slice(0, 10);
+        tbody.innerHTML = top10.map((r, idx) => {
             const rn = idx + 1;
             const medal = rn === 1 ? '🥇' : rn === 2 ? '🥈' : rn === 3 ? '🥉' : rn;
             const isSelf = currentUser && r.id === currentUser.id;
@@ -1488,22 +2164,25 @@ window.onunhandledrejection = function(event) {
     let currentAdminTab = 'allRiders';
     function switchAdminTab(tab) {
         currentAdminTab = tab;
-        document.querySelectorAll('.admin-tab').forEach((t, i) => {
-            const tabs = ['allRiders', 'evLeads', 'insLeads', 'topReferrers', 'cityStats', 'auditor'];
-            t.classList.toggle('active', tabs[i] === tab);
+        document.querySelectorAll('.admin-tab').forEach(t => {
+            const onclickAttr = t.getAttribute('onclick');
+            t.classList.toggle('active', onclickAttr && onclickAttr.includes(`'${tab}'`));
         });
         document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
         const panel = document.getElementById(`panel-${tab}`);
         if (panel) panel.classList.add('active');
+        
         if (tab === 'evLeads') loadEVLeads();
         else if (tab === 'insLeads') loadInsLeads();
         else if (tab === 'topReferrers') loadTopReferrers();
         else if (tab === 'cityStats') loadCityStats();
+        else if (tab === 'visitorAnalytics') loadVisitorAnalytics();
+        else if (tab === 'emailLeads') loadEmailLeads();
     }
 
     // Helper to include admin JWT token in Authorization header
     function getAdminAuthHeaders() {
-        const token = localStorage.getItem('adminToken') || localStorage.getItem('adminJwt');
+        const token = sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt') || localStorage.getItem('adminToken') || localStorage.getItem('adminJwt');
         return token ? { 'Authorization': `Bearer ${token}` } : {};
     }
 
@@ -1598,8 +2277,8 @@ window.onunhandledrejection = function(event) {
             const result = await res.json();
 
             if (result.success) {
-                localStorage.setItem('adminToken', result.token);
-                localStorage.setItem('adminRole', result.role || 'admin');
+                sessionStorage.setItem('adminToken', result.token);
+                sessionStorage.setItem('adminRole', result.role || 'admin');
                 showToast('Admin login successful!', 'success');
                 navigateTo('/admin');
             } else {
@@ -1697,9 +2376,9 @@ window.onunhandledrejection = function(event) {
     }
 
     function handleAdminLogout() {
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminRole');
-        localStorage.removeItem('adminJwt');
+        sessionStorage.removeItem('adminToken');
+        sessionStorage.removeItem('adminRole');
+        sessionStorage.removeItem('adminJwt');
         showToast('Admin logged out successfully', 'success');
         navigateTo('/home');
     }
@@ -1906,7 +2585,7 @@ function selectPlatform(value, logoUrl) {
     if (value === '') {
         selectedText.innerHTML = `<span data-i18n="select_platform">Select platform</span>`;
     } else if (logoUrl) {
-        selectedText.innerHTML = `<img src="${logoUrl}" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> ${value}`;
+        selectedText.innerHTML = `<img src="${logoUrl}" onerror="this.style.display='none'" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> ${value}`;
     } else {
         selectedText.innerHTML = `<div style="width:24px; height:24px; border-radius:4px; background:var(--card-border); display:flex; align-items:center; justify-content:center;"><i class="fas fa-ellipsis-h" style="font-size:12px; color:var(--text-secondary);"></i></div> ${value}`;
     }
@@ -1933,5 +2612,36 @@ if(originalResetBtn) {
         setTimeout(() => { selectPlatform('', ''); }, 10);
     });
 }
-    
 
+// ==========================================
+// EXIT INTENT POPUP LOGIC
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    let exitIntentTriggered = sessionStorage.getItem('exitIntentTriggered') === 'true';
+
+    document.addEventListener('mouseleave', (e) => {
+        // Trigger if mouse leaves top of the window (clientY < 0)
+        if (e.clientY < 0 && !exitIntentTriggered) {
+            const modal = document.getElementById('leadCaptureModal');
+            if (modal && !modal.classList.contains('show')) {
+                exitIntentTriggered = true;
+                sessionStorage.setItem('exitIntentTriggered', 'true');
+                
+                // Analytics Tracking
+                if (typeof gtag === 'function') gtag('event', 'exit_intent_trigger', { event_category: 'Conversion' });
+                if (typeof fbq === 'function') fbq('trackCustom', 'ExitIntent');
+
+                // Update title to be more urgent for exit intent
+                const title = document.getElementById('leadModalTitle');
+                if (title) {
+                    title.innerHTML = '⚠️ Wait! Don\'t leave without your EV Consultation!';
+                }
+                
+                // Show the modal
+                if (typeof openLeadModal === 'function') {
+                    openLeadModal();
+                }
+            }
+        }
+    });
+});

@@ -21,13 +21,32 @@ app.use(compression());
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://www.clarity.ms", "https://www.googletagmanager.com"],
+      defaultSrc:    ["'self'"],
+      scriptSrc:     ["'self'", "'unsafe-inline'",
+                      "https://cdnjs.cloudflare.com",
+                      "https://www.clarity.ms",
+                      "https://www.googletagmanager.com",
+                      "https://www.google-analytics.com",
+                      "https://cdn.jsdelivr.net"],
       scriptSrcAttr: ["'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com"],
-      fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "data:", "https://logo.clearbit.com", "https://via.placeholder.com", "https://roadwarriorev.com"],
-      connectSrc: ["'self'", "https://zjqlkaewliccvgxqlnao.supabase.co", "https://www.clarity.ms", "https://www.google-analytics.com"]
+      styleSrc:      ["'self'", "'unsafe-inline'",
+                      "https://cdnjs.cloudflare.com",
+                      "https://fonts.googleapis.com"],
+      fontSrc:       ["'self'",
+                      "https://cdnjs.cloudflare.com",
+                      "https://fonts.gstatic.com"],
+      imgSrc:        ["'self'", "data:",
+                      "https://logo.clearbit.com",
+                      "https://via.placeholder.com",
+                      "https://roadwarriorev.com",
+                      "https://www.google-analytics.com"],
+      connectSrc:    ["'self'",
+                      "https://zjqlkaewliccvgxqlnao.supabase.co",
+                      "https://www.clarity.ms",
+                      "https://www.google-analytics.com",
+                      "https://analytics.google.com",
+                      "https://region1.google-analytics.com",
+                      "https://api.resend.com"]
     }
   },
   crossOriginEmbedderPolicy: false
@@ -69,27 +88,74 @@ app.use((req, res, next) => {
 });
 
 // Routes
-const apiRoutes = require('./routes/api');
-const authRoutes = require('./routes/auth');
+const apiRoutes       = require('./routes/api');
+const authRoutes      = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
-const auditorRoutes = require('./routes/auditor');
+const auditorRoutes   = require('./routes/auditor');
+const analyticsRoutes = require('./routes/analytics'); // NEW — Intelligence System
 
-app.use('/api', csrfProtection, apiRoutes);
-app.use('/auth', csrfProtection, authRoutes);
+app.use('/api',       csrfProtection, apiRoutes);
+app.use('/auth',      csrfProtection, authRoutes);
 app.use('/dashboard', csrfProtection, dashboardRoutes);
-app.use('/auditor', csrfProtection, auditorRoutes);
+app.use('/auditor',   csrfProtection, auditorRoutes);
+app.use('/api',       csrfProtection, analyticsRoutes); // visitor tracking, leads, analytics
 
-// Admin portal — served as its own standalone page
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+// Unsubscribe page — no CSRF needed (GET, accessed via email link)
+app.get('/unsubscribe', (req, res) => {
+  // Handled by analytics router; this ensures SPA fallback doesn't intercept
+  res.redirect(`/api/unsubscribe?email=${encodeURIComponent(req.query.email || '')}`);
 });
 
-// Serve index.html for all HTML pages to support Single Page Application (SPA) routing
-const routes = ['/', '/home', '/login', '/register', '/vehicles', '/dashboard', '/score', '/profile', '/questionnaire'];
-routes.forEach(route => {
+app.get('/sitemap.xml', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'sitemap.xml'));
+});
+
+const fs = require('fs');
+const spaRoutes = ['/', '/home', '/login', '/register', '/vehicles', '/dashboard', '/score', '/profile', '/questionnaire', '/privacy', '/admin'];
+spaRoutes.forEach(route => {
   app.get(route, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    fs.readFile(path.join(__dirname, 'public', 'index.html'), 'utf8', (err, html) => {
+      if (err) return res.status(500).send('Error loading page');
+      
+      html = html.replace(/WAITING_FOR_GA4_ID/g, process.env.GA_MEASUREMENT_ID || 'WAITING_FOR_GA4_ID');
+      html = html.replace(/WAITING_FOR_GTM_ID/g, process.env.GTM_CONTAINER_ID || 'WAITING_FOR_GTM_ID');
+      html = html.replace(/WAITING_FOR_CLARITY_ID/g, process.env.CLARITY_PROJECT_ID || 'WAITING_FOR_CLARITY_ID');
+      html = html.replace(/WAITING_FOR_ADS_CONVERSION_ID/g, process.env.GOOGLE_ADS_CONVERSION_ID || 'WAITING_FOR_ADS_CONVERSION_ID');
+      html = html.replace(/WAITING_FOR_PIXEL_ID/g, process.env.META_PIXEL_ID || 'WAITING_FOR_PIXEL_ID');
+      html = html.replace(/WAITING_FOR_LINKEDIN_ID/g, process.env.LINKEDIN_INSIGHT_ID || 'WAITING_FOR_LINKEDIN_ID');
+      html = html.replace(/WAITING_FOR_TAWK_ID/g, process.env.TAWKTO_PROPERTY_ID || 'WAITING_FOR_TAWK_ID');
+      
+      const whatsapp = process.env.WHATSAPP_NUMBER || '916360483386';
+      html = html.replace(/https:\/\/wa\.me\/916360483386/g, `https://wa.me/${whatsapp}`);
+      
+      res.send(html);
+    });
   });
+});
+
+// Expose non-secret analytics config to frontend via a safe endpoint
+app.get('/api/client-config', (req, res) => {
+  res.json({
+    GA_MEASUREMENT_ID:        process.env.GA_MEASUREMENT_ID || '',
+    GTM_CONTAINER_ID:         process.env.GTM_CONTAINER_ID || '',
+    CLARITY_PROJECT_ID:       process.env.CLARITY_PROJECT_ID || '',
+    META_PIXEL_ID:            process.env.META_PIXEL_ID || '',
+    GOOGLE_ADS_CONVERSION_ID: process.env.GOOGLE_ADS_CONVERSION_ID || '',
+    LINKEDIN_INSIGHT_ID:      process.env.LINKEDIN_INSIGHT_ID || '',
+    TAWKTO_PROPERTY_ID:       process.env.TAWKTO_PROPERTY_ID || '',
+    WHATSAPP_NUMBER:          process.env.WHATSAPP_NUMBER || ''
+  });
+});
+
+// CSRF Error handler (must come before generic error handler)
+app.use((err, req, res, next) => {
+  if (err.code === 'EBADCSRFTOKEN') {
+    return res.status(403).json({
+      success: false,
+      error: 'Invalid or missing CSRF token. Please refresh the page and try again.'
+    });
+  }
+  next(err);
 });
 
 // Error handling

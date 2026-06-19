@@ -11,5 +11,11 @@
       "source": "/(.*)",
       "destination": "/server.js"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/email/process-queue?secret=rw_cron_secret_2026_xK9mPqR7",
+      "schedule": "0 6 * * *"
+    }
   ]
 }

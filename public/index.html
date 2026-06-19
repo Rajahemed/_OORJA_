@@ -2,20 +2,99 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Road Warrior EV - Rider Registration & Management</title>
     <meta name="description" content="Road Warrior EV - Register as a delivery rider, track your points, referrals, and compete on the leaderboard.">
-    <!-- Open Graph for WhatsApp/Link Previews -->
-    <meta property="og:title" content="Road Warrior EV - Join and Earn!" />
-    <meta property="og:description" content="Register using my referral link to start earning points and rewards today!" />
-    <meta property="og:image" content="https://roadwarriorev.com/og-image.png" />
-    <meta property="og:url" content="https://roadwarriorev.com/" />
+    <!-- Canonical Tag -->
+    <link rel="canonical" href="https://roadwarrior.pro/" />
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Road Warrior Pro - India's #1 EV Delivery Rider Platform" />
+    <meta property="og:description" content="Register as a delivery rider, track your points, referrals, transition to EV, and compete on the leaderboard." />
+    <meta property="og:image" content="https://roadwarrior.pro/og-image.png" />
+    <meta property="og:url" content="https://roadwarrior.pro/" />
     <meta property="og:type" content="website" />
-    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Microsoft Clarity Placeholder -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/WAITING_FOR_CLARITY_ID";
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "WAITING_FOR_CLARITY_ID");
+    </script>
+    
+    <!-- Google Tag Manager Placeholder -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','WAITING_FOR_GTM_ID');</script>
+    
+    <!-- GA4 Placeholder -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=WAITING_FOR_GA4_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'WAITING_FOR_GA4_ID');
+      gtag('config', 'WAITING_FOR_ADS_CONVERSION_ID');
+    </script>
+    
+    <!-- Meta Pixel Placeholder -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', 'WAITING_FOR_PIXEL_ID');
+      fbq('track', 'PageView');
+    </script>
+    
+    <!-- LinkedIn Insight Tag Placeholder -->
+    <script type="text/javascript">
+      _linkedin_partner_id = "WAITING_FOR_LINKEDIN_ID";
+      window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+      window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+    </script><script type="text/javascript">
+      (function(l) {
+      if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+      window.lintrk.q=[]}
+      var s = document.getElementsByTagName("script")[0];
+      var b = document.createElement("script");
+      b.type = "text/javascript";b.async = true;
+      b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+      s.parentNode.insertBefore(b, s);})(window.lintrk);
+    </script>
+
+    <link rel="alternate" type="text/plain" title="LLM Documentation" href="/llms.txt">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Road Warrior Pro",
+      "url": "https://roadwarrior.pro/",
+      "logo": "https://roadwarrior.pro/og-image.png",
+      "description": "India's #1 EV Delivery Rider Platform. Empowering riders with smart tools, rewards & community.",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+91-6360483386",
+        "contactType": "customer service"
+      }
+    }
+    </script>
+    <link rel="stylesheet" href="/css/style.css?v=4">
+    <link rel="stylesheet" href="/css/cookie-consent.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
     <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+    <!-- reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         /* ===== ADDITIONAL STYLES FOR NEW FEATURES ===== */
 
@@ -108,8 +187,8 @@
             transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s, color 0.2s;
         }
         select.form-control option {
-            background-color: #0f172a;
-            color: #f3f4f6;
+            background-color: var(--dropdown-bg);
+            color: var(--text-primary);
         }
         select.form-control:focus {
             background-color: rgba(0, 0, 0, 0.2);
@@ -252,7 +331,7 @@
         /* Score page */
         .score-lookup-card { max-width: 500px; margin: 2rem auto; }
         .score-display { text-align: center; padding: 2rem; }
-        .score-big { font-size: 4rem; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #3b82f6, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .score-big { font-size: 4rem; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #3b82f6, #f97316); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
         .referral-code-badge {
             display: inline-flex;
             align-items: center;
@@ -347,6 +426,10 @@
 
 </head>
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=WAITING_FOR_GTM_ID"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-brand" onclick="navigateTo('/home')">
@@ -367,7 +450,7 @@
                 <option value="hi">🇮🇳 हिंदी</option>
                 <option value="kn">🇮🇳 ಕನ್ನಡ</option>
             </select>
-            <button class="btn btn-icon" id="themeToggleBtn" onclick="cycleTheme()" style="background:transparent; border:none; color:var(--text-primary); font-size:1.2rem; cursor:pointer;" title="Change Theme"><i class="fas fa-palette"></i></button>
+            <button class="btn btn-icon" id="themeToggleBtn" onclick="cycleTheme()" style="background:transparent; border:none; color:#ffffff; font-size:1.2rem; cursor:pointer;" title="Change Theme"><i class="fas fa-palette"></i></button>
             <button class="btn btn-primary btn-small" id="loginLogoutBtn" onclick="toggleAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login</span></button>
         </div>
     </nav>
@@ -409,7 +492,7 @@
                                     </div>
                                     <div style="position: relative;">
                                         <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
-                                        <i id="toggleLoginPwd" class="fas fa-eye" style="position: absolute; right: 12px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('loginPassword', 'toggleLoginPwd')"></i>
+                                        <i id="toggleLoginPwd" class="fas fa-eye" style="position: absolute; right: 40px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('loginPassword', 'toggleLoginPwd')"></i>
                                     </div>
                                 </div>
                                 <div class="form-group" id="loginOtpGroup" style="display:none;">
@@ -445,7 +528,7 @@
                                     <label for="riderForgotNewPassword">New Password</label>
                                     <div style="position: relative;">
                                         <input type="password" id="riderForgotNewPassword" class="form-control" placeholder="Enter new password" required>
-                                        <i id="toggleRiderResetPwd" class="fas fa-eye" style="position: absolute; right: 12px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('riderForgotNewPassword', 'toggleRiderResetPwd')"></i>
+                                        <i id="toggleRiderResetPwd" class="fas fa-eye" style="position: absolute; right: 40px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('riderForgotNewPassword', 'toggleRiderResetPwd')"></i>
                                     </div>
                                 </div>
                                 <div id="riderForgotErrorMsg" style="display:none; color:var(--danger-color); background:rgba(239, 68, 68, 0.1); padding:0.75rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;">
@@ -502,22 +585,16 @@
                                 <div class="form-group">
                                     <label for="regState">State</label>
                                     <select id="regState" class="form-control" required onchange="onRegStateChange()">
-                                        <option value="">Select State</option>
-                                        <option value="Karnataka">Karnataka</option>
-                                        <option value="Maharashtra">Maharashtra</option>
-                                        <option value="Delhi">Delhi</option>
-                                        <option value="Tamil Nadu">Tamil Nadu</option>
-                                        <option value="West Bengal">West Bengal</option>
-                                        <option value="Other">Other</option>
+                                        <option value="">Loading States...</option>
                                     </select>
-                                    <input type="text" id="regStateOther" class="form-control" placeholder="Enter State" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regStateOther" class="form-control" placeholder="Enter State" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
                                 </div>
                                 <div class="form-group">
                                     <label for="regCity" data-i18n="label_city">City</label>
                                     <select id="regCity" class="form-control" required onchange="onRegCityChange()" disabled>
                                         <option value="" data-i18n="select_city">Select your city</option>
                                     </select>
-                                    <input type="text" id="regCityOther" class="form-control" placeholder="Enter City" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regCityOther" class="form-control" placeholder="Enter City" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
                                 </div>
                                 <div class="form-group">
                                     <label for="regPincode">Pincode</label>
@@ -531,30 +608,30 @@
                                     
                                     <!-- Custom Dropdown Container -->
                                     <div class="custom-select-wrapper" id="platformCustomSelect">
-                                        <div class="custom-select form-control" onclick="togglePlatformDropdown()" style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; background-color:rgba(255, 255, 255, 0.02);">
+                                        <div class="custom-select form-control" onclick="togglePlatformDropdown()" style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; background-color:#ffffff; color:#111827;">
                                             <div id="platformSelectedText" style="display:flex; align-items:center; gap:10px;">
                                                 <span data-i18n="select_platform">Select platform</span>
                                             </div>
                                             <i class="fas fa-chevron-down" style="color:var(--text-secondary); font-size:0.8rem;"></i>
                                         </div>
                                         
-                                        <ul class="custom-options" id="platformDropdownList" style="display:none; position:absolute; top:100%; left:0; width:100%; background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--border-radius-md); margin-top:0.25rem; padding:0; list-style:none; z-index:100; max-height:250px; overflow-y:auto; backdrop-filter:blur(10px); box-shadow:var(--shadow);">
-                                            <li onclick="selectPlatform('Swiggy', 'https://logo.clearbit.com/swiggy.com')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s;">
-                                                <img src="https://logo.clearbit.com/swiggy.com" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23f96e2a\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>S</text></svg>'" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Swiggy
+                                        <ul class="custom-options" id="platformDropdownList" style="display:none; position:absolute; top:100%; left:0; width:100%; background:#ffffff; border:1px solid var(--card-border); border-radius:var(--border-radius-md); margin-top:0.25rem; padding:0; list-style:none; z-index:100; max-height:250px; overflow-y:auto; box-shadow:var(--shadow);">
+                                            <li onclick="selectPlatform('Swiggy', 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23f96e2a\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>S</text></svg>')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s; color:#111827;">
+                                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f96e2a'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>S</text></svg>" loading="lazy" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Swiggy
                                             </li>
-                                            <li onclick="selectPlatform('Zomato', 'https://logo.clearbit.com/zomato.com')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s;">
-                                                <img src="https://logo.clearbit.com/zomato.com" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23e23744\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>Z</text></svg>'" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Zomato
+                                            <li onclick="selectPlatform('Zomato', 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23e23744\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>Z</text></svg>')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s; color:#111827;">
+                                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23e23744'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Zomato
                                             </li>
-                                            <li onclick="selectPlatform('Blinkit', 'https://logo.clearbit.com/blinkit.com')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s;">
-                                                <img src="https://logo.clearbit.com/blinkit.com" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23f8cb46\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23000\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>B</text></svg>'" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Blinkit
+                                            <li onclick="selectPlatform('Blinkit', 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23f8cb46\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23000\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>B</text></svg>')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s; color:#111827;">
+                                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f8cb46'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>B</text></svg>" loading="lazy" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Blinkit
                                             </li>
-                                            <li onclick="selectPlatform('Porter', 'https://logo.clearbit.com/porter.in')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s;">
-                                                <img src="https://logo.clearbit.com/porter.in" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%232d62e1\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>P</text></svg>'" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Porter
+                                            <li onclick="selectPlatform('Porter', 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%232d62e1\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>P</text></svg>')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s; color:#111827;">
+                                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232d62e1'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>P</text></svg>" loading="lazy" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Porter
                                             </li>
-                                            <li onclick="selectPlatform('Dunzo', 'https://logo.clearbit.com/dunzo.com')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s;">
-                                                <img src="https://logo.clearbit.com/dunzo.com" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%2300d290\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>D</text></svg>'" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Dunzo
+                                            <li onclick="selectPlatform('Dunzo', 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%2300d290\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>D</text></svg>')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s; color:#111827;">
+                                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%2300d290'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Dunzo
                                             </li>
-                                            <li onclick="selectPlatform('Other', '')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; transition:background 0.2s;">
+                                            <li onclick="selectPlatform('Other', '')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; transition:background 0.2s; color:#111827;">
                                                 <div style="width:24px; height:24px; border-radius:4px; background:var(--card-border); display:flex; align-items:center; justify-content:center;"><i class="fas fa-ellipsis-h" style="font-size:12px; color:var(--text-secondary);"></i></div> Other
                                             </li>
                                         </ul>
@@ -705,7 +782,6 @@
                                         <label class="radio-item"><input type="radio" name="openEV" value="Yes" onchange="toggleOpenEV(this.value)"> ⚡ <span data-i18n="ev_yes">Yes</span></label>
                                         <label class="radio-item"><input type="radio" name="openEV" value="No" onchange="toggleOpenEV(this.value)"> 🚫 <span data-i18n="ev_no">No</span></label>
                                         <label class="radio-item"><input type="radio" name="openEV" value="Already on EV" onchange="toggleOpenEV(this.value)"> ✅ <span data-i18n="ev_already">Already on EV</span></label>
-                                        <label class="radio-item"><input type="radio" name="openEV" value="Need more information" onchange="toggleOpenEV(this.value)"> ℹ️ <span data-i18n="ev_more_info">Need more info</span></label>
                                     </div>
                                 </div>
                                 <div id="evSwitchFollowup" style="display:none;">
@@ -766,6 +842,9 @@
                                         <i class="fab fa-whatsapp" style="color:#25D366;"></i> <span data-i18n="whatsapp_hint">After registration, you'll receive a WhatsApp confirmation with your referral code.</span>
                                     </p>
                                 </div>
+                                <div class="form-group">
+                                    <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+                                </div>
                                 <button type="button" class="btn btn-primary w-100" style="background:linear-gradient(135deg,#3b82f6,#f97316);" onclick="submitRegistration()" id="submitRegBtn">
                                     <i class="fas fa-check-circle"></i> <span data-i18n="btn_submit_reg">Complete Registration</span>
                                 </button>
@@ -802,6 +881,26 @@
                 </div>
             </div>
 
+            <!-- ===== TESTIMONIALS SECTION ===== -->
+            <div style="margin-top: 4rem; margin-bottom: 2rem;">
+                <h2 style="text-align:center; color:var(--text-primary); font-family:'Outfit', sans-serif; font-size:2rem; margin-bottom: 2rem;">What Our Riders Say</h2>
+                <div style="display:flex; flex-wrap:wrap; gap:1.5rem; justify-content:center;">
+                    <div class="card" style="flex: 1 1 300px; padding: 1.5rem; background: var(--card-bg); border-radius: var(--border-radius-md); border: 1px solid var(--card-border);">
+                        <p style="font-style:italic; color:var(--text-secondary); margin-bottom:1rem;">"Road Warrior Pro helped me switch to an EV easily. The referral rewards are amazing, and I save ₹3000 a month on fuel!"</p>
+                        <div style="display:flex; align-items:center; gap:0.75rem;">
+                            <div style="width:40px; height:40px; border-radius:50%; background:var(--primary-glow); display:flex; align-items:center; justify-content:center; color:var(--primary-color); font-weight:bold;">A</div>
+                            <div><strong style="color:var(--text-primary);">Arjun K.</strong><div style="font-size:0.8rem; color:var(--text-muted);">Bengaluru ⚡ EV Rider</div></div>
+                        </div>
+                    </div>
+                    <div class="card" style="flex: 1 1 300px; padding: 1.5rem; background: var(--card-bg); border-radius: var(--border-radius-md); border: 1px solid var(--card-border);">
+                        <p style="font-style:italic; color:var(--text-secondary); margin-bottom:1rem;">"The income dashboard is a game-changer. I finally know exactly how much I make. Highly recommend this to all Swiggy/Zomato riders."</p>
+                        <div style="display:flex; align-items:center; gap:0.75rem;">
+                            <div style="width:40px; height:40px; border-radius:50%; background:var(--secondary-glow); display:flex; align-items:center; justify-content:center; color:var(--secondary-color); font-weight:bold;">S</div>
+                            <div><strong style="color:var(--text-primary);">Suresh M.</strong><div style="font-size:0.8rem; color:var(--text-muted);">Mumbai 🏍️ Petrol Rider</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </section>
 
@@ -1069,7 +1168,7 @@
                                 <label for="adminPassword">Password</label>
                                 <div style="position: relative;">
                                     <input type="password" id="adminPassword" class="form-control" placeholder="Enter password" required>
-                                    <i id="toggleAdminPwd" class="fas fa-eye" style="position: absolute; right: 12px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('adminPassword', 'toggleAdminPwd')"></i>
+                                    <i id="toggleAdminPwd" class="fas fa-eye" style="position: absolute; right: 40px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('adminPassword', 'toggleAdminPwd')"></i>
                                 </div>
                             </div>
                             <div id="adminLoginErrorMsg" style="display:none; color:var(--danger-color); background:rgba(239, 68, 68, 0.1); padding:0.75rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;">
@@ -1096,7 +1195,7 @@
                                 <label for="setupAdminPassword">New Password</label>
                                 <div style="position: relative;">
                                     <input type="password" id="setupAdminPassword" class="form-control" placeholder="Create a secure password" required minlength="6">
-                                    <i id="toggleSetupAdminPwd" class="fas fa-eye" style="position: absolute; right: 12px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('setupAdminPassword', 'toggleSetupAdminPwd')"></i>
+                                    <i id="toggleSetupAdminPwd" class="fas fa-eye" style="position: absolute; right: 40px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('setupAdminPassword', 'toggleSetupAdminPwd')"></i>
                                 </div>
                             </div>
                             <div id="adminSetupErrorMsg" style="display:none; color:var(--danger-color); background:rgba(239, 68, 68, 0.1); padding:0.75rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;">
@@ -1142,7 +1241,7 @@
                                 <label for="resetAdminPassword">New Password</label>
                                 <div style="position: relative;">
                                     <input type="password" id="resetAdminPassword" class="form-control" placeholder="Enter new password" required minlength="6">
-                                    <i id="toggleResetAdminPwd" class="fas fa-eye" style="position: absolute; right: 12px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('resetAdminPassword', 'toggleResetAdminPwd')"></i>
+                                    <i id="toggleResetAdminPwd" class="fas fa-eye" style="position: absolute; right: 40px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('resetAdminPassword', 'toggleResetAdminPwd')"></i>
                                 </div>
                             </div>
                             <div id="adminResetErrorMsg" style="display:none; color:var(--danger-color); background:rgba(239, 68, 68, 0.1); padding:0.75rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;">
@@ -1186,6 +1285,8 @@
                 <button class="admin-tab" onclick="switchAdminTab('topReferrers')" data-i18n="tab_top_referrers">🏆 Top Referrers</button>
                 <button class="admin-tab" onclick="switchAdminTab('cityStats')" data-i18n="tab_city_stats">🏙️ City Stats</button>
                 <button class="admin-tab" onclick="switchAdminTab('auditor')"><i class="fas fa-search-dollar"></i> Website Auditor</button>
+                <button class="admin-tab" onclick="switchAdminTab('visitorAnalytics')"><i class="fas fa-chart-bar"></i> Visitor Analytics</button>
+                <button class="admin-tab" onclick="switchAdminTab('emailLeads')"><i class="fas fa-envelope"></i> Email Leads</button>
             </div>
 
             <!-- Tab: All Riders -->
@@ -1347,6 +1448,50 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Tab: Visitor Analytics -->
+            <div class="admin-panel" id="panel-visitorAnalytics">
+                <div class="analytics-grid" id="analyticsMetricsGrid">
+                    <div class="analytics-metric-box"><div class="metric-value" id="metricTotalVisitors">—</div><div class="metric-label">Total Visitors</div></div>
+                    <div class="analytics-metric-box"><div class="metric-value" id="metricTotalLeads">—</div><div class="metric-label">Leads Captured</div></div>
+                    <div class="analytics-metric-box"><div class="metric-value" id="metricSessions">—</div><div class="metric-label">Total Sessions</div></div>
+                    <div class="analytics-metric-box"><div class="metric-value" id="metricConversion">—</div><div class="metric-label">Conversion Rate</div></div>
+                </div>
+                <div class="row cols-2 mt-4">
+                    <div class="card">
+                        <div class="card-header"><h3 class="card-title"><i class="fas fa-desktop text-primary-color"></i> Device Breakdown</h3></div>
+                        <div class="card-body"><canvas id="deviceBreakdownChart" height="220"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3 class="card-title"><i class="fas fa-globe text-primary-color"></i> Browser Breakdown</h3></div>
+                        <div class="card-body"><canvas id="browserBreakdownChart" height="220"></canvas></div>
+                    </div>
+                </div>
+                <div class="card mt-4">
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-chart-line text-primary-color"></i> Daily Traffic (Last 7 Days)</h3></div>
+                    <div class="card-body"><canvas id="dailyTrafficChart" height="120"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Tab: Email Leads -->
+            <div class="admin-panel" id="panel-emailLeads">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-envelope text-primary-color"></i> Captured Leads & Email Status</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead><tr>
+                                    <th>Name</th><th>Email</th><th>Phone</th><th>Source</th>
+                                    <th>Day-0</th><th>Day-7</th><th>Day-15</th><th>Joined</th>
+                                </tr></thead>
+                                <tbody id="emailLeadsTableBody"><tr><td colspan="8" style="text-align:center;color:var(--text-secondary);">Loading leads...</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
     </main>
@@ -1403,7 +1548,218 @@
     </div>
 
     <!-- ==================== SCRIPTS ==================== -->
-    
-<script src="/js/app.js?v=2" defer></script>
+
+    <!-- ===== COOKIE CONSENT BANNER ===== -->
+    <div id="cookieConsentBanner" role="dialog" aria-label="Cookie consent">
+        <div class="cookie-banner-inner">
+            <div class="cookie-icon">🍪</div>
+            <div class="cookie-text">
+                <h4>We value your privacy</h4>
+                <p>We use cookies for analytics (GA4, Clarity) to improve your experience. No personal data is sold. <a href="/privacy" target="_blank">Privacy Policy</a></p>
+            </div>
+            <div class="cookie-actions">
+                <button class="cookie-btn-accept" onclick="acceptAllCookies()" id="acceptAllCookiesBtn">✓ Accept All</button>
+                <button class="cookie-btn-essential" onclick="acceptEssentialOnly()" id="acceptEssentialBtn">Essential Only</button>
+                <button class="cookie-btn-settings" onclick="openCookieSettings()" id="cookieSettingsToggle">Manage ▾</button>
+            </div>
+        </div>
+        <div id="cookieSettingsPanel">
+            <div class="cookie-setting-row">
+                <div class="cookie-setting-info"><strong>Essential Cookies</strong><span>Required for site functionality. Cannot be disabled.</span></div>
+                <label class="cookie-toggle"><input type="checkbox" checked disabled><span class="cookie-toggle-slider"></span></label>
+            </div>
+            <div class="cookie-setting-row">
+                <div class="cookie-setting-info"><strong>Analytics Cookies</strong><span>Google Analytics 4 + Microsoft Clarity — helps us understand how visitors use the site.</span></div>
+                <label class="cookie-toggle"><input type="checkbox" id="cookieAnalytics" checked><span class="cookie-toggle-slider"></span></label>
+            </div>
+            <div class="cookie-setting-row">
+                <div class="cookie-setting-info"><strong>Marketing Cookies</strong><span>Used for remarketing and tracking conversions.</span></div>
+                <label class="cookie-toggle"><input type="checkbox" id="cookieMarketing"><span class="cookie-toggle-slider"></span></label>
+            </div>
+            <button class="cookie-save-btn" onclick="saveCookieSettings()">💾 Save Preferences</button>
+        </div>
+    </div>
+
+    <!-- ===== LEAD CAPTURE FLOATING BUTTON ===== -->
+    <button id="leadCaptureFAB" onclick="openLeadModal()" aria-label="Get free EV consultation">
+        <i class="fas fa-headset"></i> <span>Free Consultation</span>
+    </button>
+
+    <!-- ===== LEAD CAPTURE MODAL ===== -->
+    <div id="leadCaptureModal" role="dialog" aria-modal="true" aria-labelledby="leadModalTitle">
+        <div class="lead-modal-box">
+            <div class="lead-modal-header">
+                <h3 id="leadModalTitle">🚗 Get Free EV Consultation</h3>
+                <p>Talk to an expert about EVs, insurance & referral rewards</p>
+                <button class="lead-modal-close" onclick="closeLeadModal()" aria-label="Close">×</button>
+            </div>
+            <div class="lead-modal-body">
+                <div id="leadFormError"></div>
+                <form id="leadCaptureForm" onsubmit="submitLeadForm(event)" novalidate>
+                    <div class="form-group">
+                        <label for="leadName">Full Name *</label>
+                        <input type="text" id="leadName" class="form-control" placeholder="Your name" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="leadEmail">Email Address *</label>
+                        <input type="email" id="leadEmail" class="form-control" placeholder="you@example.com" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="leadPhone">WhatsApp Number</label>
+                        <input type="tel" id="leadPhone" class="form-control" placeholder="10-digit mobile" autocomplete="tel" maxlength="10" pattern="[0-9]{10}">
+                    </div>
+                    <div class="form-group">
+                        <label for="leadMessage">What are you interested in?</label>
+                        <select id="leadMessage" class="form-control">
+                            <option value="">Select an option</option>
+                            <option>EV Rental Program</option>
+                            <option>Insurance Solutions</option>
+                            <option>Referral Rewards</option>
+                            <option>Retrofit Information</option>
+                            <option>General Inquiry</option>
+                        </select>
+                    </div>
+                    <div class="lead-consent-row">
+                        <input type="checkbox" id="leadConsent" required>
+                        <label for="leadConsent">I agree to receive communications from Road Warrior EV. I can <a href="/unsubscribe" target="_blank">unsubscribe</a> at any time.</label>
+                    </div>
+                    <button type="submit" id="leadSubmitBtn"><i class="fas fa-paper-plane"></i> Get Free Consultation</button>
+                </form>
+                <div id="leadFormSuccess">
+                    <div class="success-icon">✅</div>
+                    <h4>We'll be in touch soon!</h4>
+                    <p>Check your inbox for a confirmation email. Our team will contact you within 24 hours.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======= SECTION 5: PRIVACY POLICY VIEW ======= -->
+    <section id="privacy-view" class="section-view" style="display:none; padding:4rem 1rem; max-width:800px; margin:0 auto; color:var(--text-primary);">
+        <h1 style="font-family:'Outfit',sans-serif; font-size:2.5rem; margin-bottom:1rem;">Privacy Policy</h1>
+        <p style="color:var(--text-secondary); margin-bottom:2rem;">Effective Date: June 2026</p>
+        
+        <h3>1. Data Collection</h3>
+        <p>We collect personal information necessary to provide our services, including your name, email, phone number, vehicle details, and location.</p>
+        
+        <h3>2. Rider Registration</h3>
+        <p>Information collected during registration is used to set up your profile, verify your identity, and facilitate earnings tracking via our unified dashboard.</p>
+        
+        <h3>3. Referral Tracking</h3>
+        <p>We use your data and referral codes to accurately track referrals and award milestone bonuses.</p>
+        
+        <h3>4. Analytics Usage</h3>
+        <p>We use Google Analytics, Microsoft Clarity, and Meta Pixel to track website usage, understand behavior, and improve our services.</p>
+        
+        <h3>5. Contact Information</h3>
+        <p>If you have any questions, you can contact us at contact@roadwarriorev.com or call +91 6360 483 386.</p>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer id="site-footer">
+        <div class="footer-inner">
+            <!-- Col 1: Brand -->
+            <div class="footer-col footer-brand">
+                <div class="footer-logo">
+                    <span class="footer-logo-icon">⚡</span>
+                    <span class="footer-logo-text">Road Warrior <span>Pro</span></span>
+                </div>
+                <a href="#" class="footer-btn-download" onclick="toggleAuth(event)">
+                    <span>Register Now</span>
+                    <i class="fas fa-download"></i>
+                </a>
+            </div>
+
+            <!-- Col 2: What we do -->
+            <div class="footer-col">
+                <h4 class="footer-heading">What we do</h4>
+                <ul class="footer-links-list">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#rewards">Rewards</a></li>
+                    <li><a href="#referrals">Referrals</a></li>
+                    <li><a href="#analytics">Analytics</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 3: Who we are -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Who we are</h4>
+                <ul class="footer-links-list">
+                    <li><a href="/about">About us</a></li>
+                    <li><a href="/careers">Careers</a></li>
+                    <li><a href="/brand">Brand Center</a></li>
+                    <li><a href="/privacy" target="_blank">Privacy</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 4: Use Platform -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Use Platform</h4>
+                <ul class="footer-links-list">
+                    <li><a href="/android">Android App</a></li>
+                    <li><a href="/ios">iPhone App</a></li>
+                    <li><a href="/dashboard">Web Dashboard</a></li>
+                    <li><a href="/api">Developer APIs</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 5: Contact Info -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Contact Info</h4>
+                <ul class="footer-links-list">
+                    <li><strong>Road Warrior Pro</strong></li>
+                    <li><a href="mailto:contact@roadwarriorev.com">contact@roadwarriorev.com</a></li>
+                    <li><a href="tel:+916360483386">+91 6360 483 386</a></li>
+                    <li>123 EV Tech Park,<br>Bengaluru, India</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer Bottom Bar -->
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <span>2026 © Road Warrior Pro</span>
+                <a href="/privacy" target="_blank">Terms & Privacy Policy</a>
+                <a href="/sitemap">Sitemap</a>
+            </div>
+            
+            <div class="footer-social">
+                <a href="https://twitter.com/roadwarriorpro" target="_blank" rel="noopener" class="social-link twitter" title="Twitter / X"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.youtube.com/@roadwarriorpro" target="_blank" rel="noopener" class="social-link youtube" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.instagram.com/roadwarriorpro" target="_blank" rel="noopener" class="social-link instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.facebook.com/roadwarriorpro" target="_blank" rel="noopener" class="social-link facebook" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.linkedin.com/company/roadwarriorpro" target="_blank" rel="noopener" class="social-link linkedin" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+
+            <div>
+                <select class="footer-lang-select" onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                </select>
+            </div>
+        </div>
+    </footer>
+
+<script src="/js/app.js?v=4" defer></script>
+
+<!-- Floating WhatsApp Button -->
+<a href="https://wa.me/916360483386" target="_blank" class="floating-wa-btn" aria-label="Chat with us on WhatsApp" title="WhatsApp Us">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<!-- Tawk.to Live Chat Placeholder -->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/WAITING_FOR_TAWK_ID/default';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<div id="toast" class="toast"></div>
 </body>
 </html>

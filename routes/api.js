@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
+const bp = require('bharat-pincode');
+
 
 // Centralized in-memory database
 const supabase = require('../utils/supabase');
+const axios = require('axios');
 const adminAuth = require('../middleware/adminAuth');
 const PDFDocument = require('pdfkit');
 
@@ -109,6 +112,37 @@ router.get('/riders/check-phone/:phone', async (req, res) => {
   }
 });
 
+// Location APIs
+router.get('/locations/states', (req, res) => {
+  try {
+    const states = [...new Set(bp.getAllStates().map(s => s.state))].sort();
+    res.json({ success: true, data: states });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/locations/cities/:state', (req, res) => {
+  try {
+    const stateData = bp.getByState(req.params.state);
+    const cities = [...new Set(stateData.map(s => s.district || s.city))].filter(Boolean).sort();
+    res.json({ success: true, data: cities });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/locations/pincodes/:state/:city', (req, res) => {
+  try {
+    const stateData = bp.getByState(req.params.state);
+    const filtered = stateData.filter(s => s.district === req.params.city || s.city === req.params.city);
+    const pincodes = [...new Set(filtered.map(s => s.pincode))].sort();
+    res.json({ success: true, data: pincodes });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Get rider by phone (for score lookup)
 router.get('/riders/by-phone/:phone', async (req, res) => {
   try {
@@ -145,10 +179,29 @@ router.post('/riders/register', async (req, res) => {
       // Section G
       consentPrivacy, consentMarketing, consentTerms,
       // Language preference
-      language
+      language,
+      // Security
+      recaptchaToken
     } = req.body;
 
     // Validation
+    if (!recaptchaToken || recaptchaToken === '') {
+      return res.status(400).json({ success: false, error: 'Please complete the reCAPTCHA' });
+    }
+    
+    // Verify reCAPTCHA
+    if (process.env.RECAPTCHA_SECRET_KEY && process.env.RECAPTCHA_SECRET_KEY !== 'your_recaptcha_secret_key') {
+      try {
+        const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`;
+        const recaptchaRes = await axios.post(verifyUrl);
+        if (!recaptchaRes.data.success) {
+          return res.status(400).json({ success: false, error: 'reCAPTCHA verification failed. Please try again.' });
+        }
+      } catch (error) {
+        return res.status(500).json({ success: false, error: 'Error validating reCAPTCHA' });
+      }
+    }
+
     if (!fullName || !phone || !state || !city || !pincode) {
       return res.status(400).json({ success: false, error: 'Full name, phone, state, city, and pincode are required' });
     }
@@ -185,8 +238,18 @@ router.post('/riders/register', async (req, res) => {
       if (referrer) {
         referrer.referrals = (referrer.referrals || 0) + 1;
         referrer.totalPoints = (referrer.totalPoints || 0) + 5;
+        // Increase the rating by 0.1 for the successful referral
+        referrer.rating = (Number(referrer.rating) || 5.0) + 0.1;
+        
         milestones = checkMilestoneBonuses(referrer);
-        await supabase.from('riders').update({ referrals: referrer.referrals, totalPoints: referrer.totalPoints, milestone10: referrer.milestone10, milestone25: referrer.milestone25, milestone50: referrer.milestone50 }).eq('id', referrer.id);
+        await supabase.from('riders').update({ 
+          referrals: referrer.referrals, 
+          totalPoints: referrer.totalPoints, 
+          rating: referrer.rating,
+          milestone10: referrer.milestone10, 
+          milestone25: referrer.milestone25, 
+          milestone50: referrer.milestone50 
+        }).eq('id', referrer.id);
       }
     }
 
@@ -272,7 +335,8 @@ router.post('/riders/register', async (req, res) => {
 router.get('/riders/:riderId', async (req, res) => {
   try {
     const { riderId } = req.params;
-    const { data: rows } = await supabase.from('riders').select('*').eq('id', riderId);
+    const { data: rows, error: dbError } = await supabase.from('riders').select('*').eq('id', riderId);
+    if (dbError) throw dbError;
     const rider = rows && rows.length > 0 ? rows[0] : null;
     if (!rider) {
       return res.status(404).json({ success: false, error: 'Rider not found' });
@@ -434,11 +498,14 @@ router.get('/riders/:riderId/deliveries', async (req, res) => {
 // Get All Riders (Admin)
 router.get('/admin/riders', adminAuth(['SUPER_ADMIN', 'ADMIN']), async (req, res) => {
   try {
-    const { data: ridersRaw } = await supabase.from('riders').select('*');
+    const { data: ridersRaw, error: dbError } = await supabase.from('riders').select('*');
+    console.log("Admin riders fetch. Data length:", ridersRaw?.length, "Error:", dbError);
+    if (dbError) throw dbError;
     const riders = ridersRaw || [];
     res.json({ success: true, data: riders });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error("Admin riders error:", error);
+    res.status(500).json({ success: false, error: error.message || error });
   }
 });
 
