@@ -1642,7 +1642,7 @@ async function loadEmailLeads() {
         if (exp === '') { showToast('Please select your experience', 'error'); return; }
         if (!pass) { showToast('Please set a password', 'error'); return; }
         if (pass.length < 8) { showToast('Password must be at least 8 characters', 'error'); return; }
-        if (!recaptchaToken) { showToast('Please complete the reCAPTCHA verification', 'error'); return; }
+        // Frontend reCAPTCHA check removed; backend will validate it conditionally.
 
         const btn = document.getElementById('submitRegBtn');
         btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
@@ -1839,7 +1839,7 @@ async function loadEmailLeads() {
             const rn = idx + 1;
             const medal = rn === 1 ? '🥇' : rn === 2 ? '🥈' : rn === 3 ? '🥉' : rn;
             const isSelf = currentUser && r.id === currentUser.id;
-            const rowStyle = isSelf ? `style="background:rgba(59,130,246,0.12); font-weight:bold; border-left:3px solid var(--primary-color);"` : '';
+            const rowStyle = isSelf ? `style="background:rgba(59, 130, 246, 0.03); font-weight:bold; border-left:3px solid var(--primary-color);"` : '';
             const tags = (r.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
             return `<tr ${rowStyle}><td>${medal}</td><td>${r.fullName}${isSelf ? ` <strong>(${TRANSLATIONS[lang].label_you})</strong>` : ''}</td><td>${r.city}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td>${tags || '—'}</td></tr>`;
         }).join('');

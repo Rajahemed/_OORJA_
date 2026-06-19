@@ -184,13 +184,11 @@ router.post('/riders/register', async (req, res) => {
       recaptchaToken
     } = req.body;
 
-    // Validation
-    if (!recaptchaToken || recaptchaToken === '') {
-      return res.status(400).json({ success: false, error: 'Please complete the reCAPTCHA' });
-    }
-    
     // Verify reCAPTCHA
     if (process.env.RECAPTCHA_SECRET_KEY && process.env.RECAPTCHA_SECRET_KEY !== 'your_recaptcha_secret_key') {
+      if (!recaptchaToken || recaptchaToken === '') {
+        return res.status(400).json({ success: false, error: 'Please complete the reCAPTCHA verification' });
+      }
       try {
         const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`;
         const recaptchaRes = await axios.post(verifyUrl);
