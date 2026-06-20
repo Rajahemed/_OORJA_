@@ -475,7 +475,7 @@
 
         <!-- ======= SECTION 1: HOME / REGISTER VIEW ======= -->
         <section id="home-view" class="section-view active">
-            <div class="row" id="authLayout" style="margin-top:1rem; justify-content: center; align-items: flex-start;">
+            <div class="row" id="authLayout" style="margin-top:1rem; justify-content: center; align-items: flex-start; flex-direction: column;">
 
                 <!-- Auth/Register Card -->
                 <div class="card" id="authBox" style="width: 100%; max-width: 600px; margin: 0 auto;">
@@ -875,13 +875,14 @@
                                 <div class="success-panel">
                                     <div class="success-icon">🎉</div>
                                     <h2 style="font-family:'Outfit',sans-serif; font-size:1.75rem; font-weight:800;" data-i18n="success_title">Registration Complete!</h2>
+                                    <h3 style="font-family:'Outfit',sans-serif; font-size:1.25rem; font-weight:600; color:var(--text-primary); margin-top:0.5rem;"><span id="successWelcomeName" style="color:var(--primary-color);"></span></h3>
                                     <p style="color:var(--text-secondary); margin-top:0.5rem;" data-i18n="success_subtitle">Welcome to Road Warrior Pro. You start with <strong style="color:var(--primary-color);">10 points</strong>!</p>
                                     <div class="referral-code-display" id="successReferralCode">RW-XXXX</div>
                                     <p style="font-size:0.8rem; color:var(--text-secondary);" data-i18n="share_code_hint">Share this code with other riders to earn 5 points per referral</p>
                                     <div class="whatsapp-confirm" id="whatsappConfirmBox">
                                         <h4><i class="fab fa-whatsapp"></i> <span data-i18n="wa_confirm_title">WhatsApp Confirmation</span></h4>
                                         <p id="whatsappMsgPreview" style="font-size:0.85rem; margin:0.5rem 0; font-style:italic;"></p>
-                                        <a id="whatsappSendLink" href="#" target="_blank" class="btn btn-success w-100" style="background:#25D366; border-color:#25D366; margin-top:0.75rem;">
+                                        <a id="whatsappSendLink" href="#" target="_blank" class="btn btn-success w-100" style="background:#25D366; border-color:#25D366; margin-top:0.75rem;" onclick="shareWithImage(event)">
                                             <i class="fab fa-whatsapp"></i> <span data-i18n="btn_send_whatsapp">Share Link with Other Riders via WhatsApp</span>
                                         </a>
                                     </div>
@@ -1056,10 +1057,14 @@
                 <div class="card"><div class="card-header"><h3 class="card-title" data-i18n="chart_weekly_referrals"><i class="fas fa-chart-bar text-primary-color"></i> Weekly Referrals</h3></div><div class="card-body"><canvas id="referralsChart" style="max-height:280px;"></canvas></div></div>
                 <div class="card"><div class="card-header"><h3 class="card-title" data-i18n="chart_weekly_points"><i class="fas fa-chart-line text-success-color"></i> Points Earned Trend</h3></div><div class="card-body"><canvas id="pointsChart" style="max-height:280px;"></canvas></div></div>
             </div>
-            <div style="max-width: 800px; margin: 0 auto 2.5rem auto;">
+            <div class="row cols-2 mb-5">
                 <div class="card">
                     <div class="card-header"><h3 class="card-title" data-i18n="chart_cities_referral"><i class="fas fa-map-marker-alt text-danger-color"></i> Referrals by City</h3></div>
                     <div class="card-body"><canvas id="citiesChart" style="max-height:300px;"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-users text-primary-color"></i> Login & Logout Activity</h3></div>
+                    <div class="card-body"><canvas id="loginLogoutChart" style="max-height:300px;"></canvas></div>
                 </div>
             </div>
         </section>
@@ -1677,18 +1682,6 @@
     <!-- ===== FOOTER ===== -->
     <footer id="site-footer">
         <div class="footer-inner">
-            <!-- Col 1: Brand -->
-            <div class="footer-col footer-brand">
-                <div class="footer-logo">
-                    <span class="footer-logo-icon">⚡</span>
-                    <span class="footer-logo-text">Road Warrior <span>Pro</span></span>
-                </div>
-                <a href="#" class="footer-btn-download" onclick="toggleAuth(event)">
-                    <span>Register Now</span>
-                    <i class="fas fa-download"></i>
-                </a>
-            </div>
-
             <!-- Col 2: What we do -->
             <div class="footer-col">
                 <h4 class="footer-heading">What we do</h4>
@@ -1707,7 +1700,7 @@
                     <li><a href="/about">About us</a></li>
                     <li><a href="/careers">Careers</a></li>
                     <li><a href="/brand">Brand Center</a></li>
-                    <li><a href="/privacy" target="_blank">Privacy</a></li>
+                    <li><a href="#" onclick="navigateTo('/privacy'); return false;">Privacy</a></li>
                 </ul>
             </div>
 
@@ -1729,8 +1722,25 @@
                     <li><strong>Road Warrior Pro</strong></li>
                     <li><a href="mailto:contact@roadwarriorev.com">contact@roadwarriorev.com</a></li>
                     <li><a href="tel:+916360483386">+91 6360 483 386</a></li>
-                    <li>123 EV Tech Park,<br>Bengaluru, India</li>
+                    <li>1028, Mangammanapalya,<br>11th main road Bengaluru 560068</li>
                 </ul>
+            </div>
+
+            <!-- Col 1: Brand -->
+            <div class="footer-col footer-brand">
+                <div class="footer-logo">
+                    <span class="footer-logo-icon">⚡</span>
+                    <span class="footer-logo-text">Road Warrior <span>Pro</span></span>
+                </div>
+
+                <a href="tel:+916360483386" class="footer-btn-download" style="background: linear-gradient(135deg, #25D366, #128C7E); color: white; border: none; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);">
+                    <span>Click To Call</span>
+                    <i class="fas fa-phone-alt"></i>
+                </a>
+                <a href="https://wa.me/916360483386" target="_blank" class="footer-btn-download" style="margin-top: 0.75rem; background: linear-gradient(135deg, #25D366, #075E54); color: white; border: none; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);">
+                    <span>WhatsApp Us</span>
+                    <i class="fab fa-whatsapp"></i>
+                </a>
             </div>
         </div>
 
@@ -1738,7 +1748,7 @@
         <div class="footer-bottom">
             <div class="footer-bottom-left">
                 <span>2026 © Road Warrior Pro</span>
-                <a href="/privacy" target="_blank">Terms & Privacy Policy</a>
+                <a href="#" onclick="navigateTo('/privacy'); return false;">Terms & Privacy Policy</a>
                 <a href="/sitemap">Sitemap</a>
             </div>
             
@@ -1762,10 +1772,7 @@
 
 <script src="/js/app.js?v=4" defer></script>
 
-<!-- Floating WhatsApp Button -->
-<a href="https://wa.me/916360483386" target="_blank" class="floating-wa-btn" aria-label="Chat with us on WhatsApp" title="WhatsApp Us">
-    <i class="fab fa-whatsapp"></i>
-</a>
+<!-- Floating WhatsApp Button Removed -->
 
 <!-- Tawk.to Live Chat Placeholder -->
 <script type="text/javascript">

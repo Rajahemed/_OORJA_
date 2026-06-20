@@ -200,6 +200,10 @@ function trackPageView(page) {
             page_title: document.title
         });
     }
+    // Meta Pixel
+    if (window.fbq && analyticsConsent) {
+        fbq('track', 'PageView');
+    }
 }
 
 // Reusable Global event tracker — call this from anywhere in app.js
@@ -208,13 +212,21 @@ function trackEvent(eventName, params) {
     
     // GA4 & Google Ads
     if (window.gtag) gtag('event', eventName, params || {});
+    if (window.gtag && (eventName === 'lead_captured' || eventName === 'generate_lead')) {
+        gtag('event', 'conversion', {'send_to': 'WAITING_FOR_ADS_CONVERSION_ID/lead'});
+    }
     
     // Meta Pixel
     if (window.fbq) {
         if (eventName === 'sign_up') fbq('track', 'CompleteRegistration', params || {});
         else if (eventName === 'login') fbq('track', 'Login', params || {});
-        else if (eventName === 'generate_lead') fbq('track', 'Lead', params || {});
+        else if (eventName === 'generate_lead' || eventName === 'lead_captured') fbq('track', 'Lead', params || {});
         else fbq('trackCustom', eventName, params || {});
+    }
+    
+    // LinkedIn Insight (conversion custom event mapping if needed)
+    if (window.lintrk && (eventName === 'lead_captured' || eventName === 'sign_up')) {
+        window.lintrk('track', { conversion_id: 'WAITING_FOR_LINKEDIN_CONVERSION' });
     }
     
     // Tawk.to
@@ -618,7 +630,7 @@ async function loadEmailLeads() {
             success_title:"Registration Complete!", success_subtitle:"Welcome to Road Warrior Pro. You start with 10 points!",
             share_code_hint:"Share this code with other riders to earn 5 points per referral",
             wa_confirm_title:"WhatsApp Confirmation",
-            btn_send_whatsapp:"Send WhatsApp to yourself",
+            btn_send_whatsapp:"Share WhatsApp to friends",
             phone_error:"Phone must be exactly 10 digits", phone_dup:"Already registered! Check your score.",
             score_title:"Score & Leaderboard", title_score_lookup:"Check Your Score",
             score_lookup_hint:"Enter your WhatsApp number to see your points and referral count.",
@@ -877,6 +889,10 @@ async function loadEmailLeads() {
 
     // ===== INIT =====
     document.addEventListener('DOMContentLoaded', () => {
+        // Initialize tracking and cookie consent immediately
+        initVisitorTracking();
+        initConsentBanner();
+        
         // Check for referral code — from URL or previously stored in localStorage
         const refCode = new URLSearchParams(window.location.search).get('ref') || localStorage.getItem('pendingReferralCode');
         if (refCode) {
@@ -1062,6 +1078,9 @@ async function loadEmailLeads() {
     function handlePopState() { routeSPA(window.location.pathname); }
 
     function routeSPA(path) {
+        const siteFooter = document.getElementById('site-footer');
+        if (siteFooter) siteFooter.style.display = 'block';
+
         let activeTab = 'home';
         if (path === '/vehicles') activeTab = 'vehicles';
         else if (path === '/dashboard') activeTab = 'dashboard';
@@ -1075,6 +1094,14 @@ async function loadEmailLeads() {
         if (canTag) canTag.href = fullUrl;
         const ogUrl = document.querySelector('meta[property="og:url"]');
         if (ogUrl) ogUrl.content = fullUrl;
+
+        let titleStr = "Road Warrior EV - Rider Registration & Management";
+        if (activeTab === 'dashboard') titleStr = "Dashboard - Road Warrior EV";
+        else if (activeTab === 'score') titleStr = "Leaderboard - Road Warrior EV";
+        else if (activeTab === 'privacy') titleStr = "Privacy Policy - Road Warrior EV";
+        document.title = titleStr;
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle) ogTitle.content = titleStr;
 
         // Score page is public — no login check
         if (activeTab === 'admin' && !(sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt'))) {
@@ -1101,7 +1128,6 @@ async function loadEmailLeads() {
         else if (activeTab === 'admin') loadAdminData();
 
         // Footer visibility - only show on home page
-        const siteFooter = document.getElementById('site-footer');
         if (siteFooter) {
             siteFooter.style.display = (activeTab === 'home') ? 'block' : 'none';
         }
@@ -1213,16 +1239,33 @@ async function loadEmailLeads() {
     function validateFullRegistrationForm() {
         let isValid = true;
         let firstInvalidField = null;
+        let firstErrorMessage = null;
 
-        const setInvalid = (el, customUI) => {
+        const fieldLabels = {
+            'regFullName': 'Full Name', 'regPhone': 'Phone Number', 'regPassword': 'Password',
+            'regState': 'State', 'regCity': 'City', 'regPincode': 'Pincode', 'regPlatform': 'Delivery Platform',
+            'regExp': 'Delivery Experience', 'regVehicleTypeOther': 'Vehicle Type (Other)', 'regVehicleModel': 'Vehicle Model',
+            'regVehicleModelOther': 'Vehicle Model (Other)', 'regFuelMethodOther': 'Fuel Method (Other)',
+            'regFuelExp': 'Fuel Expense', 'regMaintExp': 'Maintenance Expense', 'regReferralCode': 'Referral Code'
+        };
+
+        const setInvalid = (el, customUI, customMsg) => {
             isValid = false;
+            if (!firstErrorMessage) {
+                if (customMsg) firstErrorMessage = customMsg;
+                else if (el && el.id && fieldLabels[el.id]) firstErrorMessage = `Please fill out the ${fieldLabels[el.id]} field.`;
+                else firstErrorMessage = 'Please complete all required fields.';
+            }
+
             const targetUI = customUI || el;
             targetUI.style.border = '2px solid var(--danger-color)';
             if (!firstInvalidField) firstInvalidField = targetUI;
             
             const clearBorder = () => targetUI.style.border = '';
-            el.addEventListener('change', clearBorder, { once: true });
-            el.addEventListener('input', clearBorder, { once: true });
+            if (el) {
+                el.addEventListener('change', clearBorder, { once: true });
+                el.addEventListener('input', clearBorder, { once: true });
+            }
         };
 
         for (let step = 1; step <= 6; step++) {
@@ -1237,17 +1280,31 @@ async function loadEmailLeads() {
                     if (!el) return;
                     
                     let isFieldValid = true;
-                    if (!el.value.trim()) isFieldValid = false;
+                    let errorMsg = null;
+
+                    if (!el.value.trim()) {
+                        isFieldValid = false;
+                    }
                     
-                    if (id === 'regPhone' && (el.value.trim().length !== 10 || !/^[6-9]/.test(el.value.trim()))) isFieldValid = false;
-                    if (id === 'regPassword' && el.value.length < 8) isFieldValid = false;
+                    if (id === 'regFullName' && /\d/.test(el.value)) {
+                        isFieldValid = false;
+                        errorMsg = 'Numbers are not allowed in the Full Name. Only letters are permitted.';
+                    }
+                    if (id === 'regPhone' && (el.value.trim().length !== 10 || !/^[6-9]/.test(el.value.trim()))) {
+                        isFieldValid = false;
+                        errorMsg = 'Please enter a valid 10-digit mobile number.';
+                    }
+                    if (id === 'regPassword' && el.value.length < 8) {
+                        isFieldValid = false;
+                        errorMsg = 'Password must be at least 8 characters long.';
+                    }
                     
                     if (!isFieldValid) {
                         if (id === 'regPlatform') {
                             const customSelect = document.querySelector('#platformCustomSelect .custom-select');
-                            if (customSelect) setInvalid(el, customSelect);
+                            if (customSelect) setInvalid(el, customSelect, errorMsg);
                         } else {
-                            setInvalid(el);
+                            setInvalid(el, null, errorMsg);
                         }
                     }
                 });
@@ -1265,11 +1322,19 @@ async function loadEmailLeads() {
                         group.style.padding = '0.5rem';
                         group.style.borderRadius = 'var(--border-radius-md)';
                         isValid = false;
+                        if (!firstErrorMessage) firstErrorMessage = 'Please select your Vehicle Type.';
                         if (!firstInvalidField) firstInvalidField = group;
                         sec.querySelectorAll('input[name="vehicleType"]').forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                     }
                 } else if (vt.value === 'Other' && !document.getElementById('regVehicleTypeOther').value.trim()) {
                     setInvalid(document.getElementById('regVehicleTypeOther'));
+                }
+
+                // Check regVehicleModel
+                const modelSelect = document.getElementById('regVehicleModel');
+                if (modelSelect && !modelSelect.value.trim()) setInvalid(modelSelect);
+                if (modelSelect && modelSelect.value === 'Other' && !document.getElementById('regVehicleModelOther').value.trim()) {
+                    setInvalid(document.getElementById('regVehicleModelOther'));
                 }
 
                 const fm = sec.querySelector('input[name="fuelMethod"]:checked');
@@ -1280,14 +1345,43 @@ async function loadEmailLeads() {
                         group.style.padding = '0.5rem';
                         group.style.borderRadius = 'var(--border-radius-md)';
                         isValid = false;
+                        if (!firstErrorMessage) firstErrorMessage = 'Please select your Fuel/Charge Method.';
                         if (!firstInvalidField) firstInvalidField = group;
                         sec.querySelectorAll('input[name="fuelMethod"]').forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                     }
                 } else if (fm.value === 'Other' && !document.getElementById('regFuelMethodOther').value.trim()) {
                     setInvalid(document.getElementById('regFuelMethodOther'));
                 }
+
+                // Check fuel/maintenance expenses if they are visible
+                const fuelExp = document.getElementById('regFuelExp');
+                if (fuelExp && fuelExp.parentElement.style.display !== 'none' && !fuelExp.value.trim()) setInvalid(fuelExp);
+                const maintExp = document.getElementById('regMaintExp');
+                if (maintExp && maintExp.parentElement.style.display !== 'none' && !maintExp.value.trim()) setInvalid(maintExp);
             }
             else if (step === 3) {
+                // Check if visible checkbox groups have at least one selection
+                ['generalChallengesSection', 'evChallengesSection', 'petrolChallengesSection'].forEach(sectionId => {
+                    const section = document.getElementById(sectionId);
+                    if (section && section.style.display !== 'none' && !section.classList.contains('hidden-section') && window.getComputedStyle(section).display !== 'none') {
+                        const group = section.querySelector('.checkbox-group') || section;
+                        const checkboxes = section.querySelectorAll('input[type="checkbox"]');
+                        if (checkboxes.length > 0) {
+                            let checked = false;
+                            checkboxes.forEach(cb => { if (cb.checked) checked = true; });
+                            if (!checked) {
+                                group.style.border = '2px solid var(--danger-color)';
+                                group.style.padding = '0.5rem';
+                                group.style.borderRadius = 'var(--border-radius-md)';
+                                isValid = false;
+                                if (!firstErrorMessage) firstErrorMessage = 'Please select at least one Challenge you face on the road.';
+                                if (!firstInvalidField) firstInvalidField = group;
+                                checkboxes.forEach(cb => cb.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                            }
+                        }
+                    }
+                });
+                
                 sec.querySelectorAll('input[type="text"][id$="Other"]').forEach(el => {
                     if (el.style.display !== 'none' && !el.value.trim()) setInvalid(el);
                 });
@@ -1303,6 +1397,7 @@ async function loadEmailLeads() {
                                 group.style.padding = '0.5rem';
                                 group.style.borderRadius = 'var(--border-radius-md)';
                                 isValid = false;
+                                if (!firstErrorMessage) firstErrorMessage = `Please answer all questions in the Insurance & Safety section.`;
                                 if (!firstInvalidField) firstInvalidField = group;
                                 radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                             }
@@ -1320,6 +1415,7 @@ async function loadEmailLeads() {
                             group.style.padding = '0.5rem';
                             group.style.borderRadius = 'var(--border-radius-md)';
                             isValid = false;
+                            if (!firstErrorMessage) firstErrorMessage = 'Please answer if you are open to using EVs.';
                             if (!firstInvalidField) firstInvalidField = group;
                             radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                         }
@@ -1340,6 +1436,7 @@ async function loadEmailLeads() {
                                 group.style.padding = '0.5rem';
                                 group.style.borderRadius = 'var(--border-radius-md)';
                                 isValid = false;
+                                if (!firstErrorMessage) firstErrorMessage = 'Please specify if you were referred by another rider.';
                                 if (!firstInvalidField) firstInvalidField = group;
                                 radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                             }
@@ -1352,7 +1449,7 @@ async function loadEmailLeads() {
         }
 
         if (!isValid) {
-            showToast('Please complete required fields before submitting', 'error');
+            showToast(firstErrorMessage || 'Please complete all required fields.', 'error');
             if (firstInvalidField && firstInvalidField.scrollIntoView) {
                 firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
@@ -1855,7 +1952,13 @@ async function loadEmailLeads() {
                 document.getElementById('regSuccessPanel').classList.add('active');
                 document.getElementById('loginSwitchLink').style.display = 'none';
 
+                // Hide the footer
+                const siteFooter = document.getElementById('site-footer');
+                if (siteFooter) siteFooter.style.display = 'none';
+
                 // Update success UI
+                const regFullName = document.getElementById('regFullName').value.trim();
+                document.getElementById('successWelcomeName').textContent = regFullName;
                 document.getElementById('successReferralCode').textContent = result.referralCode;
                 let msgHtml = result.whatsappMessage
                     .replace(/\n/g, '<br>')
@@ -1884,6 +1987,9 @@ async function loadEmailLeads() {
     function goBackToLogin(e) {
         if (e) e.preventDefault();
         
+        const siteFooter = document.getElementById('site-footer');
+        if (siteFooter) siteFooter.style.display = 'block';
+
         const regFormContent = document.getElementById('registrationFormContent');
         if (regFormContent) regFormContent.style.display = 'block';
         document.getElementById('regSuccessPanel').classList.remove('active');
@@ -2127,6 +2233,50 @@ async function loadEmailLeads() {
                 }
             }
         });
+
+        fetch('/dashboard/login-analytics').then(r => r.json()).then(result => {
+            if (result.success) {
+                const loginCtx = document.getElementById('loginLogoutChart');
+                if (loginCtx) {
+                    activeCharts.loginLogout = new Chart(loginCtx.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: result.data.map(d => d.day),
+                            datasets: [
+                                {
+                                    label: 'Logins',
+                                    data: result.data.map(d => d.logins),
+                                    borderColor: 'rgba(59,130,246,1)',
+                                    backgroundColor: 'rgba(59,130,246,0.1)',
+                                    borderWidth: 2,
+                                    tension: 0.4,
+                                    fill: true
+                                },
+                                {
+                                    label: 'Logouts',
+                                    data: result.data.map(d => d.logouts),
+                                    borderColor: 'rgba(239,68,68,1)',
+                                    backgroundColor: 'rgba(239,68,68,0.1)',
+                                    borderWidth: 2,
+                                    tension: 0.4,
+                                    fill: true
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: true, labels: { color: '#e5e7eb' } }
+                            },
+                            scales: {
+                                x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } },
+                                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } }
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     function getChartOpts(legend) {
@@ -2311,6 +2461,69 @@ async function loadEmailLeads() {
         else if (lang === 'kn') msg = `🚀 *Road Warrior Pro* - Nannanu join madi!\n\nNanna referral code balisि register madi:\n🔗 ${refLink}\n\nCode: *${code}*\n\nIddaru points gaListevi! 🏆`;
         else msg = `🚀 *Road Warrior Pro* - Join my delivery team!\n\nUse my referral link:\n🔗 ${refLink}\n\nCode: *${code}*\n\nWe both earn points! 🏆`;
         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    window.shareWithImage = async function(e) {
+        if (e) e.preventDefault();
+        
+        // Find the fallback URL (the normal WhatsApp share link)
+        let fallbackUrl = '';
+        let text = '';
+
+        const whatsappSendLink = document.getElementById('whatsappSendLink');
+        if (whatsappSendLink) {
+            // we use getAttribute to get the actual assigned URL if it's there
+            fallbackUrl = whatsappSendLink.getAttribute('href') || whatsappSendLink.href;
+            const previewEl = document.getElementById('whatsappMsgPreview');
+            if (previewEl) {
+                // Get the text representation, converting <br> to newlines
+                text = previewEl.innerHTML.replace(/<br\s*[\/]?>/gi, "\n").replace(/<[^>]+>/g, "");
+            }
+        }
+        
+        // If not found in the DOM (e.g. called from a different context), generate it
+        if (!text && currentUser) {
+            const code = currentUser.referralCode || 'RWPRO';
+            const refLink = getWhatsAppShareLink(code);
+            text = `🚀 *Road Warrior Pro* - Join my delivery team!\n\nUse my referral link:\n🔗 ${refLink}\n\nCode: *${code}*\n\nWe both earn points! 🏆`;
+            fallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+        }
+
+        try {
+            // Fetch the image to share
+            const response = await fetch('/og-image.png');
+            if (!response.ok) throw new Error('Network response was not ok');
+            const blob = await response.blob();
+            const file = new File([blob], 'roadwarrior-promo.png', { type: blob.type });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    title: 'Join Road Warrior EV',
+                    text: text,
+                    files: [file]
+                });
+                if (typeof trackEvent === 'function') trackEvent('share_with_image', { success: true });
+            } else {
+                // Fallback for desktop browsers without Web Share API file support
+                showToast('Image sharing not supported on this browser. Opening WhatsApp...', 'info');
+                // Optionally download the image for the user to attach manually
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'roadwarrior-promo.png';
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+                
+                setTimeout(() => window.open(fallbackUrl, '_blank'), 500);
+            }
+        } catch (err) {
+            console.error('Sharing failed', err);
+            if (err.name !== 'AbortError') {
+                window.open(fallbackUrl, '_blank');
+            }
+        }
     }
 
     // ===== ADMIN =====

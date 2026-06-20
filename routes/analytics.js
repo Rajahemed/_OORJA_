@@ -103,36 +103,47 @@ router.post('/leads/capture', leadCaptureRateLimit, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Full name is required.' });
     }
 
-    // Duplicate check — one submission per email per 24h
-    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const { data: existing } = await supabase
-      .from('ev_leads')
-      .select('id')
-      .eq('email', cleanEmail)
-      .gte('created_at', oneDayAgo)
-      .single();
+    // Duplicate check — one submission per email or phone
+    const cleanPhone = sanitizePhone(phone) || '';
+    let query = supabase.from('riders').select('id, tags');
+    
+    if (cleanPhone) {
+      query = query.or(`email.eq.${cleanEmail},phone.eq.${cleanPhone}`);
+    } else {
+      query = query.eq('email', cleanEmail);
+    }
+    
+    const { data: existingRecords } = await query;
+    const existing = existingRecords && existingRecords.length > 0 ? existingRecords[0] : null;
+
+    const newTag = 'WEBSITE_CONSULTATION_LEAD';
+    const interestStr = sanitizeString(message, 50) || 'General Inquiry';
 
     if (existing) {
-      return res.status(409).json({
-        success: false,
-        error: 'We already received your inquiry. Our team will contact you soon!'
+      let tags = existing.tags || [];
+      if (!tags.includes(newTag)) tags.push(newTag);
+      if (!tags.includes(interestStr)) tags.push(interestStr);
+      await supabase.from('riders').update({ tags }).eq('id', existing.id);
+      
+      return res.json({
+        success: true,
+        message: 'We already received your inquiry. Our team will contact you soon!'
       });
     }
 
     const lead = {
-      full_name: cleanName,
+      fullName: cleanName,
       email: cleanEmail,
-      phone: sanitizePhone(phone),
-      company: sanitizeString(company, 100),
-      message: sanitizeString(message, 1000),
-      source: sanitizeString(source || 'website', 50),
-      visitor_id: sanitizeString(visitor_id, 100),
-      consent_marketing: !!consent_marketing,
-      created_at: new Date().toISOString()
+      phone: sanitizePhone(phone) || '',
+      tags: [newTag, interestStr],
+      interests: sanitizeString(message, 1000) || '',
+      isActive: false,
+      consentMarketing: !!consent_marketing,
+      registeredAt: new Date().toISOString()
     };
 
     const { data: inserted, error: insertErr } = await supabase
-      .from('ev_leads')
+      .from('riders')
       .insert(lead)
       .select('id')
       .single();
@@ -143,7 +154,11 @@ router.post('/leads/capture', leadCaptureRateLimit, async (req, res) => {
     }
 
     // Trigger email drip sequence (non-blocking)
-    triggerDripSequence({ ...lead, id: inserted.id }).catch(e =>
+    triggerDripSequence({ 
+      ...lead, 
+      id: inserted.id,
+      full_name: cleanName 
+    }).catch(e =>
       console.error('[analytics] drip trigger error:', e.message)
     );
 

@@ -102,6 +102,38 @@ router.get('/city-analytics', async (req, res) => {
   }
 });
 
+// Get login/logout analytics
+router.get('/login-analytics', async (req, res) => {
+  try {
+    // Generate mock data for the last 7 days
+    const loginData = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const day = DAYS[date.getDay() === 0 ? 6 : date.getDay() - 1]; // Adjust to match Mon-Sun
+      
+      const logins = Math.floor(Math.random() * 50) + 100;
+      const logouts = Math.floor(logins * (Math.random() * 0.4 + 0.5)); // logouts usually a bit less than logins
+
+      loginData.push({
+        day,
+        logins,
+        logouts
+      });
+    }
+
+    res.json({
+      success: true,
+      data: loginData
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // Get revenue analytics
 router.get('/revenue/:riderId', async (req, res) => {
   try {

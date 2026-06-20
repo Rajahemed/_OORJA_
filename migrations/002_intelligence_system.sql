@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 -- TABLE: leads
 -- Captured from lead form — separate from rider registrations
 -- ============================================================
-CREATE TABLE IF NOT EXISTS leads (
+CREATE TABLE IF NOT EXISTS ev_leads (
     id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     full_name           TEXT,
     email               TEXT,
@@ -113,9 +113,9 @@ CREATE INDEX IF NOT EXISTS idx_sessions_visitor_id  ON sessions(visitor_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_session_id  ON sessions(session_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_started_at  ON sessions(started_at DESC);
 
-CREATE INDEX IF NOT EXISTS idx_leads_email          ON leads(email);
-CREATE INDEX IF NOT EXISTS idx_leads_created_at     ON leads(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_leads_unsubscribed   ON leads(unsubscribed);
+CREATE INDEX IF NOT EXISTS idx_leads_email          ON ev_leads(email);
+CREATE INDEX IF NOT EXISTS idx_leads_created_at     ON ev_leads(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_leads_unsubscribed   ON ev_leads(unsubscribed);
 
 CREATE INDEX IF NOT EXISTS idx_email_logs_lead_id       ON email_logs(lead_id);
 CREATE INDEX IF NOT EXISTS idx_email_logs_status         ON email_logs(status);
@@ -126,13 +126,13 @@ CREATE INDEX IF NOT EXISTS idx_email_logs_scheduled_at  ON email_logs(scheduled_
 -- ============================================================
 ALTER TABLE visitors         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sessions         ENABLE ROW LEVEL SECURITY;
-ALTER TABLE leads            ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ev_leads            ENABLE ROW LEVEL SECURITY;
 ALTER TABLE email_campaigns  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE email_logs       ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow all for visitors"        ON visitors        FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all for sessions"        ON sessions        FOR ALL TO anon USING (true) WITH CHECK (true);
-CREATE POLICY "Allow all for leads"           ON leads           FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all for leads"           ON ev_leads           FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all for email_campaigns" ON email_campaigns FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all for email_logs"      ON email_logs      FOR ALL TO anon USING (true) WITH CHECK (true);
 
