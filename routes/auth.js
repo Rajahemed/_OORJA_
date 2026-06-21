@@ -3,7 +3,7 @@ const router = express.Router();
 const supabase = require('../utils/supabase');
 const { v4: uuidv4 } = require('uuid');
 const twilio = require('twilio');
-
+const axios = require('axios');
 const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_ACCOUNT_SID !== 'your_twilio_account_sid'
   ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
   : null;
@@ -21,7 +21,33 @@ router.post('/send-otp', async (req, res) => {
       if (Date.now() > value.expires) otpCache.delete(key);
     }
 
-    if (twilioClient && process.env.TWILIO_PHONE_NUMBER && process.env.TWILIO_PHONE_NUMBER !== 'your_twilio_phone_number') {
+    if (process.env.FAST2SMS_API_KEY) {
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      otpCache.set(phone, { otp, expires: Date.now() + 5 * 60 * 1000 });
+      
+      try {
+          const response = await axios.get('https://www.fast2sms.com/dev/bulkV2', {
+            params: {
+              authorization: process.env.FAST2SMS_API_KEY,
+              variables_values: otp,
+              route: 'otp',
+              numbers: phone.replace(/\D/g, '')
+            }
+          });
+          
+          if (response.data.return === false) {
+              console.error('[Fast2SMS Error]', response.data);
+              throw new Error('Failed to send OTP via Fast2SMS');
+          }
+          return res.json({ success: true, message: 'Live OTP sent successfully' });
+      } catch (err) {
+          const fast2smsMsg = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
+          console.error('[Fast2SMS Error]', fast2smsMsg);
+          // Fallback to Mock OTP so development is not blocked
+          otpCache.set(phone, { otp: '123456', expires: Date.now() + 5 * 60 * 1000 });
+          return res.json({ success: true, message: 'Fast2SMS config issue (' + fast2smsMsg + '). Falling back to Mock OTP (use 123456)', isMock: true });
+      }
+    } else if (twilioClient && process.env.TWILIO_PHONE_NUMBER && process.env.TWILIO_PHONE_NUMBER !== 'your_twilio_phone_number') {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       otpCache.set(phone, { otp, expires: Date.now() + 5 * 60 * 1000 });
       

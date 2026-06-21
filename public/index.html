@@ -19,9 +19,9 @@
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){
             c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/WAITING_FOR_CLARITY_ID";
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/x8yvpfpx3i";
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "WAITING_FOR_CLARITY_ID");
+        })(window, document, "clarity", "script", "x8yvpfpx3i");
     </script>
     
     <!-- Google Tag Manager Placeholder -->
@@ -29,15 +29,15 @@
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','WAITING_FOR_GTM_ID');</script>
+    })(window,document,'script','dataLayer','GTM-N5H4BQTF');</script>
     
     <!-- GA4 Placeholder -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=WAITING_FOR_GA4_ID"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8TJ04CCV6J"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'WAITING_FOR_GA4_ID');
+      gtag('config', 'G-8TJ04CCV6J');
       gtag('config', 'WAITING_FOR_ADS_CONVERSION_ID');
     </script>
     
@@ -431,7 +431,7 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-brand" onclick="navigateTo('/home')">
-            <div class="rw-logo">RW</div>
+            <img src="/img/ev_bike_logo.png" alt="EV Bike Logo" class="rw-logo" style="object-fit: cover; background: white;">
             <span class="brand-text">Road Warrior EV</span>
         </div>
         <ul class="navbar-nav">
@@ -538,7 +538,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="riderForgotOtp">Enter OTP</label>
-                                    <input type="text" id="riderForgotOtp" class="form-control" placeholder="6-digit OTP (Mock: 123456)" pattern="[0-9]{6}" required>
+                                    <div style="display:flex; gap:0.5rem;">
+                                        <input type="text" id="riderForgotOtp" class="form-control" placeholder="6-digit OTP" pattern="[0-9]{6}" required>
+                                        <button type="button" class="btn btn-secondary" onclick="sendMockOtp('riderForgotPhone', 'forgotOtpSentMsg')" id="sendForgotOtpBtn">Send OTP</button>
+                                    </div>
+                                    <small id="forgotOtpSentMsg" style="color:var(--primary-color); display:none; margin-top:4px;">OTP sent!</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="riderForgotNewPassword">New Password</label>
@@ -1295,10 +1299,15 @@
 
             <!-- Platform Stats -->
             <div class="row cols-4" id="adminStatsGrid">
-                <div class="stat-box"><span class="stat-icon">👥</span><div class="stat-value" id="adminTotalRiders">0</div><div class="stat-label" data-i18n="adm_riders">Registered Users</div></div>
-                <div class="stat-box"><span class="stat-icon">⚡</span><div class="stat-value" id="adminEVRiders">0</div><div class="stat-label" data-i18n="adm_ev_riders">EV Riders</div></div>
-                <div class="stat-box"><span class="stat-icon">🔴</span><div class="stat-value" id="adminHotLeads">0</div><div class="stat-label" data-i18n="adm_hot_leads">Hot EV Leads</div></div>
-                <div class="stat-box"><span class="stat-icon">🛡️</span><div class="stat-value" id="adminInsLeads">0</div><div class="stat-label" data-i18n="adm_ins_leads">Insurance Leads</div></div>
+                <div class="stat-box" onclick="clickAdminStat('registered')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">👥</span><div class="stat-value" id="adminTotalRiders">0</div><div class="stat-label" data-i18n="adm_riders">Registered Users</div></div>
+                <div class="stat-box" onclick="clickAdminStat('evRiders')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">⚡</span><div class="stat-value" id="adminEVRiders">0</div><div class="stat-label" data-i18n="adm_ev_riders">EV Riders</div></div>
+                <div class="stat-box" onclick="clickAdminStat('hotLeads')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">🔴</span><div class="stat-value" id="adminHotLeads">0</div><div class="stat-label" data-i18n="adm_hot_leads">Hot EV Leads</div></div>
+                <div class="stat-box" onclick="clickAdminStat('insLeads')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">🛡️</span><div class="stat-value" id="adminInsLeads">0</div><div class="stat-label" data-i18n="adm_ins_leads">Insurance Leads</div></div>
+                <div class="stat-box" onclick="clickAdminStat('topReferrers')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🏆</span><div class="stat-label" data-i18n="tab_top_referrers">Top Referrers</div></div>
+                <div class="stat-box" onclick="clickAdminStat('cityStats')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🏙️</span><div class="stat-label" data-i18n="tab_city_stats">City Stats</div></div>
+                <div class="stat-box" onclick="clickAdminStat('auditor')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🔍</span><div class="stat-label">Website Auditor</div></div>
+                <div class="stat-box" onclick="clickAdminStat('visitorAnalytics')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">📊</span><div class="stat-label">Visitor Analytics</div></div>
+                <div class="stat-box" onclick="clickAdminStat('emailLeads')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">✉️</span><div class="stat-label">Email Leads</div></div>
             </div>
 
             <!-- Admin Tabs -->
@@ -1324,12 +1333,14 @@
                                 <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Lead Segment:</span>
                                 <select id="adminLeadFilter" class="form-control" style="width: auto; min-width: 240px; padding: 0.4rem 2rem 0.4rem 0.75rem; font-size: 0.85rem; height: auto;" onchange="filterAdminRiders()">
                                     <option value="ALL">All Registered Riders</option>
+                                    <option value="EV_RIDERS">All EV Riders</option>
                                     <option value="PERSONAL_INSURANCE_LEAD">PERSONAL_INSURANCE_LEAD</option>
                                     <option value="BIKE_INSURANCE_LEAD">BIKE_INSURANCE_LEAD</option>
                                     <option value="EV_SALE_LEAD">EV_SALE_LEAD</option>
                                     <option value="EV_RENTAL_LEAD">EV_RENTAL_LEAD</option>
                                     <option value="RETROFIT_LEAD">RETROFIT_LEAD</option>
                                     <option value="PRODUCT_LEAD">PRODUCT_LEAD</option>
+                                    <option value="WEBSITE_CONSULTATION_LEAD">Website Consultations</option>
                                 </select>
                             </div>
                             <button class="btn btn-primary" onclick="downloadLeadsCSV()" style="padding: 0.45rem 1.25rem; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; height: auto; border-radius: 6px;">

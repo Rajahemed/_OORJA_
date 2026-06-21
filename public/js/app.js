@@ -89,8 +89,8 @@ async function loadClientConfig() {
 
 // --- Consent Management ---
 const CONSENT_KEY = 'rw_consent_v1';
-let analyticsConsent = false;
-let marketingConsent  = false;
+let analyticsConsent = true;
+let marketingConsent = true;
 
 function getConsent() {
     try {
@@ -674,10 +674,10 @@ async function loadEmailLeads() {
             status_unlocked:"Unlocked", status_locked:"Locked", status_offline:"Offline",
             label_you:"You", lbl_type:"Type", lbl_color:"Color", lbl_plate:"Plate", lbl_registration:"Registration",
             no_documents:"No insurance documents", no_riders_db:"No riders in DB",
-            ach_speed_demon_title:"Speed Demon", ach_speed_demon_desc:"Complete your first delivery",
-            ach_five_star_title:"5-Star Master", ach_five_star_desc:"Reach 50 points",
-            ach_century_title:"Century Club", ach_century_desc:"Deliver 10 parcels",
-            ach_expert_title:"Referral King", ach_expert_desc:"Refer 5 riders",
+            ach_speed_demon_title:"Referral Starter", ach_speed_demon_desc:"Refer your first rider",
+            ach_five_star_title:"Referral Master", ach_five_star_desc:"Refer 10 riders",
+            ach_century_title:"Referral Champion", ach_century_desc:"Refer 25 riders",
+            ach_expert_title:"Referral King", ach_expert_desc:"Refer 50 riders",
             lang_auto_msg:"Language auto-set to English for this city",
             label_phone:"Phone Number"
         },
@@ -772,10 +772,10 @@ async function loadEmailLeads() {
             status_unlocked:"अनलॉक", status_locked:"लॉक", status_offline:"ऑफ़लाइन",
             label_you:"आप", lbl_type:"प्रकार", lbl_color:"रंग", lbl_plate:"प्लेट", lbl_registration:"पंजीकरण",
             no_documents:"कोई बीमा दस्तावेज़ नहीं", no_riders_db:"कोई राइडर नहीं",
-            ach_speed_demon_title:"स्पीड डेमन", ach_speed_demon_desc:"पहली डिलीवरी पूरी करें",
-            ach_five_star_title:"5-स्टार मास्टर", ach_five_star_desc:"50 अंक पाएं",
-            ach_century_title:"सेंचुरी क्लब", ach_century_desc:"10 पार्सल डिलीवर करें",
-            ach_expert_title:"रेफरल किंग", ach_expert_desc:"5 राइडर्स रेफर करें",
+            ach_speed_demon_title:"रेफरल स्टार्टर", ach_speed_demon_desc:"पहला राइडर रेफर करें",
+            ach_five_star_title:"रेफरल मास्टर", ach_five_star_desc:"10 राइडर्स रेफर करें",
+            ach_century_title:"रेफरल चैंपियन", ach_century_desc:"25 राइडर्स रेफर करें",
+            ach_expert_title:"रेफरल किंग", ach_expert_desc:"50 राइडर्स रेफर करें",
             lang_auto_msg:"इस शहर के लिए भाषा हिंदी में बदली गई",
             label_phone:"फ़ोन नंबर"
         },
@@ -869,10 +869,10 @@ async function loadEmailLeads() {
             status_unlocked:"ಅನ್ಲಾಕ್", status_locked:"ಲಾಕ್", status_offline:"ಆಫ್‌ಲೈನ್",
             label_you:"ನೀವು", lbl_type:"ವಿಧ", lbl_color:"ಬಣ್ಣ", lbl_plate:"ಪ್ಲೇಟ್", lbl_registration:"ನೋಂದಣಿ",
             no_documents:"ವಿಮೆ ದಾಖಲೆ ಇಲ್ಲ", no_riders_db:"ರೈಡರ್ಸ್ ಇಲ್ಲ",
-            ach_speed_demon_title:"ಸ್ಪೀಡ್ ಡೆಮನ್", ach_speed_demon_desc:"ಮೊದಲ ಡೆಲಿವರಿ ಪೂರ್ಣಗೊಳಿಸಿ",
-            ach_five_star_title:"5-ಸ್ಟಾರ್ ಮಾಸ್ಟರ್", ach_five_star_desc:"50 ಅಂಕ ತಲುಪಿ",
-            ach_century_title:"ಸೆಂಚುರಿ ಕ್ಲಬ್", ach_century_desc:"10 ಪಾರ್ಸೆಲ್ ತಲುಪಿಸಿ",
-            ach_expert_title:"ರೆಫರಲ್ ಕಿಂಗ್", ach_expert_desc:"5 ರೈಡರ್ಸ್ ರೆಫರ್ ಮಾಡಿ",
+            ach_speed_demon_title:"ರೆಫರಲ್ ಸ್ಟಾರ್ಟರ್", ach_speed_demon_desc:"ಮೊದಲ ರೈಡರ್ ರೆಫರ್ ಮಾಡಿ",
+            ach_five_star_title:"ರೆಫರಲ್ ಮಾಸ್ಟರ್", ach_five_star_desc:"10 ರೈಡರ್ಸ್ ರೆಫರ್ ಮಾಡಿ",
+            ach_century_title:"ರೆಫರಲ್ ಚಾಂಪಿಯನ್", ach_century_desc:"25 ರೈಡರ್ಸ್ ರೆಫರ್ ಮಾಡಿ",
+            ach_expert_title:"ರೆಫರಲ್ ಕಿಂಗ್", ach_expert_desc:"50 ರೈಡರ್ಸ್ ರೆಫರ್ ಮಾಡಿ",
             lang_auto_msg:"ಈ ನಗರಕ್ಕಾಗಿ ಭಾಷೆ ಕನ್ನಡಕ್ಕೆ ಬದಲಾಗಿದೆ",
             label_phone:"ಫೋನ್ ಸಂಖ್ಯೆ"
         }
@@ -1406,7 +1406,8 @@ async function loadEmailLeads() {
                 });
             }
             else if (step === 5) {
-                if (!sec.querySelector(`input[name="openEV"]:checked`)) {
+                const openEVRadio = sec.querySelector(`input[name="openEV"]:checked`);
+                if (!openEVRadio) {
                     const radios = sec.querySelectorAll(`input[name="openEV"]`);
                     if (radios.length > 0) {
                         const group = radios[0].closest('.radio-group');
@@ -1418,6 +1419,40 @@ async function loadEmailLeads() {
                             if (!firstErrorMessage) firstErrorMessage = 'Please answer if you are open to using EVs.';
                             if (!firstInvalidField) firstInvalidField = group;
                             radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                        }
+                    }
+                } else if (openEVRadio.value === 'Yes') {
+                    const switchTriggers = sec.querySelectorAll(`input[name="switchTriggers"]:checked`);
+                    if (switchTriggers.length === 0) {
+                        const firstTrigger = sec.querySelector(`input[name="switchTriggers"]`);
+                        if (firstTrigger) {
+                            const group = firstTrigger.closest('.checkbox-group');
+                            if (group) {
+                                group.style.border = '2px solid var(--danger-color)';
+                                group.style.padding = '0.5rem';
+                                group.style.borderRadius = 'var(--border-radius-md)';
+                                isValid = false;
+                                if (!firstErrorMessage) firstErrorMessage = 'Please select at least one reason to switch.';
+                                if (!firstInvalidField) firstInvalidField = group;
+                                sec.querySelectorAll(`input[name="switchTriggers"]`).forEach(c => c.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                            }
+                        }
+                    }
+
+                    const interestsRadio = sec.querySelector(`input[name="interests"]:checked`);
+                    if (!interestsRadio) {
+                        const firstInterest = sec.querySelector(`input[name="interests"]`);
+                        if (firstInterest) {
+                            const group = firstInterest.closest('.radio-group');
+                            if (group) {
+                                group.style.border = '2px solid var(--danger-color)';
+                                group.style.padding = '0.5rem';
+                                group.style.borderRadius = 'var(--border-radius-md)';
+                                isValid = false;
+                                if (!firstErrorMessage) firstErrorMessage = 'Please select what you would be interested in.';
+                                if (!firstInvalidField) firstInvalidField = group;
+                                sec.querySelectorAll(`input[name="interests"]`).forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                            }
                         }
                     }
                 }
@@ -1544,12 +1579,44 @@ async function loadEmailLeads() {
         }
     }
 
-    function sendMockOtp() {
-        const phone = document.getElementById('loginPhone').value;
+    async function sendMockOtp(phoneInputId = 'loginPhone', msgContainerId = 'otpSentMsg') {
+        const phone = document.getElementById(phoneInputId).value;
         const phoneRegex = /^[6-9][0-9]{9}$/;
         if (!phone || !phoneRegex.test(phone)) { showToast('Please enter a valid 10-digit Indian mobile number first', 'warning'); return; }
-        document.getElementById('otpSentMsg').style.display = 'block';
-        showToast('OTP Sent (Mock): 123456', 'success');
+        
+        const btn = event && event.target ? event.target.closest('button') : null;
+        const origHtml = btn ? btn.innerHTML : 'Send OTP';
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        }
+
+        try {
+            const res = await fetch('/auth/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone })
+            });
+            const data = await res.json();
+            if (data.success) {
+                const msgEl = document.getElementById(msgContainerId);
+                if (msgEl) {
+                    msgEl.style.display = 'block';
+                    msgEl.textContent = data.isMock ? 'OTP sent! (mock: use 123456)' : 'OTP sent successfully!';
+                    msgEl.style.color = 'var(--success-color)';
+                }
+                showToast(data.message || 'OTP Sent!', 'success');
+            } else {
+                showToast('Failed to send OTP: ' + (data.error || 'Unknown error'), 'error');
+            }
+        } catch (err) {
+            showToast('Network error: ' + err.message, 'error');
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
     }
 
     // ===== MULTI-STEP REGISTRATION =====
@@ -2113,10 +2180,10 @@ async function loadEmailLeads() {
         const del = currentUser ? (currentUser.totalDeliveries || 0) : 0;
         const refs = currentUser ? (currentUser.referrals || 0) : 0;
         const achievements = [
-            { title: TRANSLATIONS[lang].ach_speed_demon_title, icon: '🚀', desc: TRANSLATIONS[lang].ach_speed_demon_desc, unlocked: del >= 1 },
-            { title: TRANSLATIONS[lang].ach_five_star_title, icon: '⭐', desc: TRANSLATIONS[lang].ach_five_star_desc, unlocked: pts >= 50 },
-            { title: TRANSLATIONS[lang].ach_century_title, icon: '💯', desc: TRANSLATIONS[lang].ach_century_desc, unlocked: del >= 10 },
-            { title: TRANSLATIONS[lang].ach_expert_title, icon: '🌟', desc: TRANSLATIONS[lang].ach_expert_desc, unlocked: refs >= 5 }
+            { title: TRANSLATIONS[lang].ach_speed_demon_title, icon: '🚀', desc: TRANSLATIONS[lang].ach_speed_demon_desc, unlocked: refs >= 1 },
+            { title: TRANSLATIONS[lang].ach_five_star_title, icon: '⭐', desc: TRANSLATIONS[lang].ach_five_star_desc, unlocked: refs >= 10 },
+            { title: TRANSLATIONS[lang].ach_century_title, icon: '💯', desc: TRANSLATIONS[lang].ach_century_desc, unlocked: refs >= 25 },
+            { title: TRANSLATIONS[lang].ach_expert_title, icon: '🌟', desc: TRANSLATIONS[lang].ach_expert_desc, unlocked: refs >= 50 }
         ];
         grid.innerHTML = achievements.map(a => `
             <div style="text-align:center; padding:1.5rem 1rem; border:1px solid var(--card-border); border-radius:var(--border-radius-md); background:rgba(255,255,255,0.01); ${a.unlocked ? '' : 'filter:grayscale(0.8); opacity:0.5;'}">
@@ -2777,11 +2844,37 @@ async function loadEmailLeads() {
         }).catch(err => showToast(`Network error: ${err.message}`, 'error'));
     }
 
+    window.clickAdminStat = function(type) {
+        if (type === 'registered') {
+            document.getElementById('adminLeadFilter').value = 'ALL';
+            switchAdminTab('allRiders');
+            filterAdminRiders();
+        } else if (type === 'evRiders') {
+            document.getElementById('adminLeadFilter').value = 'EV_RIDERS';
+            switchAdminTab('allRiders');
+            filterAdminRiders();
+        } else if (type === 'hotLeads') {
+            switchAdminTab('evLeads');
+        } else {
+            switchAdminTab(type);
+        }
+        
+        // Scroll down to the admin tabs section so the user sees the content change
+        setTimeout(() => {
+            const tabsSection = document.querySelector('.admin-tabs');
+            if (tabsSection) {
+                tabsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 50);
+    };
+
     function filterAdminRiders() {
         const val = document.getElementById('adminLeadFilter') ? document.getElementById('adminLeadFilter').value : 'ALL';
         let filtered = allAdminRiders;
         if (val === 'EV_SALE_LEAD') {
             filtered = allAdminRiders.filter(r => r.openToEV === 'Yes' || r.openToEV === 'Need more information' || (r.tags || []).includes('Hot EV Lead'));
+        } else if (val === 'EV_RIDERS') {
+            filtered = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric'));
         } else if (val === 'PERSONAL_INSURANCE_LEAD' || val === 'BIKE_INSURANCE_LEAD') {
             filtered = allAdminRiders.filter(r => r.hasAccidentalInsurance === 'No' || r.hasAccidentalInsurance === 'Not sure' || r.hasHealthInsurance === 'No' || r.hasHealthInsurance === 'Not sure' || (r.tags || []).includes('Insurance Lead'));
         } else if (val !== 'ALL') {
@@ -2792,7 +2885,33 @@ async function loadEmailLeads() {
 
     function downloadLeadsCSV() {
         const val = document.getElementById('adminLeadFilter') ? document.getElementById('adminLeadFilter').value : 'ALL';
-        window.open(`/api/admin/export/csv?segment=${val}`, '_blank');
+        const btn = document.querySelector('.btn-primary[onclick="downloadLeadsCSV()"]');
+        if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+        
+        fetch(`/api/admin/export/csv?segment=${val}`, {
+            headers: getAdminAuthHeaders()
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Download failed. You might need to log in again.');
+            return res.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `leads_export_${val}_${Date.now()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            showToast('CSV downloaded successfully!', 'success');
+        })
+        .catch(err => {
+            showToast(`Error: ${err.message}`, 'error');
+        })
+        .finally(() => {
+            if (btn) btn.innerHTML = '<i class="fas fa-download"></i> <span data-i18n="btn_download_csv">Download CSV</span>';
+        });
     }
 
     function renderAdminRidersTable(riders) {
