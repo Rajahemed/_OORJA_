@@ -2071,9 +2071,7 @@ async function loadEmailLeads() {
     }
 
     function getWhatsAppShareLink(code) {
-        const origin = window.location.origin;
-        const base = (origin.includes('localhost') || origin.includes('127.0.0.1')) ? 'https://roadwarriorev.com' : origin;
-        return `${base}/?ref=${code}`;
+        return `${window.location.origin}/?ref=${code}`;
     }
 
     // ===== SCORE LOOKUP (public) =====

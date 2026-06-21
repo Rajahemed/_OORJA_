@@ -296,9 +296,9 @@ router.post('/riders/register', async (req, res) => {
     }
     const riderId = inserted.id;
 
-    // Use a public domain for the referral link so WhatsApp makes it clickable.
-    // Localhost links are not recognized as valid URLs by WhatsApp.
-    const publicDomain = 'https://roadwarriorev.com';
+    // Use the actual request origin or the configured API_BASE_URL
+    // Fallback to a production domain if missing. If origin is localhost, whatsapp won't linkify it but that's expected in dev.
+    const publicDomain = req.headers.origin || process.env.API_BASE_URL || 'https://roadwarriorev.com';
     const refLink = `${publicDomain}/?ref=${referralCode}`;
 
     let whatsappMessage = '';
