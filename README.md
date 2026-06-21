@@ -200,15 +200,34 @@ Home (/)
 └── Admin (/admin)
 ```
 
-## 🔐 Security Features
+## 🔐 Security Audit & Hardening
 
-- ✅ Input validation (Phone: 10 digits only)
-- ✅ Session management
-- ✅ HTTPS ready configuration
-- ✅ CORS protection
-- ✅ Body size limits
-- ✅ Environment variable configuration
+During the recent security audit, several vulnerabilities and weaknesses were identified and subsequently remediated. The platform now implements defense-in-depth strategies to protect user data and system integrity.
 
+### 🛡️ What Was Audited & Fixed
+
+1. **Cross-Site Scripting (XSS) Mitigation**
+   - **Weakness:** Lack of strict resource loading policies could allow execution of malicious scripts.
+   - **Fix:** Implemented **Helmet.js** with a strict Content Security Policy (CSP). This restricts script, style, and image sources to explicitly trusted domains, neutralizing XSS vectors.
+
+2. **Cross-Site Request Forgery (CSRF) Protection**
+   - **Weakness:** API endpoints were susceptible to CSRF, where an attacker could trick a victim's browser into executing unwanted actions.
+   - **Fix:** Integrated the **csurf** middleware. All state-changing requests now require a valid, session-bound CSRF token, ensuring that requests intentionally originate from our frontend.
+
+3. **Brute-Force & Denial-of-Service (DoS) Prevention**
+   - **Weakness:** APIs lacked request throttling, making them vulnerable to brute-force credential stuffing and basic volumetric DoS attacks.
+   - **Fix:** Added **express-rate-limit** to restrict each IP address to a maximum of 200 requests per 15-minute window. Additionally, enforced strict payload size limits (`50mb`) in `body-parser` to prevent large-payload memory exhaustion.
+
+4. **Authentication & Credential Security**
+   - **Weakness:** Custom-built admin authentication can be error-prone and vulnerable to timing attacks or weak hashing.
+   - **Fix:** Delegated admin authentication entirely to **Supabase Auth**, which utilizes industry-standard secure password hashing (bcrypt/Argon2) and secure JWT issuance.
+
+5. **Data Exposure & Transport Security**
+   - **Weakness:** Potential exposure of internal stack details and unrestricted cross-origin requests.
+   - **Fix:** Hardened **CORS** configurations to explicitly control allowed origins. Disabled the `X-Powered-By` header (via Helmet) to obscure the underlying technology stack.
+
+6. **Input Validation**
+   - **Fix:** Real-time, strict regex-based validation for critical inputs (e.g., enforcing exactly 10 digits for Indian phone numbers) to prevent SQL/NoSQL injection and maintain data hygiene.
 ## 📊 API Endpoints
 
 ### Authentication

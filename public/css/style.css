@@ -625,6 +625,7 @@ select.form-control option {
   transition: var(--transition);
   position: relative;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .card::after {
@@ -740,6 +741,8 @@ select.form-control option {
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 .stat-box::before {
@@ -755,9 +758,9 @@ select.form-control option {
   pointer-events: none;
 }
 
-.stat-box:hover::before {
+/* .stat-box:hover::before {
   opacity: 1;
-}
+} */
 
 .stat-box:hover {
   transform: translateY(-6px);
