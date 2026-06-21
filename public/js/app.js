@@ -290,11 +290,15 @@ function _rwGetDeviceType() {
 }
 
 function initVisitorTracking() {
-    // Get or create persistent anonymous visitor ID
-    visitorId = localStorage.getItem('rw_visitor_id');
-    if (!visitorId) {
+    try {
+        visitorId = localStorage.getItem('rw_visitor_id');
+        if (!visitorId) {
+            visitorId = _rwGenerateId();
+            localStorage.setItem('rw_visitor_id', visitorId);
+        }
+    } catch (e) {
+        console.warn('LocalStorage not available for visitor tracking');
         visitorId = _rwGenerateId();
-        localStorage.setItem('rw_visitor_id', visitorId);
     }
     sessionId = _rwGenerateId(); // fresh session each page load
 
@@ -894,9 +898,12 @@ async function loadEmailLeads() {
         initConsentBanner();
         
         // Check for referral code — from URL or previously stored in localStorage
-        const refCode = new URLSearchParams(window.location.search).get('ref') || localStorage.getItem('pendingReferralCode');
+        let refCode = new URLSearchParams(window.location.search).get('ref');
+        if (!refCode) {
+            try { refCode = localStorage.getItem('pendingReferralCode'); } catch (e) {}
+        }
         if (refCode) {
-            localStorage.setItem('pendingReferralCode', refCode);
+            try { localStorage.setItem('pendingReferralCode', refCode); } catch (e) {}
             // Pre-fill hidden referral code input (used on submit)
             const el = document.getElementById('regReferralCode');
             if (el) el.value = refCode.toUpperCase();
@@ -910,7 +917,8 @@ async function loadEmailLeads() {
             if (badgeCode) badgeCode.textContent = refCode.toUpperCase();
         }
 
-        const savedLang = localStorage.getItem('selectedLang') || 'en';
+        let savedLang = 'en';
+        try { savedLang = localStorage.getItem('selectedLang') || 'en'; } catch (e) {}
         document.getElementById('langSelector').value = savedLang;
         changeLanguage(savedLang);
 
@@ -2029,7 +2037,7 @@ async function loadEmailLeads() {
                 document.getElementById('successReferralCode').textContent = result.referralCode;
                 let msgHtml = result.whatsappMessage
                     .replace(/\n/g, '<br>')
-                    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:var(--primary-color); font-weight:600; text-decoration:underline;">$1</a>');
+                    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#007bff; font-weight:600; text-decoration:underline;">$1</a>');
                 document.getElementById('whatsappMsgPreview').innerHTML = msgHtml;
 
                 const waLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(result.whatsappMessage)}`;
@@ -2074,6 +2082,18 @@ async function loadEmailLeads() {
         return `${window.location.origin}/?ref=${code}`;
     }
 
+    function getWhatsAppMessageText(fullName, code) {
+        const lang = localStorage.getItem('selectedLang') || 'en';
+        const refLink = getWhatsAppShareLink(code);
+        if (lang === 'hi') {
+            return `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${code}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nRoad Warrior EV 🏍️`;
+        } else if (lang === 'kn') {
+            return `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${code}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nRoad Warrior EV 🏍️`;
+        } else {
+            return `Welcome ${fullName}! You are now registered. Your referral code is ${code}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV 🏍️`;
+        }
+    }
+
     // ===== SCORE LOOKUP (public) =====
     window.lookupScore = function() {
         const phone = document.getElementById('scoreLookupPhone').value.trim();
@@ -2089,8 +2109,7 @@ async function loadEmailLeads() {
                 const pts = rider.totalPoints || 0;
                 const code = rider.referralCode || 'N/A';
                 const tags = (rider.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
-                const refLink = getWhatsAppShareLink(code);
-                const waMsg = `Hi! My Road Warrior referral code is ${code}. Register here: ${refLink} and earn points!`;
+                const waMsg = getWhatsAppMessageText(rider.fullName || 'Rider', code);
                 result.innerHTML = `
                     <div class="score-display">
                         <div style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:0.5rem;">Welcome back, <strong>${rider.fullName}</strong>! 🎉</div>
@@ -2102,7 +2121,7 @@ async function loadEmailLeads() {
                         </div>
                         <div class="referral-code-badge" style="margin:0 auto; display:inline-flex;">🎫 ${code}</div>
                         <div style="margin-top:0.75rem;">${tags}</div>
-                        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(waMsg)}" target="_blank" class="btn btn-success w-100" style="background:#25D366; border-color:#25D366; margin-top:1rem;">
+                        <a href="#" onclick="window.shareWithImage(event, '${code}', '${rider.fullName}')" class="btn btn-success w-100" style="background:#25D366; border-color:#25D366; margin-top:1rem;">
                             <i class="fab fa-whatsapp"></i> Share my referral code
                         </a>
                     </div>`;
@@ -2516,41 +2535,38 @@ async function loadEmailLeads() {
         });
     }
 
-    function shareToWhatsApp() {
-        if (!currentUser) return;
-        const code = currentUser.referralCode || 'RWPRO';
-        const refLink = getWhatsAppShareLink(code);
-        const lang = localStorage.getItem('selectedLang') || 'en';
-        let msg;
-        if (lang === 'hi') msg = `🚀 *Road Warrior Pro* - Mujhe join karo!\n\nMera referral code use karo aur register karo:\n🔗 ${refLink}\n\nCode: *${code}*\n\nDono ko milenge points! 🏆`;
-        else if (lang === 'kn') msg = `🚀 *Road Warrior Pro* - Nannanu join madi!\n\nNanna referral code balisि register madi:\n🔗 ${refLink}\n\nCode: *${code}*\n\nIddaru points gaListevi! 🏆`;
-        else msg = `🚀 *Road Warrior Pro* - Join my delivery team!\n\nUse my referral link:\n🔗 ${refLink}\n\nCode: *${code}*\n\nWe both earn points! 🏆`;
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+    window.shareToWhatsApp = function(e) {
+        if (e) e.preventDefault();
+        if (typeof window.shareWithImage === 'function') {
+            window.shareWithImage(e);
+        }
     }
 
-    window.shareWithImage = async function(e) {
+    window.shareWithImage = async function(e, specificCode = null, specificName = null) {
         if (e) e.preventDefault();
         
         // Find the fallback URL (the normal WhatsApp share link)
         let fallbackUrl = '';
         let text = '';
 
-        const whatsappSendLink = document.getElementById('whatsappSendLink');
-        if (whatsappSendLink) {
-            // we use getAttribute to get the actual assigned URL if it's there
-            fallbackUrl = whatsappSendLink.getAttribute('href') || whatsappSendLink.href;
-            const previewEl = document.getElementById('whatsappMsgPreview');
-            if (previewEl) {
-                // Get the text representation, converting <br> to newlines
-                text = previewEl.innerHTML.replace(/<br\s*[\/]?>/gi, "\n").replace(/<[^>]+>/g, "");
+        if (!specificCode) {
+            const whatsappSendLink = document.getElementById('whatsappSendLink');
+            if (whatsappSendLink) {
+                // we use getAttribute to get the actual assigned URL if it's there
+                fallbackUrl = whatsappSendLink.getAttribute('href') || whatsappSendLink.href;
+                const previewEl = document.getElementById('whatsappMsgPreview');
+                if (previewEl) {
+                    // Get the text representation, converting <br> to newlines
+                    text = previewEl.innerHTML.replace(/<br\s*[\/]?>/gi, "\n").replace(/<[^>]+>/g, "");
+                }
             }
         }
         
-        // If not found in the DOM (e.g. called from a different context), generate it
-        if (!text && currentUser) {
-            const code = currentUser.referralCode || 'RWPRO';
-            const refLink = getWhatsAppShareLink(code);
-            text = `🚀 *Road Warrior Pro* - Join my delivery team!\n\nUse my referral link:\n🔗 ${refLink}\n\nCode: *${code}*\n\nWe both earn points! 🏆`;
+        // If not found in the DOM (e.g. called from a different context) or explicit arguments passed, generate it
+        if (!text) {
+            const code = specificCode || (currentUser ? currentUser.referralCode : 'RWPRO');
+            const fullName = specificName || (currentUser ? currentUser.fullName : 'Rider');
+            text = getWhatsAppMessageText(fullName, code);
             fallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
         }
 
@@ -2951,7 +2967,7 @@ async function loadEmailLeads() {
     function loadTopReferrers() {
         fetch('/api/admin/riders', { headers: getAdminAuthHeaders() }).then(r => r.json()).then(result => {
             if (result.success) {
-                const sorted = result.data.sort((a, b) => (b.referrals || 0) - (a.referrals || 0));
+                const sorted = result.data.sort((a, b) => (b.referrals || 0) - (a.referrals || 0)).slice(0, 20);
                 const tbody = document.getElementById('topReferrersTableBody');
                 tbody.innerHTML = sorted.map((r, i) => {
                     const rn = i + 1;

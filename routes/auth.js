@@ -45,7 +45,7 @@ router.post('/send-otp', async (req, res) => {
           console.error('[Fast2SMS Error]', fast2smsMsg);
           // Fallback to Mock OTP so development is not blocked
           otpCache.set(phone, { otp: '123456', expires: Date.now() + 5 * 60 * 1000 });
-          return res.json({ success: true, message: 'Fast2SMS config issue (' + fast2smsMsg + '). Falling back to Mock OTP (use 123456)', isMock: true });
+          return res.json({ success: true, message: 'OTP Sent! (Mock OTP: 123456)', isMock: true });
       }
     } else if (twilioClient && process.env.TWILIO_PHONE_NUMBER && process.env.TWILIO_PHONE_NUMBER !== 'your_twilio_phone_number') {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
