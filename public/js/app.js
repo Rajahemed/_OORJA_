@@ -584,6 +584,94 @@ async function loadEmailLeads() {
     }
 }
 
+async function openDataDrilldown(type) {
+    if (type === 'conversion') return; // Just a calculated ratio, nothing to drill down
+    
+    // Quick redirect for leads
+    if (type === 'leads') {
+        // Switch to the actual Email Leads tab instead of trying to scroll to a hidden panel
+        if (typeof switchAdminTab === 'function') {
+            switchAdminTab('emailLeads');
+        } else {
+            // Fallback in case switchAdminTab isn't globally available here
+            document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            
+            const panel = document.getElementById('panel-emailLeads');
+            if (panel) panel.classList.add('active');
+            
+            // Try to activate the tab button too
+            const tabBtn = Array.from(document.querySelectorAll('.admin-tab')).find(btn => btn.getAttribute('onclick') && btn.getAttribute('onclick').includes('emailLeads'));
+            if (tabBtn) tabBtn.classList.add('active');
+        }
+        return;
+    }
+
+    const modal = document.getElementById('dataDrilldownModal');
+    const title = document.getElementById('drilldownTitle');
+    const thead = document.getElementById('drilldownThead');
+    const tbody = document.getElementById('drilldownTbody');
+    
+    if (!modal || !title || !thead || !tbody) return;
+
+    title.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Loading Data...`;
+    thead.innerHTML = '';
+    tbody.innerHTML = '<tr><td style="text-align:center; padding:20px;">Loading...</td></tr>';
+    
+    modal.classList.add('show');
+
+    try {
+        const token = sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt') || localStorage.getItem('adminToken') || localStorage.getItem('adminJwt');
+        const res = await originalFetch.call(window, `/api/admin/analytics/drilldown?type=${type}`, {
+            credentials: 'same-origin',
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+            title.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Error`;
+            tbody.innerHTML = `<tr><td style="color:var(--danger-color);text-align:center;">${data.error}</td></tr>`;
+            return;
+        }
+
+        const items = data.data || [];
+        if (items.length === 0) {
+            title.innerHTML = `<i class="fas fa-list"></i> ${type === 'visitors' ? 'Visitors' : 'Sessions'} List`;
+            tbody.innerHTML = '<tr><td style="text-align:center;color:var(--text-secondary);">No data found.</td></tr>';
+            return;
+        }
+
+        if (type === 'visitors') {
+            title.innerHTML = `<i class="fas fa-users"></i> Recent Visitors`;
+            thead.innerHTML = `<tr><th>IP / ID</th><th>Location</th><th>Browser/OS</th><th>Visits</th><th>Last Visit</th></tr>`;
+            tbody.innerHTML = items.map(v => `
+                <tr>
+                    <td style="font-size:0.85rem;">${v.ip_address || v.visitor_id.substring(0,8)}</td>
+                    <td>${(v.ip_address === '::1' || v.ip_address === '127.0.0.1') ? '<span style="color:var(--text-secondary);"><i class="fas fa-network-wired"></i> Localhost (Testing)</span>' : (v.city ? v.city + ', ' : '') + (v.country || 'Unknown')}</td>
+                    <td>${v.browser || 'Unknown'} / ${v.device_type || 'Unknown'}</td>
+                    <td>${v.visit_count || 1}</td>
+                    <td style="font-size:0.8rem;color:var(--text-secondary);">${new Date(v.last_visit || v.created_at).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        } else if (type === 'sessions') {
+            title.innerHTML = `<i class="fas fa-mouse-pointer"></i> Recent Sessions (Page Views)`;
+            thead.innerHTML = `<tr><th>Session ID</th><th>Visitor ID</th><th>Page</th><th>Time</th></tr>`;
+            tbody.innerHTML = items.map(s => `
+                <tr>
+                    <td style="font-size:0.85rem;">${(s.session_id || '').substring(0,8)}...</td>
+                    <td style="font-size:0.85rem;">${(s.visitor_id || '').substring(0,8)}...</td>
+                    <td><small style="background:rgba(108,71,255,0.1);padding:2px 8px;border-radius:50px;color:#a78bfa;">${s.page_url}</small></td>
+                    <td style="font-size:0.8rem;color:var(--text-secondary);">${new Date(s.created_at).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+    } catch (e) {
+        title.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Error`;
+        tbody.innerHTML = `<tr><td style="color:var(--danger-color);text-align:center;">Network Error: ${e.message}</td></tr>`;
+    }
+}
+
+
 
     // ===== TRANSLATIONS (EN / HI / KN) =====
     const TRANSLATIONS = {
@@ -3036,6 +3124,7 @@ async function loadEmailLeads() {
 
             if (result.success) {
                 const data = result.data;
+                document.getElementById('auditResultUrl').innerText = url;
                 document.getElementById('auditorResults').style.display = 'block';
 
                 // Scores Grid
@@ -3073,6 +3162,71 @@ async function loadEmailLeads() {
             btn.disabled = false;
         }
     }
+
+    // Download PDF for Auditor
+    function downloadAuditPDF() {
+        const element = document.getElementById('auditorPrintableArea');
+        if (!element) return;
+        
+        // Temporarily fix scrollbars and ensure background is dark so white text shows up
+        const checklistBody = element.querySelector('.card-body[style*="max-height"]');
+        let originalStyle = '';
+        if (checklistBody) {
+            originalStyle = checklistBody.getAttribute('style');
+            checklistBody.style.maxHeight = 'none';
+            checklistBody.style.overflowY = 'visible';
+        }
+
+        // Force single-column layout and ensure no clipping on A4
+        const styleId = 'pdf-export-styles';
+        let styleEl = document.createElement('style');
+        styleEl.id = styleId;
+        styleEl.innerHTML = `
+            #auditorPrintableArea .row.cols-4, 
+            #auditorPrintableArea .row.cols-2 {
+                grid-template-columns: 1fr !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            #auditorPrintableArea .card {
+                margin-bottom: 20px !important;
+                /* Removed page-break-inside: avoid because it clips tall cards! */
+            }
+            #auditorPrintableArea .card-body {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+            /* Try to prevent breaking inside table rows instead */
+            #auditorPrintableArea tr {
+                page-break-inside: avoid !important;
+            }
+        `;
+        document.head.appendChild(styleEl);
+
+        const urlText = document.getElementById('auditResultUrl').innerText || 'website';
+        const filename = `Audit_Report_${urlText.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`;
+        
+        const opt = {
+            margin:       10,
+            filename:     filename,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, logging: false, backgroundColor: '#0f1f0f', scrollY: 0, scrollX: 0 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        showToast('Generating PDF...', 'info');
+        html2pdf().set(opt).from(element).save().then(() => {
+            showToast('PDF downloaded successfully!', 'success');
+            if (checklistBody) checklistBody.setAttribute('style', originalStyle);
+            document.getElementById(styleId)?.remove();
+        }).catch(err => {
+            console.error('PDF generation error:', err);
+            showToast('Failed to generate PDF.', 'error');
+            if (checklistBody) checklistBody.setAttribute('style', originalStyle);
+            document.getElementById(styleId)?.remove();
+        });
+    }
+
 // --- Custom Dropdown Logic for Delivery Platform ---
 function togglePlatformDropdown() {
     const list = document.getElementById('platformDropdownList');
@@ -3144,3 +3298,84 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// ==========================================
+// VISITOR INTELLIGENCE ANALYTICS
+// ==========================================
+async function loadVisitorAnalytics() {
+    try {
+        const headers = getAdminAuthHeaders();
+        const [overviewRes, trafficRes] = await Promise.all([
+            fetch('/api/admin/analytics/overview', { headers }),
+            fetch('/api/admin/analytics/traffic', { headers })
+        ]);
+        const overview = await overviewRes.json();
+        const traffic = await trafficRes.json();
+
+        if (overview.success) {
+            document.getElementById('metricTotalVisitors').innerText = overview.data.totalVisitors || 0;
+            document.getElementById('metricTotalLeads').innerText = overview.data.totalLeads || 0;
+            document.getElementById('metricSessions').innerText = overview.data.totalSessions || 0;
+            document.getElementById('metricConversion').innerText = overview.data.conversionRate + '%';
+            
+            // Devices Chart
+            const devCtx = document.getElementById('deviceBreakdownChart').getContext('2d');
+            if (window.devChart) window.devChart.destroy();
+            window.devChart = new Chart(devCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(overview.data.deviceBreakdown || {}),
+                    datasets: [{
+                        data: Object.values(overview.data.deviceBreakdown || {}),
+                        backgroundColor: ['#6366f1', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Browser Chart
+            const brCtx = document.getElementById('browserBreakdownChart').getContext('2d');
+            if (window.brChart) window.brChart.destroy();
+            window.brChart = new Chart(brCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(overview.data.browserBreakdown || {}),
+                    datasets: [{
+                        data: Object.values(overview.data.browserBreakdown || {}),
+                        backgroundColor: ['#ef4444', '#f59e0b', '#10b981', '#6366f1', '#8b5cf6']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        if (traffic.success && traffic.data.dailyData) {
+            const daily = traffic.data.dailyData;
+            const trCtx = document.getElementById('dailyTrafficChart').getContext('2d');
+            if (window.trChart) window.trChart.destroy();
+            window.trChart = new Chart(trCtx, {
+                type: 'line',
+                data: {
+                    labels: daily.map(d => d.date),
+                    datasets: [{
+                        label: 'Sessions',
+                        data: daily.map(d => d.sessions),
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+    } catch (e) {
+        console.error('Failed to load visitor analytics', e);
+    }
+}
+
+// Download CSV helper
+function downloadLeadsCSV() {
+    const token = sessionStorage.getItem('adminToken') || localStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt') || localStorage.getItem('adminJwt');
+    window.location.href = `/api/admin/analytics/export/csv?token=${token}`;
+}

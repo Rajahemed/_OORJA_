@@ -5,6 +5,7 @@ const express = require('express');
 const router  = express.Router();
 const supabase = require('../utils/supabase');
 const adminAuth = require('../middleware/adminAuth');
+const axios = require('axios');
 const { sanitizeString, sanitizeEmail, sanitizePhone, sanitizeIp } = require('../utils/sanitize');
 const { triggerDripSequence, processEmailQueue } = require('../utils/email');
 const {
@@ -33,6 +34,23 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
       req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip || ''
     );
 
+    // IP Geolocation via ipinfo.io
+    let country = '', region = '', city = '', isp = '', timezone = '';
+    if (ip && ip !== '127.0.0.1' && ip !== '::1') {
+      try {
+        const ipInfoRes = await axios.get(`https://ipinfo.io/${ip}/json?token=1b0663fe3437bb`);
+        if (ipInfoRes.data) {
+          country = ipInfoRes.data.country || '';
+          region = ipInfoRes.data.region || '';
+          city = ipInfoRes.data.city || '';
+          isp = ipInfoRes.data.org || '';
+          timezone = ipInfoRes.data.timezone || '';
+        }
+      } catch (e) {
+        console.warn('[analytics] IPInfo error:', e.message);
+      }
+    }
+
     // Upsert visitor (update last_visit and visit_count on returning visitor)
     const { data: existing } = await supabase
       .from('visitors')
@@ -41,15 +59,29 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
       .single();
 
     if (existing) {
-      await supabase.from('visitors').update({
+      const updateData = {
         last_visit: new Date().toISOString(),
         current_page: sanitizeString(current_page, 500),
-        visit_count: (existing.visit_count || 1) + 1
-      }).eq('visitor_id', visitor_id);
+        visit_count: (existing.visit_count || 1) + 1,
+        country: country || undefined,
+        region: region || undefined,
+        city: city || undefined,
+        timezone: timezone || undefined
+      };
+      // Try updating with isp first
+      const { error: updateErr } = await supabase.from('visitors').update({ ...updateData, isp: isp || undefined }).eq('visitor_id', visitor_id);
+      if (updateErr && updateErr.message.includes('isp')) {
+        console.warn('[analytics] Migration 003 missing: isp column not found. Retrying without isp.');
+        await supabase.from('visitors').update(updateData).eq('visitor_id', visitor_id);
+      }
     } else {
-      await supabase.from('visitors').insert({
+      const insertData = {
         visitor_id: sanitizeString(visitor_id, 100),
         ip_address: ip,
+        country: country,
+        region: region,
+        city: city,
+        timezone: timezone,
         language: sanitizeString(language, 20),
         browser: sanitizeString(browser, 50),
         operating_system: sanitizeString(operating_system, 50),
@@ -61,7 +93,13 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
         first_visit: new Date().toISOString(),
         last_visit: new Date().toISOString(),
         visit_count: 1
-      });
+      };
+      // Try inserting with isp first
+      const { error: insertErr } = await supabase.from('visitors').insert({ ...insertData, isp: isp });
+      if (insertErr && insertErr.message.includes('isp')) {
+        console.warn('[analytics] Migration 003 missing: isp column not found. Retrying without isp.');
+        await supabase.from('visitors').insert(insertData);
+      }
     }
 
     // Record session
@@ -78,6 +116,52 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
     // Silent fail — don't disrupt user experience for tracking errors
     console.error('[analytics] visitor/track error:', error.message);
     res.status(500).json({ success: false, error: 'Tracking error' });
+  }
+});
+
+// ============================================================
+// POST /api/visitor/event
+// Record specific click or interaction event
+// ============================================================
+router.post('/visitor/event', async (req, res) => {
+  try {
+    const { visitor_id, session_id, event_type, element_text, element_id, page } = req.body;
+    if (!visitor_id || !session_id || !event_type) {
+      return res.status(400).json({ success: false });
+    }
+    await supabase.from('visitor_events').insert({
+      visitor_id: sanitizeString(visitor_id, 100),
+      session_id: sanitizeString(session_id, 100),
+      event_type: sanitizeString(event_type, 50),
+      element_text: sanitizeString(element_text, 200),
+      element_id: sanitizeString(element_id, 100),
+      page: sanitizeString(page, 500)
+    });
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[analytics] visitor/event error:', err.message);
+    res.status(500).json({ success: false });
+  }
+});
+
+// ============================================================
+// POST /api/visitor/location
+// Record explicit GPS location if granted
+// ============================================================
+router.post('/visitor/location', async (req, res) => {
+  try {
+    const { visitor_id, latitude, longitude } = req.body;
+    if (!visitor_id || !latitude || !longitude) return res.status(400).json({ success: false });
+    
+    await supabase.from('visitors').update({
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude)
+    }).eq('visitor_id', visitor_id);
+    
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[analytics] visitor/location error:', err.message);
+    res.status(500).json({ success: false });
   }
 });
 
@@ -105,7 +189,7 @@ router.post('/leads/capture', leadCaptureRateLimit, async (req, res) => {
 
     // Duplicate check — one submission per email or phone
     const cleanPhone = sanitizePhone(phone) || '';
-    let query = supabase.from('riders').select('id, tags');
+    let query = supabase.from('website_leads').select('id');
     
     if (cleanPhone) {
       query = query.or(`email.eq.${cleanEmail},phone.eq.${cleanPhone}`);
@@ -116,15 +200,7 @@ router.post('/leads/capture', leadCaptureRateLimit, async (req, res) => {
     const { data: existingRecords } = await query;
     const existing = existingRecords && existingRecords.length > 0 ? existingRecords[0] : null;
 
-    const newTag = 'WEBSITE_CONSULTATION_LEAD';
-    const interestStr = sanitizeString(message, 50) || 'General Inquiry';
-
     if (existing) {
-      let tags = existing.tags || [];
-      if (!tags.includes(newTag)) tags.push(newTag);
-      if (!tags.includes(interestStr)) tags.push(interestStr);
-      await supabase.from('riders').update({ tags }).eq('id', existing.id);
-      
       return res.json({
         success: true,
         message: 'We already received your inquiry. Our team will contact you soon!'
@@ -132,18 +208,18 @@ router.post('/leads/capture', leadCaptureRateLimit, async (req, res) => {
     }
 
     const lead = {
-      fullName: cleanName,
+      full_name: cleanName,
       email: cleanEmail,
-      phone: sanitizePhone(phone) || '',
-      tags: [newTag, interestStr],
-      interests: sanitizeString(message, 1000) || '',
-      isActive: false,
-      consentMarketing: !!consent_marketing,
-      registeredAt: new Date().toISOString()
+      phone: cleanPhone,
+      company: sanitizeString(company, 100) || '',
+      message: sanitizeString(message, 1000) || '',
+      source: sanitizeString(source, 50) || 'website',
+      visitor_id: sanitizeString(visitor_id, 100) || null,
+      consent_marketing: !!consent_marketing
     };
 
     const { data: inserted, error: insertErr } = await supabase
-      .from('riders')
+      .from('website_leads')
       .insert(lead)
       .select('id')
       .single();
@@ -156,8 +232,8 @@ router.post('/leads/capture', leadCaptureRateLimit, async (req, res) => {
     // Trigger email drip sequence (non-blocking)
     triggerDripSequence({ 
       ...lead, 
-      id: inserted.id,
-      full_name: cleanName 
+      id: inserted.id 
+
     }).catch(e =>
       console.error('[analytics] drip trigger error:', e.message)
     );
@@ -184,7 +260,7 @@ router.post('/email/unsubscribe', unsubscribeRateLimit, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Valid email required.' });
     }
 
-    await supabase.from('ev_leads').update({
+    await supabase.from('website_leads').update({
       unsubscribed: true,
       unsubscribed_at: new Date().toISOString()
     }).eq('email', email);
@@ -199,7 +275,7 @@ router.post('/email/unsubscribe', unsubscribeRateLimit, async (req, res) => {
 router.get('/unsubscribe', async (req, res) => {
   const email = sanitizeEmail(req.query.email);
   if (email) {
-    await supabase.from('ev_leads').update({
+    await supabase.from('website_leads').update({
       unsubscribed: true,
       unsubscribed_at: new Date().toISOString()
     }).eq('email', email);
@@ -222,9 +298,9 @@ router.get('/admin/analytics/overview', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEW
       { data: browserBreakdown }
     ] = await Promise.all([
       supabase.from('visitors').select('*', { count: 'exact', head: true }),
-      supabase.from('ev_leads').select('*', { count: 'exact', head: true }),
+      supabase.from('website_leads').select('*', { count: 'exact', head: true }),
       supabase.from('sessions').select('*', { count: 'exact', head: true }),
-      supabase.from('ev_leads').select('full_name, email, source, created_at').order('created_at', { ascending: false }).limit(10),
+      supabase.from('website_leads').select('full_name, email, source, created_at').order('created_at', { ascending: false }).limit(10),
       supabase.from('visitors').select('device_type'),
       supabase.from('visitors').select('browser')
     ]);
@@ -313,13 +389,55 @@ router.get('/admin/analytics/traffic', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEWE
 });
 
 // ============================================================
+// GET /api/admin/analytics/drilldown
+// Returns detailed data for metric box clicks
+// ============================================================
+router.get('/admin/analytics/drilldown', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEWER']), adminAnalyticsRateLimit, async (req, res) => {
+  try {
+    const { type } = req.query;
+    let data = [];
+    
+    if (type === 'visitors') {
+      const { data: visitors } = await supabase
+        .from('visitors')
+        .select('visitor_id, ip_address, country, city, browser, device_type, visit_count, created_at, last_visit')
+        .order('last_visit', { ascending: false })
+        .limit(100);
+      data = visitors || [];
+    } else if (type === 'leads') {
+      const { data: leads } = await supabase
+        .from('website_leads')
+        .select('full_name, email, phone, source, created_at')
+        .order('created_at', { ascending: false })
+        .limit(100);
+      data = leads || [];
+    } else if (type === 'sessions') {
+      // Just returning recent sessions (events marked as page_view or similar)
+      const { data: sessions } = await supabase
+        .from('visitor_events')
+        .select('session_id, visitor_id, page_url, created_at')
+        .eq('event_type', 'page_view')
+        .order('created_at', { ascending: false })
+        .limit(100);
+      data = sessions || [];
+    } else {
+      return res.status(400).json({ success: false, error: 'Invalid type' });
+    }
+    
+    res.json({ success: true, data });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================================
 // GET /api/admin/analytics/leads
 // Lead pipeline with email log status
 // ============================================================
 router.get('/admin/analytics/leads', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEWER']), adminAnalyticsRateLimit, async (req, res) => {
   try {
     const { data: leads } = await supabase
-      .from('ev_leads')
+      .from('website_leads')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(100);
@@ -394,6 +512,37 @@ router.get('/email/process-queue', async (req, res) => {
 
   const result = await processEmailQueue();
   res.json({ success: true, ...result });
+});
+
+// ============================================================
+// GET /api/admin/analytics/export/csv
+// Export visitor tracking data as CSV
+// ============================================================
+router.get('/admin/analytics/export/csv', adminAuth(['SUPER_ADMIN', 'ADMIN']), async (req, res) => {
+  try {
+    const { data: visitors } = await supabase
+      .from('visitors')
+      .select('visitor_id, ip_address, country, region, city, isp, browser, operating_system, device_type, referral_source, visit_count, first_visit, last_visit')
+      .order('last_visit', { ascending: false });
+
+    if (!visitors || visitors.length === 0) {
+      return res.status(404).send('No data available');
+    }
+
+    const headers = Object.keys(visitors[0]).join(',');
+    const rows = visitors.map(v => {
+      return Object.values(v).map(val => `"${String(val || '').replace(/"/g, '""')}"`).join(',');
+    }).join('\n');
+
+    const csvData = `${headers}\n${rows}`;
+    
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=visitor_analytics.csv');
+    res.send(csvData);
+  } catch (error) {
+    console.error('[analytics] export error:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 module.exports = router;

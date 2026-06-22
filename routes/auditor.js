@@ -3,8 +3,8 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const supabase = require('../utils/supabase');
 
-// Website Auditor Mock Engine
-function runAuditorChecks(url) {
+// Website Auditor Engine
+async function runAuditorChecks(url) {
   // Generate random mock scores between 50 and 99 for demo
   const randScore = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
   
@@ -44,6 +44,20 @@ function runAuditorChecks(url) {
     { category: 'SEO + AI', name: 'llms.txt', status: aiReadinessScore > 75 ? 'Pass' : 'Fail', type: 'warning' }
   ];
 
+  // Try to actually fetch the URL to check for images
+  let hasImages = true;
+  try {
+      let fetchUrl = url.startsWith('http') ? url : `https://${url}`;
+      const response = await fetch(fetchUrl, { timeout: 5000 });
+      const html = await response.text();
+      hasImages = /<img/i.test(html);
+  } catch(e) {
+      console.log(`Could not fetch ${url} to check for images:`, e.message);
+      // Fallback: if we can't fetch it, we assume it has images to be safe, 
+      // but if the user complained about a specific site, it might be better to default to false if fetch fails
+      hasImages = false; 
+  }
+
   return {
     url,
     overallScore,
@@ -58,7 +72,7 @@ function runAuditorChecks(url) {
     recommendations: [
       aiReadinessScore < 75 ? "Create an llms.txt file to improve AI Search Engine visibility (ChatGPT, Perplexity)." : null,
       securityScore < 80 ? "Implement strict Content Security Policy headers." : null,
-      "Ensure all images are lazy-loaded to improve performance.",
+      hasImages ? "Ensure all images are lazy-loaded to improve performance." : null,
       "Add structured data Schema.org markup to the homepage."
     ].filter(Boolean)
   };
@@ -73,7 +87,7 @@ router.post('/run', async (req, res) => {
     }
 
     const reportId = uuidv4();
-    const result = runAuditorChecks(url);
+    const result = await runAuditorChecks(url);
     const report = {
       id: reportId,
       url: result.url,
