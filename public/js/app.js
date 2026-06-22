@@ -1003,6 +1003,14 @@ async function openDataDrilldown(type) {
             const badgeCode = document.getElementById('appliedReferralCodeText');
             if (badge) { badge.style.display = 'flex'; }
             if (badgeCode) badgeCode.textContent = refCode.toUpperCase();
+            
+            // Automatically switch to registration view for referred users
+            const login = document.getElementById('loginCard');
+            const reg = document.getElementById('registerCard');
+            if (login && reg) {
+                login.style.display = 'none';
+                reg.style.display = 'block';
+            }
         }
 
         let savedLang = 'en';
