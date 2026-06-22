@@ -174,12 +174,13 @@ router.get('/riders/by-phone/:phone', async (req, res) => {
 
 // Create/Register Rider - Full Questionnaire (Sections A-F)
 
-// Rate limiter: Maximum 3 registrations per IP address
+// Rate limiter: Soft Limit (flags for review instead of blocking due to CGNAT)
 const registerLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000, // 24 hours
-  max: 3, // Limit each IP to 3 requests per windowMs
-  handler: (req, res) => {
-    res.status(429).json({ success: false, error: 'Registration limit reached. Only 3 registrations are allowed per IP address.' });
+  max: 3, // Flag after 3 requests from same IP in 24 hours
+  handler: (req, res, next) => {
+    req.isSpamSuspect = true;
+    next();
   }
 });
 
@@ -233,6 +234,11 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
 
     // Compute auto tags
     const tags = computeSegmentTags({ vehicleType, openToEV, hasAccidentalInsurance, hasHealthInsurance, interests, switchTriggers });
+
+    // Apply soft IP limit flag if applicable
+    if (req.isSpamSuspect) {
+        tags.push('Flagged: Multiple IP');
+    }
 
     // Process referral code if provided
     let milestones = [];
