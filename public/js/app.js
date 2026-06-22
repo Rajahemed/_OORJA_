@@ -289,6 +289,23 @@ function _rwGetDeviceType() {
     return 'desktop';
 }
 
+function _rwGetDeviceModel() {
+    const ua = navigator.userAgent;
+    if (/Android/.test(ua)) {
+        // Look for model name between Android version and Build/, or before the closing parenthesis
+        const match = ua.match(/Android [0-9\.]+;.*?([^;]+)\s+Build/) || ua.match(/Android [0-9\.]+;.*?([^;]+)\)/);
+        if (match && match[1]) {
+            let model = match[1].trim();
+            // Remove 'wv' (WebView) if present
+            if (model.endsWith(' wv')) model = model.substring(0, model.length - 3);
+            return model;
+        }
+    }
+    if (/iPhone/.test(ua)) return 'iPhone';
+    if (/iPad/.test(ua)) return 'iPad';
+    return '';
+}
+
 function initVisitorTracking() {
     try {
         visitorId = localStorage.getItem('rw_visitor_id');
@@ -302,13 +319,16 @@ function initVisitorTracking() {
     }
     sessionId = _rwGenerateId(); // fresh session each page load
 
+    const model = _rwGetDeviceModel();
+    const finalDeviceType = model ? `${_rwGetDeviceType()} (${model})` : _rwGetDeviceType();
+
     const payload = {
         visitor_id:       visitorId,
         session_id:       sessionId,
         language:         navigator.language || 'en',
         browser:          _rwGetBrowser(),
         operating_system: _rwGetOS(),
-        device_type:      _rwGetDeviceType(),
+        device_type:      finalDeviceType,
         screen_resolution: `${screen.width}x${screen.height}`,
         referral_source:  document.referrer || 'direct',
         landing_page:     window.location.pathname + window.location.search,

@@ -6,6 +6,7 @@ const router  = express.Router();
 const supabase = require('../utils/supabase');
 const adminAuth = require('../middleware/adminAuth');
 const axios = require('axios');
+const deviceList = require('android-device-list');
 const { sanitizeString, sanitizeEmail, sanitizePhone, sanitizeIp } = require('../utils/sanitize');
 const { triggerDripSequence, processEmailQueue } = require('../utils/email');
 const {
@@ -26,6 +27,23 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
       device_type, screen_resolution, referral_source, landing_page, current_page
     } = req.body;
 
+    let finalDeviceType = sanitizeString(device_type, 100);
+    if (finalDeviceType.includes('(')) {
+        const match = finalDeviceType.match(/\(([^)]+)\)/);
+        if (match && match[1]) {
+            const rawModel = match[1];
+            try {
+                const devices = deviceList.getDevicesByModel(rawModel);
+                if (devices && devices.length > 0) {
+                    const dev = devices[0];
+                    finalDeviceType = finalDeviceType.replace(`(${rawModel})`, `(${dev.brand} ${dev.name})`);
+                }
+            } catch (err) {
+                console.error('[analytics] Device map error:', err.message);
+            }
+        }
+    }
+
     if (!visitor_id || !session_id) {
       return res.status(400).json({ success: false, error: 'visitor_id and session_id are required' });
     }
@@ -43,8 +61,34 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
           country = ipInfoRes.data.country || '';
           region = ipInfoRes.data.region || '';
           city = ipInfoRes.data.city || '';
-          isp = ipInfoRes.data.org || '';
           timezone = ipInfoRes.data.timezone || '';
+
+          // Exact ASN/Carrier and VPN/Proxy Detection
+          let rawIsp = ipInfoRes.data.org || '';
+          let asnMatch = rawIsp.match(/^(AS\d+)\s+(.*)/);
+          let asn = '', carrierName = rawIsp;
+          
+          if (asnMatch) {
+              asn = asnMatch[1];
+              carrierName = asnMatch[2];
+          }
+
+          const lowerCarrier = carrierName.toLowerCase();
+          let flag = '';
+
+          if (lowerCarrier.includes('amazon') || lowerCarrier.includes('aws') || lowerCarrier.includes('digitalocean') || 
+              lowerCarrier.includes('google cloud') || lowerCarrier.includes('hetzner') || lowerCarrier.includes('ovh') || 
+              lowerCarrier.includes('linode') || lowerCarrier.includes('azure') || lowerCarrier.includes('microsoft') || 
+              lowerCarrier.includes('datacenter') || lowerCarrier.includes('hosting')) {
+              flag = '🔴 [VPN/BOT]';
+          } else if (lowerCarrier.includes('jio') || lowerCarrier.includes('airtel') || lowerCarrier.includes('vodafone') || 
+                     lowerCarrier.includes('idea cellular') || lowerCarrier.includes('mobile') || lowerCarrier.includes('telecom')) {
+              flag = '🟢 [MOBILE]';
+          } else if (carrierName) {
+              flag = '🔵 [WIFI/BROADBAND]';
+          }
+
+          isp = `${flag} ${carrierName} ${asn ? `(${asn})` : ''}`.trim();
         }
       } catch (e) {
         console.warn('[analytics] IPInfo error:', e.message);
@@ -66,7 +110,12 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
         country: country || undefined,
         region: region || undefined,
         city: city || undefined,
-        timezone: timezone || undefined
+        timezone: timezone || undefined,
+        device_type: finalDeviceType,
+        browser: sanitizeString(browser, 50),
+        operating_system: sanitizeString(operating_system, 50),
+        language: sanitizeString(language, 20),
+        screen_resolution: sanitizeString(screen_resolution, 20)
       };
       // Try updating with isp first
       const { error: updateErr } = await supabase.from('visitors').update({ ...updateData, isp: isp || undefined }).eq('visitor_id', visitor_id);
@@ -85,7 +134,7 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
         language: sanitizeString(language, 20),
         browser: sanitizeString(browser, 50),
         operating_system: sanitizeString(operating_system, 50),
-        device_type: sanitizeString(device_type, 20),
+        device_type: finalDeviceType,
         screen_resolution: sanitizeString(screen_resolution, 20),
         referral_source: sanitizeString(referral_source, 500),
         landing_page: sanitizeString(landing_page, 500),
@@ -400,7 +449,7 @@ router.get('/admin/analytics/drilldown', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIE
     if (type === 'visitors') {
       const { data: visitors } = await supabase
         .from('visitors')
-        .select('visitor_id, ip_address, country, city, browser, device_type, visit_count, created_at, last_visit')
+        .select('*')
         .order('last_visit', { ascending: false })
         .limit(100);
       data = visitors || [];
