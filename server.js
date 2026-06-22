@@ -8,6 +8,11 @@ require('dotenv').config();
 const compression = require('compression');
 
 const app = express();
+
+// Trust proxy is strictly required if hosted behind Nginx, Render, Heroku, or Cloudflare.
+// Without this, express-rate-limit sees all users as having the exact same proxy IP.
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 3000;
 
 // Middleware

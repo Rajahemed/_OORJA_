@@ -643,12 +643,34 @@ async function openDataDrilldown(type) {
 
         if (type === 'visitors') {
             title.innerHTML = `<i class="fas fa-users"></i> Recent Visitors`;
-            thead.innerHTML = `<tr><th>IP / ID</th><th>Location</th><th>Browser/OS</th><th>Visits</th><th>Last Visit</th></tr>`;
+            thead.innerHTML = `<tr>
+                <th>IP / ISP</th>
+                <th>Location / Timezone</th>
+                <th>Device / Screen</th>
+                <th>Language</th>
+                <th>Source / Landing</th>
+                <th>Visits</th>
+                <th>Last Visit</th>
+            </tr>`;
             tbody.innerHTML = items.map(v => `
                 <tr>
-                    <td style="font-size:0.85rem;">${v.ip_address || v.visitor_id.substring(0,8)}</td>
-                    <td>${(v.ip_address === '::1' || v.ip_address === '127.0.0.1') ? '<span style="color:var(--text-secondary);"><i class="fas fa-network-wired"></i> Localhost (Testing)</span>' : (v.city ? v.city + ', ' : '') + (v.country || 'Unknown')}</td>
-                    <td>${v.browser || 'Unknown'} / ${v.device_type || 'Unknown'}</td>
+                    <td style="font-size:0.85rem;">
+                        <strong>${v.ip_address || v.visitor_id.substring(0,8)}</strong><br>
+                        <span style="color:var(--text-secondary);font-size:0.75rem;">${v.isp || 'Unknown ISP'}</span>
+                    </td>
+                    <td>
+                        ${(v.ip_address === '::1' || v.ip_address === '127.0.0.1') ? '<span style="color:var(--text-secondary);"><i class="fas fa-network-wired"></i> Localhost</span>' : (v.city ? v.city + ', ' : '') + (v.country || 'Unknown')}<br>
+                        <span style="color:var(--text-secondary);font-size:0.75rem;">${v.timezone || 'Unknown TZ'}</span>
+                    </td>
+                    <td style="font-size:0.85rem;">
+                        <strong>${v.browser || 'Unknown'} / ${v.operating_system || 'Unknown'}</strong><br>
+                        <span style="color:var(--text-secondary);font-size:0.75rem;">${v.device_type || 'Unknown'} - ${v.screen_resolution || 'Unknown Res'}</span>
+                    </td>
+                    <td style="font-size:0.85rem;">${(v.language || 'Unknown').toUpperCase()}</td>
+                    <td style="font-size:0.85rem;">
+                        <strong>Ref:</strong> ${(v.referral_source && v.referral_source !== 'null') ? v.referral_source : 'Direct'}<br>
+                        <strong>Landed:</strong> <span style="color:var(--text-secondary);font-size:0.75rem;">${v.landing_page || 'Unknown'}</span>
+                    </td>
                     <td>${v.visit_count || 1}</td>
                     <td style="font-size:0.8rem;color:var(--text-secondary);">${new Date(v.last_visit || v.created_at).toLocaleString()}</td>
                 </tr>

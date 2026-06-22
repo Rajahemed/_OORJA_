@@ -174,13 +174,12 @@ router.get('/riders/by-phone/:phone', async (req, res) => {
 
 // Create/Register Rider - Full Questionnaire (Sections A-F)
 
-// Rate limiter: Soft Limit (flags for review instead of blocking due to CGNAT)
+// Rate limiter: Maximum 3 registrations per IP address
 const registerLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000, // 24 hours
-  max: 3, // Flag after 3 requests from same IP in 24 hours
-  handler: (req, res, next) => {
-    req.isSpamSuspect = true;
-    next();
+  max: 3, // Limit each IP to 3 requests per windowMs
+  handler: (req, res) => {
+    res.status(429).json({ success: false, error: 'Registration limit reached. Only 3 registrations are allowed per IP address.' });
   }
 });
 
@@ -215,8 +214,11 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Phone must be exactly 10 digits' });
     }
 
+    // Normalize phone number to strictly 10 digits to prevent bypass
+    const normalizedPhone = phone.replace(/\D/g, '').slice(-10);
+
     // Check duplicate phone
-    const { data: dupPhoneRows, error: dupPhoneErr } = await supabase.from('riders').select('id').eq('phone', phone);
+    const { data: dupPhoneRows, error: dupPhoneErr } = await supabase.from('riders').select('id').eq('phone', normalizedPhone);
     if (dupPhoneErr) console.error('[Register] dupPhone error:', dupPhoneErr);
     const dupPhone = dupPhoneRows && dupPhoneRows.length > 0 ? dupPhoneRows[0] : null;
     if (dupPhone) {
@@ -234,11 +236,6 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
 
     // Compute auto tags
     const tags = computeSegmentTags({ vehicleType, openToEV, hasAccidentalInsurance, hasHealthInsurance, interests, switchTriggers });
-
-    // Apply soft IP limit flag if applicable
-    if (req.isSpamSuspect) {
-        tags.push('Flagged: Multiple IP');
-    }
 
     // Process referral code if provided
     let milestones = [];
@@ -267,9 +264,9 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
 
     const rider = {
       "fullName": fullName,
-      email: email || `${phone}@roadwarrior.local`,
+      email: email || `${normalizedPhone}@roadwarrior.local`,
       password: password || '',
-      phone,
+      phone: normalizedPhone,
       state: state || '',
       city,
       pincode: pincode || '',
