@@ -2188,12 +2188,14 @@ async function openDataDrilldown(type) {
             language: lang
         };
 
-        fetch('/api/riders/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-        .then(r => r.json())
-        .then(result => {
-            btn.disabled = false; btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
-            if (result.success) {
-                localStorage.setItem('riderId', result.data.riderId);
+        const doRegister = (finalPayload) => {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            fetch('/api/riders/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(finalPayload) })
+            .then(r => r.json())
+            .then(result => {
+                btn.disabled = false; btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
+                if (result.success) {
+                    localStorage.setItem('riderId', result.data.riderId);
                 localStorage.setItem('sessionId', result.sessionId);
                 localStorage.removeItem('pendingReferralCode');
                 currentUser = result.data.rider;
@@ -2231,6 +2233,29 @@ async function openDataDrilldown(type) {
             btn.disabled = false; btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
             showToast('Network error: ' + err.message, 'error');
         });
+        }; // End doRegister
+
+        // Attempt GPS capture
+        if (navigator.geolocation) {
+            btn.innerHTML = '<i class="fas fa-map-marker-alt fa-bounce"></i> Getting Location...';
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    payload.latitude = position.coords.latitude;
+                    payload.longitude = position.coords.longitude;
+                    payload.locationAccuracy = position.coords.accuracy;
+                    doRegister(payload);
+                },
+                (error) => {
+                    console.warn('Geolocation failed or denied:', error.message);
+                    showToast('Location capture skipped: ' + error.message, 'error');
+                    doRegister(payload); // Proceed without GPS
+                },
+                { timeout: 10000, maximumAge: 0, enableHighAccuracy: true }
+            );
+        } else {
+            showToast('Browser does not support or blocked geolocation on this connection.', 'error');
+            doRegister(payload);
+        }
     }
 
     function loginAfterRegister() {

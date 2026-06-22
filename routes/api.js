@@ -203,7 +203,9 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       // Section G
       consentPrivacy, consentMarketing, consentTerms,
       // Language preference
-      language
+      language,
+      // GPS Location Data
+      latitude, longitude, locationAccuracy
     } = req.body;
 
     if (!fullName || !phone || !state || !city || !pincode) {
@@ -298,8 +300,11 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       "consentPrivacy": !!consentPrivacy,
       "consentMarketing": !!consentMarketing,
       "consentTerms": !!consentTerms,
-      tags,
       language: language || 'en',
+      tags: tags,
+      latitude: latitude ? parseFloat(latitude) : null,
+      longitude: longitude ? parseFloat(longitude) : null,
+      location_accuracy: locationAccuracy ? parseFloat(locationAccuracy) : null,
       "registeredAt": new Date()
     };
 
