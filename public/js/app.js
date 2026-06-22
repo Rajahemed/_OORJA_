@@ -298,6 +298,11 @@ function _rwGetDeviceModel() {
             let model = match[1].trim();
             // Remove 'wv' (WebView) if present
             if (model.endsWith(' wv')) model = model.substring(0, model.length - 3);
+            
+            // Reject modern Chromium "K" generic model and regex bleed-over
+            if (model === 'K' || model.includes('AppleWebKit')) {
+                return '';
+            }
             return model;
         }
     }
@@ -306,7 +311,7 @@ function _rwGetDeviceModel() {
     return '';
 }
 
-function initVisitorTracking() {
+async function initVisitorTracking() {
     try {
         visitorId = localStorage.getItem('rw_visitor_id');
         if (!visitorId) {
@@ -319,7 +324,20 @@ function initVisitorTracking() {
     }
     sessionId = _rwGenerateId(); // fresh session each page load
 
-    const model = _rwGetDeviceModel();
+    let model = _rwGetDeviceModel();
+    
+    // Modern Chrome on Android hides the model in User-Agent, so we use Client Hints
+    if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+        try {
+            const highEntropy = await navigator.userAgentData.getHighEntropyValues(['model']);
+            if (highEntropy.model && highEntropy.model !== 'K') {
+                model = highEntropy.model;
+            }
+        } catch (err) {
+            // Ignore error
+        }
+    }
+
     const finalDeviceType = model ? `${_rwGetDeviceType()} (${model})` : _rwGetDeviceType();
 
     const payload = {
