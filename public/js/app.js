@@ -771,7 +771,8 @@ async function openDataDrilldown(type) {
             ach_century_title:"Referral Champion", ach_century_desc:"Refer 25 riders",
             ach_expert_title:"Referral King", ach_expert_desc:"Refer 50 riders",
             lang_auto_msg:"Language auto-set to English for this city",
-            label_phone:"Phone Number"
+            label_phone:"Phone Number",
+            radio_password:"Password", radio_otp:"OTP", forgot_password:"Forgot Password?"
         },
         hi: {
             nav_home:"होम", nav_vehicles:"वाहन", nav_dashboard:"डैशबोर्ड", nav_score:"स्कोर", nav_profile:"प्रोफ़ाइल", nav_admin:"एडमिन",
@@ -966,7 +967,8 @@ async function openDataDrilldown(type) {
             ach_century_title:"ರೆಫರಲ್ ಚಾಂಪಿಯನ್", ach_century_desc:"25 ರೈಡರ್ಸ್ ರೆಫರ್ ಮಾಡಿ",
             ach_expert_title:"ರೆಫರಲ್ ಕಿಂಗ್", ach_expert_desc:"50 ರೈಡರ್ಸ್ ರೆಫರ್ ಮಾಡಿ",
             lang_auto_msg:"ಈ ನಗರಕ್ಕಾಗಿ ಭಾಷೆ ಕನ್ನಡಕ್ಕೆ ಬದಲಾಗಿದೆ",
-            label_phone:"ಫೋನ್ ಸಂಖ್ಯೆ"
+            label_phone:"ಫೋನ್ ಸಂಖ್ಯೆ",
+            radio_password:"ಪಾಸ್‌ವರ್ಡ್", radio_otp:"ಓಟಿಪಿ", forgot_password:"ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೀರಾ?"
         }
     };
 
@@ -1040,7 +1042,29 @@ async function openDataDrilldown(type) {
     // ===== LANGUAGE =====
     function changeLanguage(lang) {
         localStorage.setItem('selectedLang', lang);
-        document.getElementById('langSelector').value = lang;
+        const selector = document.getElementById('langSelector');
+        if (selector) selector.value = lang;
+        
+        // 1. Trigger Google Translate Widget for dynamic content
+        // Set cookies to ensure it persists across reloads and is active
+        document.cookie = `googtrans=/en/${lang}; path=/`;
+        document.cookie = `googtrans=/en/${lang}; domain=${window.location.hostname}; path=/`;
+        
+        // Trigger the Google Translate dropdown with graceful retries (no reload to prevent infinite loops)
+        let retries = 0;
+        const tryTriggerGoogleTranslate = () => {
+            const googleSelect = document.querySelector('select.goog-te-combo');
+            if (googleSelect) {
+                googleSelect.value = lang;
+                googleSelect.dispatchEvent(new Event('change'));
+            } else if (retries < 10) {
+                retries++;
+                setTimeout(tryTriggerGoogleTranslate, 300);
+            }
+        };
+        tryTriggerGoogleTranslate();
+
+        // 2. Fallback: Also run the static translation for data-i18n elements
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {

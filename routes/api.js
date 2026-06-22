@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const bp = require('bharat-pincode');
+const rateLimit = require('express-rate-limit');
 
 
 // Centralized in-memory database
@@ -172,7 +173,17 @@ router.get('/riders/by-phone/:phone', async (req, res) => {
 });
 
 // Create/Register Rider - Full Questionnaire (Sections A-F)
-router.post('/riders/register', async (req, res) => {
+
+// Rate limiter: Maximum 3 registrations per IP address
+const registerLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000, // 24 hours
+  max: 3, // Limit each IP to 3 requests per windowMs
+  handler: (req, res) => {
+    res.status(429).json({ success: false, error: 'Registration limit reached. Only 3 registrations are allowed per IP address.' });
+  }
+});
+
+router.post('/riders/register', registerLimiter, async (req, res) => {
   try {
     const {
       // Section A
