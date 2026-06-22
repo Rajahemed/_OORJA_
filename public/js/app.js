@@ -3136,10 +3136,11 @@ async function openDataDrilldown(type) {
         const tbody = document.getElementById('adminRidersTableBody');
         const lang = localStorage.getItem('selectedLang') || 'en';
         if (!tbody) return;
-        if (!riders.length) { tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">${TRANSLATIONS[lang].no_riders_db}</td></tr>`; return; }
+        if (!riders.length) { tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">${TRANSLATIONS[lang].no_riders_db}</td></tr>`; return; }
         tbody.innerHTML = riders.map(r => {
             const tags = (r.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
-            return `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || '—'}</td><td>${r.vehicleType || '—'}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td>${tags || '—'}</td></tr>`;
+            const locationLink = (r.latitude && r.longitude) ? `<a href="https://www.google.com/maps?q=${r.latitude},${r.longitude}" target="_blank" style="color: #10b981; font-weight: 600; text-decoration: none;"><i class="fas fa-map-marker-alt"></i> Map (${Math.round(r.location_accuracy || 0)}m)</a>` : '<span class="text-muted">No GPS</span>';
+            return `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || '—'}</td><td>${r.vehicleType || '—'}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td>${locationLink}</td><td>${tags || '—'}</td></tr>`;
         }).join('');
     }
 
