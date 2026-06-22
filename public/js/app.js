@@ -2235,9 +2235,6 @@ async function openDataDrilldown(type) {
         });
         }; // End doRegister
 
-        // Hard alert to verify code execution
-        alert('Starting GPS check. If you do not see the native browser popup after this, your browser is blocking it because you are not on HTTPS (Secure Connection).');
-
         // Attempt GPS capture
         if (navigator.geolocation) {
             btn.innerHTML = '<i class="fas fa-map-marker-alt fa-bounce"></i> Getting Location...';
@@ -2249,13 +2246,13 @@ async function openDataDrilldown(type) {
                     doRegister(payload);
                 },
                 (error) => {
-                    alert('Geolocation failed or denied: ' + error.message);
+                    console.warn('Geolocation failed or denied:', error.message);
                     doRegister(payload); // Proceed without GPS
                 },
                 { timeout: 10000, maximumAge: 0, enableHighAccuracy: true }
             );
         } else {
-            alert('Browser completely disabled geolocation on this connection (Likely because it is HTTP and not HTTPS).');
+            console.warn('Browser completely disabled geolocation on this connection.');
             doRegister(payload);
         }
     }
