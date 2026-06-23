@@ -1328,6 +1328,7 @@
                 <button class="admin-tab" onclick="switchAdminTab('cityStats')" data-i18n="tab_city_stats">🏙️ City Stats</button>
                 <button class="admin-tab" onclick="switchAdminTab('auditor')"><i class="fas fa-search-dollar"></i> Website Auditor</button>
                 <button class="admin-tab" onclick="switchAdminTab('visitorAnalytics')"><i class="fas fa-chart-bar"></i> Visitor Analytics</button>
+                <button class="admin-tab" onclick="switchAdminTab('botIntelligence')"><i class="fas fa-robot"></i> Bot Intelligence</button>
                 <button class="admin-tab" onclick="switchAdminTab('emailLeads')"><i class="fas fa-envelope"></i> Email Leads</button>
             </div>
 
@@ -1538,6 +1539,41 @@
                                     <th>Day-0</th><th>Day-7</th><th>Day-15</th><th>Joined</th>
                                 </tr></thead>
                                 <tbody id="emailLeadsTableBody"><tr><td colspan="8" style="text-align:center;color:var(--text-secondary);">Loading leads...</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Bot Intelligence -->
+            <div class="admin-panel" id="panel-botIntelligence">
+                <div class="row cols-4" id="botMetricsGrid">
+                    <div class="stat-box" onclick="filterBotTable('humans')" style="cursor:pointer; transition:transform 0.2s;"><span class="stat-icon">👤</span><div class="stat-value" id="botMetricHumans">0</div><div class="stat-label">Human Visitors</div></div>
+                    <div class="stat-box" onclick="filterBotTable('ai')" style="cursor:pointer; transition:transform 0.2s;"><span class="stat-icon">🤖</span><div class="stat-value" id="botMetricAIBots">0</div><div class="stat-label">AI Bots</div></div>
+                    <div class="stat-box" onclick="filterBotTable('search')" style="cursor:pointer; transition:transform 0.2s;"><span class="stat-icon">🕷️</span><div class="stat-value" id="botMetricSearch">0</div><div class="stat-label">Search Crawlers</div></div>
+                    <div class="stat-box" onclick="filterBotTable('datacenter')" style="cursor:pointer; transition:transform 0.2s;"><span class="stat-icon">🖥️</span><div class="stat-value" id="botMetricDatacenter">0</div><div class="stat-label">Datacenter Traffic</div></div>
+                </div>
+                
+                <div style="margin-top: 1rem; margin-bottom: 1rem; text-align: right;">
+                    <button class="btn btn-secondary" onclick="filterBotTable('all')" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Clear Filter</button>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-list-alt text-primary-color"></i> Detected Bots & Datacenter IPs</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead><tr>
+                                    <th>IP Address</th>
+                                    <th>Bot / Type</th>
+                                    <th>Organization</th>
+                                    <th>User-Agent</th>
+                                    <th>Pages Crawled</th>
+                                    <th>Last Seen</th>
+                                </tr></thead>
+                                <tbody id="botIntelligenceTableBody"><tr><td colspan="6" style="text-align:center;color:var(--text-secondary);">Loading bot data...</td></tr></tbody>
                             </table>
                         </div>
                     </div>

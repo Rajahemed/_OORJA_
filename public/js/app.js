@@ -350,7 +350,8 @@ async function initVisitorTracking() {
         screen_resolution: `${screen.width}x${screen.height}`,
         referral_source:  document.referrer || 'direct',
         landing_page:     window.location.pathname + window.location.search,
-        current_page:     window.location.pathname
+        current_page:     window.location.pathname,
+        user_agent:       navigator.userAgent
     };
 
     // Fire and forget — silent fail so it never blocks the page
@@ -2828,6 +2829,7 @@ async function openDataDrilldown(type) {
         else if (tab === 'topReferrers') loadTopReferrers();
         else if (tab === 'cityStats') loadCityStats();
         else if (tab === 'visitorAnalytics') loadVisitorAnalytics();
+        else if (tab === 'botIntelligence') loadBotIntelligence();
         else if (tab === 'emailLeads') loadEmailLeads();
     }
 
@@ -3488,6 +3490,114 @@ async function loadVisitorAnalytics() {
         }
     } catch (e) {
         console.error('Failed to load visitor analytics', e);
+    }
+}
+
+window.allBotIntelligenceData = [];
+window.currentBotFilter = 'all';
+
+async function loadBotIntelligence() {
+    try {
+        const res = await fetch('/api/admin/analytics/bot-intelligence', { headers: getAdminAuthHeaders() });
+        const json = await res.json();
+        
+        if (json.success) {
+            document.getElementById('botMetricHumans').innerText = json.data.metrics.humans;
+            document.getElementById('botMetricAIBots').innerText = json.data.metrics.aiBots;
+            document.getElementById('botMetricSearch').innerText = json.data.metrics.searchCrawlers;
+            document.getElementById('botMetricDatacenter').innerText = json.data.metrics.datacenter;
+            
+            window.allBotIntelligenceData = json.data.bots || [];
+            
+            // Fallback: If the backend hasn't restarted yet, the payload won't contain human visitors. 
+            // We fetch them from the drilldown API directly to ensure the dashboard works seamlessly.
+            if (json.data.metrics.humans > 0 && !window.allBotIntelligenceData.some(b => b.category === 'Human' || b.type === 'Human Visitor')) {
+                fetch('/api/admin/analytics/drilldown?type=visitors', { headers: getAdminAuthHeaders() })
+                    .then(r => r.json())
+                    .then(drilldown => {
+                        if (drilldown.success && drilldown.data) {
+                            const humans = drilldown.data.filter(v => !v.is_bot && !v.is_datacenter).map(v => ({
+                                ip: v.ip_address,
+                                type: 'Human Visitor',
+                                category: 'Human',
+                                organization: v.organization || 'Unknown',
+                                user_agent: v.user_agent || v.browser,
+                                pages_crawled: v.visit_count,
+                                last_seen: v.last_visit,
+                                is_datacenter: false
+                            }));
+                            window.allBotIntelligenceData = [...window.allBotIntelligenceData, ...humans];
+                            if (window.currentBotFilter === 'humans') renderBotTable();
+                        }
+                    }).catch(e => console.warn('Failed to fetch fallback humans', e));
+            }
+
+            renderBotTable();
+        }
+    } catch (e) {
+        console.error('Failed to load bot intelligence', e);
+        document.getElementById('botIntelligenceTableBody').innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--danger-color);">Error loading bot data.</td></tr>`;
+    }
+}
+
+window.filterBotTable = function(type) {
+    window.currentBotFilter = type;
+    
+    // Highlight the selected box
+    document.querySelectorAll('#botMetricsGrid .stat-box').forEach(box => {
+        box.style.border = 'none';
+        box.style.transform = 'scale(1)';
+    });
+    
+    if (type !== 'all') {
+        const boxMap = {
+            'ai': 1,
+            'search': 2,
+            'datacenter': 3,
+            'humans': 0
+        };
+        const boxIndex = boxMap[type];
+        if (boxIndex !== undefined) {
+            const box = document.querySelectorAll('#botMetricsGrid .stat-box')[boxIndex];
+            if (box) {
+                box.style.border = '2px solid var(--primary-color)';
+                box.style.transform = 'scale(1.02)';
+            }
+        }
+    }
+    
+    renderBotTable();
+};
+
+function renderBotTable() {
+    const tbody = document.getElementById('botIntelligenceTableBody');
+    let filtered = window.allBotIntelligenceData;
+    
+    if (window.currentBotFilter === 'ai') {
+        const aiTypes = ['GPTBot', 'ChatGPT-User', 'OAI-SearchBot', 'PerplexityBot', 'ClaudeBot', 'Anthropic'];
+        filtered = filtered.filter(b => b.category === 'AI Bot' || aiTypes.includes(b.type));
+    } else if (window.currentBotFilter === 'search') {
+        const searchTypes = ['Googlebot', 'Bingbot', 'AppleBot', 'DuckDuckBot', 'YandexBot', 'BaiduSpider', 'FacebookExternalHit', 'LinkedInBot', 'Twitterbot', 'Generic Bot'];
+        filtered = filtered.filter(b => b.category === 'Search Engine' || b.category === 'Monitoring Service' || b.category === 'Social Crawler' || searchTypes.includes(b.type));
+    } else if (window.currentBotFilter === 'datacenter') {
+        filtered = filtered.filter(b => b.type === 'Datacenter Node' || (b.is_datacenter && !b.category));
+    } else if (window.currentBotFilter === 'humans') {
+        filtered = filtered.filter(b => b.category === 'Human' || b.type === 'Human Visitor');
+    }
+    
+    if (filtered.length > 0) {
+        tbody.innerHTML = filtered.map(b => `
+            <tr>
+                <td><span style="font-family:monospace;font-size:0.85rem;">${b.ip || 'Unknown'}</span></td>
+                <td><span class="badge badge-warning" style="background:rgba(245,158,11,0.2);color:#f59e0b;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:700;">${b.type}</span></td>
+                <td>${b.organization}</td>
+                <td title="${b.user_agent}" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.8rem;">${b.user_agent}</td>
+                <td>${b.pages_crawled}</td>
+                <td style="font-size:0.85rem;color:var(--text-secondary);">${new Date(b.last_seen).toLocaleString()}</td>
+            </tr>
+        `).join('');
+    } else {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-secondary);">No traffic found for this filter.</td></tr>`;
     }
 }
 

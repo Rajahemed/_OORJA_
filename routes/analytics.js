@@ -24,7 +24,7 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
   try {
     const {
       visitor_id, session_id, language, browser, operating_system,
-      device_type, screen_resolution, referral_source, landing_page, current_page
+      device_type, screen_resolution, referral_source, landing_page, current_page, user_agent
     } = req.body;
 
     let finalDeviceType = sanitizeString(device_type, 100);
@@ -54,6 +54,7 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
 
     // IP Geolocation via ipinfo.io
     let country = '', region = '', city = '', isp = '', timezone = '';
+    let asn = '', carrierName = '', is_datacenter = false;
     if (ip && ip !== '127.0.0.1' && ip !== '::1') {
       try {
         const ipInfoRes = await axios.get(`https://ipinfo.io/${ip}/json?token=1b0663fe3437bb`);
@@ -66,7 +67,6 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
           // Exact ASN/Carrier and VPN/Proxy Detection
           let rawIsp = ipInfoRes.data.org || '';
           let asnMatch = rawIsp.match(/^(AS\d+)\s+(.*)/);
-          let asn = '', carrierName = rawIsp;
           
           if (asnMatch) {
               asn = asnMatch[1];
@@ -81,6 +81,7 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
               lowerCarrier.includes('linode') || lowerCarrier.includes('azure') || lowerCarrier.includes('microsoft') || 
               lowerCarrier.includes('datacenter') || lowerCarrier.includes('hosting')) {
               flag = '🔴 [VPN/BOT]';
+              is_datacenter = true;
           } else if (lowerCarrier.includes('jio') || lowerCarrier.includes('airtel') || lowerCarrier.includes('vodafone') || 
                      lowerCarrier.includes('idea cellular') || lowerCarrier.includes('mobile') || lowerCarrier.includes('telecom')) {
               flag = '🟢 [MOBILE]';
@@ -95,12 +96,64 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
       }
     }
 
+    // --- Bot Detection Logic ---
+    let is_bot = false;
+    let bot_name = '';
+    let bot_category = '';
+    const uaStr = (user_agent || '').toLowerCase();
+    
+    const aiBots = [
+        { key: 'gptbot', name: 'GPTBot' }, { key: 'chatgpt-user', name: 'ChatGPT-User' },
+        { key: 'oai-searchbot', name: 'OAI-SearchBot' }, { key: 'perplexitybot', name: 'PerplexityBot' },
+        { key: 'claudebot', name: 'ClaudeBot' }, { key: 'anthropic', name: 'Anthropic' }
+    ];
+    const searchBots = [
+        { key: 'googlebot', name: 'Googlebot' }, { key: 'bingbot', name: 'Bingbot' },
+        { key: 'applebot', name: 'AppleBot' }, { key: 'duckduckbot', name: 'DuckDuckBot' },
+        { key: 'yandexbot', name: 'YandexBot' }, { key: 'baiduspider', name: 'BaiduSpider' }
+    ];
+    const socialBots = [
+        { key: 'facebookexternalhit', name: 'FacebookExternalHit' },
+        { key: 'linkedinbot', name: 'LinkedInBot' }, { key: 'twitterbot', name: 'Twitterbot' }
+    ];
+
+    for (let bot of aiBots) {
+        if (uaStr.includes(bot.key)) { is_bot = true; bot_name = bot.name; bot_category = 'AI Bot'; break; }
+    }
+    if (!is_bot) {
+        for (let bot of searchBots) {
+            if (uaStr.includes(bot.key)) { is_bot = true; bot_name = bot.name; bot_category = 'Search Engine'; break; }
+        }
+    }
+    if (!is_bot) {
+        for (let bot of socialBots) {
+            if (uaStr.includes(bot.key)) { is_bot = true; bot_name = bot.name; bot_category = 'Social Crawler'; break; }
+        }
+    }
+    // Generic bot fallback
+    if (!is_bot && (uaStr.includes('bot') || uaStr.includes('crawler') || uaStr.includes('spider'))) {
+        is_bot = true; bot_name = 'Generic Bot'; bot_category = 'Monitoring Service';
+    }
+
     // Upsert visitor (update last_visit and visit_count on returning visitor)
     const { data: existing } = await supabase
       .from('visitors')
       .select('id, visit_count')
       .eq('visitor_id', visitor_id)
       .single();
+
+    let safeUpdateInsert = async (table, dataObj, fallbackFields, condition) => {
+        let tryObj = { ...dataObj, ...fallbackFields };
+        let result;
+        if (condition) result = await supabase.from(table).update(tryObj).eq(condition.col, condition.val);
+        else result = await supabase.from(table).insert(tryObj);
+        
+        if (result.error && (result.error.message.includes('column') || result.error.message.includes('isp'))) {
+            console.warn(`[analytics] Column missing in ${table}, retrying without advanced intelligence columns.`);
+            if (condition) await supabase.from(table).update(dataObj).eq(condition.col, condition.val);
+            else await supabase.from(table).insert(dataObj);
+        }
+    };
 
     if (existing) {
       const updateData = {
@@ -117,12 +170,15 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
         language: sanitizeString(language, 20),
         screen_resolution: sanitizeString(screen_resolution, 20)
       };
-      // Try updating with isp first
-      const { error: updateErr } = await supabase.from('visitors').update({ ...updateData, isp: isp || undefined }).eq('visitor_id', visitor_id);
-      if (updateErr && updateErr.message.includes('isp')) {
-        console.warn('[analytics] Migration 003 missing: isp column not found. Retrying without isp.');
-        await supabase.from('visitors').update(updateData).eq('visitor_id', visitor_id);
-      }
+      const advancedFields = {
+          isp: isp || undefined,
+          user_agent: sanitizeString(user_agent, 500),
+          asn: asn || undefined,
+          organization: carrierName || undefined,
+          state: region || undefined,
+          is_bot, bot_name, bot_category, is_datacenter
+      };
+      await safeUpdateInsert('visitors', updateData, advancedFields, { col: 'visitor_id', val: visitor_id });
     } else {
       const insertData = {
         visitor_id: sanitizeString(visitor_id, 100),
@@ -143,12 +199,15 @@ router.post('/visitor/track', visitorTrackRateLimit, async (req, res) => {
         last_visit: new Date().toISOString(),
         visit_count: 1
       };
-      // Try inserting with isp first
-      const { error: insertErr } = await supabase.from('visitors').insert({ ...insertData, isp: isp });
-      if (insertErr && insertErr.message.includes('isp')) {
-        console.warn('[analytics] Migration 003 missing: isp column not found. Retrying without isp.');
-        await supabase.from('visitors').insert(insertData);
-      }
+      const advancedFields = {
+          isp,
+          user_agent: sanitizeString(user_agent, 500),
+          asn,
+          organization: carrierName,
+          state: region,
+          is_bot, bot_name, bot_category, is_datacenter
+      };
+      await safeUpdateInsert('visitors', insertData, advancedFields, null);
     }
 
     // Record session
@@ -432,6 +491,77 @@ router.get('/admin/analytics/traffic', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEWE
       .map(([page, count]) => ({ page, count }));
 
     res.json({ success: true, data: { dailyData, topPages, range } });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================================
+// GET /api/admin/analytics/bot-intelligence
+// Bot and Datacenter traffic analytics
+// ============================================================
+router.get('/admin/analytics/bot-intelligence', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEWER']), adminAnalyticsRateLimit, async (req, res) => {
+  try {
+    const { data: visitors } = await supabase
+      .from('visitors')
+      .select('visitor_id, ip_address, user_agent, organization, first_visit, last_visit, visit_count, is_bot, bot_name, bot_category, is_datacenter, current_page');
+
+    let humanCount = 0;
+    let aiBotCount = 0;
+    let searchBotCount = 0;
+    let datacenterCount = 0;
+    let bots = [];
+
+    (visitors || []).forEach(v => {
+      if (!v.is_bot && !v.is_datacenter) {
+        humanCount++;
+        bots.push({
+          ip: v.ip_address,
+          user_agent: v.user_agent || v.browser,
+          organization: v.organization || 'Unknown',
+          first_seen: v.first_visit,
+          last_seen: v.last_visit,
+          pages_crawled: v.visit_count,
+          type: 'Human Visitor',
+          category: 'Human',
+          is_datacenter: false
+        });
+      } else {
+        if (v.is_bot) {
+          if (v.bot_category === 'AI Bot') aiBotCount++;
+          else if (v.bot_category === 'Search Engine') searchBotCount++;
+          else if (v.bot_category === 'Monitoring Service') searchBotCount++; // group monitor with search for top level
+        }
+        if (v.is_datacenter) {
+          datacenterCount++;
+        }
+        
+        bots.push({
+          ip: v.ip_address,
+          user_agent: v.user_agent || v.browser,
+          organization: v.organization || 'Unknown',
+          first_seen: v.first_visit,
+          last_seen: v.last_visit,
+          pages_crawled: v.visit_count,
+          type: v.is_bot ? v.bot_name : 'Datacenter Node',
+          category: v.bot_category,
+          is_datacenter: v.is_datacenter
+        });
+      }
+    });
+
+    res.json({
+      success: true,
+      data: {
+        metrics: {
+          humans: humanCount,
+          aiBots: aiBotCount,
+          searchCrawlers: searchBotCount,
+          datacenter: datacenterCount
+        },
+        bots: bots.sort((a, b) => new Date(b.last_seen) - new Date(a.last_seen)).slice(0, 100)
+      }
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

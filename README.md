@@ -7,7 +7,6 @@ A complete, production-ready delivery rider management and analytics platform wi
 ### 📱 User Management
 - **Professional Registration System** with 10-digit phone validation
 - **Real-time User Authentication** with session management
-- **Complete Profile Management** with bank & payment details
 - **Referral Program** with tracking and rewards
 
 ### 🚗 Vehicle Management
@@ -46,6 +45,25 @@ A complete, production-ready delivery rider management and analytics platform wi
 - **Dispute Resolution** system
 - **System Health** monitoring
 - **Analytics & Reports** generation
+
+### 🤖 Advanced Bot & Traffic Intelligence
+- **AI Bot & Crawler Detection** (GPTBot, ClaudeBot, Googlebot)
+- **VPN & Datacenter Traffic Tracking** via IPInfo.io
+- **Granular Visitor Telemetry** (ASN, Carrier, Organization)
+- **Real-time Traffic Filtering** & Bot Intelligence Dashboard
+- **Zero-Downtime Fallback Mechanisms**
+
+### 🎯 Lead Capture & Email Marketing
+- **Smart Lead Capture Forms** with automatic deduplication
+- **Automated Email Drip Sequences**
+- **GDPR-compliant Unsubscribe System**
+- **Admin Email Log Tracking**
+
+### 🔍 Website Auditor Engine
+- **Automated Score Calculation** (SEO, Performance, Security, AI Readiness, Trust)
+- **AI-Readiness Checks** (llms.txt detection)
+- **Real-time HTML parsing** for optimization recommendations
+- **Comprehensive Audit Reports** with actionable insights
 
 ### 🎨 Professional UI/UX
 - **Modern Dark Theme** with gradients
@@ -162,6 +180,7 @@ A complete, production-ready delivery rider management and analytics platform wi
    - Track system-wide deliveries
    - View revenue metrics
    - Check system health
+   - Track human vs. AI bot vs. datacenter traffic via Bot Intelligence tab
 
 2. **User Management**
    - View all riders
@@ -250,11 +269,19 @@ During the recent security audit, several vulnerabilities and weaknesses were id
 - `PUT /api/deliveries/:deliveryId` - Update delivery
 - `GET /api/riders/:riderId/deliveries` - Get deliveries
 
-### Analytics
+### Analytics & Intelligence
+- `POST /api/visitor/track` - Record visitor telemetry & bot detection
+- `POST /api/leads/capture` - Save lead & trigger email drip
+- `GET /api/admin/analytics/bot-intelligence` - Bot & Datacenter traffic data
+- `GET /api/admin/analytics/leads` - Lead pipeline & email status
 - `GET /dashboard/analytics/:riderId` - Get rider analytics
 - `GET /dashboard/city-analytics` - Get city statistics
 - `GET /dashboard/revenue/:riderId` - Get revenue data
 - `GET /dashboard/system-stats` - Get system statistics
+
+### Auditor
+- `POST /api/auditor/run` - Run website audit
+- `GET /api/auditor/reports` - List recent audits
 
 ### Admin
 - `GET /api/admin/riders` - Get all riders

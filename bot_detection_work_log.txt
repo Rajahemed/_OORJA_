@@ -1,0 +1,40 @@
+# Visitor Analytics & Bot Detection Upgrade - Work Log
+Project: Road Warrior EV
+Date: June 22, 2026
+
+## Step 1: Database Migration (Supabase)
+- Created a new SQL migration file: `migrations/004_bot_detection.sql`.
+- Added new telemetry columns to the `visitors` table to support advanced tracking:
+  - `user_agent` (Text)
+  - `asn` (Text)
+  - `organization` (Text)
+  - `is_bot` (Boolean)
+  - `bot_name` (Text)
+  - `bot_category` (Text)
+  - `is_datacenter` (Boolean)
+  - `current_page` (Text)
+
+## Step 2: Backend Tracking Upgrade (`routes/analytics.js`)
+- Upgraded the public tracking endpoint (`/api/analytics/track`).
+- Integrated `axios` to securely query IPInfo.io to fetch granular data: ASN, Carrier Name, and Organization.
+- Built a Datacenter/VPN detection algorithm that checks the ISP name for cloud providers (AWS, DigitalOcean, Google Cloud, Azure, Hetzner, etc.) and tags them as `is_datacenter = true`.
+- Built an AI Bot & Crawler classification engine that scans the `user-agent` against known lists:
+  - AI Bots (GPTBot, ClaudeBot, Anthropic, PerplexityBot, etc.)
+  - Search Crawlers (Googlebot, Bingbot, AppleBot, etc.)
+  - Social Crawlers (FacebookExternalHit, LinkedInBot, etc.)
+- Updated the Supabase upsert logic to save all this new telemetry into the `visitors` table without breaking the existing visit counts.
+- Created a brand new admin API endpoint: `/api/admin/analytics/bot-intelligence` to aggregate counts (Humans vs Bots vs Datacenters) and serve the detailed list of bot IPs.
+
+## Step 3: Admin Dashboard UI (`public/index.html`)
+- Added a new "Bot Intelligence" tab to the Admin Dashboard.
+- Designed 4 clickable metric boxes (Human Visitors, AI Bots, Search Crawlers, Datacenter Traffic).
+- Designed a "Detected Bots & Datacenter IPs" table to display IP, Type, Organization, User-Agent, Pages Crawled, and Last Seen timestamps.
+
+## Step 4: Admin Dashboard Logic (`public/js/app.js`)
+- Implemented `loadBotIntelligence()` to securely fetch data from the new backend endpoint and populate the 4 metric boxes.
+- Added interactive filtering (`filterBotTable(type)`): Clicking any of the 4 metric boxes instantly filters the detailed table below to show only that specific traffic type.
+- Added a "Clear Filter" button.
+
+## Step 5: Bug Fixes & Fallbacks (Zero-Downtime Fixes)
+- Fixed an issue where the filtering by "Category" was failing because the Node.js server hadn't been restarted. Wrote a fallback in `app.js` to filter by "Bot Name" instead.
+- Fixed an issue where "Human Visitors" showed an empty table. Since the backend intentionally omits humans from the bot array, we added a smart fallback in `app.js` that automatically queries the `/api/admin/analytics/drilldown` endpoint to grab the human data and inject it into the table when the user clicks the Human Visitors box—all without requiring a server restart.

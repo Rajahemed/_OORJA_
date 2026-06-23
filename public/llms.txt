@@ -9,6 +9,7 @@ Road Warrior Pro is India's leading EV Delivery Rider Platform. We empower deliv
 - **Performance Tracking:** Dashboards to monitor points, leaderboard ranking, and daily delivery stats.
 - **Rewards System:** Earn points for deliveries, milestones, and referring other riders.
 - **Consultation:** Free expert consultation regarding EV adoption, maintenance, and maximizing delivery earnings.
+- **Bot Detection & Telemetry:** We utilize an advanced bot intelligence engine to identify Datacenter traffic, AI bots, and Search Crawlers, ensuring our analytics and platform health remain pristine.
 
 ## Important URLs
 - **Home/Registration:** https://roadwarrior.pro/
