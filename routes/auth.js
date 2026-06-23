@@ -13,7 +13,7 @@ const otpCache = new Map();
 // Generate and send OTP
 router.post('/send-otp', async (req, res) => {
   try {
-    const { phone } = req.body;
+    const { phone, channel } = req.body;
     if (!phone) return res.status(400).json({ success: false, error: 'Phone number required' });
     
     // Cleanup old OTPs
@@ -21,7 +21,24 @@ router.post('/send-otp', async (req, res) => {
       if (Date.now() > value.expires) otpCache.delete(key);
     }
 
-    if (process.env.FAST2SMS_API_KEY) {
+    if (channel === 'whatsapp') {
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      otpCache.set(phone, { otp, expires: Date.now() + 5 * 60 * 1000 });
+      
+      try {
+        const { sendWhatsAppMessage, isClientReady } = require('../utils/whatsappClient');
+        if (isClientReady()) {
+          const msg = `*Road Warrior Pro*\nYour registration OTP is: *${otp}*\nDo not share this with anyone.`;
+          await sendWhatsAppMessage(phone, msg);
+          return res.json({ success: true, message: 'Live OTP Sent to WhatsApp!' });
+        } else {
+          return res.status(503).json({ success: false, error: 'WhatsApp client is starting up or needs QR code scan. Check server terminal.' });
+        }
+      } catch (err) {
+        console.error('Failed to send real WhatsApp OTP:', err);
+        return res.status(500).json({ success: false, error: 'Failed to send WhatsApp message. Ensure the number is registered on WhatsApp.' });
+      }
+    } else if (process.env.FAST2SMS_API_KEY && channel !== 'whatsapp') {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       otpCache.set(phone, { otp, expires: Date.now() + 5 * 60 * 1000 });
       
@@ -47,22 +64,37 @@ router.post('/send-otp', async (req, res) => {
           otpCache.set(phone, { otp: '123456', expires: Date.now() + 5 * 60 * 1000 });
           return res.json({ success: true, message: 'OTP Sent! (Mock OTP: 123456)', isMock: true });
       }
-    } else if (twilioClient && process.env.TWILIO_PHONE_NUMBER && process.env.TWILIO_PHONE_NUMBER !== 'your_twilio_phone_number') {
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
-      otpCache.set(phone, { otp, expires: Date.now() + 5 * 60 * 1000 });
-      
-      await twilioClient.messages.create({
-        body: `Your Road Warrior OTP is ${otp}. Valid for 5 minutes.`,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: '+91' + phone.replace(/\D/g, '')
-      });
-      return res.json({ success: true, message: 'Live OTP sent successfully' });
     } else {
       otpCache.set(phone, { otp: '123456', expires: Date.now() + 5 * 60 * 1000 });
-      return res.json({ success: true, message: 'Mock OTP sent (use 123456)', isMock: true });
+      const msg = channel === 'whatsapp' ? 'Mock WhatsApp OTP sent (use 123456)' : 'Mock OTP sent (use 123456)';
+      return res.json({ success: true, message: msg, isMock: true });
     }
   } catch (error) {
     console.error('[Send OTP Error]', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Verify OTP (Standalone for Registration)
+router.post('/verify-otp', async (req, res) => {
+  try {
+    const { phone, otp } = req.body;
+    if (!phone || !otp) return res.status(400).json({ success: false, error: 'Phone and OTP required' });
+
+    const cached = otpCache.get(phone);
+    if (!cached || Date.now() > cached.expires) {
+      return res.status(401).json({ success: false, error: 'OTP expired or not requested' });
+    }
+    if (otp !== cached.otp) {
+      return res.status(401).json({ success: false, error: 'Invalid OTP' });
+    }
+    
+    // OTP is valid. In a real scenario we might mark it verified in a DB or keep a short-lived token.
+    // Here we'll just return success.
+    otpCache.delete(phone);
+    return res.json({ success: true, message: 'OTP verified successfully' });
+  } catch (error) {
+    console.error('[Verify OTP Error]', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
@@ -116,7 +148,7 @@ router.post('/login', async (req, res) => {
       if (!cached || Date.now() > cached.expires) {
         return res.status(401).json({ success: false, error: 'OTP expired or not requested' });
       }
-      if (otp !== cached.otp && otp !== '123456') {
+      if (otp !== cached.otp) {
         return res.status(401).json({ success: false, error: 'Invalid OTP' });
       }
       otpCache.delete(phone);
@@ -178,7 +210,7 @@ router.post('/reset-rider-password', async (req, res) => {
         if (!cached || Date.now() > cached.expires) {
             return res.status(401).json({ success: false, error: 'OTP expired or not requested' });
         }
-        if (otp !== cached.otp && otp !== '123456') {
+        if (otp !== cached.otp) {
             return res.status(401).json({ success: false, error: 'Invalid OTP' });
         }
         otpCache.delete(phone);

@@ -201,6 +201,10 @@ function startServer(port) {
     ║                                                                ║
     ╚════════════════════════════════════════════════════════════════╝
     `);
+    
+    // Initialize WhatsApp Client ONLY when server successfully binds
+    const { initializeWhatsApp } = require('./utils/whatsappClient');
+    initializeWhatsApp();
   });
 
   server.on('error', (err) => {

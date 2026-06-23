@@ -1874,6 +1874,7 @@ async function openDataDrilldown(type) {
         }
     }
 
+    let lastOtpSentPhone = null;
     function validateRegPhone(input) {
         const clean = input.value.replace(/\D/g, '').slice(0, 10);
         input.value = clean;
@@ -1883,17 +1884,136 @@ async function openDataDrilldown(type) {
         const err = document.getElementById('phoneErrMsg');
         const dup = document.getElementById('dupPhoneMsg');
         dup.classList.add('hidden');
-        if (clean.length === 0) { icon.style.display = 'none'; err.classList.add('hidden'); return; }
+        if (clean.length === 0) { 
+            icon.style.display = 'none'; err.classList.add('hidden'); 
+            document.getElementById('regOtpGroup').style.display = 'none';
+            return; 
+        }
         if (clean.length === 10 && /^[6-9]/.test(clean)) {
             icon.style.display = 'inline-block'; check.style.display = 'inline-block'; cross.style.display = 'none';
             err.classList.add('hidden');
             // Check for duplicate
             fetch(`/api/riders/check-phone/${clean}`).then(r => r.json()).then(res => {
-                if (res.exists) { dup.classList.remove('hidden'); check.style.display = 'none'; cross.style.display = 'inline-block'; }
+                if (res.exists) { 
+                    dup.classList.remove('hidden'); check.style.display = 'none'; cross.style.display = 'inline-block'; 
+                    document.getElementById('regOtpGroup').style.display = 'none';
+                } else {
+                    if (lastOtpSentPhone !== clean) {
+                        lastOtpSentPhone = clean;
+                        sendRegistrationOtp(clean);
+                    } else {
+                        document.getElementById('regOtpGroup').style.display = 'block';
+                    }
+                }
             }).catch(() => {});
         } else {
             icon.style.display = 'inline-block'; check.style.display = 'none'; cross.style.display = 'inline-block';
             err.classList.remove('hidden');
+            document.getElementById('regOtpGroup').style.display = 'none';
+        }
+    }
+
+    async function sendRegistrationOtp(phoneNum) {
+        const phone = phoneNum || document.getElementById('regPhone').value;
+        const msgEl = document.getElementById('regOtpMsg');
+        document.getElementById('regOtpGroup').style.display = 'block';
+        msgEl.style.display = 'block';
+        msgEl.textContent = 'Sending OTP...';
+        msgEl.style.color = '#3b82f6';
+
+        try {
+            const res = await fetch('/auth/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, channel: 'whatsapp' })
+            });
+            const data = await res.json();
+            if (data.success) {
+                msgEl.textContent = data.isMock ? 'OTP sent! (mock: use 123456)' : 'OTP sent to your WhatsApp!';
+                msgEl.style.color = '#25D366';
+                showToast(data.message || 'OTP Sent to WhatsApp!', 'success');
+                startResendTimer();
+            } else {
+                msgEl.textContent = 'Failed to send OTP: ' + (data.error || 'Unknown error');
+                msgEl.style.color = '#ef4444';
+                showToast('Failed to send OTP', 'error');
+                document.getElementById('resendRegOtpBtn').style.display = 'block';
+            }
+        } catch (err) {
+            msgEl.textContent = 'Network error: ' + err.message;
+            msgEl.style.color = '#ef4444';
+            showToast('Network error', 'error');
+            document.getElementById('resendRegOtpBtn').style.display = 'block';
+        }
+    }
+
+    let resendInterval;
+    function startResendTimer() {
+        clearInterval(resendInterval);
+        const timerEl = document.getElementById('resendRegOtpTimer');
+        const btnEl = document.getElementById('resendRegOtpBtn');
+        timerEl.style.display = 'block';
+        btnEl.style.display = 'none';
+        
+        let timeLeft = 30;
+        timerEl.textContent = `Wait ${timeLeft}s...`;
+        
+        resendInterval = setInterval(() => {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                clearInterval(resendInterval);
+                timerEl.style.display = 'none';
+                btnEl.style.display = 'block';
+            } else {
+                timerEl.textContent = `Wait ${timeLeft}s...`;
+            }
+        }, 1000);
+    }
+
+    function resendRegistrationOtp() {
+        document.getElementById('resendRegOtpBtn').style.display = 'none';
+        sendRegistrationOtp();
+    }
+    window.resendRegistrationOtp = resendRegistrationOtp;
+
+    async function verifyRegOtp() {
+        const phone = document.getElementById('regPhone').value;
+        const otp = document.getElementById('regOtpInput').value;
+        if (!otp) {
+            showToast('Please enter the OTP', 'warning');
+            return;
+        }
+        
+        const btn = document.getElementById('verifyRegOtpBtn');
+        const origHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+        try {
+            const res = await fetch('/auth/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, otp })
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('regOtpGroup').innerHTML = '<div style="color:#25D366; font-weight:bold;"><i class="fas fa-check-circle"></i> WhatsApp OTP Verified Successfully!</div>';
+                document.getElementById('regRestOfForm').style.display = 'block';
+                document.getElementById('regRestOfForm').style.pointerEvents = 'auto';
+                // Trigger reflow to apply transition
+                void document.getElementById('regRestOfForm').offsetWidth;
+                document.getElementById('regRestOfForm').style.opacity = '1';
+                document.getElementById('submitRegBtn').disabled = false;
+                showToast('Phone verified! You can now complete the form.', 'success');
+            } else {
+                showToast('Verification failed: ' + (data.error || 'Invalid OTP'), 'error');
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        } catch (err) {
+            showToast('Network error: ' + err.message, 'error');
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
         }
     }
 
