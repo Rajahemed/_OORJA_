@@ -1886,7 +1886,6 @@ async function openDataDrilldown(type) {
         dup.classList.add('hidden');
         if (clean.length === 0) { 
             icon.style.display = 'none'; err.classList.add('hidden'); 
-            document.getElementById('regOtpGroup').style.display = 'none';
             return; 
         }
         if (clean.length === 10 && /^[6-9]/.test(clean)) {
@@ -1896,20 +1895,11 @@ async function openDataDrilldown(type) {
             fetch(`/api/riders/check-phone/${clean}`).then(r => r.json()).then(res => {
                 if (res.exists) { 
                     dup.classList.remove('hidden'); check.style.display = 'none'; cross.style.display = 'inline-block'; 
-                    document.getElementById('regOtpGroup').style.display = 'none';
-                } else {
-                    if (lastOtpSentPhone !== clean) {
-                        lastOtpSentPhone = clean;
-                        sendRegistrationOtp(clean);
-                    } else {
-                        document.getElementById('regOtpGroup').style.display = 'block';
-                    }
                 }
             }).catch(() => {});
         } else {
             icon.style.display = 'inline-block'; check.style.display = 'none'; cross.style.display = 'inline-block';
             err.classList.remove('hidden');
-            document.getElementById('regOtpGroup').style.display = 'none';
         }
     }
 
