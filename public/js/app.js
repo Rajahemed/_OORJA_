@@ -2573,6 +2573,7 @@ async function openDataDrilldown(type) {
                 const regFormContent = document.getElementById('registrationFormContent');
                 if (regFormContent) regFormContent.style.display = 'none';
                 document.getElementById('regSuccessPanel').classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
                 document.getElementById('loginSwitchLink').style.display = 'none';
 
                 // Hide the footer
