@@ -3,12 +3,12 @@ const JWT_SECRET = process.env.JWT_SECRET || 'roadwarrior-super-secret-key';
 
 function adminAuth(roles = []) {
   return (req, res, next) => {
-    let token = '';
+    let token = req.cookies?.adminToken || '';
     const authHeader = req.headers.authorization;
         
-    if (authHeader && authHeader.startsWith('Bearer ')) {
+    if (!token && authHeader && authHeader.startsWith('Bearer ')) {
         token = authHeader.split(' ')[1];
-    } else if (req.query.token) {
+    } else if (!token && req.query.token) {
         token = req.query.token;
     }
 

@@ -4,14 +4,22 @@ const supabase = require('../utils/supabase');
 const { v4: uuidv4 } = require('uuid');
 const twilio = require('twilio');
 const axios = require('axios');
+const bcrypt = require('bcrypt');
+const rateLimit = require('express-rate-limit');
 const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_ACCOUNT_SID !== 'your_twilio_account_sid'
   ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
   : null;
 
 const otpCache = new Map();
 
+const otpLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // Limit each IP to 5 requests per windowMs
+  message: { success: false, error: 'Too many OTP requests from this IP, please try again after an hour' }
+});
+
 // Generate and send OTP
-router.post('/send-otp', async (req, res) => {
+router.post('/send-otp', otpLimiter, async (req, res) => {
   try {
     const { phone, channel } = req.body;
     if (!phone) return res.status(400).json({ success: false, error: 'Phone number required' });
@@ -105,12 +113,16 @@ router.post('/login', async (req, res) => {
 
     // Verify Password or OTP
     if (loginMethod === 'password') {
-      // In a real app we'd use bcrypt. Here we do simple text match.
-      if (rider.password && rider.password !== password) {
-        return res.status(401).json({ success: false, error: 'Invalid password' });
-      } else if (!rider.password && password !== 'password') {
+      if (!rider.password) {
         // Fallback for older mock riders without password
-        return res.status(401).json({ success: false, error: 'Invalid password' });
+        if (password !== 'password') {
+          return res.status(401).json({ success: false, error: 'Invalid password' });
+        }
+      } else {
+        const match = await bcrypt.compare(password, rider.password);
+        if (!match) {
+          return res.status(401).json({ success: false, error: 'Invalid password' });
+        }
       }
     } else if (loginMethod === 'otp') {
       const cached = otpCache.get(phone);
@@ -135,10 +147,16 @@ router.post('/login', async (req, res) => {
       loginTime: new Date()
     });
 
+    res.cookie('sessionId', sessionId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
     res.json({
       success: true,
       message: 'Login successful',
-      sessionId,
       riderId
     });
   } catch (error) {
@@ -152,10 +170,16 @@ router.post('/login', async (req, res) => {
 // Logout
 router.post('/logout', (req, res) => {
   try {
-    const { sessionId } = req.body;
+    const sessionId = req.cookies?.sessionId || req.body.sessionId;
     if (sessionId) {
       req.app.get('sessions').delete(sessionId);
     }
+
+    res.clearCookie('sessionId', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
 
     res.json({
       success: true,
@@ -192,7 +216,8 @@ router.post('/reset-rider-password', async (req, res) => {
             return res.status(404).json({ success: false, error: 'Rider not found with this phone number.' });
         }
 
-        const { error: updateErr } = await supabase.from('riders').update({ password: newPassword }).eq('phone', phone);
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        const { error: updateErr } = await supabase.from('riders').update({ password: hashedPassword }).eq('phone', phone);
         if (updateErr) throw updateErr;
 
         res.json({ success: true, message: 'Password reset successfully' });
@@ -216,6 +241,14 @@ router.get('/admin/status', async (req, res) => {
 
 // Setup endpoint removed
 
+// Create an ephemeral client so we do not mutate the global server instance
+const { createClient } = require('@supabase/supabase-js');
+function getEphemeralSupabase() {
+    return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY, {
+        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+    });
+}
+
 router.post('/admin/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -223,30 +256,33 @@ router.post('/admin/login', async (req, res) => {
             return res.status(400).json({ success: false, error: 'Email and Password required' });
         }
 
-        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        const ephemeralSupabase = getEphemeralSupabase();
+        const { data: authData, error: authError } = await ephemeralSupabase.auth.signInWithPassword({
             email: email,
             password: password
         });
 
         if (authError) throw authError;
 
-        // Verify this user is the registered admin
+        // Verify this user is the registered admin using the global client
         const { data: adminData, error: adminErr } = await supabase.from('admin_users').select('id').eq('id', authData.user.id);
         if (adminErr) throw adminErr;
 
         if (!adminData || adminData.length === 0) {
-            await supabase.auth.signOut();
             return res.status(401).json({ success: false, error: 'Unauthorized. Not recognized as admin.' });
         }
 
         // Issue JWT token to stay compatible with frontend expectations
         const token = jwt.sign({ email: email, role: 'SUPER_ADMIN' }, JWT_SECRET, { expiresIn: '12h' });
 
-        // IMPORTANT: Sign out the singleton Supabase client immediately to avoid
-        // applying this admin's Row Level Security (RLS) to all subsequent server queries!
-        await supabase.auth.signOut();
+        res.cookie('adminToken', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 12 * 60 * 60 * 1000 // 12 hours
+        });
 
-        res.json({ success: true, message: 'Admin login successful', token, role: 'SUPER_ADMIN' });
+        res.json({ success: true, message: 'Admin login successful', role: 'SUPER_ADMIN' });
     } catch(err) {
         res.status(401).json({ success: false, error: err.message });
     }
@@ -262,7 +298,8 @@ router.post('/admin/forgot-password', async (req, res) => {
              return res.status(404).json({ success: false, error: 'Admin account with this email not found.' });
         }
 
-        const { error: otpError } = await supabase.auth.signInWithOtp({
+        const ephemeralSupabase = getEphemeralSupabase();
+        const { error: otpError } = await ephemeralSupabase.auth.signInWithOtp({
             email: email
         });
 
@@ -278,8 +315,9 @@ router.post('/admin/reset-password', async (req, res) => {
     try {
         const { email, otp, newPassword } = req.body;
 
+        const ephemeralSupabase = getEphemeralSupabase();
         // Verify OTP
-        const { data, error: verifyErr } = await supabase.auth.verifyOtp({
+        const { data, error: verifyErr } = await ephemeralSupabase.auth.verifyOtp({
             email: email,
             token: otp,
             type: 'email'
@@ -288,14 +326,11 @@ router.post('/admin/reset-password', async (req, res) => {
         if (verifyErr) throw verifyErr;
 
         // Since verifyOtp signs the user in implicitly if valid, we can now update the password
-        const { error: updateErr } = await supabase.auth.updateUser({
+        const { error: updateErr } = await ephemeralSupabase.auth.updateUser({
             password: newPassword
         });
 
         if (updateErr) throw updateErr;
-
-        // Sign out immediately to avoid applying admin RLS to all subsequent server queries
-        await supabase.auth.signOut();
 
         res.json({ success: true, message: 'Password reset successfully.' });
     } catch(err) {

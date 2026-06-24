@@ -3,7 +3,7 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const bp = require('bharat-pincode');
 const rateLimit = require('express-rate-limit');
-
+const bcrypt = require('bcrypt');
 
 // Centralized in-memory database
 const supabase = require('../utils/supabase');
@@ -264,10 +264,15 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
 
     const referralCode = generateReferralCode();
 
+    let hashedPassword = '';
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, 10);
+    }
+
     const rider = {
       "fullName": fullName,
       email: email || `${normalizedPhone}@roadwarrior.local`,
-      password: password || '',
+      password: hashedPassword,
       phone: normalizedPhone,
       state: state || '',
       city,
@@ -354,11 +359,18 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       console.log(`[WhatsApp Mock] Would have automatically sent to ${normalizedPhone}: \n${whatsappMessage}`);
     }
 
+    // Set HttpOnly cookie for the new session
+    res.cookie('sessionId', riderId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
     res.json({
       success: true,
       message: 'Rider registered successfully',
       data: { riderId, rider },
-      sessionId: riderId,
       referralCode,
       whatsappMessage,
       milestones
