@@ -7,6 +7,11 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+// Global analytics tracker mock (prevents ReferenceErrors)
+window.trackEvent = function(eventName, params = {}) {
+    console.log(`[Analytics] Event: ${eventName}`, params);
+};
+
 // --- Security: CSRF Protection & Global Fetch Override ---
 
 let csrfToken = '';
@@ -1423,7 +1428,7 @@ async function openDataDrilldown(type) {
         let savedTheme = localStorage.getItem('roadwarrior_theme');
         
         if (!savedTheme || !THEMES.includes(savedTheme)) {
-            savedTheme = 'lime-white'; // Set lime-white as the default
+            savedTheme = 'default'; // Set default as the default
         }
         
         currentThemeIndex = THEMES.indexOf(savedTheme);
@@ -2583,8 +2588,17 @@ async function openDataDrilldown(type) {
                     .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#007bff; font-weight:600; text-decoration:underline;">$1</a>');
                 document.getElementById('whatsappMsgPreview').innerHTML = msgHtml;
 
-                const waLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(result.whatsappMessage)}`;
+                const waLink = `https://api.whatsapp.com/send?phone=91${payload.phone}&text=${encodeURIComponent(result.whatsappMessage)}`;
                 document.getElementById('whatsappSendLink').href = waLink;
+                
+                // Automatically share with image popup as requested
+                setTimeout(() => {
+                    if (typeof shareWithImage === 'function') {
+                        shareWithImage(null, result.referralCode, regFullName);
+                    } else {
+                        window.open(waLink, '_blank');
+                    }
+                }, 500);
 
                 showToast('🎉 Registration successful! Welcome to Road Warrior Pro!', 'success');
             } else {
@@ -2610,7 +2624,7 @@ async function openDataDrilldown(type) {
                     console.warn('Geolocation failed or denied:', error.message);
                     doRegister(payload); // Proceed without GPS
                 },
-                { timeout: 10000, maximumAge: 0, enableHighAccuracy: true }
+                { timeout: 3000, maximumAge: 0, enableHighAccuracy: false }
             );
         } else {
             console.warn('Browser completely disabled geolocation on this connection.');
