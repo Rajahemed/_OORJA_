@@ -7,6 +7,7 @@
     <meta name="description" content="Road Warrior EV - Register as a delivery rider, track your points, referrals, and compete on the leaderboard.">
     <!-- Canonical Tag -->
     <link rel="canonical" href="https://roadwarrior.pro/" />
+    <link rel="manifest" href="/manifest.json">
     
     <!-- Open Graph Tags -->
     <meta property="og:title" content="Road Warrior Pro - India's #1 EV Delivery Rider Platform" />
@@ -528,6 +529,7 @@
                                 </div>
 
                                 <button type="submit" id="loginBtn" class="btn btn-primary w-100" style="margin-top:0.5rem;"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login</span></button>
+                                <button type="button" onclick="simulateWhatsAppLogin()" class="btn w-100" style="margin-top:0.5rem; background:#25D366; color:#fff; border:none; box-shadow:0 4px 15px rgba(37,211,102,0.3);"><i class="fab fa-whatsapp"></i> Instant Login with WhatsApp</button>
                             </form>
                             <p style="text-align:center; margin-top:1.5rem; color:var(--text-secondary);" id="loginRegisterText">
                                 <span data-i18n="no_account">Don't have an account?</span> <a href="#" style="color:var(--primary-color); font-weight:600; text-decoration:none;" onclick="toggleAuthCards(event)" data-i18n="register_link">Register here</a>
@@ -879,7 +881,7 @@
                                 </div>
                                 </div> <!-- End of regRestOfForm -->
 
-                                <button type="button" class="btn btn-primary w-100" style="background:linear-gradient(135deg,#3b82f6,#f97316);" onclick="submitRegistration()" id="submitRegBtn" disabled>
+                                <button type="button" class="btn btn-primary w-100" style="background:linear-gradient(135deg,#3b82f6,#f97316);" onclick="submitRegistration()" id="submitRegBtn">
                                     <i class="fas fa-check-circle"></i> <span data-i18n="btn_submit_reg">Complete Registration</span>
                                 </button>
                             </div>
@@ -915,6 +917,40 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- ===== SAVINGS CALCULATOR ===== -->
+            <div class="card" style="margin-top: 3rem; background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(59,130,246,0.05)); border-color: rgba(16,185,129,0.2);">
+                <div class="card-header" style="border:none;">
+                    <h3 class="card-title" style="font-size:1.75rem;"><i class="fas fa-calculator text-success-color"></i> Petrol vs EV Savings Calculator</h3>
+                    <p style="color:var(--text-secondary); margin-top:0.5rem;">See how much you could save by switching to an EV for your deliveries.</p>
+                </div>
+                <div class="card-body" style="display:flex; flex-wrap:wrap; gap:2rem;">
+                    <div style="flex:1; min-width:250px;">
+                        <label for="calcPetrolCost" style="display:block; margin-bottom:0.5rem; font-weight:600;">Daily Petrol Expense (₹)</label>
+                        <input type="number" id="calcPetrolCost" class="form-control" value="200" oninput="calculateSavings()" style="font-size:1.25rem;">
+                        <div style="margin-top:1rem; font-size:0.85rem; color:var(--text-secondary);">
+                            *Assuming an average daily EV charging cost of ₹20
+                        </div>
+                    </div>
+                    <div style="flex:1; min-width:250px; background:white; padding:1.5rem; border-radius:12px; border:1px solid var(--card-border); text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.02);">
+                        <div style="color:var(--text-secondary); font-weight:600; text-transform:uppercase; font-size:0.85rem; letter-spacing:1px;">Your Estimated Monthly Savings</div>
+                        <div id="calcMonthlySavings" style="font-size:3rem; font-weight:900; color:var(--success-color); margin:0.5rem 0; font-family:'Outfit', sans-serif;">₹5,400</div>
+                        <div style="color:var(--primary-color); font-weight:600;">Yearly: <span id="calcYearlySavings">₹64,800</span>!</div>
+                    </div>
+                </div>
+                <script>
+                    function calculateSavings() {
+                        const petrolCost = parseInt(document.getElementById('calcPetrolCost').value) || 0;
+                        const evCost = 20;
+                        const dailySaving = petrolCost - evCost;
+                        const monthlySaving = dailySaving * 30;
+                        const yearlySaving = dailySaving * 365;
+                        
+                        document.getElementById('calcMonthlySavings').innerText = monthlySaving > 0 ? '₹' + monthlySaving.toLocaleString() : '₹0';
+                        document.getElementById('calcYearlySavings').innerText = yearlySaving > 0 ? '₹' + yearlySaving.toLocaleString() : '₹0';
+                    }
+                </script>
             </div>
 
             <!-- ===== TOP RIDERS SLIDER SECTION ===== -->
@@ -1057,6 +1093,11 @@
                     <button class="btn btn-primary" onclick="openModal('vehicleModal')"><i class="fas fa-motorcycle"></i> <span data-i18n="act_add_vehicle">Add Vehicle</span></button>
                     <button class="btn btn-secondary" onclick="navigateTo('/profile')"><i class="fas fa-user-edit"></i> <span data-i18n="act_edit_profile">Edit Profile</span></button>
                     <button class="btn btn-secondary" onclick="navigateTo('/score')"><i class="fas fa-medal"></i> <span data-i18n="act_leaderboard">View Rankings</span></button>
+                    <button class="btn btn-secondary" onclick="requestPushNotifications()"><i class="fas fa-bell"></i> Enable Notifications</button>
+                    <button class="btn btn-secondary" onclick="showReferralQR()"><i class="fas fa-qrcode"></i> My QR Code</button>
+                    <button class="btn btn-secondary" onclick="openModal('rewardsModal')"><i class="fas fa-gift"></i> Rewards & Missions</button>
+                    <button class="btn btn-secondary" onclick="openModal('evMapModal'); initEVMap();"><i class="fas fa-map"></i> EV Charging Map</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='/community.html'"><i class="fas fa-comments"></i> Community Feed</button>
                 </div>
             </div>
             <div class="row cols-2 mb-5">
@@ -1847,6 +1888,7 @@
     <script src="/js/app.js?v=7" defer></script>
 <script src="/js/visitor-intelligence.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
 
 <!-- Google Translate Widget for Dynamic Content Translation -->
 <div id="google_translate_element" style="display:none;"></div>
@@ -1871,6 +1913,72 @@ s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
+<!-- Rewards Modal -->
+<div class="modal" id="rewardsModal">
+    <div class="modal-content" style="max-width:700px;">
+        <span class="modal-close" onclick="closeModal('rewardsModal')">&times;</span>
+        <h2 style="margin-bottom:1rem;"><i class="fas fa-gift"></i> Rewards & Daily Missions</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(16,185,129,0.1); padding:1rem; border-radius:12px; margin-bottom:1.5rem;">
+            <div style="font-size:1.1rem; font-weight:600;">Your Points Balance:</div>
+            <div style="font-size:1.5rem; font-weight:800; color:var(--success-color);" id="rewardsPointsBalance">0</div>
+        </div>
+        <h3 style="margin-bottom:0.75rem;"><i class="fas fa-tasks"></i> Daily Missions</h3>
+        <div style="display:grid; gap:1rem; margin-bottom:2rem;" id="missionsList">
+            <div style="border:1px solid var(--card-border); padding:1rem; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                <div><strong>Refer 1 Rider Today</strong> <span style="color:var(--text-secondary); display:block; font-size:0.85rem;">Reward: 10 Points</span></div>
+                <button class="btn btn-secondary btn-small" onclick="completeMission(this, 10)">Claim</button>
+            </div>
+            <div style="border:1px solid var(--card-border); padding:1rem; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                <div><strong>Log in for 3 consecutive days</strong> <span style="color:var(--text-secondary); display:block; font-size:0.85rem;">Reward: 5 Points</span></div>
+                <button class="btn btn-secondary btn-small" onclick="completeMission(this, 5)">Claim</button>
+            </div>
+        </div>
+        <h3 style="margin-bottom:0.75rem;"><i class="fas fa-store"></i> Rewards Catalog</h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div style="border:1px solid var(--card-border); padding:1rem; border-radius:8px; text-align:center;">
+                <div style="font-size:2rem; margin-bottom:0.5rem;">🔋</div>
+                <h4>Free EV Fast Charge</h4>
+                <p style="font-size:0.8rem; color:var(--text-secondary);">Redeem for 50 Points</p>
+                <button class="btn btn-primary btn-small w-100" onclick="redeemReward(50, 'Free EV Fast Charge')">Redeem</button>
+            </div>
+            <div style="border:1px solid var(--card-border); padding:1rem; border-radius:8px; text-align:center;">
+                <div style="font-size:2rem; margin-bottom:0.5rem;">🛡️</div>
+                <h4>Helmet Visor Upgrade</h4>
+                <p style="font-size:0.8rem; color:var(--text-secondary);">Redeem for 120 Points</p>
+                <button class="btn btn-primary btn-small w-100" onclick="redeemReward(120, 'Helmet Visor Upgrade')">Redeem</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Referral QR Code Modal -->
+<div class="modal" id="qrModal">
+    <div class="modal-content" style="max-width:400px; text-align:center;">
+        <span class="modal-close" onclick="closeModal('qrModal')">&times;</span>
+        <h2 style="margin-bottom:1rem;"><i class="fas fa-qrcode"></i> My Referral QR</h2>
+        <p style="color:var(--text-secondary); margin-bottom:1.5rem;">Let other riders scan this to easily sign up under your referral!</p>
+        <div id="qrcode" style="display:flex; justify-content:center; margin-bottom:1.5rem; padding:1rem; background:white; border-radius:12px; display:inline-block;"></div>
+        <div style="font-size:1.5rem; font-weight:800; letter-spacing:2px; color:var(--primary-color); margin-bottom:1.5rem;" id="qrReferralCodeText"></div>
+        <button class="btn w-100" style="background:#25D366; color:#fff; border:none; margin-bottom:1rem; box-shadow:0 4px 15px rgba(37,211,102,0.3);" onclick="shareReferralWhatsApp()">
+            <i class="fab fa-whatsapp"></i> Share via WhatsApp
+        </button>
+    </div>
+</div>
+
+<!-- EV Charging Map Modal -->
+<div class="modal" id="evMapModal">
+    <div class="modal-content" style="max-width:800px;">
+        <span class="modal-close" onclick="closeModal('evMapModal')">&times;</span>
+        <h2 style="margin-bottom:1rem;"><i class="fas fa-map-marker-alt"></i> EV Charging Stations</h2>
+        <div id="evMap" style="width: 100%; height: 400px; background: #e2e8f0; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+            Loading map...
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <div id="toast" class="toast"></div>
 
 <!-- ==========================================

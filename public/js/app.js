@@ -1,3 +1,11 @@
+// Register Service Worker for PWA & Push Notifications
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('Service Worker registered', reg))
+            .catch(err => console.error('Service Worker registration failed', err));
+    });
+}
 
 // --- Security: CSRF Protection & Global Fetch Override ---
 
@@ -1043,7 +1051,229 @@ async function openDataDrilldown(type) {
     let adminChartsLoaded = false;
 
     // ===== INIT =====
-    document.addEventListener('DOMContentLoaded', () => {
+    // Initialize
+    document.addEventListener('DOMContentLoaded', initApp);
+
+    // ==================== NEW FEATURES ====================
+    window.simulateWhatsAppLogin = async function() {
+        const phone = prompt("Enter your WhatsApp phone number to login:");
+        if (!phone) return; // User cancelled
+
+        showToast('Simulating WhatsApp Login...', 'info');
+        try {
+            const res = await fetch('/auth/login', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ phone, loginMethod: 'whatsapp' }) 
+            });
+            const result = await res.json();
+            
+            if (result.success) {
+                localStorage.setItem('riderId', result.riderId);
+                localStorage.setItem('sessionId', result.sessionId);
+                fetchRiderProfile(result.riderId);
+                
+                showToast('Logged in successfully via WhatsApp!', 'success');
+                
+                const authSection = document.getElementById('authSection');
+                if (authSection) authSection.style.display = 'none';
+                const dashSection = document.getElementById('dashboardSection');
+                if (dashSection) dashSection.style.display = 'block';
+                
+            } else {
+                showToast(result.error || 'User not found. Please register first.', 'error');
+            }
+        } catch (e) {
+            showToast('Login error: ' + e.message, 'error');
+        }
+    };
+
+    window.requestPushNotifications = function() {
+        if ('Notification' in window) {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    showToast('Push notifications enabled!', 'success');
+                    if ('serviceWorker' in navigator) {
+                        navigator.serviceWorker.ready.then(registration => {
+                            registration.showNotification('Welcome to Road Warrior!', {
+                                body: 'You will now receive updates on your ranking and rewards.',
+                                icon: '/og-image.png'
+                            });
+                        });
+                    }
+                } else {
+                    showToast('Push notifications denied.', 'warning');
+                }
+            });
+        } else {
+            showToast('Push notifications not supported in this browser.', 'warning');
+        }
+    };
+
+    window.showReferralQR = function() {
+        if (!currentUser) return;
+        document.getElementById('qrReferralCodeText').innerText = currentUser.referralCode;
+        const qrContainer = document.getElementById('qrcode');
+        qrContainer.innerHTML = '';
+        if (typeof QRCode !== 'undefined') {
+            new QRCode(qrContainer, {
+                text: "https://roadwarrior.pro/?ref=" + currentUser.referralCode,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff"
+            });
+        } else {
+            qrContainer.innerText = "Please include qrcode.js in your index.html head to use this feature.";
+        }
+        openModal('qrModal');
+    };
+
+    window.shareReferralWhatsApp = async function() {
+        if (!currentUser) return;
+        
+        const qrContainer = document.getElementById('qrcode');
+        const canvas = qrContainer.querySelector('canvas');
+        const img = qrContainer.querySelector('img');
+        
+        let dataUrl = '';
+        if (canvas) {
+            // Draw onto a new canvas with a white background to avoid transparency issues (black bg in some apps)
+            const newCanvas = document.createElement('canvas');
+            // Add padding so it looks like a nice square card
+            const padding = 20;
+            newCanvas.width = canvas.width + (padding * 2);
+            newCanvas.height = canvas.height + (padding * 2);
+            const ctx = newCanvas.getContext('2d');
+            
+            // Fill white background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+            
+            // Draw original QR code centered
+            ctx.drawImage(canvas, padding, padding);
+            
+            // Convert to JPEG to drop any potential alpha channel issues entirely
+            dataUrl = newCanvas.toDataURL('image/jpeg', 1.0);
+        } else if (img && img.src) {
+            dataUrl = img.src;
+        }
+        
+        if (!dataUrl) {
+            showToast('QR Code not ready yet.', 'error');
+            return;
+        }
+
+        try {
+            const arr = dataUrl.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while(n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            const blob = new Blob([u8arr], {type: mime});
+            const file = new File([blob], 'referral-qr.jpg', { type: 'image/jpeg' });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                // Share ONLY the file, without text or url, as requested by user
+                await navigator.share({
+                    files: [file]
+                });
+            } else {
+                // Fallback if sharing files is not supported
+                const a = document.createElement('a');
+                a.href = dataUrl;
+                a.download = 'roadwarrior-qr.jpg';
+                a.click();
+                showToast('Image downloaded! You can now send it on WhatsApp.', 'info');
+            }
+        } catch (err) {
+            console.error('Error sharing:', err);
+            if (err.name !== 'AbortError') {
+                showToast('Sharing failed, downloading image instead...', 'info');
+                const a = document.createElement('a');
+                a.href = dataUrl;
+                a.download = 'roadwarrior-qr.jpg';
+                a.click();
+            }
+        }
+    };
+
+    window.completeMission = function(btn, points) {
+        if (!currentUser) return;
+        currentUser.totalPoints += points;
+        updateUserInStorage(currentUser);
+        btn.innerText = 'Claimed!';
+        btn.disabled = true;
+        btn.style.background = 'var(--success-color)';
+        btn.style.borderColor = 'var(--success-color)';
+        btn.style.color = 'white';
+        const balElem = document.getElementById('rewardsPointsBalance');
+        if(balElem) balElem.innerText = currentUser.totalPoints;
+        showToast(`Mission complete! You earned ${points} points.`, 'success');
+        if (typeof renderLeaderboard === 'function') renderLeaderboard();
+        if (typeof updateUIForUser === 'function') updateUIForUser();
+    };
+
+    window.redeemReward = function(cost, item) {
+        if (!currentUser) return;
+        if (currentUser.totalPoints < cost) {
+            showToast('Not enough points to redeem this item.', 'warning');
+            return;
+        }
+        currentUser.totalPoints -= cost;
+        updateUserInStorage(currentUser);
+        const balElem = document.getElementById('rewardsPointsBalance');
+        if(balElem) balElem.innerText = currentUser.totalPoints;
+        showToast(`Successfully redeemed: ${item}!`, 'success');
+        if (typeof renderLeaderboard === 'function') renderLeaderboard();
+        if (typeof updateUIForUser === 'function') updateUIForUser();
+    };
+
+    let evMapInitialized = false;
+    window.initEVMap = function() {
+        if (evMapInitialized) return;
+        if (typeof L === 'undefined') {
+            setTimeout(window.initEVMap, 500);
+            return;
+        }
+        evMapInitialized = true;
+        
+        const map = L.map('evMap').setView([12.9716, 77.5946], 12);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+        
+        const stations = [
+            { lat: 12.9716, lng: 77.5946, name: "City Center Fast Charge" },
+            { lat: 12.9616, lng: 77.5846, name: "South Block Swap Station" },
+            { lat: 12.9816, lng: 77.6046, name: "Indiranagar EV Hub" },
+            { lat: 12.9516, lng: 77.6146, name: "Koramangala Supercharger" }
+        ];
+        
+        stations.forEach(station => {
+            L.marker([station.lat, station.lng]).addTo(map)
+                .bindPopup(`<b>${station.name}</b><br>Available slots: ${Math.floor(Math.random() * 5) + 1}`);
+        });
+        
+        // Fix map rendering issue when inside modal
+        setTimeout(() => map.invalidateSize(), 200);
+    };
+
+    function updateUserInStorage(user) {
+        let riders = JSON.parse(localStorage.getItem('roadwarrior_riders') || '[]');
+        const idx = riders.findIndex(r => r.id === user.id);
+        if (idx !== -1) {
+            riders[idx] = user;
+            localStorage.setItem('roadwarrior_riders', JSON.stringify(riders));
+        }
+        localStorage.setItem('roadwarrior_current_user', JSON.stringify(user));
+    }
+
+    function initApp() {
         // Initialize tracking and cookie consent immediately
         initVisitorTracking();
         initConsentBanner();
@@ -1098,7 +1328,7 @@ async function openDataDrilldown(type) {
         window.addEventListener('popstate', handlePopState);
         updateAuthNavbarState();
         routeSPA(window.location.pathname);
-    });
+    }
 
     // ===== LANGUAGE =====
     function changeLanguage(lang) {

@@ -432,14 +432,19 @@ html, body {
 }
 
 .btn-secondary {
-  background-color: rgba(255, 255, 255, 0.03);
-  color: var(--text-primary);
+  background-color: #ffffff;
+  color: #000000;
   border: 1px solid var(--card-border);
+  -webkit-tap-highlight-color: transparent;
 }
 
-.btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+.btn-secondary:hover,
+.btn-secondary:active,
+.btn-secondary:focus {
+  background-color: #ffffff !important;
+  color: #000000 !important;
   border-color: var(--text-secondary);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .navbar .btn-secondary {
@@ -922,7 +927,8 @@ select.form-control option {
 }
 
 .modal-content {
-  background-color: #0f172a;
+  background-color: #ffffff;
+  color: #000000;
   border-radius: var(--border-radius-lg);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
   max-width: 580px;

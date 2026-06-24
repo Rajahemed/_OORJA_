@@ -329,6 +329,27 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       whatsappMessage = `Welcome ${fullName}! You are now registered. Your referral code is ${referralCode}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV 🏍️`;
     }
 
+    // Attempt to directly send the WhatsApp message if Twilio is configured
+    const twilio = require('twilio');
+    const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_ACCOUNT_SID !== 'your_twilio_account_sid'
+      ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+      : null;
+
+    if (twilioClient && process.env.TWILIO_PHONE_NUMBER && process.env.TWILIO_PHONE_NUMBER !== 'your_twilio_phone_number') {
+      try {
+        await twilioClient.messages.create({
+          body: whatsappMessage,
+          from: `whatsapp:${process.env.TWILIO_PHONE_NUMBER}`,
+          to: `whatsapp:+91${normalizedPhone}`
+        });
+        console.log(`[WhatsApp] Sent registration confirmation to ${normalizedPhone}`);
+      } catch (waErr) {
+        console.error('[WhatsApp] Error sending message:', waErr);
+      }
+    } else {
+      console.log(`[WhatsApp Mock] Would have automatically sent to ${normalizedPhone}: \n${whatsappMessage}`);
+    }
+
     res.json({
       success: true,
       message: 'Rider registered successfully',

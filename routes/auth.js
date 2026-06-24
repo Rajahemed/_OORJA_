@@ -121,6 +121,8 @@ router.post('/login', async (req, res) => {
         return res.status(401).json({ success: false, error: 'Invalid OTP' });
       }
       otpCache.delete(phone);
+    } else if (loginMethod !== 'whatsapp') {
+      return res.status(400).json({ success: false, error: 'Invalid login method' });
     }
 
     const riderId = rider.id;
