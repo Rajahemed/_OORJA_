@@ -1872,5 +1872,103 @@ s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
 <div id="toast" class="toast"></div>
+
+<!-- ==========================================
+     COOKIE CONSENT BANNER
+     ========================================== -->
+<div id="cookieConsentBanner">
+    <div class="cookie-banner-inner">
+        <div class="cookie-icon">🍪</div>
+        <div class="cookie-text">
+            <h4>We value your privacy</h4>
+            <p>We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies. <a href="#" onclick="navigateTo('/privacy'); return false;">Privacy Policy</a></p>
+        </div>
+        <div class="cookie-actions">
+            <button class="cookie-btn-settings" onclick="toggleCookieSettings()">Settings</button>
+            <button class="cookie-btn-essential" onclick="acceptEssentialCookies()">Essential Only</button>
+            <button class="cookie-btn-accept" onclick="acceptAllCookies()">Accept All</button>
+        </div>
+    </div>
+    <div id="cookieSettingsPanel">
+        <div class="cookie-setting-row">
+            <div class="cookie-setting-info">
+                <strong>Essential Cookies</strong>
+                <span>Required for the website to function normally. Cannot be disabled.</span>
+            </div>
+            <label class="cookie-toggle">
+                <input type="checkbox" checked disabled>
+                <span class="cookie-toggle-slider"></span>
+            </label>
+        </div>
+        <div class="cookie-setting-row">
+            <div class="cookie-setting-info">
+                <strong>Analytics Cookies</strong>
+                <span>Help us improve our website by collecting and reporting information on its usage.</span>
+            </div>
+            <label class="cookie-toggle">
+                <input type="checkbox" id="cookieAnalyticsToggle" checked>
+                <span class="cookie-toggle-slider"></span>
+            </label>
+        </div>
+        <div class="cookie-setting-row">
+            <div class="cookie-setting-info">
+                <strong>Marketing Cookies</strong>
+                <span>Used to track visitors across websites to allow publishers to display relevant ads.</span>
+            </div>
+            <label class="cookie-toggle">
+                <input type="checkbox" id="cookieMarketingToggle" checked>
+                <span class="cookie-toggle-slider"></span>
+            </label>
+        </div>
+        <div style="text-align: right;">
+            <button class="cookie-save-btn" onclick="saveCookiePreferences()">Save Preferences</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleCookieSettings() {
+        const panel = document.getElementById('cookieSettingsPanel');
+        panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+    }
+    
+    function hideCookieBanner() {
+        const banner = document.getElementById('cookieConsentBanner');
+        banner.classList.remove('show');
+        setTimeout(() => banner.style.display = 'none', 500); // hide completely after transition
+    }
+
+    function acceptAllCookies() {
+        localStorage.setItem('roadwarrior_cookie_consent', 'all');
+        hideCookieBanner();
+    }
+
+    function acceptEssentialCookies() {
+        localStorage.setItem('roadwarrior_cookie_consent', 'essential');
+        hideCookieBanner();
+    }
+
+    function saveCookiePreferences() {
+        const analytics = document.getElementById('cookieAnalyticsToggle').checked;
+        const marketing = document.getElementById('cookieMarketingToggle').checked;
+        localStorage.setItem('roadwarrior_cookie_consent', JSON.stringify({
+            analytics: analytics,
+            marketing: marketing,
+            essential: true
+        }));
+        hideCookieBanner();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Show banner if no consent is recorded
+        if (!localStorage.getItem('roadwarrior_cookie_consent')) {
+            setTimeout(() => {
+                const banner = document.getElementById('cookieConsentBanner');
+                if (banner) banner.classList.add('show');
+            }, 1000); // wait 1 second before showing
+        }
+    });
+</script>
+
 </body>
 </html>
