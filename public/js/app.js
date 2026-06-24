@@ -1315,10 +1315,19 @@ async function openDataDrilldown(type) {
         else if (activeTab === 'score') loadLeaderboardData();
         else if (activeTab === 'profile') loadProfileData();
         else if (activeTab === 'admin') loadAdminData();
-
-        // Footer visibility - only show on home page
+        else if (activeTab === 'home') loadLeaderboardData(); // Load leaderboard data for the homepage slider
+        
+        // Header and Footer visibility logic
+        const reg = document.getElementById('registerCard');
+        const isRegOpen = (reg && reg.style.display !== 'none' && activeTab === 'home');
+        
         if (siteFooter) {
-            siteFooter.style.display = (activeTab === 'home') ? 'block' : 'none';
+            siteFooter.style.display = (activeTab === 'home' && !isRegOpen) ? 'block' : 'none';
+        }
+        
+        const navbar = document.querySelector('nav.navbar');
+        if (navbar) {
+            navbar.style.display = isRegOpen ? 'none' : '';
         }
     }
 
@@ -1393,10 +1402,14 @@ async function openDataDrilldown(type) {
             const login = document.getElementById('loginCard');
             const reg = document.getElementById('registerCard');
             const switchLink = document.getElementById('loginSwitchLink');
+            const navbar = document.querySelector('nav.navbar');
+            const siteFooter = document.getElementById('site-footer');
             if (login && reg) {
                 login.style.display = 'block';
                 reg.style.display = 'none';
                 if (switchLink) switchLink.style.display = 'block';
+                if (navbar) navbar.style.display = '';
+                if (siteFooter) siteFooter.style.display = 'block';
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1689,11 +1702,18 @@ async function openDataDrilldown(type) {
         const login = document.getElementById('loginCard');
         const reg = document.getElementById('registerCard');
         const switchLink = document.getElementById('loginSwitchLink');
+        const navbar = document.querySelector('nav.navbar');
+        const siteFooter = document.getElementById('site-footer');
+        
         if (login.style.display === 'none') {
             login.style.display = 'block'; reg.style.display = 'none';
             if (switchLink) switchLink.style.display = 'block';
+            if (navbar) navbar.style.display = '';
+            if (siteFooter) siteFooter.style.display = 'block';
         } else {
             login.style.display = 'none'; reg.style.display = 'block';
+            if (navbar) navbar.style.display = 'none';
+            if (siteFooter) siteFooter.style.display = 'none';
         }
     }
 
@@ -2498,10 +2518,70 @@ async function openDataDrilldown(type) {
             const medal = rn === 1 ? '🥇' : rn === 2 ? '🥈' : rn === 3 ? '🥉' : rn;
             const isSelf = currentUser && r.id === currentUser.id;
             const rowStyle = isSelf ? `style="background:rgba(59, 130, 246, 0.03); font-weight:bold; border-left:3px solid var(--primary-color);"` : '';
-            const tags = (r.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
+        const tags = (r.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
             return `<tr ${rowStyle}><td>${medal}</td><td>${r.fullName}${isSelf ? ` <strong>(${TRANSLATIONS[lang].label_you})</strong>` : ''}</td><td>${r.city}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td>${tags || '—'}</td></tr>`;
         }).join('');
+        
+        // Also update the Top Riders slider on the home page if it's there
+        updateTopRidersSlider(top10.slice(0, 5));
+
         renderAchievementsGrid();
+    }
+
+    // ===== TOP RIDERS SLIDER =====
+    let sliderInterval = null;
+    function updateTopRidersSlider(top5) {
+        const sliderWrapper = document.getElementById('topRidersSliderWrapper');
+        
+        if (!sliderWrapper) return;
+        
+        if (!top5 || top5.length === 0) {
+            sliderWrapper.innerHTML = '<div style="flex: 0 0 100%; width: 100%; text-align: center;"><p style="color:var(--text-secondary);">Top riders data unavailable.</p></div>';
+            return;
+        }
+
+        // Build all slides + 1 cloned slide at the end for infinite loop
+        const slidesToRender = [...top5, top5[0]];
+        
+        sliderWrapper.innerHTML = slidesToRender.map((rider, index) => {
+            const rank = index === top5.length ? 1 : index + 1;
+            const platform = (rider.platform && rider.platform !== 'Other') ? rider.platform : 'Delivery';
+            return `
+                <div style="flex: 0 0 100%; width: 100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 0 2rem; box-sizing: border-box;">
+                    <div style="font-size:4rem; margin-bottom:15px; text-shadow: 0 4px 15px rgba(249,115,22,0.4);">🏆</div>
+                    <h3 style="font-family:'Outfit',sans-serif; color:var(--text-primary); font-size:2rem; margin-bottom:10px;">#${rank} Ranked Rider</h3>
+                    <div style="font-size:2.5rem; font-weight:900; color:var(--primary-color); margin-bottom:20px; letter-spacing: 1px;">${rider.fullName}</div>
+                    <div style="display:flex; justify-content:center; gap:30px; font-size:1.25rem; color:var(--text-secondary); margin-bottom:20px; flex-wrap: wrap;">
+                        <span><i class="fas fa-map-marker-alt" style="color:var(--error-color);"></i> ${rider.city || 'India'}</span>
+                        <span><i class="fas fa-star" style="color:var(--warning-color);"></i> ${rider.totalPoints} Points</span>
+                        <span><i class="fas fa-motorcycle" style="color:var(--info-color);"></i> ${platform}</span>
+                    </div>
+                    <p style="font-style:italic; color:var(--text-muted); font-size:1.2rem; max-width: 800px; text-align: center;">"Joining the leaderboard has been a game-changer for my earnings!"</p>
+                </div>
+            `;
+        }).join('');
+
+        let currentIndex = 0;
+        
+        function slideNext() {
+            currentIndex++;
+            sliderWrapper.style.transition = 'transform 0.8s ease-in-out';
+            sliderWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+            
+            if (currentIndex === top5.length) {
+                setTimeout(() => {
+                    sliderWrapper.style.transition = 'none';
+                    currentIndex = 0;
+                    sliderWrapper.style.transform = `translateX(0)`;
+                }, 800);
+            }
+        }
+
+        // Clear any existing interval to prevent overlapping
+        if (sliderInterval) clearInterval(sliderInterval);
+        
+        // Change every 5 seconds
+        sliderInterval = setInterval(slideNext, 5000);
     }
 
     function renderAchievementsGrid() {

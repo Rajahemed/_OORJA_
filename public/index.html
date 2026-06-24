@@ -917,23 +917,13 @@
                 </div>
             </div>
 
-            <!-- ===== TESTIMONIALS SECTION ===== -->
-            <div style="margin-top: 4rem; margin-bottom: 2rem;">
-                <h2 style="text-align:center; color:var(--text-primary); font-family:'Outfit', sans-serif; font-size:2rem; margin-bottom: 2rem;">What Our Riders Say</h2>
-                <div style="display:flex; flex-wrap:wrap; gap:1.5rem; justify-content:center;">
-                    <div class="card" style="flex: 1 1 300px; padding: 1.5rem; background: var(--card-bg); border-radius: var(--border-radius-md); border: 1px solid var(--card-border);">
-                        <p style="font-style:italic; color:var(--text-secondary); margin-bottom:1rem;">"Road Warrior Pro helped me switch to an EV easily. The referral rewards are amazing, and I save ₹3000 a month on fuel!"</p>
-                        <div style="display:flex; align-items:center; gap:0.75rem;">
-                            <div style="width:40px; height:40px; border-radius:50%; background:var(--primary-glow); display:flex; align-items:center; justify-content:center; color:var(--primary-color); font-weight:bold;">A</div>
-                            <div><strong style="color:var(--text-primary);">Arjun K.</strong><div style="font-size:0.8rem; color:var(--text-muted);">Bengaluru ⚡ EV Rider</div></div>
-                        </div>
-                    </div>
-                    <div class="card" style="flex: 1 1 300px; padding: 1.5rem; background: var(--card-bg); border-radius: var(--border-radius-md); border: 1px solid var(--card-border);">
-                        <p style="font-style:italic; color:var(--text-secondary); margin-bottom:1rem;">"The income dashboard is a game-changer. I finally know exactly how much I make. Highly recommend this to all Swiggy/Zomato riders."</p>
-                        <div style="display:flex; align-items:center; gap:0.75rem;">
-                            <div style="width:40px; height:40px; border-radius:50%; background:var(--secondary-glow); display:flex; align-items:center; justify-content:center; color:var(--secondary-color); font-weight:bold;">S</div>
-                            <div><strong style="color:var(--text-primary);">Suresh M.</strong><div style="font-size:0.8rem; color:var(--text-muted);">Mumbai 🏍️ Petrol Rider</div></div>
-                        </div>
+            <!-- ===== TOP RIDERS SLIDER SECTION ===== -->
+            <div style="margin-top: 4rem; margin-bottom: 2rem; width: 100%; overflow: hidden; position: relative; background: var(--card-bg); padding: 3rem 0; border-radius: var(--border-radius-lg); border: 1px solid var(--card-border); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+                <h2 style="text-align:center; color:var(--text-primary); font-family:'Outfit', sans-serif; font-size:2.5rem; margin-bottom: 2rem;"><i class="fas fa-trophy text-warning-color"></i> Top 5 Riders</h2>
+                <div id="topRidersSliderWrapper" style="display:flex; width: 100%; transition: transform 0.8s ease-in-out;">
+                    <div style="flex: 0 0 100%; width: 100%; text-align: center; padding: 2rem;">
+                        <div class="spinner-container" style="display:inline-block; vertical-align:middle; margin-bottom:10px;"><div class="spinner" style="width:30px; height:30px; border-width:3px;"></div></div>
+                        <p style="color:var(--text-secondary);">Loading top riders...</p>
                     </div>
                 </div>
             </div>
