@@ -3626,6 +3626,10 @@ async function openDataDrilldown(type) {
             fetch('/api/admin/city-stats', { headers: getAdminAuthHeaders() }).then(r => r.json()),
             fetch('/api/admin/vehicle-stats', { headers: getAdminAuthHeaders() }).then(r => r.json())
         ]).then(([cityRes, vehicleRes]) => {
+            if (!window.Chart) {
+                console.error('Chart.js library is not loaded yet or blocked.');
+                return;
+            }
             if (cityRes.success) {
                 const cityCtx = document.getElementById('adminCityChart');
                 if (cityCtx && !activeCharts.adminCity) {
@@ -3640,6 +3644,8 @@ async function openDataDrilldown(type) {
                     activeCharts.adminVehicle = new Chart(vCtx.getContext('2d'), { type: 'doughnut', data: { labels: ['Petrol', 'Electric', 'Diesel', 'Other'], datasets: [{ data: [vd.petrol, vd.electric, vd.diesel, vd.other], backgroundColor: ['rgba(251,191,36,0.8)', 'rgba(16,185,129,0.8)', 'rgba(59,130,246,0.8)', 'rgba(156,163,175,0.8)'], borderColor: '#161e31', borderWidth: 2 }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#f3f4f6' } } } } });
                 }
             }
+        }).catch(e => {
+            console.error('Error loading city stats charts:', e);
         });
     }
 
@@ -3871,6 +3877,11 @@ async function loadVisitorAnalytics() {
             document.getElementById('metricSessions').innerText = overview.data.totalSessions || 0;
             document.getElementById('metricConversion').innerText = overview.data.conversionRate + '%';
             
+            if (!window.Chart) {
+                console.error('Chart.js library is not loaded yet or blocked.');
+                return;
+            }
+
             // Devices Chart
             const devCtx = document.getElementById('deviceBreakdownChart').getContext('2d');
             if (window.devChart) window.devChart.destroy();

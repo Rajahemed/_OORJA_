@@ -486,6 +486,8 @@
         <section id="home-view" class="section-view active">
             <div class="row" id="authLayout" style="margin-top:1rem; justify-content: center; align-items: flex-start; flex-direction: column;">
 
+
+
                 <!-- Auth/Register Card -->
                 <div class="card" id="authBox" style="width: 100%; max-width: 600px; margin: 0 auto;">
 
@@ -921,35 +923,81 @@
 
             <!-- ===== SAVINGS CALCULATOR ===== -->
             <div class="card" style="margin-top: 3rem; background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(59,130,246,0.05)); border-color: rgba(16,185,129,0.2);">
-                <div class="card-header" style="border:none;">
+                <div class="card-header" style="border:none; padding-bottom:0.5rem;">
                     <h3 class="card-title" style="font-size:1.75rem;"><i class="fas fa-calculator text-success-color"></i> Petrol vs EV Savings Calculator</h3>
-                    <p style="color:var(--text-secondary); margin-top:0.5rem;">See how much you could save by switching to an EV for your deliveries.</p>
+                    <p style="color:var(--text-secondary); margin-top:0.5rem;">Compare your daily expenses to see which bike is better for your deliveries.</p>
                 </div>
                 <div class="card-body" style="display:flex; flex-wrap:wrap; gap:2rem;">
                     <div style="flex:1; min-width:250px;">
-                        <label for="calcPetrolCost" style="display:block; margin-bottom:0.5rem; font-weight:600;">Daily Petrol Expense (₹)</label>
-                        <input type="number" id="calcPetrolCost" class="form-control" value="200" oninput="calculateSavings()" style="font-size:1.25rem;">
-                        <div style="margin-top:1rem; font-size:0.85rem; color:var(--text-secondary);">
-                            *Assuming an average daily EV charging cost of ₹20
-                        </div>
+                        
+                        <label for="calcPetrolInput" style="display:block; margin-bottom:0.5rem; font-weight:600;">Daily Petrol Expense (₹)</label>
+                        <input type="number" id="calcPetrolInput" class="form-control" value="200" oninput="calculateSavings()" style="font-size:1.25rem; margin-bottom: 1.5rem;">
+
+                        <label for="calcEVInput" style="display:block; margin-bottom:0.5rem; font-weight:600;">Daily EV Charging Cost (₹)</label>
+                        <input type="number" id="calcEVInput" class="form-control" value="20" oninput="calculateSavings()" style="font-size:1.25rem;">
+                        
                     </div>
-                    <div style="flex:1; min-width:250px; background:white; padding:1.5rem; border-radius:12px; border:1px solid var(--card-border); text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.02);">
-                        <div style="color:var(--text-secondary); font-weight:600; text-transform:uppercase; font-size:0.85rem; letter-spacing:1px;">Your Estimated Monthly Savings</div>
+                    <div style="flex:1; min-width:250px; background:var(--card-bg); padding:1.5rem; border-radius:12px; border:1px solid var(--card-border); text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.02); display:flex; flex-direction:column; justify-content:center;">
+                        
+                        <div id="calcSuggestion" style="font-size:1.15rem; font-weight:700; margin-bottom:1.5rem; color:var(--text-primary);">
+                            <span style="color:var(--success-color)"><i class="fas fa-bolt"></i> Switch to EV and Save!</span>
+                        </div>
+                        
+                        <div id="calcResultLabel" style="color:var(--text-secondary); font-weight:600; text-transform:uppercase; font-size:0.85rem; letter-spacing:1px;">Your Estimated Monthly Savings</div>
                         <div id="calcMonthlySavings" style="font-size:3rem; font-weight:900; color:var(--success-color); margin:0.5rem 0; font-family:'Outfit', sans-serif;">₹5,400</div>
-                        <div style="color:var(--primary-color); font-weight:600;">Yearly: <span id="calcYearlySavings">₹64,800</span>!</div>
+                        <div style="font-weight:600; color:var(--text-primary);">Yearly: <span id="calcYearlySavings" style="color:var(--primary-color);">₹64,800</span>!</div>
                     </div>
                 </div>
                 <script>
                     function calculateSavings() {
-                        const petrolCost = parseInt(document.getElementById('calcPetrolCost').value) || 0;
-                        const evCost = 20;
-                        const dailySaving = petrolCost - evCost;
-                        const monthlySaving = dailySaving * 30;
-                        const yearlySaving = dailySaving * 365;
+                        const petrolCost = parseInt(document.getElementById('calcPetrolInput').value) || 0;
+                        const evCost = parseInt(document.getElementById('calcEVInput').value) || 0;
                         
-                        document.getElementById('calcMonthlySavings').innerText = monthlySaving > 0 ? '₹' + monthlySaving.toLocaleString() : '₹0';
-                        document.getElementById('calcYearlySavings').innerText = yearlySaving > 0 ? '₹' + yearlySaving.toLocaleString() : '₹0';
+                        let monthlySaving = 0;
+                        let yearlySaving = 0;
+                        
+                        const suggestionEl = document.getElementById('calcSuggestion');
+                        const resultLabelEl = document.getElementById('calcResultLabel');
+                        const monthlyEl = document.getElementById('calcMonthlySavings');
+                        const yearlyEl = document.getElementById('calcYearlySavings');
+                        
+                        if (petrolCost > evCost) {
+                            // EV is cheaper
+                            const dailySaving = petrolCost - evCost;
+                            monthlySaving = dailySaving * 30;
+                            yearlySaving = monthlySaving * 12;
+                            
+                            suggestionEl.innerHTML = `<span style="color:var(--success-color)"><i class="fas fa-bolt"></i> Switch to EV and Save!</span>`;
+                            resultLabelEl.innerText = 'Your Estimated Monthly Savings';
+                            monthlyEl.style.color = 'var(--success-color)';
+                            yearlyEl.style.color = 'var(--primary-color)';
+                        } else if (evCost > petrolCost) {
+                            // Petrol is cheaper
+                            const dailySaving = evCost - petrolCost;
+                            monthlySaving = dailySaving * 30;
+                            yearlySaving = monthlySaving * 12;
+                            
+                            suggestionEl.innerHTML = `<span style="color:var(--warning-color)"><i class="fas fa-gas-pump"></i> Petrol is Cheaper!</span>`;
+                            resultLabelEl.innerText = 'You save by using Petrol (Monthly)';
+                            monthlyEl.style.color = 'var(--warning-color)';
+                            yearlyEl.style.color = 'var(--warning-color)';
+                        } else {
+                            // Equal
+                            monthlySaving = 0;
+                            yearlySaving = 0;
+                            
+                            suggestionEl.innerHTML = `<span style="color:var(--text-secondary)"><i class="fas fa-balance-scale"></i> Costs are Equal</span>`;
+                            resultLabelEl.innerText = 'Monthly Difference';
+                            monthlyEl.style.color = 'var(--text-secondary)';
+                            yearlyEl.style.color = 'var(--text-secondary)';
+                        }
+                        
+                        monthlyEl.innerText = '₹' + monthlySaving.toLocaleString('en-IN');
+                        yearlyEl.innerText = '₹' + yearlySaving.toLocaleString('en-IN');
                     }
+                    
+                    // Call once on load
+                    document.addEventListener('DOMContentLoaded', calculateSavings);
                 </script>
             </div>
 
