@@ -1106,22 +1106,27 @@ select.form-control option {
 /* --- Tablet / Small Desktop: ≤ 900px --- */
 @media (max-width: 900px) {
   .navbar {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
     gap: 0.75rem;
     padding: 1rem 1.25rem;
   }
   .navbar-nav {
-    width: 100%;
+    width: auto;
     justify-content: center;
+    flex-wrap: wrap;
     overflow-x: auto;
-    padding-bottom: 0.25rem;
+    padding-bottom: 0;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
   .navbar-nav::-webkit-scrollbar { display: none; }
   .navbar-end {
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 1rem;
   }
 }
 
