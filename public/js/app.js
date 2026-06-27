@@ -2600,7 +2600,11 @@ async function openDataDrilldown(type) {
                 document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
                 const regFormContent = document.getElementById('registrationFormContent');
                 if (regFormContent) regFormContent.style.display = 'none';
-                document.getElementById('regSuccessPanel').classList.add('active');
+                const regSuccessPanel = document.getElementById('regSuccessPanel');
+                if (regSuccessPanel) {
+                    regSuccessPanel.classList.add('active');
+                    regSuccessPanel.style.display = 'block';
+                }
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 document.getElementById('loginSwitchLink').style.display = 'none';
 
@@ -2615,7 +2619,8 @@ async function openDataDrilldown(type) {
                 document.getElementById('successWelcomeName').textContent = regFullName;
                 document.getElementById('successReferralCode').textContent = result.referralCode;
                 // Generate dynamic exact message text
-                const actualText = getWhatsAppMessageText(regFullName, result.referralCode);
+                window.lastRegisteredWhatsAppMessage = result.whatsappMessage;
+                const actualText = result.whatsappMessage || getWhatsAppMessageText(regFullName, result.referralCode);
                 
                 let msgHtml = `
                     <div style="background:#eaf8f1; padding:0.75rem; border-radius:8px; border:1px solid #c3e6cf; text-align:left; margin-bottom:10px;">
@@ -3232,43 +3237,25 @@ async function openDataDrilldown(type) {
         
         const code = specificCode || (currentUser ? currentUser.referralCode : 'RWPRO');
         const fullName = specificName || (currentUser ? currentUser.fullName : 'Rider');
-        const text = getWhatsAppMessageText(fullName, code);
-        const fallbackUrl = `whatsapp://send?text=${encodeURIComponent(text)}`;
+        // If the user wants their "older text", we use the backend message if available, else fallback
+        let text = window.lastRegisteredWhatsAppMessage || getWhatsAppMessageText(fullName, code);
+        
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const webFallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+        const nativeUrl = `whatsapp://send?text=${encodeURIComponent(text)}`;
 
-        try {
-            // Use relative path for fetch to support Github Pages subpaths
-            const response = await fetch('og-image.png');
-            if (!response.ok) throw new Error('Image fetch failed');
-            const blob = await response.blob();
-            const file = new File([blob], 'road-warrior-ev.png', { type: blob.type });
+        if (typeof trackEvent === 'function') trackEvent('share_direct_whatsapp', { success: true });
 
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                    files: [file],
-                    title: 'Join Road Warrior EV',
-                    text: text
-                });
-                if (typeof trackEvent === 'function') trackEvent('share_with_image', { success: true });
-            } else if (navigator.share) {
-                // Fallback to text only if file sharing is not supported
-                await navigator.share({
-                    title: 'Join Road Warrior EV',
-                    text: text
-                });
-                if (typeof trackEvent === 'function') trackEvent('share_text_only', { success: true });
-            } else {
-                // If Web Share API is completely missing, try whatsapp:// scheme first
-                window.location.href = fallbackUrl;
-                setTimeout(() => { window.open(webFallbackUrl, '_blank'); }, 500);
-            }
-        } catch (err) {
-            console.error('Sharing failed', err);
-            if (err.name !== 'AbortError') {
-                // Fall back to whatsapp:// then web URL
-                window.location.href = fallbackUrl;
-                setTimeout(() => { window.open(webFallbackUrl, '_blank'); }, 500);
-            }
+        if (isMobile) {
+            // Direct to WhatsApp App
+            window.location.href = nativeUrl;
+            // Fallback if not installed
+            setTimeout(() => {
+                window.location.href = webFallbackUrl;
+            }, 1000);
+        } else {
+            // Desktop WhatsApp Web
+            window.open(webFallbackUrl, '_blank');
         }
     }
 
@@ -4261,3 +4248,19 @@ window.selectExpPill = function(value, element) {
     document.getElementById('expPillsContainer')?.classList.remove('invalid-field-highlight');
     }
 };
+
+// ===== GLOBAL EXPORTS FOR HTML ONCLICK/ONSUBMIT =====
+window.toggleAuthCards = typeof toggleAuthCards !== 'undefined' ? toggleAuthCards : function(){};
+window.showRiderLoginForm = typeof showRiderLoginForm !== 'undefined' ? showRiderLoginForm : function(){};
+window.toggleLoginMethod = typeof toggleLoginMethod !== 'undefined' ? toggleLoginMethod : function(){};
+window.handleLogin = typeof handleLogin !== 'undefined' ? handleLogin : function(){};
+window.showRiderForgotForm = typeof showRiderForgotForm !== 'undefined' ? showRiderForgotForm : function(){};
+window.handleRiderPasswordReset = typeof handleRiderPasswordReset !== 'undefined' ? handleRiderPasswordReset : function(){};
+window.verifyRiderOTP = typeof verifyRiderOTP !== 'undefined' ? verifyRiderOTP : function(){};
+window.submitRegistration = typeof submitRegistration !== 'undefined' ? submitRegistration : function(){};
+window.loginAfterRegister = typeof loginAfterRegister !== 'undefined' ? loginAfterRegister : function(){};
+window.goBackToLogin = typeof goBackToLogin !== 'undefined' ? goBackToLogin : function(){};
+window.handleAdminLogin = typeof handleAdminLogin !== 'undefined' ? handleAdminLogin : function(){};
+window.showStep = typeof showStep !== 'undefined' ? showStep : function(){};
+window.nextStep = typeof nextStep !== 'undefined' ? nextStep : function(){};
+window.prevStep = typeof prevStep !== 'undefined' ? prevStep : function(){};
