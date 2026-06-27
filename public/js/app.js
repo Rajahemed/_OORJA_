@@ -3208,11 +3208,13 @@ async function openDataDrilldown(type) {
         const code = specificCode || (currentUser ? currentUser.referralCode : 'RWPRO');
         const fullName = specificName || (currentUser ? currentUser.fullName : 'Rider');
         const text = getWhatsAppMessageText(fullName, code);
-        const fallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+        const fallbackUrl = `whatsapp://send?text=${encodeURIComponent(text)}`;
+        const webFallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
 
         try {
-            // Attempt to fetch og-image.png and share it with text
-            const response = await fetch('/og-image.png');
+            // Use relative path for fetch to support Github Pages subpaths
+            const response = await fetch('og-image.png');
+            if (!response.ok) throw new Error('Image fetch failed');
             const blob = await response.blob();
             const file = new File([blob], 'road-warrior-ev.png', { type: blob.type });
 
@@ -3231,12 +3233,16 @@ async function openDataDrilldown(type) {
                 });
                 if (typeof trackEvent === 'function') trackEvent('share_text_only', { success: true });
             } else {
-                window.open(fallbackUrl, '_blank');
+                // If Web Share API is completely missing, try whatsapp:// scheme first
+                window.location.href = fallbackUrl;
+                setTimeout(() => { window.open(webFallbackUrl, '_blank'); }, 500);
             }
         } catch (err) {
             console.error('Sharing failed', err);
             if (err.name !== 'AbortError') {
-                window.open(fallbackUrl, '_blank');
+                // Fall back to whatsapp:// then web URL
+                window.location.href = fallbackUrl;
+                setTimeout(() => { window.open(webFallbackUrl, '_blank'); }, 500);
             }
         }
     }
