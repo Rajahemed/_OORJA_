@@ -1336,6 +1336,22 @@ async function openDataDrilldown(type) {
     }
 
     // ===== LANGUAGE =====
+    window.updateFormLangBtns = function(lang) {
+        ['en', 'hi', 'kn'].forEach(l => {
+            const btn = document.getElementById('formLang' + l.charAt(0).toUpperCase() + l.slice(1));
+            if (btn) {
+                if (l === lang) {
+                    btn.style.background = 'var(--primary-color)';
+                    btn.style.borderColor = 'var(--primary-color)';
+                    btn.style.color = '#fff';
+                } else {
+                    btn.style.background = 'transparent';
+                    btn.style.borderColor = 'var(--card-border)';
+                    btn.style.color = 'var(--text-secondary)';
+                }
+            }
+        });
+    };
     function changeLanguage(lang) {
         localStorage.setItem('selectedLang', lang);
         const selector = document.getElementById('langSelector');
@@ -2598,12 +2614,17 @@ async function openDataDrilldown(type) {
                 const regFullName = document.getElementById('regFullName').value.trim();
                 document.getElementById('successWelcomeName').textContent = regFullName;
                 document.getElementById('successReferralCode').textContent = result.referralCode;
-                let msgHtml = result.whatsappMessage
-                    .replace(/\n/g, '<br>')
-                    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#007bff; font-weight:600; text-decoration:underline;">$1</a>');
+                // Generate dynamic exact message text
+                const actualText = getWhatsAppMessageText(regFullName, result.referralCode);
+                
+                let msgHtml = `
+                    <div style="background:#eaf8f1; padding:0.75rem; border-radius:8px; border:1px solid #c3e6cf; text-align:left; margin-bottom:10px;">
+                        <img src="og-image.png" alt="Share Image" style="width:100%; border-radius:4px; margin-bottom:8px;">
+                        <div style="white-space: pre-wrap; font-family: sans-serif; font-size: 0.9rem; color: #333;">${actualText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#007bff; font-weight:600; text-decoration:underline;">$1</a>')}</div>
+                    </div>
+                `;
                 document.getElementById('whatsappMsgPreview').innerHTML = msgHtml;
 
-                const waLink = `https://api.whatsapp.com/send?phone=91${payload.phone}&text=${encodeURIComponent(result.whatsappMessage)}`;
                 const btn = document.getElementById('whatsappSendLink');
                 btn.href = '#';
                 btn.onclick = function(e) {
@@ -2611,15 +2632,6 @@ async function openDataDrilldown(type) {
                         shareWithImage(e, result.referralCode, regFullName);
                     }
                 };
-                
-                // Automatically share with image popup as requested
-                setTimeout(() => {
-                    if (typeof shareWithImage === 'function') {
-                        shareWithImage(null, result.referralCode, regFullName);
-                    } else {
-                        window.open(waLink, '_blank');
-                    }
-                }, 500);
 
                 showToast('🎉 Registration successful! Welcome to Road Warrior Pro!', 'success');
             } else {
@@ -2681,11 +2693,13 @@ async function openDataDrilldown(type) {
     }
 
     function getWhatsAppShareLink(code) {
-        return `https://amitahuja21.github.io/bharat-riders/?ref=${code}`;
+        const baseUrl = window.location.origin + window.location.pathname;
+        return `${baseUrl}?ref=${code}`;
     }
 
     function getWhatsAppMessageText(fullName, code) {
-        return `⚡ I joined the Road Warrior EV Challenge!\n🏆 Answer questions & WIN a brand new EV!\n\n🎁 Use my referral link:\nhttps://amitahuja21.github.io/bharat-riders/?ref=${code}\n\n📸 Follow: @RoadWarriorIndia`;
+        const baseUrl = window.location.origin + window.location.pathname;
+        return `⚡ I joined the Road Warrior EV Challenge!\n🏆 Answer questions & WIN a brand new EV!\n\n🎁 Use my referral link:\n${baseUrl}?ref=${code}\n\n📸 Follow: @RoadWarriorIndia`;
     }
 
     // ===== SCORE LOOKUP (public) =====
@@ -2703,7 +2717,6 @@ async function openDataDrilldown(type) {
                 const pts = rider.totalPoints || 0;
                 const code = rider.referralCode || 'N/A';
                 const tags = (rider.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
-                const waMsg = getWhatsAppMessageText(rider.fullName || 'Rider', code);
                 result.innerHTML = `
                     <div class="score-display">
                         <div style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:0.5rem;">Welcome back, <strong>${rider.fullName}</strong>! 🎉</div>
@@ -2901,10 +2914,13 @@ async function openDataDrilldown(type) {
                 const data = result.data;
                 const refCtx = document.getElementById('referralsChart');
                 if (refCtx) {
-                    activeCharts.referrals = new Chart(refCtx.getContext('2d'), {
-                        type: 'bar',
-                        data: {
-                            labels: data.weeklyData.map(d => d.day),
+                    if (!window.Chart) {
+                        console.warn('Chart.js not loaded, skipping referrals chart.');
+                    } else {
+                        activeCharts.referrals = new Chart(refCtx.getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: data.weeklyData.map(d => d.day),
                             datasets: [{
                                 label: TRANSLATIONS[lang].chart_weekly_referrals || 'Weekly Referrals',
                                 data: data.weeklyData.map(d => d.referrals),
@@ -2945,6 +2961,10 @@ async function openDataDrilldown(type) {
             if (result.success) {
                 const cityCtx = document.getElementById('citiesChart');
                 if (cityCtx) {
+                    if (!window.Chart) {
+                        console.warn('Chart.js not loaded, skipping city chart.');
+                        return;
+                    }
                     activeCharts.cities = new Chart(cityCtx.getContext('2d'), {
                         type: 'bar',
                         data: {
@@ -2976,6 +2996,10 @@ async function openDataDrilldown(type) {
             if (result.success) {
                 const loginCtx = document.getElementById('loginLogoutChart');
                 if (loginCtx) {
+                    if (!window.Chart) {
+                        console.warn('Chart.js not loaded, skipping login chart.');
+                        return;
+                    }
                     activeCharts.loginLogout = new Chart(loginCtx.getContext('2d'), {
                         type: 'line',
                         data: {
