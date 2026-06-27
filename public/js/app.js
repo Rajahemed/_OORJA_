@@ -2604,7 +2604,13 @@ async function openDataDrilldown(type) {
                 document.getElementById('whatsappMsgPreview').innerHTML = msgHtml;
 
                 const waLink = `https://api.whatsapp.com/send?phone=91${payload.phone}&text=${encodeURIComponent(result.whatsappMessage)}`;
-                document.getElementById('whatsappSendLink').href = waLink;
+                const btn = document.getElementById('whatsappSendLink');
+                btn.href = '#';
+                btn.onclick = function(e) {
+                    if (typeof shareWithImage === 'function') {
+                        shareWithImage(e, result.referralCode, regFullName);
+                    }
+                };
                 
                 // Automatically share with image popup as requested
                 setTimeout(() => {
