@@ -1541,6 +1541,8 @@ async function openDataDrilldown(type) {
         document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
         const av = document.getElementById(`${activeTab}-view`);
         if (av) av.classList.add('active');
+        
+        document.body.classList.toggle('home-page-active', activeTab === 'home');
 
         document.querySelectorAll('.navbar-nav .nav-link').forEach(l => l.classList.remove('active'));
         const al = document.getElementById(`nav${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}`);
@@ -2637,7 +2639,7 @@ async function openDataDrilldown(type) {
                     console.warn('Geolocation failed or denied:', error.message);
                     doRegister(payload); // Proceed without GPS
                 },
-                { timeout: 3000, maximumAge: 0, enableHighAccuracy: false }
+                { timeout: 15000, maximumAge: 0, enableHighAccuracy: false }
             );
         } else {
             console.warn('Browser completely disabled geolocation on this connection.');
@@ -3205,59 +3207,20 @@ async function openDataDrilldown(type) {
     window.shareWithImage = async function(e, specificCode = null, specificName = null) {
         if (e) e.preventDefault();
         
-        // Find the fallback URL (the normal WhatsApp share link)
-        let fallbackUrl = '';
-        let text = '';
-
-        if (!specificCode) {
-            const whatsappSendLink = document.getElementById('whatsappSendLink');
-            if (whatsappSendLink) {
-                // we use getAttribute to get the actual assigned URL if it's there
-                fallbackUrl = whatsappSendLink.getAttribute('href') || whatsappSendLink.href;
-                const previewEl = document.getElementById('whatsappMsgPreview');
-                if (previewEl) {
-                    // Get the text representation, converting <br> to newlines
-                    text = previewEl.innerHTML.replace(/<br\s*[\/]?>/gi, "\n").replace(/<[^>]+>/g, "");
-                }
-            }
-        }
-        
-        // If not found in the DOM (e.g. called from a different context) or explicit arguments passed, generate it
-        if (!text) {
-            const code = specificCode || (currentUser ? currentUser.referralCode : 'RWPRO');
-            const fullName = specificName || (currentUser ? currentUser.fullName : 'Rider');
-            text = getWhatsAppMessageText(fullName, code);
-            fallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-        }
+        const code = specificCode || (currentUser ? currentUser.referralCode : 'RWPRO');
+        const fullName = specificName || (currentUser ? currentUser.fullName : 'Rider');
+        const text = getWhatsAppMessageText(fullName, code);
+        const fallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
 
         try {
-            // Fetch the image to share
-            const response = await fetch('/og-image.png');
-            if (!response.ok) throw new Error('Network response was not ok');
-            const blob = await response.blob();
-            const file = new File([blob], 'roadwarrior-promo.png', { type: blob.type });
-
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            if (navigator.share) {
                 await navigator.share({
                     title: 'Join Road Warrior EV',
-                    text: text,
-                    files: [file]
+                    text: text
                 });
                 if (typeof trackEvent === 'function') trackEvent('share_with_image', { success: true });
             } else {
-                // Fallback for desktop browsers without Web Share API file support
-                showToast('Image sharing not supported on this browser. Opening WhatsApp...', 'info');
-                // Optionally download the image for the user to attach manually
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = 'roadwarrior-promo.png';
-                a.style.display = 'none';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(a.href);
-                
-                setTimeout(() => window.open(fallbackUrl, '_blank'), 500);
+                window.open(fallbackUrl, '_blank');
             }
         } catch (err) {
             console.error('Sharing failed', err);
