@@ -2675,19 +2675,11 @@ async function openDataDrilldown(type) {
     }
 
     function getWhatsAppShareLink(code) {
-        return `${window.location.origin}/?ref=${code}`;
+        return `https://amitahuja21.github.io/bharat-riders/?ref=${code}`;
     }
 
     function getWhatsAppMessageText(fullName, code) {
-        const lang = localStorage.getItem('selectedLang') || 'en';
-        const refLink = getWhatsAppShareLink(code);
-        if (lang === 'hi') {
-            return `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${code}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nRoad Warrior EV 🏍️`;
-        } else if (lang === 'kn') {
-            return `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${code}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nRoad Warrior EV 🏍️`;
-        } else {
-            return `Welcome ${fullName}! You are now registered. Your referral code is ${code}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV 🏍️`;
-        }
+        return `⚡ I joined the Road Warrior EV Challenge!\n🏆 Answer questions & WIN a brand new EV!\n\n🎁 Use my referral link:\nhttps://amitahuja21.github.io/bharat-riders/?ref=${code}\n\n📸 Follow: @RoadWarriorIndia`;
     }
 
     // ===== SCORE LOOKUP (public) =====
@@ -3213,12 +3205,25 @@ async function openDataDrilldown(type) {
         const fallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
 
         try {
-            if (navigator.share) {
+            // Attempt to fetch og-image.png and share it with text
+            const response = await fetch('/og-image.png');
+            const blob = await response.blob();
+            const file = new File([blob], 'road-warrior-ev.png', { type: blob.type });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 await navigator.share({
+                    files: [file],
                     title: 'Join Road Warrior EV',
                     text: text
                 });
                 if (typeof trackEvent === 'function') trackEvent('share_with_image', { success: true });
+            } else if (navigator.share) {
+                // Fallback to text only if file sharing is not supported
+                await navigator.share({
+                    title: 'Join Road Warrior EV',
+                    text: text
+                });
+                if (typeof trackEvent === 'function') trackEvent('share_text_only', { success: true });
             } else {
                 window.open(fallbackUrl, '_blank');
             }

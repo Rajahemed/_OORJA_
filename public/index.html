@@ -497,13 +497,20 @@
             body.home-page-active {
                 background: url('/img/home-bg.jpg') no-repeat center bottom fixed !important;
                 background-size: cover !important;
+                background-color: #1a75ff !important;
+            }
+            @media (max-width: 768px) {
+                body.home-page-active {
+                    background-size: 100% auto !important;
+                    background-position: center bottom !important;
+                }
             }
             body.home-page-active .navbar {
                 background-color: #faf6e9 !important;
                 border: none !important;
             }
             body.home-page-active #site-footer {
-                background-color: #74c2fc !important;
+                background-color: #dfe9f5 !important;
                 border: none !important;
                 padding: 1rem 1.5rem 0 !important;
                 margin-top: 1rem !important;
