@@ -1503,7 +1503,9 @@ async function openDataDrilldown(type) {
 
     function routeSPA(path) {
         const siteFooter = document.getElementById('site-footer');
+        const topRidersSection = document.getElementById('topRidersSection');
         if (siteFooter) siteFooter.style.display = 'block';
+            if (topRidersSection) topRidersSection.style.display = 'block';
 
         let activeTab = 'home';
         if (path === '/vehicles') activeTab = 'vehicles';
@@ -1558,6 +1560,9 @@ async function openDataDrilldown(type) {
         
         if (siteFooter) {
             siteFooter.style.display = (activeTab === 'home' && !isRegOpen) ? 'block' : 'none';
+        }
+        if (topRidersSection) {
+            topRidersSection.style.display = (activeTab === 'home' && !isRegOpen) ? 'block' : 'none';
         }
         
         const navbar = document.querySelector('nav.navbar');
@@ -1639,12 +1644,14 @@ async function openDataDrilldown(type) {
             const switchLink = document.getElementById('loginSwitchLink');
             const navbar = document.querySelector('nav.navbar');
             const siteFooter = document.getElementById('site-footer');
+        const topRidersSection = document.getElementById('topRidersSection');
             if (login && reg) {
                 login.style.display = 'block';
                 reg.style.display = 'none';
                 if (switchLink) switchLink.style.display = 'block';
                 if (navbar) navbar.style.display = '';
                 if (siteFooter) siteFooter.style.display = 'block';
+            if (topRidersSection) topRidersSection.style.display = 'block';
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1939,16 +1946,19 @@ async function openDataDrilldown(type) {
         const switchLink = document.getElementById('loginSwitchLink');
         const navbar = document.querySelector('nav.navbar');
         const siteFooter = document.getElementById('site-footer');
+        const topRidersSection = document.getElementById('topRidersSection');
         
         if (login.style.display === 'none') {
             login.style.display = 'block'; reg.style.display = 'none';
             if (switchLink) switchLink.style.display = 'block';
             if (navbar) navbar.style.display = '';
             if (siteFooter) siteFooter.style.display = 'block';
+            if (topRidersSection) topRidersSection.style.display = 'block';
         } else {
             login.style.display = 'none'; reg.style.display = 'block';
             if (navbar) navbar.style.display = 'none';
             if (siteFooter) siteFooter.style.display = 'none';
+            if (topRidersSection) topRidersSection.style.display = 'none';
         }
     }
 
@@ -2578,7 +2588,9 @@ async function openDataDrilldown(type) {
 
                 // Hide the footer
                 const siteFooter = document.getElementById('site-footer');
+        const topRidersSection = document.getElementById('topRidersSection');
                 if (siteFooter) siteFooter.style.display = 'none';
+            if (topRidersSection) topRidersSection.style.display = 'none';
 
                 // Update success UI
                 const regFullName = document.getElementById('regFullName').value.trim();
@@ -2643,7 +2655,9 @@ async function openDataDrilldown(type) {
         if (e) e.preventDefault();
         
         const siteFooter = document.getElementById('site-footer');
+        const topRidersSection = document.getElementById('topRidersSection');
         if (siteFooter) siteFooter.style.display = 'block';
+            if (topRidersSection) topRidersSection.style.display = 'block';
 
         const regFormContent = document.getElementById('registrationFormContent');
         if (regFormContent) regFormContent.style.display = 'block';
@@ -3841,6 +3855,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('mouseleave', (e) => {
         // Trigger if mouse leaves top of the window (clientY < 0)
         if (e.clientY < 0 && !exitIntentTriggered) {
+            const registerCard = document.getElementById('registerCard');
+            if (registerCard && registerCard.style.display !== 'none' && registerCard.style.display !== '') return;
             const modal = document.getElementById('leadCaptureModal');
             if (modal && !modal.classList.contains('show')) {
                 exitIntentTriggered = true;
@@ -4058,3 +4074,185 @@ function downloadLeadsCSV() {
     const token = sessionStorage.getItem('adminToken') || localStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt') || localStorage.getItem('adminJwt');
     window.location.href = `/api/admin/analytics/export/csv?token=${token}`;
 }
+
+/* ==================== MULTI-STEP FORM LOGIC ==================== */
+let currentStep = 1;
+const totalSteps = 6;
+
+function showStep(step) {
+    document.querySelectorAll('.form-section').forEach(el => {
+        el.classList.remove('active');
+        el.style.display = 'none';
+    });
+    
+    const currentSection = document.getElementById('regSection' + step);
+    if(currentSection) {
+        currentSection.classList.add('active');
+        currentSection.style.display = 'block';
+    }
+    
+    const banner = document.getElementById('promoBannerContainer');
+    if (banner) {
+        banner.style.display = (step === 1) ? 'block' : 'none';
+    }
+    const langSwitcher = document.getElementById('languageSwitcherContainer');
+    if (langSwitcher) {
+        langSwitcher.style.display = (step === 1) ? 'flex' : 'none';
+    }
+
+    document.querySelectorAll('.progress-step').forEach((el, index) => {
+        if(index + 1 < step) {
+            el.classList.add('done');
+            el.classList.remove('active');
+        } else if(index + 1 === step) {
+            el.classList.add('active');
+            el.classList.remove('done');
+        } else {
+            el.classList.remove('active', 'done');
+        }
+    });
+    
+    const formTop = document.getElementById('registerCard').offsetTop;
+    window.scrollTo({top: formTop - 20, behavior: 'smooth'});
+}
+
+function nextStep() {
+    const currentSection = document.getElementById('regSection' + currentStep);
+    const inputs = currentSection.querySelectorAll('input[required], select[required]');
+    let isValid = true;
+    
+    // Prevent advancing if phone is already registered on Step 1
+    if (currentStep === 1) {
+        const dupPhoneMsg = document.getElementById('dupPhoneMsg');
+        if (dupPhoneMsg && !dupPhoneMsg.classList.contains('hidden')) {
+            showToast('This phone number is already registered. Please login.', 'error');
+            return;
+        }
+    }
+
+    let firstInvalid = null;
+    inputs.forEach(input => {
+        // Skip validation if the input itself or any of its containers are hidden
+        // offsetParent catches display:none, closest('.hidden-section') catches max-height:0 hiding
+        if (input.offsetParent === null || input.closest('.hidden-section')) {
+            return;
+        }
+
+        let isInputValid = true;
+        if (input.type === 'radio' || input.type === 'checkbox') {
+            if (!document.querySelector('input[name="' + input.name + '"]:checked')) {
+                isInputValid = false;
+            }
+        } else if (!input.value.trim()) {
+            isInputValid = false;
+        }
+
+        let visualElement = input;
+        if (input.type === 'radio') {
+            visualElement = input.closest('.radio-group') || input.closest('.form-group');
+        } else if (input.id === 'regPlatform') {
+            visualElement = document.getElementById('platformPillsContainer');
+        } else if (input.id === 'regExp') {
+            visualElement = document.getElementById('expPillsContainer');
+        } else if (input.type === 'checkbox') {
+            visualElement = input.closest('.checkbox-group') || input.closest('.form-group');
+        }
+
+        if (visualElement) {
+            if (!isInputValid) {
+                isValid = false;
+                visualElement.classList.add('invalid-field-highlight');
+                
+                // For direct inputs/selects, also apply red border
+                if (visualElement.tagName === 'INPUT' || visualElement.tagName === 'SELECT') {
+                    visualElement.style.borderColor = 'var(--danger-color)';
+                    visualElement.style.backgroundColor = 'rgba(239, 68, 68, 0.05)';
+                }
+                
+                if (!firstInvalid) firstInvalid = visualElement;
+            } else {
+                visualElement.classList.remove('invalid-field-highlight');
+                if (visualElement.tagName === 'INPUT' || visualElement.tagName === 'SELECT') {
+                    visualElement.style.borderColor = '';
+                    visualElement.style.backgroundColor = '';
+                }
+            }
+        }
+    });
+    
+    if(!isValid) {
+        showToast('Please fill all highlighted required fields before proceeding.', 'error');
+        if (firstInvalid) {
+            firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
+    
+    if (currentStep < totalSteps) {
+        currentStep++;
+        showStep(currentStep);
+    }
+}
+
+function prevStep() {
+    if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.form-section:not(.active)').forEach(el => el.style.display = 'none');
+});
+
+window.selectPlatformPill = function(value, element) {
+    // Update active UI
+    document.querySelectorAll('#platformPillsContainer .platform-pill').forEach(el => el.classList.remove('active'));
+    element.classList.add('active');
+    
+    // Update hidden select
+    const nativeSelect = document.getElementById('regPlatform');
+    let optionFound = false;
+    Array.from(nativeSelect.options).forEach(opt => {
+        if (opt.value === value) {
+            opt.selected = true;
+            optionFound = true;
+        }
+    });
+    
+    if (!optionFound) {
+        const newOpt = document.createElement('option');
+        newOpt.value = value;
+        newOpt.text = value;
+        newOpt.selected = true;
+        nativeSelect.appendChild(newOpt);
+    }
+
+    if (value === 'Other') {
+        document.getElementById('regPlatformOther').style.display = 'block';
+        document.getElementById('regPlatformOther').required = true;
+    } else {
+        document.getElementById('regPlatformOther').style.display = 'none';
+        document.getElementById('regPlatformOther').required = false;
+    }
+    
+    // Clear validation error if any
+    if (nativeSelect.value) {
+        nativeSelect.classList.remove('is-invalid');
+    document.getElementById('platformPillsContainer')?.classList.remove('invalid-field-highlight');
+    document.getElementById('expPillsContainer')?.classList.remove('invalid-field-highlight');
+    }
+};
+
+window.selectExpPill = function(value, element) {
+    document.querySelectorAll('#expPillsContainer .platform-pill').forEach(el => el.classList.remove('active'));
+    element.classList.add('active');
+    
+    const nativeSelect = document.getElementById('regExp');
+    nativeSelect.value = value;
+    if (nativeSelect.value) {
+        nativeSelect.classList.remove('is-invalid');
+    document.getElementById('platformPillsContainer')?.classList.remove('invalid-field-highlight');
+    document.getElementById('expPillsContainer')?.classList.remove('invalid-field-highlight');
+    }
+};

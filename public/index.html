@@ -427,6 +427,16 @@
             from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
+    
+        .invalid-field-highlight {
+            border-radius: 6px;
+            box-shadow: 0 0 0 2px var(--danger-color) !important;
+            padding: 4px;
+            transition: box-shadow 0.3s;
+        }
+        input.invalid-field-highlight, select.invalid-field-highlight {
+            box-shadow: none !important; /* Managed directly via JS border */
+        }
     </style>
 
     <!-- Analytics scripts removed to prevent hanging load times -->
@@ -579,12 +589,71 @@
                         <div class="card-header" style="border:none; padding-bottom:0;">
                             <h2 class="card-title" data-i18n="register_title"><i class="fas fa-user-plus"></i> Rider Registration</h2>
                         </div>
-                        <div class="card-body" style="margin-top:1rem;">
+                        
+                        <!-- Refer Earn Win Promo Banner -->
+                        <div id="promoBannerContainer" style="padding: 0.75rem 1rem 0; margin-bottom: 1.25rem;">
+                            <img src="/img/refer-earn-win-banner.jpg"
+                                 alt="Refer Earn Win"
+                                 style="width:100%; border-radius:12px; display:block; box-shadow:0 4px 20px rgba(0,0,0,0.18); object-fit:cover;"
+                                 loading="lazy">
+                        </div>
+
+                        <!-- Language Switcher below Banner -->
+                        <div id="languageSwitcherContainer" style="display:flex; align-items:center; justify-content:center; gap:0.75rem; margin-top:1rem; margin-bottom:1.5rem;">
+                            <i class="fas fa-globe" style="color:var(--text-secondary); font-size:1rem;"></i>
+                            <span style="font-size:0.8rem; color:var(--text-secondary); font-weight:500;">Language:</span>
+                            <div style="display:flex; gap:0.4rem; flex-wrap:wrap; justify-content:center;">
+                                <button type="button" onclick="changeLanguage('en'); updateFormLangBtns('en')" id="formLangEn"
+                                    style="padding:0.3rem 0.75rem; border-radius:20px; border:1.5px solid var(--primary-color); background:var(--primary-color); color:#fff; font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                                    🇺🇸 English
+                                </button>
+                                <button type="button" onclick="changeLanguage('hi'); updateFormLangBtns('hi')" id="formLangHi"
+                                    style="padding:0.3rem 0.75rem; border-radius:20px; border:1.5px solid var(--card-border); background:transparent; color:var(--text-secondary); font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                                    🇮🇳 हिंदी
+                                </button>
+                                <button type="button" onclick="changeLanguage('kn'); updateFormLangBtns('kn')" id="formLangKn"
+                                    style="padding:0.3rem 0.75rem; border-radius:20px; border:1.5px solid var(--card-border); background:transparent; color:var(--text-secondary); font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                                    🇮🇳 ಕನ್ನಡ
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card-body" style="margin-top:0.5rem;">
+
 
                             <!-- Registration Form Content -->
                             <div id="registrationFormContent">
+                            
+                            <!-- Form Progress Indicator -->
+                            <div class="form-progress" id="regProgress">
+                                <div class="progress-step active" id="stepIndicator1">
+                                    <div class="step-circle">1</div>
+                                    <div class="step-label">Profile</div>
+                                </div>
+                                <div class="progress-step" id="stepIndicator2">
+                                    <div class="step-circle">2</div>
+                                    <div class="step-label">Vehicle</div>
+                                </div>
+                                <div class="progress-step" id="stepIndicator3">
+                                    <div class="step-circle">3</div>
+                                    <div class="step-label">Challenges</div>
+                                </div>
+                                <div class="progress-step" id="stepIndicator4">
+                                    <div class="step-circle">4</div>
+                                    <div class="step-label">Insurance</div>
+                                </div>
+                                <div class="progress-step" id="stepIndicator5">
+                                    <div class="step-circle">5</div>
+                                    <div class="step-label">EV Open</div>
+                                </div>
+                                <div class="progress-step" id="stepIndicator6">
+                                    <div class="step-circle">6</div>
+                                    <div class="step-label">Referral</div>
+                                </div>
+                            </div>
+
                             <!-- SECTION A: Basic Profile -->
-                            <div class="single-page-section" id="regSection1" style="margin-bottom:2rem;">
+                            <div class="form-section active" id="regSection1" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-user"></i> <span data-i18n="sec_a_title">Section A — Basic Profile</span></div>
                                 <div class="form-group">
                                     <label for="regFullName" data-i18n="label_fullname">Full Name</label>
@@ -604,7 +673,7 @@
                                     <span id="dupPhoneMsg" class="error-message hidden" style="color:#f97316;"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="phone_dup">This phone is already registered!</span></span>
                                 </div>
                                 
-                                <div id="regRestOfForm">
+                                
                                 <div class="form-group">
                                     <label for="regPassword" data-i18n="label_password">Password</label>
                                     <div style="position:relative;">
@@ -624,56 +693,58 @@
                                         <small id="pwdStrengthText" style="color:var(--text-secondary); font-size:0.75rem; font-weight:600;">Password strength</small>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="regState">State</label>
-                                    <select id="regState" class="form-control" required onchange="onRegStateChange()">
-                                        <option value="">Loading States...</option>
-                                    </select>
-                                    <input type="text" id="regStateOther" class="form-control" placeholder="Enter State" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
-                                </div>
-                                <div class="form-group">
-                                    <label for="regCity" data-i18n="label_city">City</label>
-                                    <select id="regCity" class="form-control" required onchange="onRegCityChange()" disabled>
-                                        <option value="" data-i18n="select_city">Select your city</option>
-                                    </select>
-                                    <input type="text" id="regCityOther" class="form-control" placeholder="Enter City" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
+                                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                                    <div class="form-group" style="flex:1; min-width:200px;">
+                                        <label for="regState">State</label>
+                                        <select id="regState" class="form-control" required onchange="onRegStateChange()">
+                                            <option value="">Loading States...</option>
+                                        </select>
+                                        <input type="text" id="regStateOther" class="form-control" placeholder="Enter State" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
+                                    </div>
+                                    <div class="form-group" style="flex:1; min-width:200px;">
+                                        <label for="regCity" data-i18n="label_city">City</label>
+                                        <select id="regCity" class="form-control" required onchange="onRegCityChange()" disabled>
+                                            <option value="" data-i18n="select_city">Select your city</option>
+                                        </select>
+                                        <input type="text" id="regCityOther" class="form-control" placeholder="Enter City" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="regPincode" data-i18n="label_pincode">Pincode</label>
                                     <input type="text" id="regPincode" class="form-control" required placeholder="Type pincode (e.g. 560001)" pattern="[0-9]{6}" maxlength="6" title="Please enter a 6-digit valid pincode">
                                 </div>
-                                <div class="form-group" style="position:relative; z-index:10;">
-                                    <label for="regPlatform" data-i18n="label_platform">Delivery Platform</label>
+                                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                                    <div class="form-group" style="position:relative; z-index:10; flex:1; min-width:200px;">
+                                        <label for="regPlatform" data-i18n="label_platform">Delivery Platform</label>
                                     
-                                    <!-- Custom Dropdown Container -->
-                                    <div class="custom-select-wrapper" id="platformCustomSelect">
-                                        <div class="custom-select form-control" onclick="togglePlatformDropdown()" style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; background-color:#ffffff; color:#111827;">
-                                            <div id="platformSelectedText" style="display:flex; align-items:center; gap:10px;">
-                                                <span data-i18n="select_platform">Select platform</span>
-                                            </div>
-                                            <i class="fas fa-chevron-down" style="color:var(--text-secondary); font-size:0.8rem;"></i>
-                                        </div>
-                                        
-                                        <ul class="custom-options" id="platformDropdownList" style="display:none; position:absolute; top:100%; left:0; width:100%; background:#ffffff; border:1px solid var(--card-border); border-radius:var(--border-radius-md); margin-top:0.25rem; padding:0; list-style:none; z-index:100; max-height:250px; overflow-y:auto; box-shadow:var(--shadow);">
-                                            <li onclick="selectPlatform('Swiggy', 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23f96e2a\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>S</text></svg>')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s; color:#111827;">
-                                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f96e2a'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>S</text></svg>" loading="lazy" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Swiggy
-                                            </li>
-                                            <li onclick="selectPlatform('Zomato', 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23e23744\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>Z</text></svg>')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s; color:#111827;">
-                                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23e23744'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Zomato
-                                            </li>
-                                            <li onclick="selectPlatform('Blinkit', 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23f8cb46\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23000\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>B</text></svg>')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s; color:#111827;">
-                                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f8cb46'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>B</text></svg>" loading="lazy" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Blinkit
-                                            </li>
-                                            <li onclick="selectPlatform('Porter', 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%232d62e1\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>P</text></svg>')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s; color:#111827;">
-                                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232d62e1'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>P</text></svg>" loading="lazy" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Porter
-                                            </li>
-                                            <li onclick="selectPlatform('Dunzo', 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\'><rect width=\'24\' height=\'24\' rx=\'4\' fill=\'%2300d290\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23fff\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'central\'>D</text></svg>')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--card-border); transition:background 0.2s; color:#111827;">
-                                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%2300d290'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:24px; height:24px; border-radius:4px; object-fit:contain; background:#fff; padding:2px;"> Dunzo
-                                            </li>
-                                            <li onclick="selectPlatform('Other', '')" class="dropdown-item" style="padding:0.75rem 1rem; cursor:pointer; display:flex; align-items:center; gap:10px; transition:background 0.2s; color:#111827;">
-                                                <div style="width:24px; height:24px; border-radius:4px; background:var(--card-border); display:flex; align-items:center; justify-content:center;"><i class="fas fa-ellipsis-h" style="font-size:12px; color:var(--text-secondary);"></i></div> Other
-                                            </li>
-                                        </ul>
+                                    <style>
+                                        .platform-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+                                        .platform-pill {
+                                            display: inline-flex; align-items: center;
+                                            padding: 0.5rem 1.25rem;
+                                            border: 1.5px solid #a7f3d0;
+                                            border-radius: 30px;
+                                            background-color: #f0fdf4;
+                                            color: #064e3b;
+                                            cursor: pointer;
+                                            transition: all 0.2s;
+                                            font-size: 0.95rem;
+                                            user-select: none;
+                                        }
+                                        .platform-pill:hover { background-color: #d1fae5; border-color: #34d399; }
+                                        .platform-pill.active { background-color: #a7f3d0; border-color: #10b981; font-weight: 600; }
+                                    </style>
+                                    <div class="platform-pills" id="platformPillsContainer">
+                                        <div class="platform-pill" onclick="selectPlatformPill('Swiggy', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f96e2a'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>S</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Swiggy</div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Zomato', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23e23744'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Zomato</div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Blinkit', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f8cb46'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>B</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Blinkit</div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Porter', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232d62e1'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>P</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Porter</div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Dunzo', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%2300d290'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Dunzo</div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('DHL', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23ffcc00'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23d40511' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">DHL</div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Amazon', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23ff9900'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>A</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Amazon</div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Flipkart', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232874f0'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>F</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Flipkart</div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Zepto', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%234B0082'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Zepto</div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Other', this)"><div style="width:18px; height:18px; border-radius:4px; background:var(--card-border); display:inline-flex; align-items:center; justify-content:center; margin-right: 6px; flex-shrink:0;"><i class="fas fa-ellipsis-h" style="font-size:10px; color:var(--text-secondary);"></i></div>Other</div>
                                     </div>
                                     
                                     <!-- Hidden actual select for form submission and validation -->
@@ -684,38 +755,50 @@
                                         <option value="Blinkit">Blinkit</option>
                                         <option value="Porter">Porter</option>
                                         <option value="Dunzo">Dunzo</option>
+                                        <option value="DHL">DHL</option>
+                                        <option value="Amazon">Amazon</option>
+                                        <option value="Flipkart">Flipkart</option>
+                                        <option value="Zepto">Zepto</option>
                                         <option value="Other">Other</option>
                                     </select>
                                     
                                     <input type="text" id="regPlatformOther" class="form-control" placeholder="Enter Platform" style="display:none; margin-top:0.5rem;">
+                                    </div>
+                                    <div class="form-group" style="flex:1; min-width:200px;">
+                                        <label for="regExp" data-i18n="label_exp">Years of Experience</label>
+                                        <div class="platform-pills" id="expPillsContainer">
+                                            <div class="platform-pill" onclick="selectExpPill('0-1', this)">0-1 Years</div>
+                                            <div class="platform-pill" onclick="selectExpPill('1-3', this)">1-3 Years</div>
+                                            <div class="platform-pill" onclick="selectExpPill('3-5', this)">3-5 Years</div>
+                                            <div class="platform-pill" onclick="selectExpPill('5+', this)">5+ Years</div>
+                                        </div>
+                                        <select id="regExp" class="form-control" style="display:none;" required>
+                                            <option value="">Select experience</option>
+                                            <option value="0-1">0-1 Years</option>
+                                            <option value="1-3">1-3 Years</option>
+                                            <option value="3-5">3-5 Years</option>
+                                            <option value="5+">5+ Years</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="regExp" data-i18n="label_exp">Years of Experience</label>
-                                    <select id="regExp" class="form-control" required>
-                                        <option value="">Select experience</option>
-                                        <option value="0-1">0-1 Years</option>
-                                        <option value="1-3">1-3 Years</option>
-                                        <option value="3-5">3-5 Years</option>
-                                        <option value="5+">5+ Years</option>
-                                    </select>
-                                </div>
-                            </div>
 
+                            <div style="display:flex; justify-content:flex-end; margin-top:1.5rem;"><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
+                            </div> <!-- End of regSection1 -->
                             <!-- SECTION B: Current Vehicle -->
-                            <div class="single-page-section" id="regSection2" style="margin-bottom:2rem;">
+                            <div class="form-section" id="regSection2" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-motorcycle"></i> <span data-i18n="sec_b_title">Section B — Current Vehicle</span></div>
                                 <div class="form-group">
                                     <label data-i18n="label_vehicle_type">Vehicle Type</label>
                                     <div class="radio-group inline" id="vehicleTypeGroup">
-                                        <label class="radio-item"><input type="radio" name="vehicleType" value="Petrol two-wheeler" onchange="onVehicleTypeChange(this.value)"> 🛵 <span data-i18n="vt_petrol">Petrol Two-Wheeler</span></label>
-                                        <label class="radio-item"><input type="radio" name="vehicleType" value="Electric two-wheeler" onchange="onVehicleTypeChange(this.value)"> ⚡ <span data-i18n="vt_electric">Electric Two-Wheeler</span></label>
-                                        <label class="radio-item"><input type="radio" name="vehicleType" value="Other" onchange="onVehicleTypeChange(this.value)"> 🚲 <span data-i18n="vt_other">Other</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Petrol two-wheeler" onchange="onVehicleTypeChange(this.value)"> 🛵 <span data-i18n="vt_petrol">Petrol Two-Wheeler</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Electric two-wheeler" onchange="onVehicleTypeChange(this.value)"> ⚡ <span data-i18n="vt_electric">Electric Two-Wheeler</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Other" onchange="onVehicleTypeChange(this.value)"> 🚲 <span data-i18n="vt_other">Other</span></label>
                                     </div>
                                     <input type="text" id="regVehicleTypeOther" class="form-control" placeholder="Enter Vehicle Type" style="display:none; margin-top:0.5rem;">
                                 </div>
                                 <div class="form-group">
-                                    <label for="regVehicleModel" data-i18n="label_vehicle_model">Vehicle Brand & Model <span style="color:var(--text-secondary); font-size:0.8rem;">(optional)</span></label>
-                                    <select id="regVehicleModel" class="form-control" onchange="handleOtherDropdown(this, 'regVehicleModelOther')">
+                                    <label for="regVehicleModel" data-i18n="label_vehicle_model">Vehicle Brand & Model </label>
+                                    <select required id="regVehicleModel" class="form-control" onchange="handleOtherDropdown(this, 'regVehicleModelOther')">
                                         <option value="">Select Brand/Model</option>
                                     </select>
                                     <input type="text" id="regVehicleModelOther" class="form-control" placeholder="Enter Brand & Model" style="display:none; margin-top:0.5rem;">
@@ -723,36 +806,36 @@
                                 <div class="form-group">
                                     <label data-i18n="label_fuel_method">How do you fuel/charge?</label>
                                     <div class="radio-group inline">
-                                        <label class="radio-item"><input type="radio" name="fuelMethod" value="Petrol pump" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> ⛽ <span data-i18n="fm_petrol">Petrol Pump</span></label>
-                                        <label class="radio-item"><input type="radio" name="fuelMethod" value="Home charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🏠 <span data-i18n="fm_home">Home Charging</span></label>
-                                        <label class="radio-item"><input type="radio" name="fuelMethod" value="Battery swapping station" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔋 <span data-i18n="fm_swap">Battery Swap</span></label>
-                                        <label class="radio-item"><input type="radio" name="fuelMethod" value="Other" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔌 <span data-i18n="fm_other">Other</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelMethod" required value="Petrol pump" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> ⛽ <span data-i18n="fm_petrol">Petrol Pump</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelMethod" required value="Home charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🏠 <span data-i18n="fm_home">Home Charging</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelMethod" required value="Battery swapping station" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔋 <span data-i18n="fm_swap">Battery Swap</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelMethod" required value="Other" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔌 <span data-i18n="fm_other">Other</span></label>
                                     </div>
                                     <input type="text" id="regFuelMethodOther" class="form-control" placeholder="Specify fuel/charge method" style="display:none; margin-top:0.5rem;">
                                 </div>
                                 <div class="form-group">
                                     <label for="regFuelExp" data-i18n="label_fuel_expense">Weekly Fuel/Charge Expense (₹)</label>
-                                    <input type="number" id="regFuelExp" class="form-control" placeholder="e.g. 600" min="0">
+                                    <input required type="number" id="regFuelExp" class="form-control" placeholder="e.g. 600" min="0">
                                 </div>
                                 <div class="form-group">
                                     <label for="regMaintExp" data-i18n="label_maint_expense">Monthly Maintenance Expense (₹)</label>
-                                    <input type="number" id="regMaintExp" class="form-control" placeholder="e.g. 300" min="0">
+                                    <input required type="number" id="regMaintExp" class="form-control" placeholder="e.g. 300" min="0">
                                 </div>
-                            </div>
-
-                            <!-- SECTION C: Challenges -->
-                            <div class="single-page-section" id="regSection3" style="margin-bottom:2rem;">
+                            <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
+                            </div> <!-- End of regSection2 -->
+<!-- SECTION C: Challenges -->
+                            <div class="form-section" id="regSection3" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="sec_c_title">Section C — Challenges & Pain Points</span></div>
                                 <div class="form-group conditional-section" id="generalChallengesSection">
                                     <label data-i18n="label_top_challenges">Top Challenges (select up to 3)</label>
                                     <div class="checkbox-group" id="challengesGroup">
-                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="High fuel cost"> ⛽ <span data-i18n="ch_fuel">High fuel cost</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="Frequent breakdown"> 🔧 <span data-i18n="ch_breakdown">Frequent breakdown</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="No nearby charging station"> 🔌 <span data-i18n="ch_charging">No nearby charging station</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="Battery range anxiety"> 📉 <span data-i18n="ch_range">Battery range anxiety</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="Repair costs"> 💸 <span data-i18n="ch_repair">Repair costs</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="Long refuelling time"> ⏱️ <span data-i18n="ch_refuel">Long refuelling time</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="High fuel cost"> ⛽ <span data-i18n="ch_fuel">High fuel cost</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Frequent breakdown"> 🔧 <span data-i18n="ch_breakdown">Frequent breakdown</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="No nearby charging station"> 🔌 <span data-i18n="ch_charging">No nearby charging station</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Battery range anxiety"> 📉 <span data-i18n="ch_range">Battery range anxiety</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Repair costs"> 💸 <span data-i18n="ch_repair">Repair costs</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Long refuelling time"> ⏱️ <span data-i18n="ch_refuel">Long refuelling time</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
                                     </div>
                                     <input type="text" id="regChallengesOther" class="form-control" placeholder="Specify challenge" style="display:none; margin-top:0.5rem;">
                                 </div>
@@ -761,12 +844,12 @@
                                 <div class="form-group conditional-section hidden-section" id="evChallengesSection">
                                     <label data-i18n="label_ev_challenges">EV Specific Challenges</label>
                                     <div class="checkbox-group">
-                                        <label class="checkbox-item"><input type="checkbox" name="evChallenges" value="Battery drains too fast"> ⚡ <span data-i18n="evc_drain">Battery drains too fast</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="evChallenges" value="Swapping station too far"> 📍 <span data-i18n="evc_swap">Swapping station too far</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="evChallenges" value="Long charging time at home"> 🏠 <span data-i18n="evc_charge">Long charging time at home</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="evChallenges" value="Vehicle not powerful enough"> 💪 <span data-i18n="evc_power">Vehicle not powerful enough</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="evChallenges" value="Service centre not nearby"> 🔧 <span data-i18n="evc_service">Service centre not nearby</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="evChallenges" value="Other" onchange="toggleOtherCheckbox(this, 'regEvChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Battery drains too fast"> ⚡ <span data-i18n="evc_drain">Battery drains too fast</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Swapping station too far"> 📍 <span data-i18n="evc_swap">Swapping station too far</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Long charging time at home"> 🏠 <span data-i18n="evc_charge">Long charging time at home</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Vehicle not powerful enough"> 💪 <span data-i18n="evc_power">Vehicle not powerful enough</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Service centre not nearby"> 🔧 <span data-i18n="evc_service">Service centre not nearby</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Other" onchange="toggleOtherCheckbox(this, 'regEvChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
                                     </div>
                                     <input type="text" id="regEvChallengesOther" class="form-control" placeholder="Specify EV challenge" style="display:none; margin-top:0.5rem;">
                                 </div>
@@ -775,81 +858,81 @@
                                 <div class="form-group conditional-section hidden-section" id="petrolChallengesSection">
                                     <label data-i18n="label_petrol_challenges">Petrol Specific Challenges</label>
                                     <div class="checkbox-group">
-                                        <label class="checkbox-item"><input type="checkbox" name="petrolChallenges" value="Fuel price too high"> 💰 <span data-i18n="pc_price">Fuel price too high</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="petrolChallenges" value="Frequent engine issues"> 🔧 <span data-i18n="pc_engine">Frequent engine issues</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="petrolChallenges" value="Pollution fine risk"> 🌫️ <span data-i18n="pc_pollution">Pollution fine risk</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="petrolChallenges" value="High servicing cost"> 💸 <span data-i18n="pc_service">High servicing cost</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" name="petrolChallenges" value="Other" onchange="toggleOtherCheckbox(this, 'regPetrolChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="petrolChallenges" value="Fuel price too high"> 💰 <span data-i18n="pc_price">Fuel price too high</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="petrolChallenges" value="Frequent engine issues"> 🔧 <span data-i18n="pc_engine">Frequent engine issues</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="petrolChallenges" value="Pollution fine risk"> 🌫️ <span data-i18n="pc_pollution">Pollution fine risk</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="petrolChallenges" value="High servicing cost"> 💸 <span data-i18n="pc_service">High servicing cost</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="petrolChallenges" value="Other" onchange="toggleOtherCheckbox(this, 'regPetrolChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
                                     </div>
                                     <input type="text" id="regPetrolChallengesOther" class="form-control" placeholder="Specify petrol challenge" style="display:none; margin-top:0.5rem;">
                                 </div>
 
-                            </div>
-
-                            <!-- SECTION D: Insurance -->
-                            <div class="single-page-section" id="regSection4" style="margin-bottom:2rem;">
+                            <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
+                            </div> <!-- End of regSection3 -->
+<!-- SECTION D: Insurance -->
+                            <div class="form-section" id="regSection4" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-shield-alt"></i> <span data-i18n="sec_d_title">Section D — Insurance</span></div>
                                 <div class="form-group">
                                     <label data-i18n="label_accidental_ins">Do you have accidental insurance?</label>
                                     <div class="radio-group inline">
-                                        <label class="radio-item"><input type="radio" name="hasAccidental" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
-                                        <label class="radio-item"><input type="radio" name="hasAccidental" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
+                                        <label class="radio-item"><input type="radio" required name="hasAccidental" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
+                                        <label class="radio-item"><input type="radio" required name="hasAccidental" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label data-i18n="label_health_ins">Do you have personal health insurance?</label>
                                     <div class="radio-group inline">
-                                        <label class="radio-item"><input type="radio" name="hasHealth" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
-                                        <label class="radio-item"><input type="radio" name="hasHealth" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
+                                        <label class="radio-item"><input type="radio" name="hasHealth" required value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
+                                        <label class="radio-item"><input type="radio" name="hasHealth" required value="No"> ❌ <span data-i18n="opt_no">No</span></label>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label data-i18n="label_paid_pocket">Have you ever paid out-of-pocket for an accident?</label>
                                     <div class="radio-group inline">
-                                        <label class="radio-item"><input type="radio" name="paidPocket" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
-                                        <label class="radio-item"><input type="radio" name="paidPocket" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
+                                        <label class="radio-item"><input type="radio" required name="paidPocket" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
+                                        <label class="radio-item"><input type="radio" required name="paidPocket" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- SECTION E: Openness to Change -->
-                            <div class="single-page-section" id="regSection5" style="margin-bottom:2rem;">
+                            <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
+                            </div> <!-- End of regSection4 -->
+<!-- SECTION E: Openness to Change -->
+                            <div class="form-section" id="regSection5" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-bolt"></i> <span data-i18n="sec_e_title">Section E — Openness to EV</span></div>
                                 <div class="form-group">
                                     <label data-i18n="label_open_ev">Are you open to switching to an EV?</label>
                                     <div class="radio-group inline">
-                                        <label class="radio-item"><input type="radio" name="openEV" value="Yes" onchange="toggleOpenEV(this.value)"> ⚡ <span data-i18n="ev_yes">Yes</span></label>
-                                        <label class="radio-item"><input type="radio" name="openEV" value="No" onchange="toggleOpenEV(this.value)"> 🚫 <span data-i18n="ev_no">No</span></label>
-                                        <label class="radio-item"><input type="radio" name="openEV" value="Already on EV" onchange="toggleOpenEV(this.value)"> ✅ <span data-i18n="ev_already">Already on EV</span></label>
+                                        <label class="radio-item"><input type="radio" name="openEV" required value="Yes" onchange="toggleOpenEV(this.value)"> ⚡ <span data-i18n="ev_yes">Yes</span></label>
+                                        <label class="radio-item"><input type="radio" name="openEV" required value="No" onchange="toggleOpenEV(this.value)"> 🚫 <span data-i18n="ev_no">No</span></label>
+                                        <label class="radio-item"><input type="radio" name="openEV" required value="Already on EV" onchange="toggleOpenEV(this.value)"> ✅ <span data-i18n="ev_already">Already on EV</span></label>
                                     </div>
                                 </div>
                                 <div id="evSwitchFollowup" style="display:none;">
                                     <div class="form-group">
                                         <label data-i18n="label_switch_triggers">What would make you switch? (multi-select)</label>
                                         <div class="checkbox-group">
-                                            <label class="checkbox-item"><input type="checkbox" name="switchTriggers" value="Lower rental cost"> 💰 <span data-i18n="st_rental">Lower rental cost</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" name="switchTriggers" value="Better battery range"> 📱 <span data-i18n="st_range">Better battery range</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" name="switchTriggers" value="Swap stations nearby"> 🔋 <span data-i18n="st_swap">Swap stations nearby</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" name="switchTriggers" value="Income guarantee"> 📈 <span data-i18n="st_income">Income guarantee</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" name="switchTriggers" value="Employer subsidy"> 🏢 <span data-i18n="st_subsidy">Employer subsidy</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" name="switchTriggers" value="Other"> 📝 <span data-i18n="ch_other">Other</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required name="switchTriggers" value="Lower rental cost"> 💰 <span data-i18n="st_rental">Lower rental cost</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required name="switchTriggers" value="Better battery range"> 📱 <span data-i18n="st_range">Better battery range</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required name="switchTriggers" value="Swap stations nearby"> 🔋 <span data-i18n="st_swap">Swap stations nearby</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required name="switchTriggers" value="Income guarantee"> 📈 <span data-i18n="st_income">Income guarantee</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required name="switchTriggers" value="Employer subsidy"> 🏢 <span data-i18n="st_subsidy">Employer subsidy</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required name="switchTriggers" value="Other"> 📝 <span data-i18n="ch_other">Other</span></label>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label data-i18n="label_interests">Would you be interested in:</label>
                                         <div class="radio-group">
-                                            <label class="radio-item"><input type="radio" name="interests" value="EV rental offer"> ⚡ <span data-i18n="int_ev">EV Rental Offer</span></label>
-                                            <label class="radio-item"><input type="radio" name="interests" value="Insurance quote"> 🛡️ <span data-i18n="int_ins">Insurance Quote</span></label>
-                                            <label class="radio-item"><input type="radio" name="interests" value="Retrofit information"> 🔧 <span data-i18n="int_retrofit">Retrofit Information</span></label>
-                                            <label class="radio-item"><input type="radio" name="interests" value="All of the above"> 🌟 <span data-i18n="int_all">All of the above</span></label>
-                                            <label class="radio-item"><input type="radio" name="interests" value="None"> — <span data-i18n="int_none">None</span></label>
+                                            <label class="radio-item"><input type="radio" required name="interests" value="EV rental offer"> ⚡ <span data-i18n="int_ev">EV Rental Offer</span></label>
+                                            <label class="radio-item"><input type="radio" required name="interests" value="Insurance quote"> 🛡️ <span data-i18n="int_ins">Insurance Quote</span></label>
+                                            <label class="radio-item"><input type="radio" required name="interests" value="Retrofit information"> 🔧 <span data-i18n="int_retrofit">Retrofit Information</span></label>
+                                            <label class="radio-item"><input type="radio" required name="interests" value="All of the above"> 🌟 <span data-i18n="int_all">All of the above</span></label>
+                                            <label class="radio-item"><input type="radio" required name="interests" value="None"> — <span data-i18n="int_none">None</span></label>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- SECTION F: Referral -->
-                            <div class="single-page-section" id="regSection6" style="margin-bottom:2rem;">
+                            <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
+                            </div> <!-- End of regSection5 -->
+<!-- SECTION F: Referral -->
+                            <div class="form-section" id="regSection6" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-share-alt"></i> <span data-i18n="sec_f_title">Section F — Referral</span></div>
 
                                 <!-- Shown only when NO referral link was used -->
@@ -857,8 +940,8 @@
                                     <div class="form-group">
                                         <label data-i18n="label_referred_by">Were you referred by another rider?</label>
                                         <div class="radio-group inline">
-                                            <label class="radio-item"><input type="radio" name="referredBy" value="yes" onchange="toggleReferralInput('yes')"> ✅ <span data-i18n="opt_yes">Yes</span></label>
-                                            <label class="radio-item"><input type="radio" name="referredBy" value="no" onchange="toggleReferralInput('no')"> ❌ <span data-i18n="opt_no">No</span></label>
+                                            <label class="radio-item"><input type="radio" name="referredBy" required value="yes" onchange="toggleReferralInput('yes')"> ✅ <span data-i18n="opt_yes">Yes</span></label>
+                                            <label class="radio-item"><input type="radio" name="referredBy" required value="no" onchange="toggleReferralInput('no')"> ❌ <span data-i18n="opt_no">No</span></label>
                                         </div>
                                     </div>
                                     <div class="form-group conditional-section hidden-section" id="referralCodeInputSection">
@@ -881,11 +964,15 @@
                                         <i class="fab fa-whatsapp" style="color:#25D366;"></i> <span data-i18n="whatsapp_hint">After registration, you'll receive a WhatsApp confirmation with your referral code.</span>
                                     </p>
                                 </div>
-                                </div> <!-- End of regRestOfForm -->
+                                
 
-                                <button type="button" class="btn btn-primary w-100" style="background:linear-gradient(135deg,#3b82f6,#f97316);" onclick="submitRegistration()" id="submitRegBtn">
-                                    <i class="fas fa-check-circle"></i> <span data-i18n="btn_submit_reg">Complete Registration</span>
-                                </button>
+                                <div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
+                                    <button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+                                    <button type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#3b82f6,#f97316); flex:1; margin-left:1rem;" onclick="submitRegistration()" id="submitRegBtn">
+                                        <i class="fas fa-check-circle"></i> <span data-i18n="btn_submit_reg">Complete Registration</span>
+                                    </button>
+                                </div>
+                            </div> <!-- End of regSection6 -->
                             </div>
                             </div>
 
@@ -921,88 +1008,10 @@
                 </div>
             </div>
 
-            <!-- ===== SAVINGS CALCULATOR ===== -->
-            <div class="card" style="margin-top: 3rem; background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(59,130,246,0.05)); border-color: rgba(16,185,129,0.2);">
-                <div class="card-header" style="border:none; padding-bottom:0.5rem;">
-                    <h3 class="card-title" style="font-size:1.75rem;"><i class="fas fa-calculator text-success-color"></i> Petrol vs EV Savings Calculator</h3>
-                    <p style="color:var(--text-secondary); margin-top:0.5rem;">Compare your daily expenses to see which bike is better for your deliveries.</p>
-                </div>
-                <div class="card-body" style="display:flex; flex-wrap:wrap; gap:2rem;">
-                    <div style="flex:1; min-width:250px;">
-                        
-                        <label for="calcPetrolInput" style="display:block; margin-bottom:0.5rem; font-weight:600;">Daily Petrol Expense (₹)</label>
-                        <input type="number" id="calcPetrolInput" class="form-control" value="200" oninput="calculateSavings()" style="font-size:1.25rem; margin-bottom: 1.5rem;">
-
-                        <label for="calcEVInput" style="display:block; margin-bottom:0.5rem; font-weight:600;">Daily EV Charging Cost (₹)</label>
-                        <input type="number" id="calcEVInput" class="form-control" value="20" oninput="calculateSavings()" style="font-size:1.25rem;">
-                        
-                    </div>
-                    <div style="flex:1; min-width:250px; background:var(--card-bg); padding:1.5rem; border-radius:12px; border:1px solid var(--card-border); text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.02); display:flex; flex-direction:column; justify-content:center;">
-                        
-                        <div id="calcSuggestion" style="font-size:1.15rem; font-weight:700; margin-bottom:1.5rem; color:var(--text-primary);">
-                            <span style="color:var(--success-color)"><i class="fas fa-bolt"></i> Switch to EV and Save!</span>
-                        </div>
-                        
-                        <div id="calcResultLabel" style="color:var(--text-secondary); font-weight:600; text-transform:uppercase; font-size:0.85rem; letter-spacing:1px;">Your Estimated Monthly Savings</div>
-                        <div id="calcMonthlySavings" style="font-size:3rem; font-weight:900; color:var(--success-color); margin:0.5rem 0; font-family:'Outfit', sans-serif;">₹5,400</div>
-                        <div style="font-weight:600; color:var(--text-primary);">Yearly: <span id="calcYearlySavings" style="color:var(--primary-color);">₹64,800</span>!</div>
-                    </div>
-                </div>
-                <script>
-                    function calculateSavings() {
-                        const petrolCost = parseInt(document.getElementById('calcPetrolInput').value) || 0;
-                        const evCost = parseInt(document.getElementById('calcEVInput').value) || 0;
-                        
-                        let monthlySaving = 0;
-                        let yearlySaving = 0;
-                        
-                        const suggestionEl = document.getElementById('calcSuggestion');
-                        const resultLabelEl = document.getElementById('calcResultLabel');
-                        const monthlyEl = document.getElementById('calcMonthlySavings');
-                        const yearlyEl = document.getElementById('calcYearlySavings');
-                        
-                        if (petrolCost > evCost) {
-                            // EV is cheaper
-                            const dailySaving = petrolCost - evCost;
-                            monthlySaving = dailySaving * 30;
-                            yearlySaving = monthlySaving * 12;
-                            
-                            suggestionEl.innerHTML = `<span style="color:var(--success-color)"><i class="fas fa-bolt"></i> Switch to EV and Save!</span>`;
-                            resultLabelEl.innerText = 'Your Estimated Monthly Savings';
-                            monthlyEl.style.color = 'var(--success-color)';
-                            yearlyEl.style.color = 'var(--primary-color)';
-                        } else if (evCost > petrolCost) {
-                            // Petrol is cheaper
-                            const dailySaving = evCost - petrolCost;
-                            monthlySaving = dailySaving * 30;
-                            yearlySaving = monthlySaving * 12;
-                            
-                            suggestionEl.innerHTML = `<span style="color:var(--warning-color)"><i class="fas fa-gas-pump"></i> Petrol is Cheaper!</span>`;
-                            resultLabelEl.innerText = 'You save by using Petrol (Monthly)';
-                            monthlyEl.style.color = 'var(--warning-color)';
-                            yearlyEl.style.color = 'var(--warning-color)';
-                        } else {
-                            // Equal
-                            monthlySaving = 0;
-                            yearlySaving = 0;
-                            
-                            suggestionEl.innerHTML = `<span style="color:var(--text-secondary)"><i class="fas fa-balance-scale"></i> Costs are Equal</span>`;
-                            resultLabelEl.innerText = 'Monthly Difference';
-                            monthlyEl.style.color = 'var(--text-secondary)';
-                            yearlyEl.style.color = 'var(--text-secondary)';
-                        }
-                        
-                        monthlyEl.innerText = '₹' + monthlySaving.toLocaleString('en-IN');
-                        yearlyEl.innerText = '₹' + yearlySaving.toLocaleString('en-IN');
-                    }
-                    
-                    // Call once on load
-                    document.addEventListener('DOMContentLoaded', calculateSavings);
-                </script>
-            </div>
+            
 
             <!-- ===== TOP RIDERS SLIDER SECTION ===== -->
-            <div style="margin-top: 4rem; margin-bottom: 2rem; width: 100%; overflow: hidden; position: relative; background: var(--card-bg); padding: 3rem 0; border-radius: var(--border-radius-lg); border: 1px solid var(--card-border); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+            <div id="topRidersSection" style="margin-top: 4rem; margin-bottom: 2rem; width: 100%; overflow: hidden; position: relative; background: var(--card-bg); padding: 3rem 0; border-radius: var(--border-radius-lg); border: 1px solid var(--card-border); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
                 <h2 style="text-align:center; color:var(--text-primary); font-family:'Outfit', sans-serif; font-size:2.5rem; margin-bottom: 2rem;"><i class="fas fa-trophy text-warning-color"></i> Top 5 Riders</h2>
                 <div id="topRidersSliderWrapper" style="display:flex; width: 100%; transition: transform 0.8s ease-in-out;">
                     <div style="flex: 0 0 100%; width: 100%; text-align: center; padding: 2rem;">
@@ -1844,69 +1853,22 @@
 
     <!-- ===== FOOTER ===== -->
     <footer id="site-footer">
-        <div class="footer-inner">
-            <!-- Col 2: What we do -->
-            <div class="footer-col">
-                <h4 class="footer-heading">What we do</h4>
-                <ul class="footer-links-list">
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#rewards">Rewards</a></li>
-                    <li><a href="#referrals">Referrals</a></li>
-                    <li><a href="#analytics">Analytics</a></li>
-                </ul>
+        <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; margin-bottom: 2rem;">
+            <div class="footer-logo" style="font-size: 1.5rem; font-weight: 800; margin: 0;">
+                <span class="footer-logo-icon" style="color: var(--primary-color);">⚡</span>
+                <span class="footer-logo-text" style="color: var(--text-primary);">Road Warrior <span style="color: var(--primary-color);">Pro</span></span>
             </div>
-
-            <!-- Col 3: Who we are -->
-            <div class="footer-col">
-                <h4 class="footer-heading">Who we are</h4>
-                <ul class="footer-links-list">
-                    <li><a href="/about">About us</a></li>
-                    <li><a href="/careers">Careers</a></li>
-                    <li><a href="/brand">Brand Center</a></li>
-                    <li><a href="#" onclick="navigateTo('/privacy'); return false;">Privacy</a></li>
-                </ul>
-            </div>
-
-            <!-- Col 4: Use Platform -->
-            <div class="footer-col">
-                <h4 class="footer-heading">Use Platform</h4>
-                <ul class="footer-links-list">
-                    <li><a href="/android">Android App</a></li>
-                    <li><a href="/ios">iPhone App</a></li>
-                    <li><a href="/dashboard">Web Dashboard</a></li>
-                    <li><a href="/api">Developer APIs</a></li>
-                </ul>
-            </div>
-
-            <!-- Col 5: Contact Info -->
-            <div class="footer-col">
-                <h4 class="footer-heading">Contact Info</h4>
-                <ul class="footer-links-list">
-                    <li><strong>Road Warrior Pro</strong></li>
-                    <li><a href="mailto:contact@roadwarriorev.com">contact@roadwarriorev.com</a></li>
-                    <li><a href="tel:+916360483386">+91 6360 483 386</a></li>
-                    <li>1028, Mangammanapalya,<br>11th main road Bengaluru 560068</li>
-                </ul>
-            </div>
-
-            <!-- Col 1: Brand -->
-            <div class="footer-col footer-brand">
-                <div class="footer-logo">
-                    <span class="footer-logo-icon">⚡</span>
-                    <span class="footer-logo-text">Road Warrior <span>Pro</span></span>
-                </div>
-
-                <a href="tel:+916360483386" class="footer-btn-download" style="background: linear-gradient(135deg, #25D366, #128C7E); color: white; border: none; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);">
+            <div style="display: flex; gap: 1rem;">
+                <a href="tel:+916360483386" class="footer-btn-download" style="background: linear-gradient(135deg, #25D366, #128C7E); color: white; border: none; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2); display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; border-radius: 8px; text-decoration: none; font-weight: 600;">
                     <span>Click To Call</span>
                     <i class="fas fa-phone-alt"></i>
                 </a>
-                <a href="https://wa.me/916360483386" target="_blank" class="footer-btn-download" style="margin-top: 0.75rem; background: linear-gradient(135deg, #25D366, #075E54); color: white; border: none; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);">
+                <a href="https://wa.me/916360483386" target="_blank" class="footer-btn-download" style="background: linear-gradient(135deg, #25D366, #075E54); color: white; border: none; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2); display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; border-radius: 8px; text-decoration: none; font-weight: 600;">
                     <span>WhatsApp Us</span>
                     <i class="fab fa-whatsapp"></i>
                 </a>
             </div>
         </div>
-
         <!-- Footer Bottom Bar -->
         <div class="footer-bottom">
             <div class="footer-bottom-left">

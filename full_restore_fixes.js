@@ -1,8 +1,51 @@
 const fs = require('fs');
-const path = require('path');
 
-const indexPath = path.join(__dirname, 'public', 'index.html');
-let html = fs.readFileSync(indexPath, 'utf-8').replace(/\r\n/g, '\n');
+let html = fs.readFileSync('public/index.html', 'utf-8');
+
+// 1. Restore Promo Banner + Language Switcher
+const targetStr = `<div class="card-body" style="margin-top:1rem;">
+
+                            <!-- Registration Form Content -->`;
+const replacementStr = `<!-- Refer Earn Win Promo Banner -->
+                        <div style="padding: 0.75rem 1rem 0; margin-bottom: 0.5rem;">
+                            <img src="/img/refer-earn-win-banner.jpg"
+                                 alt="Refer • Earn • Win — Exciting Prizes! Refer your friends and stand a chance to win an Electric Scooter or Electric Car!"
+                                 style="width:100%; border-radius:12px; display:block; box-shadow:0 4px 20px rgba(0,0,0,0.18); object-fit:cover;"
+                                 loading="lazy">
+                        </div>
+
+                        <!-- Language Switcher below Banner -->
+                        <div style="display:flex; align-items:center; justify-content:center; gap:0.75rem; margin-top:0.25rem; margin-bottom:0.75rem;">
+                            <i class="fas fa-globe" style="color:var(--text-secondary); font-size:1rem;"></i>
+                            <span style="font-size:0.8rem; color:var(--text-secondary); font-weight:500;">Language:</span>
+                            <div style="display:flex; gap:0.4rem; flex-wrap:wrap; justify-content:center;">
+                                <button type="button" onclick="changeLanguage('en'); updateFormLangBtns('en')" id="formLangEn"
+                                    style="padding:0.3rem 0.75rem; border-radius:20px; border:1.5px solid var(--primary-color); background:var(--primary-color); color:#fff; font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                                    🇺🇸 English
+                                </button>
+                                <button type="button" onclick="changeLanguage('hi'); updateFormLangBtns('hi')" id="formLangHi"
+                                    style="padding:0.3rem 0.75rem; border-radius:20px; border:1.5px solid var(--card-border); background:transparent; color:var(--text-secondary); font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                                    🇮🇳 हिंदी
+                                </button>
+                                <button type="button" onclick="changeLanguage('kn'); updateFormLangBtns('kn')" id="formLangKn"
+                                    style="padding:0.3rem 0.75rem; border-radius:20px; border:1.5px solid var(--card-border); background:transparent; color:var(--text-secondary); font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                                    🇮🇳 ಕನ್ನಡ
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card-body" style="margin-top:0.5rem;">
+
+                            <!-- Registration Form Content -->`;
+
+if (html.includes(targetStr)) {
+    html = html.replace(targetStr, replacementStr);
+} else {
+    html = html.replace(targetStr.replace(/\r\n/g, '\n'), replacementStr);
+}
+
+
+// --- 2. RESTORE SPLIT LOGIC (from refactor_safe.js) ---
 
 // 1. Insert progress bar before regSection1
 const progressHtml = `
@@ -65,19 +108,6 @@ html = html.replace(/(<\/div>\s*)(<!-- SECTION E: Openness to EV -->)/,
 html = html.replace(/(<\/div>\s*)(<!-- SECTION F: Referral -->)/, 
     `<div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>\n                            </div> <!-- End of regSection5 -->\n$2`);
 
-// Fix submit button for regSection6
-const oldSubmitBtn = `<button type="button" class="btn btn-primary w-100" style="background:linear-gradient(135deg,#3b82f6,#f97316);" onclick="submitRegistration()" id="submitRegBtn">
-                                    <i class="fas fa-check-circle"></i> <span data-i18n="btn_submit_reg">Complete Registration</span>
-                                </button>`;
-const newSubmitBtn = `<div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
-                                    <button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
-                                    <button type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#3b82f6,#f97316); flex:1; margin-left:1rem;" onclick="submitRegistration()" id="submitRegBtn">
-                                        <i class="fas fa-check-circle"></i> <span data-i18n="btn_submit_reg">Complete Registration</span>
-                                    </button>
-                                </div>
-                            </div> <!-- End of regSection6 -->`;
-html = html.replace(oldSubmitBtn, newSubmitBtn);
-
 
 // 5. Side by Side Dropdowns
 html = html.replace(
@@ -133,11 +163,5 @@ html = html.replace(
 const regPlatformOtherMatch = '<input type="text" id="regPlatformOther" class="form-control" placeholder="Type platform name" style="display:none; margin-top:0.5rem;">\n                                </div>';
 html = html.replace(regPlatformOtherMatch, regPlatformOtherMatch + '\n                                </div>');
 
-fs.writeFileSync(indexPath, html, 'utf-8');
-console.log("Refactoring complete");
-// 6. Remove Footer contact info
-html = html.replace(/<div class="footer-col contact-col">[\s\S]*?<\/div>\s*<\/div>/, '</div></div>');
-html = html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, '');
-
-fs.writeFileSync(indexPath, html, 'utf-8');
-console.log("Footer refactoring complete");
+fs.writeFileSync('public/index.html', html, 'utf-8');
+console.log('Restored all fixes!');

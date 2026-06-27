@@ -135,9 +135,3 @@ html = html.replace(regPlatformOtherMatch, regPlatformOtherMatch + '\n          
 
 fs.writeFileSync(indexPath, html, 'utf-8');
 console.log("Refactoring complete");
-// 6. Remove Footer contact info
-html = html.replace(/<div class="footer-col contact-col">[\s\S]*?<\/div>\s*<\/div>/, '</div></div>');
-html = html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, '');
-
-fs.writeFileSync(indexPath, html, 'utf-8');
-console.log("Footer refactoring complete");
