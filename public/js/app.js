@@ -2921,17 +2921,18 @@ async function openDataDrilldown(type) {
                             type: 'bar',
                             data: {
                                 labels: data.weeklyData.map(d => d.day),
-                            datasets: [{
-                                label: TRANSLATIONS[lang].chart_weekly_referrals || 'Weekly Referrals',
-                                data: data.weeklyData.map(d => d.referrals),
-                                backgroundColor: 'rgba(59,130,246,0.65)',
-                                borderColor: 'rgba(59,130,246,1)',
-                                borderWidth: 1.5,
-                                borderRadius: 6
-                            }]
-                        },
-                        options: getChartOpts(false)
-                    });
+                                datasets: [{
+                                    label: TRANSLATIONS[lang].chart_weekly_referrals || 'Weekly Referrals',
+                                    data: data.weeklyData.map(d => d.referrals),
+                                    backgroundColor: 'rgba(59,130,246,0.65)',
+                                    borderColor: 'rgba(59,130,246,1)',
+                                    borderWidth: 1.5,
+                                    borderRadius: 6
+                                }]
+                            },
+                            options: getChartOpts(false)
+                        });
+                    }
                 }
                 const ptsCtx = document.getElementById('pointsChart');
                 if (ptsCtx) {
