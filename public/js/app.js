@@ -3237,25 +3237,51 @@ async function openDataDrilldown(type) {
         
         const code = specificCode || (currentUser ? currentUser.referralCode : 'RWPRO');
         const fullName = specificName || (currentUser ? currentUser.fullName : 'Rider');
-        // If the user wants their "older text", we use the backend message if available, else fallback
-        let text = window.lastRegisteredWhatsAppMessage || getWhatsAppMessageText(fullName, code);
-        
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const text = window.lastRegisteredWhatsAppMessage || getWhatsAppMessageText(fullName, code);
+        const fallbackUrl = `whatsapp://send?text=${encodeURIComponent(text)}`;
         const webFallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-        const nativeUrl = `whatsapp://send?text=${encodeURIComponent(text)}`;
 
-        if (typeof trackEvent === 'function') trackEvent('share_direct_whatsapp', { success: true });
+        try {
+            // Use relative path for fetch to support Github Pages subpaths
+            const response = await fetch('og-image.png');
+            if (!response.ok) throw new Error('Image fetch failed');
+            const blob = await response.blob();
+            const file = new File([blob], 'road-warrior-ev.png', { type: blob.type });
 
-        if (isMobile) {
-            // Direct to WhatsApp App
-            window.location.href = nativeUrl;
-            // Fallback if not installed
-            setTimeout(() => {
-                window.location.href = webFallbackUrl;
-            }, 1000);
-        } else {
-            // Desktop WhatsApp Web
-            window.open(webFallbackUrl, '_blank');
+            // We must use navigator.share to attach an actual image file.
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: 'Join Road Warrior EV',
+                    text: text
+                });
+                if (typeof trackEvent === 'function') trackEvent('share_with_image', { success: true });
+            } else if (navigator.share) {
+                // Fallback to text only if file sharing is not supported
+                await navigator.share({
+                    title: 'Join Road Warrior EV',
+                    text: text
+                });
+                if (typeof trackEvent === 'function') trackEvent('share_text_only', { success: true });
+            } else {
+                // If Web Share API is completely missing, fallback to direct whatsapp URL (text only)
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                if (isMobile) {
+                    window.location.href = fallbackUrl;
+                } else {
+                    window.open(webFallbackUrl, '_blank');
+                }
+            }
+        } catch (err) {
+            console.error('Sharing failed', err);
+            if (err.name !== 'AbortError') {
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                if (isMobile) {
+                    window.location.href = fallbackUrl;
+                } else {
+                    window.open(webFallbackUrl, '_blank');
+                }
+            }
         }
     }
 
