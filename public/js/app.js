@@ -267,6 +267,8 @@ function initClarity() {
 // --- Visitor Fingerprinting ---
 let visitorId = '';
 let sessionId = '';
+let currentUser = null;
+let isLoggedIn = false;
 
 function _rwGenerateId() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -747,613 +749,15 @@ async function openDataDrilldown(type) {
 
 
 
-    // ===== TRANSLATIONS (EN / HI / KN) =====
-    const TRANSLATIONS = {
-        en: {
-            nav_home:"Home", nav_vehicles:"Vehicles", nav_dashboard:"Dashboard", nav_score:"Score", nav_profile:"Profile", nav_admin:"Admin",
-            logout:"Logout", login:"Login", welcome_title:"Empower Your Delivery Journey",
-            welcome_subtitle:"Join thousands of riders. Complete the survey, earn your referral code, and start winning points!",
-            label_total_riders:"Active Riders", label_start_points:"Starting Points", label_per_referral:"Per Referral",
-            milestone_10_title:"10 Referrals", milestone_25_title:"25 Referrals", milestone_50_title:"50 Referrals",
-            login_title:"Login", login_alert:"Use demo@example.com / password or register a new rider.",
-            label_email:"Email", label_password:"Password", no_account:"Don't have an account?", register_link:"Register here",
-            register_title:"Rider Registration", have_account:"Already have an account?", login_link:"Login here",
-            label_fullname:"Full Name", label_whatsapp:"WhatsApp Number", label_city:"City", select_city:"Select your city",
-            label_platform:"Delivery Platform", select_platform:"Select platform", label_exp:"Years of Experience",
-            step_profile:"Profile", step_vehicle:"Vehicle", step_challenges:"Challenges", step_insurance:"Insurance", step_ev:"EV", step_referral:"Referral",
-            sec_a_title:"Section A — Basic Profile", sec_b_title:"Section B — Current Vehicle",
-            sec_c_title:"Section C — Challenges & Pain Points", sec_d_title:"Section D — Insurance",
-            sec_e_title:"Section E — Openness to EV", sec_f_title:"Section F — Referral",
-            label_vehicle_type:"Vehicle Type", vt_petrol:"Petrol Two-Wheeler", vt_diesel:"Diesel Two-Wheeler",
-            vt_electric:"Electric Two-Wheeler", vt_other:"Other",
-            label_vehicle_model:"Vehicle Brand & Model (optional)", label_fuel_method:"How do you fuel/charge?",
-            fm_petrol:"Petrol Pump", fm_home:"Home Charging", fm_swap:"Battery Swap", fm_other:"Other",
-            label_fuel_expense:"Weekly Fuel/Charge Expense (₹)", label_maint_expense:"Monthly Maintenance Expense (₹)",
-            label_top_challenges:"Top Challenges (select up to 3)",
-            ch_fuel:"High fuel cost", ch_breakdown:"Frequent breakdown", ch_charging:"No nearby charging station",
-            ch_range:"Battery range anxiety", ch_repair:"Repair costs", ch_refuel:"Long refuelling time", ch_other:"Other",
-            label_ev_challenges:"EV Specific Challenges", label_petrol_challenges:"Petrol Specific Challenges",
-            evc_drain:"Battery drains too fast", evc_swap:"Swapping station too far", evc_charge:"Long charging time at home",
-            evc_power:"Vehicle not powerful enough", evc_service:"Service centre not nearby",
-            pc_price:"Fuel price too high", pc_engine:"Frequent engine issues", pc_pollution:"Pollution fine risk", pc_service:"High servicing cost",
-            label_accidental_ins:"Do you have accidental insurance?", label_health_ins:"Do you have personal health insurance?",
-            label_paid_pocket:"Have you paid out-of-pocket for an accident?",
-            opt_yes:"Yes", opt_no:"No", opt_not_sure:"Not sure",
-            label_open_ev:"Are you open to switching to an EV?",
-            ev_yes:"Yes", ev_no:"No", ev_already:"Already on EV", ev_more_info:"Need more info",
-            label_switch_triggers:"What would make you switch?",
-            st_rental:"Lower rental cost", st_range:"Better battery range", st_swap:"Swap stations nearby",
-            st_income:"Income guarantee", st_subsidy:"Employer subsidy",
-            label_interests:"Would you be interested in:",
-            int_ev:"EV Rental Offer", int_ins:"Insurance Quote", int_retrofit:"Retrofit Information", int_all:"All of the above", int_none:"None",
-            label_referred_by:"Were you referred by another rider?",
-            label_referral_code:"Referral Code of the rider who referred you",
-            ref_code_hint:"The person who shared this app with you",
-            whatsapp_hint:"After registration, you'll receive a WhatsApp confirmation with your referral code.",
-            btn_next:"Next: Vehicle Info", btn_next_c:"Next: Challenges", btn_next_d:"Next: Insurance",
-            btn_next_e:"Next: EV Openness", btn_next_f:"Next: Referral", btn_back:"Back",
-            btn_submit_reg:"Complete Registration", btn_goto_dashboard:"Go to Dashboard", btn_view_score:"View Score",
-            success_title:"Registration Complete!", success_subtitle:"Welcome to Road Warrior Pro. You start with 10 points!",
-            share_code_hint:"Share this code with other riders to earn 5 points per referral",
-            wa_confirm_title:"WhatsApp Confirmation",
-            btn_send_whatsapp:"Share WhatsApp to friends",
-            phone_error:"Phone must be exactly 10 digits", phone_dup:"Already registered! Check your score.",
-            score_title:"Score & Leaderboard", title_score_lookup:"Check Your Score",
-            score_lookup_hint:"Enter your WhatsApp number to see your points and referral count.",
-            rank_heading:"Your Global Ranking", rank_description:"Refer friends to climb the leaderboard.",
-            active_standing:"Standings", title_leaderboard_table:"Top Performers",
-            tbl_rank:"Rank", tbl_name:"Name", tbl_city:"City", tbl_referrals:"Referrals",
-            tbl_points:"Points", tbl_tags:"Tags", tbl_deliveries:"Deliveries", tbl_rating:"Rating",
-            title_achievements:"Achievement Badges",
-            vehicles_title:"My Vehicles", title_insurance_tracker:"Insurance & Documents",
-            tbl_vehicle:"Vehicle", tbl_provider:"Insurance Provider", tbl_policy:"Policy Number", tbl_expiry:"Expiry Date", tbl_status:"Status",
-            dashboard_title:"Rider Dashboard", back:"Back",
-            stat_referrals:"Total Referrals", stat_rating:"Rider Rating", stat_points:"Total Points",
-            quick_actions:"Quick Actions", act_add_vehicle:"Add Vehicle",
-            act_edit_profile:"Edit Profile", act_leaderboard:"View Rankings",
-            chart_weekly_referrals:"Weekly Referrals", chart_weekly_points:"Points Earned Trend",
-            chart_cities_referral:"Referrals by City",
-            profile_title:"My Profile", title_profile_info:"Basic Information", btn_save:"Save Changes",
-            title_payout_details:"Bank & Payment", label_bank:"Bank Name", label_account:"Account Number",
-            label_ifsc:"IFSC Code", label_upi:"UPI ID", btn_update_payment:"Update Bank Details",
-            title_referral:"Referral Program", label_ref_code:"Your Referral Code & Link",
-            btn_copy:"Copy", label_successful_referrals:"Referrals",
-            label_milestone_progress:"Milestone Progress",
-            m10:"10 Referrals → +100 pts", m25:"25 Referrals → +300 pts", m50:"50 Referrals → +500 pts + Lucky Draw",
-            qr_scan_hint:"Scan QR to Register instantly", qr_offline_hint:"Share at petrol pumps & delivery hubs",
-            btn_share_whatsapp:"Share via WhatsApp",
-            admin_title:"Admin Dashboard", adm_riders:"Registered Users", adm_ev_riders:"EV Riders",
-            adm_hot_leads:"Hot EV Leads", adm_ins_leads:"Insurance Leads",
-            tab_all_riders:"All Riders", tab_ev_leads:"Hot EV Leads", tab_ins_leads:"Insurance Leads",
-            tab_top_referrers:"Top Referrers", tab_city_stats:"City Stats",
-            title_riders_directory:"All Riders Registry",
-            tbl_vehicle_type:"Vehicle", tbl_phone:"Phone",
-            modal_new_delivery:"Register New Delivery", label_pickup:"Pickup Address", label_dropoff:"Dropoff Address",
-            label_delivery_type:"Delivery Type", label_fare:"Estimated Earnings (₹)",
-            btn_cancel:"Cancel", btn_create:"Register Order",
-            modal_add_vehicle:"Add New Vehicle", label_plate:"License Plate", label_color:"Color",
-            label_make:"Manufacturer", label_model:"Model Name", btn_add:"Add Vehicle",
-            btn_complete:"Complete", btn_start:"Start",
-            badge_pending:"Pending", badge_completed:"Completed",
-            no_vehicles:"No vehicles added yet. Click Add Vehicle.",
-            status_active:"Active", status_maintenance:"Maintenance", status_expiring_soon:"Expiring Soon",
-            status_unlocked:"Unlocked", status_locked:"Locked", status_offline:"Offline",
-            label_you:"You", lbl_type:"Type", lbl_color:"Color", lbl_plate:"Plate", lbl_registration:"Registration",
-            no_documents:"No insurance documents", no_riders_db:"No riders in DB",
-            ach_speed_demon_title:"Referral Starter", ach_speed_demon_desc:"Refer your first rider",
-            ach_five_star_title:"Referral Master", ach_five_star_desc:"Refer 10 riders",
-            ach_century_title:"Referral Champion", ach_century_desc:"Refer 25 riders",
-            ach_expert_title:"Referral King", ach_expert_desc:"Refer 50 riders",
-            lang_auto_msg:"Language auto-set to English for this city",
-            label_phone:"Phone Number",
-            radio_password:"Password", radio_otp:"OTP", forgot_password:"Forgot Password?"
-        },
-        hi: {
-            nav_home:"होम", nav_vehicles:"वाहन", nav_dashboard:"डैशबोर्ड", nav_score:"स्कोर", nav_profile:"प्रोफ़ाइल", nav_admin:"एडमिन",
-            logout:"लॉगआउट", login:"लॉगिन", welcome_title:"अपनी डिलीवरी यात्रा को सशक्त बनाएं",
-            welcome_subtitle:"हजारों राइडर्स से जुड़ें। सर्वे पूरा करें, रेफरल कोड पाएं और पॉइंट्स जीतें!",
-            label_total_riders:"सक्रिय राइडर्स", label_start_points:"शुरुआती अंक", label_per_referral:"प्रति रेफरल",
-            milestone_10_title:"10 रेफरल", milestone_25_title:"25 रेफरल", milestone_50_title:"50 रेफरल",
-            login_title:"लॉगिन", login_alert:"demo@example.com / password उपयोग करें या नया अकाउंट बनाएं।",
-            label_email:"ईमेल", label_password:"पासवर्ड", no_account:"अकाउंट नहीं है?", register_link:"यहाँ रजिस्टर करें",
-            register_title:"राइडर रजिस्ट्रेशन", have_account:"पहले से अकाउंट है?", login_link:"यहाँ लॉगिन करें",
-            label_fullname:"पूरा नाम", label_whatsapp:"WhatsApp नंबर", label_city:"शहर", select_city:"शहर चुनें",
-            label_platform:"डिलीवरी प्लेटफ़ॉर्म", select_platform:"प्लेटफ़ॉर्म चुनें", label_exp:"अनुभव के वर्ष",
-            step_profile:"प्रोफ़ाइल", step_vehicle:"वाहन", step_challenges:"चुनौतियाँ", step_insurance:"बीमा", step_ev:"EV", step_referral:"रेफरल",
-            sec_a_title:"खंड A — मूल प्रोफ़ाइल", sec_b_title:"खंड B — वर्तमान वाहन",
-            sec_c_title:"खंड C — चुनौतियाँ", sec_d_title:"खंड D — बीमा",
-            sec_e_title:"खंड E — EV के प्रति खुलापन", sec_f_title:"खंड F — रेफरल",
-            label_vehicle_type:"वाहन का प्रकार", vt_petrol:"पेट्रोल दोपहिया", vt_diesel:"डीज़ल दोपहिया",
-            vt_electric:"इलेक्ट्रिक दोपहिया", vt_other:"अन्य",
-            label_vehicle_model:"वाहन ब्रांड और मॉडल", label_fuel_method:"आप कैसे ईंधन/चार्ज करते हैं?",
-            fm_petrol:"पेट्रोल पंप", fm_home:"घर पर चार्जिंग", fm_swap:"बैटरी स्वैप", fm_other:"अन्य",
-            label_fuel_expense:"साप्ताहिक ईंधन खर्च (₹)", label_maint_expense:"मासिक रखरखाव खर्च (₹)",
-            label_top_challenges:"मुख्य चुनौतियाँ (3 तक चुनें)",
-            ch_fuel:"ईंधन की ऊंची लागत", ch_breakdown:"बार-बार खराबी", ch_charging:"पास में चार्जिंग स्टेशन नहीं",
-            ch_range:"बैटरी रेंज की चिंता", ch_repair:"मरम्मत की लागत", ch_refuel:"लंबा ईंधन भरने का समय", ch_other:"अन्य",
-            label_ev_challenges:"EV विशेष चुनौतियाँ", label_petrol_challenges:"पेट्रोल विशेष चुनौतियाँ",
-            evc_drain:"बैटरी बहुत जल्दी खत्म होती है", evc_swap:"स्वैप स्टेशन बहुत दूर है",
-            evc_charge:"घर पर चार्जिंग में बहुत समय", evc_power:"वाहन इतना शक्तिशाली नहीं", evc_service:"सर्विस सेंटर पास नहीं",
-            pc_price:"ईंधन की कीमत बहुत ज्यादा", pc_engine:"इंजन की बार-बार समस्या", pc_pollution:"प्रदूषण जुर्माने का खतरा", pc_service:"सर्विस की उच्च लागत",
-            label_accidental_ins:"क्या आपके पास दुर्घटना बीमा है?", label_health_ins:"क्या आपके पास स्वास्थ्य बीमा है?",
-            label_paid_pocket:"क्या आपने कभी दुर्घटना का खर्च खुद उठाया?",
-            opt_yes:"हाँ", opt_no:"नहीं", opt_not_sure:"निश्चित नहीं",
-            label_open_ev:"क्या आप EV पर स्विच करने के लिए तैयार हैं?",
-            ev_yes:"हाँ", ev_no:"नहीं", ev_already:"पहले से EV पर हूँ", ev_more_info:"अधिक जानकारी चाहिए",
-            label_switch_triggers:"आप किस कारण स्विच करेंगे?",
-            st_rental:"कम किराया लागत", st_range:"बेहतर बैटरी रेंज", st_swap:"पास में स्वैप स्टेशन",
-            st_income:"आय गारंटी", st_subsidy:"नियोक्ता सब्सिडी",
-            label_interests:"आप इसमें रुचि रखते हैं:",
-            int_ev:"EV किराया ऑफर", int_ins:"बीमा कोटेशन", int_retrofit:"रेट्रोफिट जानकारी", int_all:"उपरोक्त सभी", int_none:"कोई नहीं",
-            label_referred_by:"क्या आपको किसी राइडर ने रेफर किया?",
-            label_referral_code:"जिसने आपको रेफर किया उनका कोड",
-            ref_code_hint:"जिस व्यक्ति ने यह ऐप आपसे साझा किया",
-            whatsapp_hint:"रजिस्ट्रेशन के बाद आपको WhatsApp पर पुष्टि मिलेगी।",
-            btn_next:"अगला: वाहन जानकारी", btn_next_c:"अगला: चुनौतियाँ", btn_next_d:"अगला: बीमा",
-            btn_next_e:"अगला: EV", btn_next_f:"अगला: रेफरल", btn_back:"पीछे",
-            btn_submit_reg:"रजिस्ट्रेशन पूरा करें", btn_goto_dashboard:"डैशबोर्ड जाएं", btn_view_score:"स्कोर देखें",
-            success_title:"रजिस्ट्रेशन सफल!", success_subtitle:"Road Warrior Pro में आपका स्वागत है। आप 10 अंकों से शुरू करते हैं!",
-            share_code_hint:"यह कोड अन्य राइडर्स से शेयर करें और प्रति रेफरल 5 अंक कमाएं",
-            wa_confirm_title:"WhatsApp पुष्टि",
-            btn_send_whatsapp:"खुद को WhatsApp भेजें",
-            phone_error:"फोन नंबर ठीक 10 अंकों का होना चाहिए", phone_dup:"पहले से रजिस्टर है!",
-            score_title:"स्कोर और लीडरबोर्ड", title_score_lookup:"अपना स्कोर देखें",
-            score_lookup_hint:"अपने WhatsApp नंबर से अंक और रेफरल देखें।",
-            rank_heading:"आपकी वैश्विक रैंकिंग", rank_description:"दोस्तों को रेफर करें और ऊपर चढ़ें।",
-            active_standing:"स्थान", title_leaderboard_table:"शीर्ष राइडर्स",
-            tbl_rank:"रैंक", tbl_name:"नाम", tbl_city:"शहर", tbl_referrals:"रेफरल",
-            tbl_points:"अंक", tbl_tags:"टैग", tbl_deliveries:"डिलीवरी", tbl_rating:"रेटिंग",
-            title_achievements:"उपलब्धि बैज",
-            vehicles_title:"मेरे वाहन", title_insurance_tracker:"बीमा और दस्तावेज",
-            tbl_vehicle:"वाहन", tbl_provider:"बीमा प्रदाता", tbl_policy:"पॉलिसी नंबर", tbl_expiry:"समाप्ति तिथि", tbl_status:"स्थिति",
-            dashboard_title:"राइडर डैशबोर्ड", back:"पीछे",
-            stat_referrals:"कुल रेफरल", stat_rating:"राइडर रेटिंग", stat_points:"कुल अंक",
-            quick_actions:"त्वरित कार्रवाई", act_add_vehicle:"वाहन जोड़ें",
-            act_edit_profile:"प्रोफ़ाइल संपादित करें", act_leaderboard:"रैंकिंग देखें",
-            chart_weekly_referrals:"साप्ताहिक रेफरल", chart_weekly_points:"अंक अर्जित करने की प्रवृत्ति",
-            chart_cities_referral:"शहरों के अनुसार रेफरल",
-            profile_title:"मेरी प्रोफ़ाइल", title_profile_info:"मूल जानकारी", btn_save:"बदलाव सहेजें",
-            title_payout_details:"बैंक और भुगतान", label_bank:"बैंक का नाम", label_account:"खाता संख्या",
-            label_ifsc:"IFSC कोड", label_upi:"UPI आईडी", btn_update_payment:"बैंक विवरण अपडेट करें",
-            title_referral:"रेफरल कार्यक्रम", label_ref_code:"आपका रेफरल कोड और लिंक",
-            btn_copy:"कॉपी", label_successful_referrals:"रेफरल",
-            label_milestone_progress:"माइलस्टोन प्रगति",
-            m10:"10 रेफरल → +100 अंक", m25:"25 रेफरल → +300 अंक", m50:"50 रेफरल → +500 अंक + लकी ड्रा",
-            qr_scan_hint:"QR स्कैन करके तुरंत रजिस्टर करें", qr_offline_hint:"पेट्रोल पंप पर शेयर करें",
-            btn_share_whatsapp:"WhatsApp पर शेयर करें",
-            admin_title:"एडमिन डैशबोर्ड", adm_riders:"पंजीकृत उपयोगकर्ता", adm_ev_riders:"EV राइडर्स",
-            adm_hot_leads:"हॉट EV लीड्स", adm_ins_leads:"बीमा लीड्स",
-            tab_all_riders:"सभी राइडर्स", tab_ev_leads:"हॉट EV लीड्स", tab_ins_leads:"बीमा लीड्स",
-            tab_top_referrers:"शीर्ष रेफरर्स", tab_city_stats:"शहर के आंकड़े",
-            title_riders_directory:"राइडर्स रजिस्ट्री",
-            tbl_vehicle_type:"वाहन", tbl_phone:"फ़ोन",
-            modal_new_delivery:"नई डिलीवरी दर्ज करें", label_pickup:"पिकअप का पता", label_dropoff:"ड्रॉप पता",
-            label_delivery_type:"डिलीवरी का प्रकार", label_fare:"अनुमानित कमाई (₹)",
-            btn_cancel:"रद्द करें", btn_create:"ऑर्डर दर्ज करें",
-            modal_add_vehicle:"नया वाहन जोड़ें", label_plate:"लाइसेंस प्लेट", label_color:"रंग",
-            label_make:"निर्माता", label_model:"मॉडल का नाम", btn_add:"वाहन जोड़ें",
-            btn_complete:"पूरा करें", btn_start:"शुरू करें",
-            badge_pending:"लंबित", badge_completed:"पूर्ण",
-            no_vehicles:"कोई वाहन नहीं। वाहन जोड़ें पर क्लिक करें।",
-            status_active:"सक्रिय", status_maintenance:"रखरखाव", status_expiring_soon:"जल्द समाप्त",
-            status_unlocked:"अनलॉक", status_locked:"लॉक", status_offline:"ऑफ़लाइन",
-            label_you:"आप", lbl_type:"प्रकार", lbl_color:"रंग", lbl_plate:"प्लेट", lbl_registration:"पंजीकरण",
-            no_documents:"कोई बीमा दस्तावेज़ नहीं", no_riders_db:"कोई राइडर नहीं",
-            ach_speed_demon_title:"रेफरल स्टार्टर", ach_speed_demon_desc:"पहला राइडर रेफर करें",
-            ach_five_star_title:"रेफरल मास्टर", ach_five_star_desc:"10 राइडर्स रेफर करें",
-            ach_century_title:"रेफरल चैंपियन", ach_century_desc:"25 राइडर्स रेफर करें",
-            ach_expert_title:"रेफरल किंग", ach_expert_desc:"50 राइडर्स रेफर करें",
-            lang_auto_msg:"इस शहर के लिए भाषा हिंदी में बदली गई",
-            label_phone:"फ़ोन नंबर"
-        },
-        kn: {
-            nav_home:"ಮುಖಪುಟ", nav_vehicles:"ವಾಹನಗಳು", nav_dashboard:"ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", nav_score:"ಸ್ಕೋರ್", nav_profile:"ಪ್ರೊಫೈಲ್", nav_admin:"ಅಡ್ಮಿನ್",
-            logout:"ಲಾಗ್ ಔಟ್", login:"ಲಾಗ್ ಇನ್", welcome_title:"ನಿಮ್ಮ ಡೆಲಿವರಿ ಪ್ರಯಾಣವನ್ನು ಸಶಕ್ತಗೊಳಿಸಿ",
-            welcome_subtitle:"ಸಾವಿರಾರು ರೈಡರ್‌ಗಳೊಂದಿಗೆ ಸೇರಿ. ಸಮೀಕ್ಷೆ ಪೂರ್ಣಗೊಳಿಸಿ, ರೆಫರಲ್ ಕೋಡ್ ಪಡೆಯಿರಿ ಮತ್ತು ಅಂಕಗಳನ್ನು ಗೆಲ್ಲಿರಿ!",
-            label_total_riders:"ಸಕ್ರಿಯ ರೈಡರ್ಸ್", label_start_points:"ಪ್ರಾರಂಭದ ಅಂಕಗಳು", label_per_referral:"ಪ್ರತಿ ರೆಫರಲ್",
-            milestone_10_title:"10 ರೆಫರಲ್ಗಳು", milestone_25_title:"25 ರೆಫರಲ್ಗಳು", milestone_50_title:"50 ರೆಫರಲ್ಗಳು",
-            login_title:"ಲಾಗ್ ಇನ್", login_alert:"demo@example.com / password ಬಳಸಿ ಅಥವಾ ಹೊಸ ಖಾತೆ ತೆರೆಯಿರಿ.",
-            label_email:"ಇಮೇಲ್", label_password:"ಪಾಸ್‌ವರ್ಡ್", no_account:"ಖಾತೆ ಇಲ್ಲವೇ?", register_link:"ಇಲ್ಲಿ ನೋಂದಾಯಿಸಿ",
-            register_title:"ರೈಡರ್ ನೋಂದಣಿ", have_account:"ಖಾತೆ ಇದೆಯೇ?", login_link:"ಇಲ್ಲಿ ಲಾಗ್ ಇನ್ ಆಗಿ",
-            label_fullname:"ಪೂರ್ಣ ಹೆಸರು", label_whatsapp:"WhatsApp ಸಂಖ್ಯೆ", label_city:"ನಗರ", select_city:"ನಿಮ್ಮ ನಗರ ಆಯ್ಕೆಮಾಡಿ",
-            label_platform:"ಡೆಲಿವರಿ ಪ್ಲಾಟ್‌ಫಾರ್ಮ್", select_platform:"ಪ್ಲಾಟ್‌ಫಾರ್ಮ್ ಆಯ್ಕೆಮಾಡಿ", label_exp:"ಅನುಭವದ ವರ್ಷಗಳು",
-            step_profile:"ಪ್ರೊಫೈಲ್", step_vehicle:"ವಾಹನ", step_challenges:"ಸವಾಲುಗಳು", step_insurance:"ವಿಮೆ", step_ev:"EV", step_referral:"ರೆಫರಲ್",
-            sec_a_title:"ವಿಭಾಗ A — ಮೂಲ ಪ್ರೊಫೈಲ್", sec_b_title:"ವಿಭಾಗ B — ಪ್ರಸ್ತುತ ವಾಹನ",
-            sec_c_title:"ವಿಭಾಗ C — ಸವಾಲುಗಳು", sec_d_title:"ವಿಭಾಗ D — ವಿಮೆ",
-            sec_e_title:"ವಿಭಾಗ E — EV ಗೆ ಬದಲಾಗುವ ಆಸಕ್ತಿ", sec_f_title:"ವಿಭಾಗ F — ರೆಫರಲ್",
-            label_vehicle_type:"ವಾಹನದ ಪ್ರಕಾರ", vt_petrol:"ಪೆಟ್ರೋಲ್ ದ್ವಿಚಕ್ರ", vt_diesel:"ಡೀಸೆಲ್ ದ್ವಿಚಕ್ರ",
-            vt_electric:"ವಿದ್ಯುತ್ ದ್ವಿಚಕ್ರ", vt_other:"ಇತರ",
-            label_vehicle_model:"ವಾಹನ ಬ್ರ್ಯಾಂಡ್ & ಮಾದರಿ", label_fuel_method:"ನೀವು ಇಂಧನ/ಚಾರ್ಜ್ ಹೇಗೆ ಮಾಡುತ್ತೀರಿ?",
-            fm_petrol:"ಪೆಟ್ರೋಲ್ ಪಂಪ್", fm_home:"ಮನೆ ಚಾರ್ಜಿಂಗ್", fm_swap:"ಬ್ಯಾಟರಿ ಸ್ವ್ಯಾಪ್", fm_other:"ಇತರ",
-            label_fuel_expense:"ವಾರದ ಇಂಧನ ಖರ್ಚು (₹)", label_maint_expense:"ತಿಂಗಳ ನಿರ್ವಹಣೆ ಖರ್ಚು (₹)",
-            label_top_challenges:"ಮುಖ್ಯ ಸವಾಲುಗಳು (3 ವರೆಗೆ ಆಯ್ಕೆ ಮಾಡಿ)",
-            ch_fuel:"ಅಧಿಕ ಇಂಧನ ವೆಚ್ಚ", ch_breakdown:"ಪದೇ ಪದೇ ಹಾಳಾಗುವುದು", ch_charging:"ಹತ್ತಿರದಲ್ಲಿ ಚಾರ್ಜಿಂಗ್ ಸ್ಟೇಶನ್ ಇಲ್ಲ",
-            ch_range:"ಬ್ಯಾಟರಿ ರೇಂಜ್ ಆತಂಕ", ch_repair:"ದುರಸ್ತಿ ವೆಚ್ಚ", ch_refuel:"ದೀರ್ಘ ಇಂಧನ ತುಂಬಿಸುವ ಸಮಯ", ch_other:"ಇತರ",
-            label_ev_challenges:"EV ನಿರ್ದಿಷ್ಟ ಸವಾಲುಗಳು", label_petrol_challenges:"ಪೆಟ್ರೋಲ್ ನಿರ್ದಿಷ್ಟ ಸವಾಲುಗಳು",
-            evc_drain:"ಬ್ಯಾಟರಿ ತುಂಬಾ ಬೇಗ ಖಾಲಿ ಆಗುತ್ತದೆ", evc_swap:"ಸ್ವ್ಯಾಪಿಂಗ್ ಸ್ಟೇಶನ್ ತುಂಬಾ ದೂರ",
-            evc_charge:"ಮನೆ ಚಾರ್ಜಿಂಗ್‌ಗೆ ಹೆಚ್ಚು ಸಮಯ", evc_power:"ವಾಹನ ಸಾಕಷ್ಟು ಶಕ್ತಿಶಾಲಿ ಅಲ್ಲ", evc_service:"ಸರ್ವಿಸ್ ಸೆಂಟರ್ ಹತ್ತಿರ ಇಲ್ಲ",
-            pc_price:"ಇಂಧನ ಬೆಲೆ ತುಂಬಾ ಅಧಿಕ", pc_engine:"ಪದೇ ಪದೇ ಇಂಜಿನ್ ಸಮಸ್ಯೆ", pc_pollution:"ಮಾಲಿನ್ಯ ದಂಡದ ಅಪಾಯ", pc_service:"ಅಧಿಕ ಸರ್ವಿಸಿಂಗ್ ವೆಚ್ಚ",
-            label_accidental_ins:"ನಿಮಗೆ ಅಪಘಾತ ವಿಮೆ ಇದೆಯೇ?", label_health_ins:"ನಿಮಗೆ ಆರೋಗ್ಯ ವಿಮೆ ಇದೆಯೇ?",
-            label_paid_pocket:"ನೀವು ಎಂದಾದರೂ ಅಪಘಾತಕ್ಕಾಗಿ ಹಣ ಕಟ್ಟಿದ್ದೀರಾ?",
-            opt_yes:"ಹೌದು", opt_no:"ಇಲ್ಲ", opt_not_sure:"ಖಚಿತ ಇಲ್ಲ",
-            label_open_ev:"ನೀವು EV ಗೆ ಬದಲಾಗಲು ತಯಾರಿದ್ದೀರಾ?",
-            ev_yes:"ಹೌದು", ev_no:"ಇಲ್ಲ", ev_already:"ಈಗಾಗಲೇ EV ಮೇಲೆ ಇದ್ದೇನೆ", ev_more_info:"ಹೆಚ್ಚಿನ ಮಾಹಿತಿ ಬೇಕು",
-            label_switch_triggers:"ಯಾವ ಕಾರಣಕ್ಕೆ ಬದಲಾಗುತ್ತೀರಿ?",
-            st_rental:"ಕಡಿಮೆ ಬಾಡಿಗೆ ವೆಚ್ಚ", st_range:"ಉತ್ತಮ ಬ್ಯಾಟರಿ ರೇಂಜ್", st_swap:"ಹತ್ತಿರ ಸ್ವ್ಯಾಪ್ ಸ್ಟೇಶನ್",
-            st_income:"ಆದಾಯ ಖಾತ್ರಿ", st_subsidy:"ಉದ್ಯೋಗದಾತ ಸಬ್ಸಿಡಿ",
-            label_interests:"ನಿಮಗೆ ಆಸಕ್ತಿ ಇದೆಯೇ:",
-            int_ev:"EV ಬಾಡಿಗೆ ಆಫರ್", int_ins:"ವಿಮೆ ಕೋಟ್", int_retrofit:"ರೆಟ್ರೋಫಿಟ್ ಮಾಹಿತಿ", int_all:"ಮೇಲಿನ ಎಲ್ಲಾ", int_none:"ಯಾವುದೂ ಇಲ್ಲ",
-            label_referred_by:"ಯಾರಾದರೂ ರೈಡರ್ ನಿಮ್ಮನ್ನು ರೆಫರ್ ಮಾಡಿದರಾ?",
-            label_referral_code:"ನಿಮ್ಮನ್ನು ರೆಫರ್ ಮಾಡಿದ ವ್ಯಕ್ತಿಯ ಕೋಡ್",
-            ref_code_hint:"ಈ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ನಿಮ್ಮೊಂದಿಗೆ ಹಂಚಿದ ವ್ಯಕ್ತಿ",
-            whatsapp_hint:"ನೋಂದಣಿ ನಂತರ WhatsApp ದೃಢೀಕರಣ ಸಂದೇಶ ಬರುತ್ತದೆ.",
-            btn_next:"ಮುಂದೆ: ವಾಹನ ಮಾಹಿತಿ", btn_next_c:"ಮುಂದೆ: ಸವಾಲುಗಳು", btn_next_d:"ಮುಂದೆ: ವಿಮೆ",
-            btn_next_e:"ಮುಂದೆ: EV", btn_next_f:"ಮುಂದೆ: ರೆಫರಲ್", btn_back:"ಹಿಂದೆ",
-            btn_submit_reg:"ನೋಂದಣಿ ಪೂರ್ಣಗೊಳಿಸಿ", btn_goto_dashboard:"ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಹೋಗಿ", btn_view_score:"ಸ್ಕೋರ್ ನೋಡಿ",
-            success_title:"ನೋಂದಣಿ ಯಶಸ್ವಿ!", success_subtitle:"Road Warrior Pro ಗೆ ಸ್ವಾಗತ. ನೀವು 10 ಅಂಕಗಳಿಂದ ಪ್ರಾರಂಭಿಸುತ್ತೀರಿ!",
-            share_code_hint:"ಇತರ ರೈಡರ್‌ಗಳಿಗೆ ಈ ಕೋಡ್ ಹಂಚಿ ಮತ್ತು ಪ್ರತಿ ರೆಫರಲ್‌ಗೆ 5 ಅಂಕ ಗಳಿಸಿ",
-            wa_confirm_title:"WhatsApp ದೃಢೀಕರಣ",
-            btn_send_whatsapp:"ನಿಮಗೆ WhatsApp ಕಳುಹಿಸಿ",
-            phone_error:"ಫೋನ್ ಸಂಖ್ಯೆ ನಿಖರವಾಗಿ 10 ಅಂಕಿಗಳಿರಬೇಕು", phone_dup:"ಈಗಾಗಲೇ ನೋಂದಾಯಿಸಲಾಗಿದೆ!",
-            score_title:"ಸ್ಕೋರ್ ಮತ್ತು ಲೀಡರ್‌ಬೋರ್ಡ್", title_score_lookup:"ನಿಮ್ಮ ಸ್ಕೋರ್ ಪರಿಶೀಲಿಸಿ",
-            score_lookup_hint:"ಅಂಕ ಮತ್ತು ರೆಫರಲ್ ನೋಡಲು WhatsApp ಸಂಖ್ಯೆ ನಮೂದಿಸಿ.",
-            rank_heading:"ನಿಮ್ಮ ಜಾಗತಿಕ ಶ್ರೇಯಾಂಕ", rank_description:"ಸ್ನೇಹಿತರನ್ನು ರೆಫರ್ ಮಾಡಿ ಮೇಲೇರಿ.",
-            active_standing:"ಸ್ಥಾನ", title_leaderboard_table:"ಉನ್ನತ ರೈಡರ್ಸ್",
-            tbl_rank:"ಶ್ರೇಣಿ", tbl_name:"ಹೆಸರು", tbl_city:"ನಗರ", tbl_referrals:"ರೆಫರಲ್ಗಳು",
-            tbl_points:"ಅಂಕಗಳು", tbl_tags:"ಟ್ಯಾಗ್‌ಗಳು", tbl_deliveries:"ಡೆಲಿವರಿಗಳು", tbl_rating:"ರೇಟಿಂಗ್",
-            title_achievements:"ಸಾಧನೆ ಬ್ಯಾಡ್ಜ್‌ಗಳು",
-            vehicles_title:"ನನ್ನ ವಾಹನಗಳು", title_insurance_tracker:"ವಿಮೆ ಮತ್ತು ದಾಖಲೆಗಳು",
-            tbl_vehicle:"ವಾಹನ", tbl_provider:"ವಿಮೆ ನೀಡುವವರು", tbl_policy:"ಪಾಲಿಸಿ ಸಂಖ್ಯೆ", tbl_expiry:"ಮುಕ್ತಾಯ ದಿನ", tbl_status:"ಸ್ಥಿತಿ",
-            dashboard_title:"ರೈಡರ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", back:"ಹಿಂದೆ",
-            quick_actions:"ತ್ವರಿತ ಕ್ರಿಯೆಗಳು", act_add_vehicle:"ವಾಹನ ಸೇರಿಸಿ",
-            act_edit_profile:"ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ", act_leaderboard:"ಶ್ರೇಯಾಂಕ ನೋಡಿ",
-            chart_weekly_referrals:"ವಾರದ ರೆಫರಲ್ಗಳು", chart_weekly_points:"ಗಳಿಸಿದ ಅಂಕಗಳು",
-            chart_cities_referral:"ನಗರಗಳ ಪ್ರಕಾರ ರೆಫರಲ್ಗಳು",
-            profile_title:"ನನ್ನ ಪ್ರೊಫೈಲ್", title_profile_info:"ಮೂಲ ಮಾಹಿತಿ", btn_save:"ಬದಲಾವಣೆ ಉಳಿಸಿ",
-            title_payout_details:"ಬ್ಯಾಂಕ್ ಮತ್ತು ಪಾವತಿ", label_bank:"ಬ್ಯಾಂಕ್ ಹೆಸರು", label_account:"ಖಾತೆ ಸಂಖ್ಯೆ",
-            label_ifsc:"IFSC ಕೋಡ್", label_upi:"UPI ಐಡಿ", btn_update_payment:"ಬ್ಯಾಂಕ್ ವಿವರ ಅಪ್‌ಡೇಟ್ ಮಾಡಿ",
-            title_referral:"ರೆಫರಲ್ ಪ್ರೋಗ್ರಾಂ", label_ref_code:"ನಿಮ್ಮ ರೆಫರಲ್ ಕೋಡ್ ಮತ್ತು ಲಿಂಕ್",
-            btn_copy:"ನಕಲಿಸಿ", label_successful_referrals:"ರೆಫರಲ್ಗಳು",
-            label_milestone_progress:"ಮೈಲ್‌ಸ್ಟೋನ್ ಪ್ರಗತಿ",
-            m10:"10 ರೆಫರಲ್ → +100 ಅಂಕ", m25:"25 ರೆಫರಲ್ → +300 ಅಂಕ", m50:"50 ರೆಫರಲ್ → +500 ಅಂಕ + ಲಕಿ ಡ್ರಾ",
-            qr_scan_hint:"QR ಸ್ಕ್ಯಾನ್ ಮಾಡಿ ತಕ್ಷಣ ನೋಂದಣಿ ಮಾಡಿ", qr_offline_hint:"ಪೆಟ್ರೋಲ್ ಪಂಪ್‌ನಲ್ಲಿ ಹಂಚಿಕೊಳ್ಳಿ",
-            btn_share_whatsapp:"WhatsApp ನಲ್ಲಿ ಹಂಚಿ",
-            admin_title:"ಅಡ್ಮಿನ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", adm_riders:"ನೋಂದಾಯಿತ ಬಳಕೆದಾರರು", adm_ev_riders:"EV ರೈಡರ್ಸ್",
-            adm_hot_leads:"ಹಾಟ್ EV ಲೀಡ್ಸ್", adm_ins_leads:"ವಿಮೆ ಲೀಡ್ಸ್",
-            tab_all_riders:"ಎಲ್ಲ ರೈಡರ್ಸ್", tab_ev_leads:"ಹಾಟ್ EV ಲೀಡ್ಸ್", tab_ins_leads:"ವಿಮೆ ಲೀಡ್ಸ್",
-            tab_top_referrers:"ಉನ್ನತ ರೆಫರ್ರ್ಸ್", tab_city_stats:"ನಗರ ಅಂಕಿಅಂಶ",
-            title_riders_directory:"ರೈಡರ್ಸ್ ನೋಂದಣಿ",
-            tbl_vehicle_type:"ವಾಹನ", tbl_phone:"ಫೋನ್",
-            modal_new_delivery:"ಹೊಸ ಡೆಲಿವರಿ ನೋಂದಣಿ", label_pickup:"ಪಿಕ್ ಅಪ್ ವಿಳಾಸ", label_dropoff:"ಡ್ರಾಪ್ ವಿಳಾಸ",
-            label_delivery_type:"ಡೆಲಿವರಿ ವಿಧ", label_fare:"ಅಂದಾಜು ಗಳಿಕೆ (₹)",
-            btn_cancel:"ರದ್ದು", btn_create:"ಆದೇಶ ನೋಂದಿಸಿ",
-            modal_add_vehicle:"ಹೊಸ ವಾಹನ ಸೇರಿಸಿ", label_plate:"ಲೈಸೆನ್ಸ್ ಪ್ಲೇಟ್", label_color:"ಬಣ್ಣ",
-            label_make:"ತಯಾರಕ", label_model:"ಮಾದರಿ ಹೆಸರು", btn_add:"ವಾಹನ ಸೇರಿಸಿ",
-            btn_complete:"ಪೂರ್ಣಗೊಳಿಸಿ", btn_start:"ಪ್ರಾರಂಭಿಸಿ",
-            badge_pending:"ಬಾಕಿ ಇದೆ", badge_completed:"ಪೂರ್ಣ",
-            no_vehicles:"ವಾಹನ ಇಲ್ಲ. ವಾಹನ ಸೇರಿಸಿ ಕ್ಲಿಕ್ ಮಾಡಿ.",
-            status_active:"ಸಕ್ರಿಯ", status_maintenance:"ನಿರ್ವಹಣೆ", status_expiring_soon:"ಶೀಘ್ರ ಅವಧಿ ಮೀರುತ್ತದೆ",
-            status_unlocked:"ಅನ್ಲಾಕ್", status_locked:"ಲಾಕ್", status_offline:"ಆಫ್‌ಲೈನ್",
-            label_you:"ನೀವು", lbl_type:"ವಿಧ", lbl_color:"ಬಣ್ಣ", lbl_plate:"ಪ್ಲೇಟ್", lbl_registration:"ನೋಂದಣಿ",
-            no_documents:"ವಿಮೆ ದಾಖಲೆ ಇಲ್ಲ", no_riders_db:"ರೈಡರ್ಸ್ ಇಲ್ಲ",
-            ach_speed_demon_title:"ರೆಫರಲ್ ಸ್ಟಾರ್ಟರ್", ach_speed_demon_desc:"ಮೊದಲ ರೈಡರ್ ರೆಫರ್ ಮಾಡಿ",
-            ach_five_star_title:"ರೆಫರಲ್ ಮಾಸ್ಟರ್", ach_five_star_desc:"10 ರೈಡರ್ಸ್ ರೆಫರ್ ಮಾಡಿ",
-            ach_century_title:"ರೆಫರಲ್ ಚಾಂಪಿಯನ್", ach_century_desc:"25 ರೈಡರ್ಸ್ ರೆಫರ್ ಮಾಡಿ",
-            ach_expert_title:"ರೆಫರಲ್ ಕಿಂಗ್", ach_expert_desc:"50 ರೈಡರ್ಸ್ ರೆಫರ್ ಮಾಡಿ",
-            lang_auto_msg:"ಈ ನಗರಕ್ಕಾಗಿ ಭಾಷೆ ಕನ್ನಡಕ್ಕೆ ಬದಲಾಗಿದೆ",
-            label_phone:"ಫೋನ್ ಸಂಖ್ಯೆ",
-            radio_password:"ಪಾಸ್‌ವರ್ಡ್", radio_otp:"ಓಟಿಪಿ", forgot_password:"ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೀರಾ?"
-        }
-    };
-
-    // ===== APP STATE =====
-    let currentUser = null;
-    let allAdminRiders = [];
-    let isLoggedIn = false;
-    let activeCharts = {};
-    let currentRegStep = 1;
-    let registeredRiderId = null;
-    let adminChartsLoaded = false;
-
-    // ===== INIT =====
-    // Initialize
-    document.addEventListener('DOMContentLoaded', initApp);
-
-    // ==================== NEW FEATURES ====================
-    window.simulateWhatsAppLogin = async function() {
-        const phone = prompt("Enter your WhatsApp phone number to login:");
-        if (!phone) return; // User cancelled
-
-        showToast('Simulating WhatsApp Login...', 'info');
-        try {
-            const res = await fetch('/auth/login', { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify({ phone, loginMethod: 'whatsapp' }) 
-            });
-            const result = await res.json();
-            
-            if (result.success) {
-                localStorage.setItem('riderId', result.riderId);
-                localStorage.setItem('sessionId', result.sessionId);
-                fetchRiderProfile(result.riderId);
-                
-                showToast('Logged in successfully via WhatsApp!', 'success');
-                
-                const authSection = document.getElementById('authSection');
-                if (authSection) authSection.style.display = 'none';
-                const dashSection = document.getElementById('dashboardSection');
-                if (dashSection) dashSection.style.display = 'block';
-                
-            } else {
-                showToast(result.error || 'User not found. Please register first.', 'error');
-            }
-        } catch (e) {
-            showToast('Login error: ' + e.message, 'error');
-        }
-    };
-
-    window.requestPushNotifications = function() {
-        if ('Notification' in window) {
-            Notification.requestPermission().then(permission => {
-                if (permission === 'granted') {
-                    showToast('Push notifications enabled!', 'success');
-                    if ('serviceWorker' in navigator) {
-                        navigator.serviceWorker.ready.then(registration => {
-                            registration.showNotification('Welcome to Road Warrior!', {
-                                body: 'You will now receive updates on your ranking and rewards.',
-                                icon: '/og-image.png'
-                            });
-                        });
-                    }
-                } else {
-                    showToast('Push notifications denied.', 'warning');
-                }
-            });
-        } else {
-            showToast('Push notifications not supported in this browser.', 'warning');
-        }
-    };
-
-    window.showReferralQR = function() {
-        if (!currentUser) return;
-        document.getElementById('qrReferralCodeText').innerText = currentUser.referralCode;
-        const qrContainer = document.getElementById('qrcode');
-        qrContainer.innerHTML = '';
-        if (typeof QRCode !== 'undefined') {
-            new QRCode(qrContainer, {
-                text: "https://roadwarrior.pro/?ref=" + currentUser.referralCode,
-                width: 200,
-                height: 200,
-                colorDark: "#000000",
-                colorLight: "#ffffff"
-            });
-        } else {
-            qrContainer.innerText = "Please include qrcode.js in your index.html head to use this feature.";
-        }
-        openModal('qrModal');
-    };
-
-    window.shareReferralWhatsApp = async function() {
-        if (!currentUser) return;
-        
-        const qrContainer = document.getElementById('qrcode');
-        const canvas = qrContainer.querySelector('canvas');
-        const img = qrContainer.querySelector('img');
-        
-        let dataUrl = '';
-        if (canvas) {
-            // Draw onto a new canvas with a white background to avoid transparency issues (black bg in some apps)
-            const newCanvas = document.createElement('canvas');
-            // Add padding so it looks like a nice square card
-            const padding = 20;
-            newCanvas.width = canvas.width + (padding * 2);
-            newCanvas.height = canvas.height + (padding * 2);
-            const ctx = newCanvas.getContext('2d');
-            
-            // Fill white background
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
-            
-            // Draw original QR code centered
-            ctx.drawImage(canvas, padding, padding);
-            
-            // Convert to JPEG to drop any potential alpha channel issues entirely
-            dataUrl = newCanvas.toDataURL('image/jpeg', 1.0);
-        } else if (img && img.src) {
-            dataUrl = img.src;
-        }
-        
-        if (!dataUrl) {
-            showToast('QR Code not ready yet.', 'error');
-            return;
-        }
-
-        try {
-            const arr = dataUrl.split(',');
-            const mime = arr[0].match(/:(.*?);/)[1];
-            const bstr = atob(arr[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while(n--) {
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            const blob = new Blob([u8arr], {type: mime});
-            const file = new File([blob], 'referral-qr.jpg', { type: 'image/jpeg' });
-
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                // Share ONLY the file, without text or url, as requested by user
-                await navigator.share({
-                    files: [file]
-                });
-            } else {
-                // Fallback if sharing files is not supported
-                const a = document.createElement('a');
-                a.href = dataUrl;
-                a.download = 'roadwarrior-qr.jpg';
-                a.click();
-                showToast('Image downloaded! You can now send it on WhatsApp.', 'info');
-            }
-        } catch (err) {
-            console.error('Error sharing:', err);
-            if (err.name !== 'AbortError') {
-                showToast('Sharing failed, downloading image instead...', 'info');
-                const a = document.createElement('a');
-                a.href = dataUrl;
-                a.download = 'roadwarrior-qr.jpg';
-                a.click();
-            }
-        }
-    };
-
-    window.completeMission = function(btn, points) {
-        if (!currentUser) return;
-        currentUser.totalPoints += points;
-        updateUserInStorage(currentUser);
-        btn.innerText = 'Claimed!';
-        btn.disabled = true;
-        btn.style.background = 'var(--success-color)';
-        btn.style.borderColor = 'var(--success-color)';
-        btn.style.color = 'white';
-        const balElem = document.getElementById('rewardsPointsBalance');
-        if(balElem) balElem.innerText = currentUser.totalPoints;
-        showToast(`Mission complete! You earned ${points} points.`, 'success');
-        if (typeof renderLeaderboard === 'function') renderLeaderboard();
-        if (typeof updateUIForUser === 'function') updateUIForUser();
-    };
-
-    window.redeemReward = function(cost, item) {
-        if (!currentUser) return;
-        if (currentUser.totalPoints < cost) {
-            showToast('Not enough points to redeem this item.', 'warning');
-            return;
-        }
-        currentUser.totalPoints -= cost;
-        updateUserInStorage(currentUser);
-        const balElem = document.getElementById('rewardsPointsBalance');
-        if(balElem) balElem.innerText = currentUser.totalPoints;
-        showToast(`Successfully redeemed: ${item}!`, 'success');
-        if (typeof renderLeaderboard === 'function') renderLeaderboard();
-        if (typeof updateUIForUser === 'function') updateUIForUser();
-    };
-
-    let evMapInitialized = false;
-    window.initEVMap = function() {
-        if (evMapInitialized) return;
-        if (typeof L === 'undefined') {
-            setTimeout(window.initEVMap, 500);
-            return;
-        }
-        evMapInitialized = true;
-        
-        const map = L.map('evMap').setView([12.9716, 77.5946], 12);
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
-        
-        const stations = [
-            { lat: 12.9716, lng: 77.5946, name: "City Center Fast Charge" },
-            { lat: 12.9616, lng: 77.5846, name: "South Block Swap Station" },
-            { lat: 12.9816, lng: 77.6046, name: "Indiranagar EV Hub" },
-            { lat: 12.9516, lng: 77.6146, name: "Koramangala Supercharger" }
-        ];
-        
-        stations.forEach(station => {
-            L.marker([station.lat, station.lng]).addTo(map)
-                .bindPopup(`<b>${station.name}</b><br>Available slots: ${Math.floor(Math.random() * 5) + 1}`);
-        });
-        
-        // Fix map rendering issue when inside modal
-        setTimeout(() => map.invalidateSize(), 200);
-    };
-
-    function updateUserInStorage(user) {
-        let riders = JSON.parse(localStorage.getItem('roadwarrior_riders') || '[]');
-        const idx = riders.findIndex(r => r.id === user.id);
-        if (idx !== -1) {
-            riders[idx] = user;
-            localStorage.setItem('roadwarrior_riders', JSON.stringify(riders));
-        }
-        localStorage.setItem('roadwarrior_current_user', JSON.stringify(user));
-    }
-
-    function initApp() {
-        // Initialize tracking and cookie consent immediately
-        initVisitorTracking();
-        initConsentBanner();
-        
-        // Check for referral code — from URL or previously stored in localStorage
-        let refCode = new URLSearchParams(window.location.search).get('ref');
-        if (!refCode) {
-            try { refCode = localStorage.getItem('pendingReferralCode'); } catch (e) {}
-        }
-        if (refCode) {
-            try { localStorage.setItem('pendingReferralCode', refCode); } catch (e) {}
-            // Pre-fill hidden referral code input (used on submit)
-            const el = document.getElementById('regReferralCode');
-            if (el) el.value = refCode.toUpperCase();
-            // Hide the "Were you referred?" question — already auto-applied
-            const questionBlock = document.getElementById('referralQuestionBlock');
-            if (questionBlock) questionBlock.style.display = 'none';
-            // Show the applied badge
-            const badge = document.getElementById('referralAppliedBadge');
-            const badgeCode = document.getElementById('appliedReferralCodeText');
-            if (badge) { badge.style.display = 'flex'; }
-            if (badgeCode) badgeCode.textContent = refCode.toUpperCase();
-            
-            // Automatically switch to registration view for referred users
-            const login = document.getElementById('loginCard');
-            const reg = document.getElementById('registerCard');
-            if (login && reg) {
-                login.style.display = 'none';
-                reg.style.display = 'block';
-            }
-        }
-
-        let savedLang = 'en';
-        try { savedLang = localStorage.getItem('selectedLang') || 'en'; } catch (e) {}
-        document.getElementById('langSelector').value = savedLang;
-        changeLanguage(savedLang);
-
-        loadSession();
-        // Global event listener for Contact tracking (WhatsApp & Phone)
-        document.addEventListener('click', function(e) {
-            const link = e.target.closest('a');
-            if (!link) return;
-            
-            const href = link.getAttribute('href') || '';
-            if (href.startsWith('tel:')) {
-                trackEvent('generate_lead', { type: 'phone_call' });
-            } else if (href.includes('wa.me/')) {
-                trackEvent('generate_lead', { type: 'whatsapp_chat' });
-            }
-        });
-
-        window.addEventListener('popstate', handlePopState);
-        updateAuthNavbarState();
-        routeSPA(window.location.pathname);
-    }
-
-    // ===== LANGUAGE =====
-    window.updateFormLangBtns = function(lang) {
-        ['en', 'hi', 'kn'].forEach(l => {
-            const btn = document.getElementById('formLang' + l.charAt(0).toUpperCase() + l.slice(1));
-            if (btn) {
-                if (l === lang) {
-                    btn.style.background = 'var(--primary-color)';
-                    btn.style.borderColor = 'var(--primary-color)';
-                    btn.style.color = '#fff';
-                } else {
-                    btn.style.background = 'transparent';
-                    btn.style.borderColor = 'var(--card-border)';
-                    btn.style.color = 'var(--text-secondary)';
-                }
-            }
-        });
-    };
     function changeLanguage(lang) {
         localStorage.setItem('selectedLang', lang);
+        
+        const imgMap = { 'en': 'English', 'hi': 'Hindi', 'kn': 'Kannada', 'ta': 'Tamil', 'te': 'Telugu', 'mr': 'Marathi', 'gu': 'Gujarati', 'bn': 'Bengali' };
+        const imgEl = document.getElementById('welcomeImage');
+        if (imgEl && imgMap[lang]) {
+            imgEl.style.opacity = '0';
+            setTimeout(() => { imgEl.src = '/og-image-' + imgMap[lang] + '.png'; imgEl.style.opacity = '1'; }, 300);
+        }
         const selector = document.getElementById('langSelector');
         if (selector) selector.value = lang;
         
@@ -1367,8 +771,8 @@ async function openDataDrilldown(type) {
         const tryTriggerGoogleTranslate = () => {
             const googleSelect = document.querySelector('select.goog-te-combo');
             if (googleSelect) {
-                googleSelect.value = lang;
-                googleSelect.dispatchEvent(new Event('change'));
+                googleSelect.value = (lang === 'en' ? '' : lang);
+                googleSelect.dispatchEvent(new Event('change', { bubbles: true }));
             } else if (retries < 10) {
                 retries++;
                 setTimeout(tryTriggerGoogleTranslate, 300);
@@ -1376,21 +780,6 @@ async function openDataDrilldown(type) {
         };
         tryTriggerGoogleTranslate();
 
-        // 2. Fallback: Also run the static translation for data-i18n elements
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
-                const icon = el.querySelector('i');
-                if (icon) {
-                    const iconClone = icon.cloneNode(true);
-                    el.innerHTML = '';
-                    el.appendChild(iconClone);
-                    el.appendChild(document.createTextNode(' ' + TRANSLATIONS[lang][key]));
-                } else {
-                    el.textContent = TRANSLATIONS[lang][key];
-                }
-            }
-        });
         updateAuthNavbarState();
         if (isLoggedIn) refreshActiveView();
     }
@@ -1629,21 +1018,20 @@ async function openDataDrilldown(type) {
 
     function updateAuthNavbarState() {
         const btn = document.getElementById('loginLogoutBtn');
-        const lang = localStorage.getItem('selectedLang') || 'en';
         
         const navScore = document.getElementById('navScore');
         const navDashboard = document.getElementById('navDashboard');
         const navProfile = document.getElementById('navProfile');
 
         if (isLoggedIn) {
-            btn.innerHTML = `<i class="fas fa-sign-out-alt"></i> <span>${TRANSLATIONS[lang].logout}</span>`;
+            btn.innerHTML = `<i class="fas fa-sign-out-alt"></i> <span>Logout</span>`;
             btn.classList.replace('btn-primary', 'btn-secondary');
             
             if (navScore) navScore.parentElement.style.display = '';
             if (navDashboard) navDashboard.parentElement.style.display = '';
             if (navProfile) navProfile.parentElement.style.display = '';
         } else {
-            btn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>${TRANSLATIONS[lang].login}</span>`;
+            btn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`;
             btn.classList.replace('btn-secondary', 'btn-primary');
             
             if (navScore) navScore.parentElement.style.display = 'none';
@@ -1730,11 +1118,11 @@ async function openDataDrilldown(type) {
             }
         };
 
-        for (let step = 1; step <= 6; step++) {
+        for (let step = 1; step <= totalSteps; step++) {
             const sec = document.getElementById('regSection' + step);
             if (!sec) continue;
 
-            if (step === 1) {
+            if (step === 2) {
                 // Check required fields for Profile section
                 const reqs = ['regFullName', 'regPhone', 'regPassword', 'regState', 'regCity', 'regPincode', 'regPlatform', 'regExp'];
                 reqs.forEach(id => {
@@ -1775,7 +1163,7 @@ async function openDataDrilldown(type) {
                     if (el.style.display !== 'none' && !el.value.trim()) setInvalid(el);
                 });
             }
-            else if (step === 2) {
+            else if (step === 7) {
                 const vt = sec.querySelector('input[name="vehicleType"]:checked');
                 if (!vt) {
                     const group = document.getElementById('vehicleTypeGroup') || sec.querySelector('input[name="vehicleType"]').closest('.radio-group');
@@ -1821,7 +1209,7 @@ async function openDataDrilldown(type) {
                 const maintExp = document.getElementById('regMaintExp');
                 if (maintExp && maintExp.parentElement.style.display !== 'none' && !maintExp.value.trim()) setInvalid(maintExp);
             }
-            else if (step === 3) {
+            else if (step === 7) {
                 // Check if visible checkbox groups have at least one selection
                 ['generalChallengesSection', 'evChallengesSection', 'petrolChallengesSection'].forEach(sectionId => {
                     const section = document.getElementById(sectionId);
@@ -1848,7 +1236,7 @@ async function openDataDrilldown(type) {
                     if (el.style.display !== 'none' && !el.value.trim()) setInvalid(el);
                 });
             }
-            else if (step === 4) {
+            else if (step === 7) {
                 ['hasAccidental', 'hasHealth', 'paidPocket'].forEach(name => {
                     if (!sec.querySelector(`input[name="${name}"]:checked`)) {
                         const radios = sec.querySelectorAll(`input[name="${name}"]`);
@@ -1867,7 +1255,7 @@ async function openDataDrilldown(type) {
                     }
                 });
             }
-            else if (step === 5) {
+            else if (step === 7) {
                 const openEVRadio = sec.querySelector(`input[name="openEV"]:checked`);
                 if (!openEVRadio) {
                     const radios = sec.querySelectorAll(`input[name="openEV"]`);
@@ -1922,7 +1310,7 @@ async function openDataDrilldown(type) {
                     if (el.style.display !== 'none' && !el.value.trim()) setInvalid(el);
                 });
             }
-            else if (step === 6) {
+            else if (step === 7) {
                 if (document.getElementById('referralQuestionBlock').style.display !== 'none') {
                     if (!sec.querySelector(`input[name="referredBy"]:checked`)) {
                         const radios = sec.querySelectorAll(`input[name="referredBy"]`);
@@ -2112,7 +1500,7 @@ async function openDataDrilldown(type) {
         document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
         document.getElementById(`regSection${step}`).classList.add('active');
 
-        for (let i = 1; i <= 6; i++) {
+        for (let i = 1; i <= totalSteps; i++) {
             const ind = document.getElementById(`step-indicator-${i}`);
             if (!ind) continue;
             ind.classList.remove('active', 'done');
@@ -2547,7 +1935,6 @@ async function openDataDrilldown(type) {
         const btn = document.getElementById('submitRegBtn');
         btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
 
-        const lang = localStorage.getItem('selectedLang') || 'en';
         // Always pick up the referral code — either from hidden input (auto-filled via link)
         // or from the manual "Yes" radio selection, or from localStorage
         const hiddenCodeEl = document.getElementById('regReferralCode');
@@ -2704,7 +2091,28 @@ async function openDataDrilldown(type) {
 
     function getWhatsAppMessageText(fullName, code) {
         const baseUrl = window.location.origin + window.location.pathname;
-        return `⚡ I joined the Road Warrior EV Challenge!\n🏆 Answer questions & WIN a brand new EV!\n\n🎁 Use my referral link:\n${baseUrl}?ref=${code}\n\n📸 Follow: @RoadWarriorIndia`;
+        const refLink = baseUrl + '?ref=' + code;
+        const lang = localStorage.getItem('selectedLang') || 'en';
+        
+        let msg = '';
+        if (lang === 'hi') {
+            msg = `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${code}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+        } else if (lang === 'kn') {
+            msg = `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${code}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+        } else if (lang === 'ta') {
+            msg = `Vanakkam ${fullName}! Ungal pathivu mudinthathu. Ungal referral code: ${code}.\n\nIntha link-ai matravargalukku anuppungal, avargal login/register seiyum pothu neengal points peruveergal: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+        } else if (lang === 'te') {
+            msg = `Namaskaram ${fullName}! Mee registration poorhtayyindi. Mee referral code: ${code}.\n\nEe link nu itarulaku pampandi, varu login/register ayinapudu meeru points pondutaru: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+        } else if (lang === 'mr') {
+            msg = `Namaskar ${fullName}! Tumchi nondani zali aahe. Tumcha referral code: ${code}.\n\nHi link itaranna pathwa, ani te jevha login/register kartil tevha tumhala points miltil: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+        } else if (lang === 'gu') {
+            msg = `Namaste ${fullName}! Tamaru registration thai gayu chhe. Tamaro referral code chhe: ${code}.\n\nAa link anya loko ne moklo, ane jyare teo login/register karshe tyare tamne points malshe: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+        } else if (lang === 'bn') {
+            msg = `Nomoskar ${fullName}! Apnar registration somponno hoyeche. Apnar referral code holo: ${code}.\n\nEi link ti onnoder pathan, ebong tara jokhon login/register korbe tokhon apni points paben: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+        } else {
+            msg = `Welcome ${fullName}! You are now registered. Your referral code is ${code}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+        }
+        return msg;
     }
 
     // ===== SCORE LOOKUP (public) =====
@@ -2781,7 +2189,6 @@ async function openDataDrilldown(type) {
 
     function renderLeaderboardTable(riders) {
         const tbody = document.getElementById('leaderboardTableBody');
-        const lang = localStorage.getItem('selectedLang') || 'en';
         let userRank = '--';
         if (currentUser) {
             const idx = riders.findIndex(r => r.id === currentUser.id);
@@ -2796,7 +2203,7 @@ async function openDataDrilldown(type) {
             const isSelf = currentUser && r.id === currentUser.id;
             const rowStyle = isSelf ? `style="background:rgba(59, 130, 246, 0.03); font-weight:bold; border-left:3px solid var(--primary-color);"` : '';
         const tags = (r.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
-            return `<tr ${rowStyle}><td>${medal}</td><td>${r.fullName}${isSelf ? ` <strong>(${TRANSLATIONS[lang].label_you})</strong>` : ''}</td><td>${r.city}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td>${tags || '—'}</td></tr>`;
+            return `<tr ${rowStyle}><td>${medal}</td><td>${r.fullName}${isSelf ? ` <strong>(You)</strong>` : ''}</td><td>${r.city}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td>${tags || '—'}</td></tr>`;
         }).join('');
         
         // Also update the Top Riders slider on the home page if it's there
@@ -2864,22 +2271,21 @@ async function openDataDrilldown(type) {
     function renderAchievementsGrid() {
         const grid = document.getElementById('achievementsGrid');
         if (!grid) return;
-        const lang = localStorage.getItem('selectedLang') || 'en';
         const pts = currentUser ? (currentUser.totalPoints || 0) : 0;
         const del = currentUser ? (currentUser.totalDeliveries || 0) : 0;
         const refs = currentUser ? (currentUser.referrals || 0) : 0;
         const achievements = [
-            { title: TRANSLATIONS[lang].ach_speed_demon_title, icon: '🚀', desc: TRANSLATIONS[lang].ach_speed_demon_desc, unlocked: refs >= 1 },
-            { title: TRANSLATIONS[lang].ach_five_star_title, icon: '⭐', desc: TRANSLATIONS[lang].ach_five_star_desc, unlocked: refs >= 10 },
-            { title: TRANSLATIONS[lang].ach_century_title, icon: '💯', desc: TRANSLATIONS[lang].ach_century_desc, unlocked: refs >= 25 },
-            { title: TRANSLATIONS[lang].ach_expert_title, icon: '🌟', desc: TRANSLATIONS[lang].ach_expert_desc, unlocked: refs >= 50 }
+            { title: 'Referral Starter', icon: '🚀', desc: 'Refer your first rider', unlocked: refs >= 1 },
+            { title: 'Referral Master', icon: '⭐', desc: 'Refer 10 riders', unlocked: refs >= 10 },
+            { title: 'Referral Champion', icon: '💯', desc: 'Refer 25 riders', unlocked: refs >= 25 },
+            { title: 'Referral King', icon: '🌟', desc: 'Refer 50 riders', unlocked: refs >= 50 }
         ];
         grid.innerHTML = achievements.map(a => `
             <div style="text-align:center; padding:1.5rem 1rem; border:1px solid var(--card-border); border-radius:var(--border-radius-md); background:rgba(255,255,255,0.01); ${a.unlocked ? '' : 'filter:grayscale(0.8); opacity:0.5;'}">
                 <div style="font-size:2.5rem; margin-bottom:0.5rem;">${a.icon}</div>
                 <h4 style="font-family:'Outfit'; font-size:0.95rem; margin-bottom:0.25rem;">${a.title}</h4>
                 <p style="font-size:0.75rem; color:var(--text-secondary);">${a.desc}</p>
-                <span class="badge ${a.unlocked ? 'badge-success' : 'badge-warning'}" style="font-size:0.65rem;">${a.unlocked ? TRANSLATIONS[lang].status_unlocked : TRANSLATIONS[lang].status_locked}</span>
+                <span class="badge ${a.unlocked ? 'badge-success' : 'badge-warning'}" style="font-size:0.65rem;">${a.unlocked ? 'Unlocked' : 'Locked'}</span>
             </div>`).join('');
     }
 
@@ -2912,7 +2318,6 @@ async function openDataDrilldown(type) {
 
     function loadDashboardCharts() {
         Object.keys(activeCharts).forEach(k => { if (activeCharts[k]) { activeCharts[k].destroy(); delete activeCharts[k]; } });
-        const lang = localStorage.getItem('selectedLang') || 'en';
 
         fetch(`/dashboard/analytics/${currentUser.id}`).then(r => r.json()).then(result => {
             if (result.success) {
@@ -2927,7 +2332,7 @@ async function openDataDrilldown(type) {
                             data: {
                                 labels: data.weeklyData.map(d => d.day),
                                 datasets: [{
-                                    label: TRANSLATIONS[lang].chart_weekly_referrals || 'Weekly Referrals',
+                                    label: 'Weekly Referrals',
                                     data: data.weeklyData.map(d => d.referrals),
                                     backgroundColor: 'rgba(59,130,246,0.65)',
                                     borderColor: 'rgba(59,130,246,1)',
@@ -2946,7 +2351,7 @@ async function openDataDrilldown(type) {
                         data: {
                             labels: data.weeklyData.map(d => d.day),
                             datasets: [{
-                                label: TRANSLATIONS[lang].chart_weekly_points || 'Points Earned',
+                                label: 'Points Earned',
                                 data: data.weeklyData.map(d => d.points),
                                 borderColor: 'rgba(16,185,129,1)',
                                 backgroundColor: 'rgba(16,185,129,0.08)',
@@ -2976,7 +2381,7 @@ async function openDataDrilldown(type) {
                         data: {
                             labels: result.data.map(c => c.name),
                             datasets: [{
-                                label: TRANSLATIONS[lang].chart_cities_referral || 'Referrals',
+                                label: 'Referrals',
                                 data: result.data.map(c => c.referrals),
                                 backgroundColor: result.data.map((_, i) => ['rgba(59,130,246,0.65)', 'rgba(16,185,129,0.65)', 'rgba(251,191,36,0.65)', 'rgba(239,68,68,0.65)', 'rgba(168,85,247,0.65)', 'rgba(236,72,153,0.65)'][i % 6]),
                                 borderColor: result.data.map((_, i) => ['rgba(59,130,246,1)', 'rgba(16,185,129,1)', 'rgba(251,191,36,1)', 'rgba(239,68,68,1)', 'rgba(168,85,247,1)', 'rgba(236,72,153,1)'][i % 6]),
@@ -3061,25 +2466,23 @@ async function openDataDrilldown(type) {
 
     function renderVehiclesGrid(vehicles) {
         const grid = document.getElementById('vehiclesGrid');
-        const lang = localStorage.getItem('selectedLang') || 'en';
-        if (!vehicles.length) { grid.innerHTML = `<div class="card" style="grid-column:1/-1; text-align:center; padding:3rem;"><p class="text-muted">${TRANSLATIONS[lang].no_vehicles}</p></div>`; return; }
+        if (!vehicles.length) { grid.innerHTML = `<div class="card" style="grid-column:1/-1; text-align:center; padding:3rem;"><p class="text-muted">No vehicles added yet. Click Add Vehicle.</p></div>`; return; }
         grid.innerHTML = vehicles.map(v => {
             const sc = v.status === 'active' ? 'badge-success' : 'badge-warning';
-            const sl = v.status === 'active' ? TRANSLATIONS[lang].status_active : TRANSLATIONS[lang].status_maintenance;
-            return `<div class="card"><div class="card-header"><h3 class="card-title"><i class="fas fa-motorcycle text-primary-color"></i> ${v.make} ${v.model}</h3><span class="badge ${sc}">${sl}</span></div><div class="card-body"><div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.875rem;"><div><strong>${TRANSLATIONS[lang].lbl_type}:</strong> ${v.vehicleType}</div><div><strong>${TRANSLATIONS[lang].lbl_color}:</strong> ${v.color}</div><div style="grid-column:1/-1;"><strong>${TRANSLATIONS[lang].lbl_plate}:</strong> ${v.licensePlate}</div><div style="grid-column:1/-1;"><strong>${TRANSLATIONS[lang].lbl_registration}:</strong> ${new Date(v.registrationDate).toLocaleDateString()}</div></div></div></div>`;
+            const sl = v.status === 'active' ? 'Active' : 'Maintenance';
+            return `<div class="card"><div class="card-header"><h3 class="card-title"><i class="fas fa-motorcycle text-primary-color"></i> ${v.make} ${v.model}</h3><span class="badge ${sc}">${sl}</span></div><div class="card-body"><div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.875rem;"><div><strong>Type:</strong> ${v.vehicleType}</div><div><strong>Color:</strong> ${v.color}</div><div style="grid-column:1/-1;"><strong>Plate:</strong> ${v.licensePlate}</div><div style="grid-column:1/-1;"><strong>Registration:</strong> ${new Date(v.registrationDate).toLocaleDateString()}</div></div></div></div>`;
         }).join('');
     }
 
     function renderInsuranceTable(vehicles) {
         const tbody = document.getElementById('insuranceTableBody');
-        const lang = localStorage.getItem('selectedLang') || 'en';
-        if (!vehicles.length) { tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">${TRANSLATIONS[lang].no_documents}</td></tr>`; return; }
+        if (!vehicles.length) { tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">No insurance documents</td></tr>`; return; }
         tbody.innerHTML = vehicles.map(v => {
             const ins = v.insurance || {};
             const expDate = ins.expiryDate ? new Date(ins.expiryDate) : new Date(Date.now() + 180 * 24 * 60 * 60 * 1000);
             const expiring = (expDate - Date.now()) < (30 * 24 * 60 * 60 * 1000);
             const sc = expiring ? 'badge-danger' : 'badge-success';
-            const sl = expiring ? TRANSLATIONS[lang].status_expiring_soon : TRANSLATIONS[lang].status_active;
+            const sl = expiring ? 'Expiring Soon' : 'Active';
             return `<tr><td><strong>${v.make} ${v.model}</strong></td><td>${ins.provider || 'ICICI Lombard'}</td><td>${ins.policyNumber || `POL-2026-${v.id.substring(0,5).toUpperCase()}`}</td><td>${expDate.toLocaleDateString()}</td><td><span class="badge ${sc}">${sl}</span></td></tr>`;
         }).join('');
     }
@@ -3609,9 +3012,8 @@ async function openDataDrilldown(type) {
 
     function renderAdminRidersTable(riders) {
         const tbody = document.getElementById('adminRidersTableBody');
-        const lang = localStorage.getItem('selectedLang') || 'en';
         if (!tbody) return;
-        if (!riders.length) { tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">${TRANSLATIONS[lang].no_riders_db}</td></tr>`; return; }
+        if (!riders.length) { tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">No riders in DB</td></tr>`; return; }
         tbody.innerHTML = riders.map(r => {
             const tags = (r.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
             const locationLink = (r.latitude && r.longitude) ? `<a href="https://www.google.com/maps?q=${r.latitude},${r.longitude}" target="_blank" style="color: #10b981; font-weight: 600; text-decoration: none;"><i class="fas fa-map-marker-alt"></i> Map (${Math.round(r.location_accuracy || 0)}m)</a>` : '<span class="text-muted">No GPS</span>';
@@ -4095,7 +3497,7 @@ function downloadLeadsCSV() {
 
 /* ==================== MULTI-STEP FORM LOGIC ==================== */
 let currentStep = 1;
-const totalSteps = 6;
+const totalSteps = 7;
 
 function showStep(step) {
     document.querySelectorAll('.form-section').forEach(el => {
@@ -4111,7 +3513,7 @@ function showStep(step) {
     
     const banner = document.getElementById('promoBannerContainer');
     if (banner) {
-        banner.style.display = (step === 1) ? 'block' : 'none';
+        banner.style.display = (step === 1 || step === 2) ? 'block' : 'none';
     }
     const langSwitcher = document.getElementById('languageSwitcherContainer');
     if (langSwitcher) {
@@ -4140,7 +3542,7 @@ function nextStep() {
     let isValid = true;
     
     // Prevent advancing if phone is already registered on Step 1
-    if (currentStep === 1) {
+    if (currentStep === 2) {
         const dupPhoneMsg = document.getElementById('dupPhoneMsg');
         if (dupPhoneMsg && !dupPhoneMsg.classList.contains('hidden')) {
             showToast('This phone number is already registered. Please login.', 'error');

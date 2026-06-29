@@ -327,11 +327,21 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
 
     let whatsappMessage = '';
     if (language === 'hi') {
-      whatsappMessage = `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${referralCode}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nRoad Warrior EV 🏍️`;
+      whatsappMessage = `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${referralCode}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nRoad Warrior EV 🏆`;
     } else if (language === 'kn') {
-      whatsappMessage = `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${referralCode}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nRoad Warrior EV 🏍️`;
+      whatsappMessage = `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${referralCode}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nRoad Warrior EV 🏆`;
+    } else if (language === 'ta') {
+      whatsappMessage = `Vanakkam ${fullName}! Ungal pathivu mudinthathu. Ungal referral code: ${referralCode}.\n\nIntha link-ai matravargalukku anuppungal, avargal login/register seiyum pothu neengal points peruveergal: ${refLink}\n\nRoad Warrior EV 🏆`;
+    } else if (language === 'te') {
+      whatsappMessage = `Namaskaram ${fullName}! Mee registration poorhtayyindi. Mee referral code: ${referralCode}.\n\nEe link nu itarulaku pampandi, varu login/register ayinapudu meeru points pondutaru: ${refLink}\n\nRoad Warrior EV 🏆`;
+    } else if (language === 'mr') {
+      whatsappMessage = `Namaskar ${fullName}! Tumchi nondani zali aahe. Tumcha referral code: ${referralCode}.\n\nHi link itaranna pathwa, ani te jevha login/register kartil tevha tumhala points miltil: ${refLink}\n\nRoad Warrior EV 🏆`;
+    } else if (language === 'gu') {
+      whatsappMessage = `Namaste ${fullName}! Tamaru registration thai gayu chhe. Tamaro referral code chhe: ${referralCode}.\n\nAa link anya loko ne moklo, ane jyare teo login/register karshe tyare tamne points malshe: ${refLink}\n\nRoad Warrior EV 🏆`;
+    } else if (language === 'bn') {
+      whatsappMessage = `Nomoskar ${fullName}! Apnar registration somponno hoyeche. Apnar referral code holo: ${referralCode}.\n\nEi link ti onnoder pathan, ebong tara jokhon login/register korbe tokhon apni points paben: ${refLink}\n\nRoad Warrior EV 🏆`;
     } else {
-      whatsappMessage = `Welcome ${fullName}! You are now registered. Your referral code is ${referralCode}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV 🏍️`;
+      whatsappMessage = `Welcome ${fullName}! You are now registered. Your referral code is ${referralCode}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV 🏆`;
     }
 
     if (latitude && longitude) {

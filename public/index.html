@@ -464,8 +464,13 @@
         <div class="navbar-end">
             <select class="lang-select" onchange="changeLanguage(this.value)" id="langSelector">
                 <option value="en">🇺🇸 English</option>
-                <option value="hi">🇮🇳 हिंदी</option>
-                <option value="kn">🇮🇳 ಕನ್ನಡ</option>
+                <option value="hi">🇮🇳 हिंदी (Hindi)</option>
+                <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
+                <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+                <option value="te">🇮🇳 తెలుగు (Telugu)</option>
+                <option value="mr">🇮🇳 मराठी (Marathi)</option>
+                <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
+                <option value="bn">🇮🇳 বাংলা (Bengali)</option>
             </select>
             <select class="lang-select" id="themeSelector" onchange="setTheme(this.value)" style="margin-right: 0.5rem; background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff); -webkit-background-clip: text; color: transparent; font-weight: bold;">
                 <option value="default" style="background-color: #ffffff; color: #000000;" selected>🟢 Default</option>
@@ -622,33 +627,10 @@
                             <h2 class="card-title" data-i18n="register_title"><i class="fas fa-user-plus"></i> Rider Registration</h2>
                         </div>
                         
-                        <!-- Refer Earn Win Promo Banner -->
-                        <div id="promoBannerContainer" style="padding: 0.75rem 1rem 0; margin-bottom: 1.25rem;">
-                            <img src="/img/refer-earn-win-banner.jpg"
-                                 alt="Refer Earn Win"
-                                 style="width:100%; border-radius:12px; display:block; box-shadow:0 4px 20px rgba(0,0,0,0.18); object-fit:cover;"
-                                 loading="lazy">
-                        </div>
+                        
 
                         <!-- Language Switcher below Banner -->
-                        <div id="languageSwitcherContainer" style="display:flex; align-items:center; justify-content:center; gap:0.75rem; margin-top:1rem; margin-bottom:1.5rem;">
-                            <i class="fas fa-globe" style="color:var(--text-secondary); font-size:1rem;"></i>
-                            <span style="font-size:0.8rem; color:var(--text-secondary); font-weight:500;">Language:</span>
-                            <div style="display:flex; gap:0.4rem; flex-wrap:wrap; justify-content:center;">
-                                <button type="button" onclick="changeLanguage('en'); updateFormLangBtns('en')" id="formLangEn"
-                                    style="padding:0.3rem 0.75rem; border-radius:20px; border:1.5px solid var(--primary-color); background:var(--primary-color); color:#fff; font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s;">
-                                    🇺🇸 English
-                                </button>
-                                <button type="button" onclick="changeLanguage('hi'); updateFormLangBtns('hi')" id="formLangHi"
-                                    style="padding:0.3rem 0.75rem; border-radius:20px; border:1.5px solid var(--card-border); background:transparent; color:var(--text-secondary); font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s;">
-                                    🇮🇳 हिंदी
-                                </button>
-                                <button type="button" onclick="changeLanguage('kn'); updateFormLangBtns('kn')" id="formLangKn"
-                                    style="padding:0.3rem 0.75rem; border-radius:20px; border:1.5px solid var(--card-border); background:transparent; color:var(--text-secondary); font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s;">
-                                    🇮🇳 ಕನ್ನಡ
-                                </button>
-                            </div>
-                        </div>
+                        
 
                         <div class="card-body" style="margin-top:0.5rem;">
 
@@ -657,35 +639,69 @@
                             <div id="registrationFormContent">
                             
                             <!-- Form Progress Indicator -->
+                            
                             <div class="form-progress" id="regProgress">
                                 <div class="progress-step active" id="stepIndicator1">
                                     <div class="step-circle">1</div>
-                                    <div class="step-label">Profile</div>
+                                    <div class="step-label">Welcome</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator2">
                                     <div class="step-circle">2</div>
-                                    <div class="step-label">Vehicle</div>
+                                    <div class="step-label">Profile</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator3">
                                     <div class="step-circle">3</div>
-                                    <div class="step-label">Challenges</div>
+                                    <div class="step-label">Vehicle</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator4">
                                     <div class="step-circle">4</div>
-                                    <div class="step-label">Insurance</div>
+                                    <div class="step-label">Challenges</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator5">
                                     <div class="step-circle">5</div>
-                                    <div class="step-label">EV Open</div>
+                                    <div class="step-label">Insurance</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator6">
                                     <div class="step-circle">6</div>
+                                    <div class="step-label">EV Open</div>
+                                </div>
+                                <div class="progress-step" id="stepIndicator7">
+                                    <div class="step-circle">7</div>
                                     <div class="step-label">Referral</div>
                                 </div>
                             </div>
 
+                            
+<!-- SECTION 1: Welcome & Language -->
+<div class="form-section active" id="regSection1" style="margin-bottom:2rem; text-align:center;">
+    <div class="section-title-badge"><i class="fas fa-globe"></i> <span data-i18n="sec_welcome_title">Choose Language</span></div>
+    
+    <div id="languageSwitcherContainer" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; margin-top:1rem; margin-bottom:1.5rem;">
+        
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:0.5rem; width: 100%; max-width: 500px;">
+            <button type="button" onclick="changeLanguage('en')" class="lang-btn" id="lang-btn-en" style="padding:0.75rem; border-radius:8px; border:2px solid var(--primary-color); background:var(--primary-color); color:#fff; font-weight:700; cursor:pointer; transition:all 0.2s;">🇺🇸 English</button>
+            <button type="button" onclick="changeLanguage('hi')" class="lang-btn" id="lang-btn-hi" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 हिंदी (Hindi)</button>
+            <button type="button" onclick="changeLanguage('kn')" class="lang-btn" id="lang-btn-kn" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 ಕನ್ನಡ (Kannada)</button>
+            <button type="button" onclick="changeLanguage('ta')" class="lang-btn" id="lang-btn-ta" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 தமிழ் (Tamil)</button>
+            <button type="button" onclick="changeLanguage('te')" class="lang-btn" id="lang-btn-te" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 తెలుగు (Telugu)</button>
+            <button type="button" onclick="changeLanguage('mr')" class="lang-btn" id="lang-btn-mr" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 मराठी (Marathi)</button>
+            <button type="button" onclick="changeLanguage('gu')" class="lang-btn" id="lang-btn-gu" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 ગુજરાતી (Gujarati)</button>
+            <button type="button" onclick="changeLanguage('bn')" class="lang-btn" id="lang-btn-bn" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 বাংলা (Bengali)</button>
+        </div>
+    </div>
+    
+    <div style="margin: 1.5rem auto; max-width: 500px;">
+        <img id="welcomeImage" src="/og-image-English.png" alt="Welcome" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.3s ease;">
+    </div>
+    
+    <div class="form-navigation" style="margin-top:2rem;">
+        <button type="button" class="btn btn-primary w-100" onclick="nextStep()" style="font-size: 1.1rem; padding: 1rem;"><span data-i18n="btn_continue">Continue</span> <i class="fas fa-arrow-right"></i></button>
+    </div>
+</div>
+
+
                             <!-- SECTION A: Basic Profile -->
-                            <div class="form-section active" id="regSection1" style="margin-bottom:2rem;">
+                            <div class="form-section" id="regSection2" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-user"></i> <span data-i18n="sec_a_title">Section A — Basic Profile</span></div>
                                 <div class="form-group">
                                     <label for="regFullName" data-i18n="label_fullname">Full Name</label>
@@ -817,7 +833,7 @@
                             <div style="display:flex; justify-content:flex-end; margin-top:1.5rem;"><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
                             </div> <!-- End of regSection1 -->
                             <!-- SECTION B: Current Vehicle -->
-                            <div class="form-section" id="regSection2" style="margin-bottom:2rem;">
+                            <div class="form-section" id="regSection3" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-motorcycle"></i> <span data-i18n="sec_b_title">Section B — Current Vehicle</span></div>
                                 <div class="form-group">
                                     <label data-i18n="label_vehicle_type">Vehicle Type</label>
@@ -856,7 +872,7 @@
                             <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
                             </div> <!-- End of regSection2 -->
 <!-- SECTION C: Challenges -->
-                            <div class="form-section" id="regSection3" style="margin-bottom:2rem;">
+                            <div class="form-section" id="regSection4" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="sec_c_title">Section C — Challenges & Pain Points</span></div>
                                 <div class="form-group conditional-section" id="generalChallengesSection">
                                     <label data-i18n="label_top_challenges">Top Challenges (select up to 3)</label>
@@ -902,7 +918,7 @@
                             <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
                             </div> <!-- End of regSection3 -->
 <!-- SECTION D: Insurance -->
-                            <div class="form-section" id="regSection4" style="margin-bottom:2rem;">
+                            <div class="form-section" id="regSection5" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-shield-alt"></i> <span data-i18n="sec_d_title">Section D — Insurance</span></div>
                                 <div class="form-group">
                                     <label data-i18n="label_accidental_ins">Do you have accidental insurance?</label>
@@ -928,7 +944,7 @@
                             <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
                             </div> <!-- End of regSection4 -->
 <!-- SECTION E: Openness to Change -->
-                            <div class="form-section" id="regSection5" style="margin-bottom:2rem;">
+                            <div class="form-section" id="regSection6" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-bolt"></i> <span data-i18n="sec_e_title">Section E — Openness to EV</span></div>
                                 <div class="form-group">
                                     <label data-i18n="label_open_ev">Are you open to switching to an EV?</label>
@@ -964,7 +980,7 @@
                             <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
                             </div> <!-- End of regSection5 -->
 <!-- SECTION F: Referral -->
-                            <div class="form-section" id="regSection6" style="margin-bottom:2rem;">
+                            <div class="form-section" id="regSection7" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-share-alt"></i> <span data-i18n="sec_f_title">Section F — Referral</span></div>
 
                                 <!-- Shown only when NO referral link was used -->
@@ -1922,7 +1938,7 @@
 <div id="google_translate_element" style="display:none;"></div>
 <script type="text/javascript">
 function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'hi,kn,en'}, 'google_translate_element');
+  new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,hi,kn,ta,te,mr,gu,bn'}, 'google_translate_element');
 }
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
