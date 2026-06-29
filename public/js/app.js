@@ -2669,11 +2669,25 @@ async function openDataDrilldown(type) {
         const webFallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
 
         try {
+            const langMap = {
+                'en': 'og-image-English.png',
+                'hi': 'og-image-Hindi.png',
+                'kn': 'og-image-Kannada.png',
+                'ta': 'og-image-Tamil.png',
+                'te': 'og-image-Telugu.png',
+                'mr': 'og-image-Marathi.png',
+                'gu': 'og-image-Gujarati.png',
+                'bn': 'og-image-Bengali.png'
+            };
+            const currentLng = (window.i18next && window.i18next.language) || localStorage.getItem('i18nextLng') || 'en';
+            const baseLng = currentLng.split('-')[0];
+            const imageToShare = langMap[baseLng] || 'og-image.png';
+
             // Use relative path for fetch to support Github Pages subpaths
-            const response = await fetch('og-image.png');
+            const response = await fetch(imageToShare);
             if (!response.ok) throw new Error('Image fetch failed');
             const blob = await response.blob();
-            const file = new File([blob], 'road-warrior-ev.png', { type: blob.type });
+            const file = new File([blob], imageToShare, { type: blob.type });
 
             // We must use navigator.share to attach an actual image file.
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
