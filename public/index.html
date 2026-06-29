@@ -519,6 +519,18 @@
                     background-size: 100% auto !important;
                     background-position: center bottom !important;
                 }
+                body.home-page-active .container {
+                    padding-left: 0;
+                    padding-right: 0;
+                    padding-bottom: 0;
+                }
+                body.home-page-active #authBox {
+                    border-radius: 0;
+                    border-left: none;
+                    border-right: none;
+                    box-shadow: none;
+                    min-height: 100vh;
+                }
             }
             body.home-page-active .navbar {
                 background-color: #faf6e9 !important;
@@ -961,7 +973,6 @@
                                     <div class="radio-group inline">
                                         <label class="radio-item"><input type="radio" name="openEV" required value="Yes" onchange="toggleOpenEV(this.value)"> ⚡ <span data-i18n="ev_yes">Yes</span></label>
                                         <label class="radio-item"><input type="radio" name="openEV" required value="No" onchange="toggleOpenEV(this.value)"> 🚫 <span data-i18n="ev_no">No</span></label>
-                                        <label class="radio-item"><input type="radio" name="openEV" required value="Already on EV" onchange="toggleOpenEV(this.value)"> ✅ <span data-i18n="ev_already">Already on EV</span></label>
                                     </div>
                                 </div>
                                 <div id="evSwitchFollowup" style="display:none;">

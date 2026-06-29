@@ -1811,6 +1811,26 @@ async function openDataDrilldown(type) {
         const otherOpt = document.createElement('option');
         otherOpt.value = 'Other'; otherOpt.textContent = 'Other';
         brandSelect.appendChild(otherOpt);
+
+        // Filter fuel method based on vehicle type
+        const fuelRadios = document.querySelectorAll('input[name="fuelMethod"]');
+        fuelRadios.forEach(radio => {
+            const label = radio.closest('label');
+            const val = radio.value;
+            let show = true;
+            if (isPetrol && (val === 'Home charging' || val === 'Battery swapping station')) show = false;
+            if (isEV && val === 'Petrol pump') show = false;
+            
+            label.style.display = show ? 'inline-flex' : 'none';
+            if (!show && radio.checked) {
+                radio.checked = false;
+                const fuelOther = document.getElementById('regFuelMethodOther');
+                if (fuelOther) {
+                    fuelOther.style.display = 'none';
+                    fuelOther.value = '';
+                }
+            }
+        });
     }
 
     function toggleReferralInput(val) {
@@ -3648,6 +3668,10 @@ function nextStep() {
     
     if (currentStep < totalSteps) {
         currentStep++;
+        const vt = document.querySelector('input[name="vehicleType"]:checked');
+        if (currentStep === 6 && vt && vt.value.toLowerCase().includes('electric')) {
+            currentStep++; // Skip EV openness section
+        }
         showStep(currentStep);
     }
 }
@@ -3655,6 +3679,10 @@ function nextStep() {
 function prevStep() {
     if (currentStep > 1) {
         currentStep--;
+        const vt = document.querySelector('input[name="vehicleType"]:checked');
+        if (currentStep === 6 && vt && vt.value.toLowerCase().includes('electric')) {
+            currentStep--; // Skip back over EV openness section
+        }
         showStep(currentStep);
     }
 }

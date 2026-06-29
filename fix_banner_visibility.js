@@ -20,3 +20,4 @@ const replaceString = `    const banner = document.getElementById('promoBannerCo
 js = js.replace(searchString, replaceString);
 fs.writeFileSync('public/js/app.js', js, 'utf-8');
 console.log('Fixed promo banner visibility across steps.');
+c
