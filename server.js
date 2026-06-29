@@ -83,7 +83,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'), {
   setHeaders: (res, path) => {
-    if (path.endsWith('.html')) {
+    if (path.endsWith('.html') || path.endsWith('.js') || path.endsWith('.css')) {
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     }
   }

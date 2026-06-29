@@ -758,27 +758,30 @@ async function openDataDrilldown(type) {
             imgEl.style.opacity = '0';
             setTimeout(() => { imgEl.src = '/og-image-' + imgMap[lang] + '.png'; imgEl.style.opacity = '1'; }, 300);
         }
+        
+        // Update grid buttons
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.style.border = '2px solid var(--card-border)';
+            btn.style.background = 'transparent';
+            btn.style.color = 'var(--text-secondary)';
+        });
+        const activeBtn = document.getElementById('lang-btn-' + lang);
+        if (activeBtn) {
+            activeBtn.style.border = '2px solid var(--primary-color)';
+            activeBtn.style.background = 'var(--primary-color)';
+            activeBtn.style.color = '#fff';
+        }
+
         const selector = document.getElementById('langSelector');
         if (selector) selector.value = lang;
         
-        // 1. Trigger Google Translate Widget for dynamic content
-        // Set cookies to ensure it persists across reloads and is active
-        document.cookie = `googtrans=/en/${lang}; path=/`;
-        document.cookie = `googtrans=/en/${lang}; domain=${window.location.hostname}; path=/`;
-        
-        // Trigger the Google Translate dropdown with graceful retries (no reload to prevent infinite loops)
-        let retries = 0;
-        const tryTriggerGoogleTranslate = () => {
-            const googleSelect = document.querySelector('select.goog-te-combo');
-            if (googleSelect) {
-                googleSelect.value = (lang === 'en' ? '' : lang);
-                googleSelect.dispatchEvent(new Event('change', { bubbles: true }));
-            } else if (retries < 10) {
-                retries++;
-                setTimeout(tryTriggerGoogleTranslate, 300);
-            }
-        };
-        tryTriggerGoogleTranslate();
+        if (window.i18next && i18next.isInitialized) {
+            i18next.changeLanguage(lang).then(() => {
+                if (window.applyTranslations) window.applyTranslations();
+            });
+        } else {
+            if (window.applyTranslations) window.applyTranslations();
+        }
 
         updateAuthNavbarState();
         if (isLoggedIn) refreshActiveView();
@@ -939,7 +942,7 @@ async function openDataDrilldown(type) {
             activeTab = 'admin-login';
             checkAdminExists();
         } else if (activeTab !== 'home' && activeTab !== 'score' && activeTab !== 'admin-login' && activeTab !== 'admin' && activeTab !== 'privacy' && !isLoggedIn) {
-            showToast('Please login or register first.', 'warning');
+            showToast((window.t ? window.t('msg_0_please_login_or') : 'Please login or register first.'), 'warning');
             navigateTo('/home'); return;
         }
 
@@ -1012,7 +1015,7 @@ async function openDataDrilldown(type) {
             }
         }).catch(err => {
             console.error('Session load error:', err);
-            showToast('Warning: Offline or server unreachable.', 'warning');
+            showToast((window.t ? window.t('msg_1_warning__offlin') : 'Warning: Offline or server unreachable.'), 'warning');
         });
     }
 
@@ -1163,10 +1166,10 @@ async function openDataDrilldown(type) {
                     if (el.style.display !== 'none' && !el.value.trim()) setInvalid(el);
                 });
             }
-            else if (step === 7) {
+            else if (step === 3) {
                 const vt = sec.querySelector('input[name="vehicleType"]:checked');
                 if (!vt) {
-                    const group = document.getElementById('vehicleTypeGroup') || sec.querySelector('input[name="vehicleType"]').closest('.radio-group');
+                    const group = document.getElementById('vehicleTypeGroup') || sec.querySelector('input[name="vehicleType"]')?.closest('.radio-group');
                     if (group) {
                         group.style.border = '2px solid var(--danger-color)';
                         group.style.padding = '0.5rem';
@@ -1189,7 +1192,7 @@ async function openDataDrilldown(type) {
 
                 const fm = sec.querySelector('input[name="fuelMethod"]:checked');
                 if (!fm) {
-                    const group = sec.querySelector('input[name="fuelMethod"]').closest('.radio-group');
+                    const group = sec.querySelector('input[name="fuelMethod"]')?.closest('.radio-group');
                     if (group) {
                         group.style.border = '2px solid var(--danger-color)';
                         group.style.padding = '0.5rem';
@@ -1209,7 +1212,7 @@ async function openDataDrilldown(type) {
                 const maintExp = document.getElementById('regMaintExp');
                 if (maintExp && maintExp.parentElement.style.display !== 'none' && !maintExp.value.trim()) setInvalid(maintExp);
             }
-            else if (step === 7) {
+            else if (step === 4) {
                 // Check if visible checkbox groups have at least one selection
                 ['generalChallengesSection', 'evChallengesSection', 'petrolChallengesSection'].forEach(sectionId => {
                     const section = document.getElementById(sectionId);
@@ -1236,12 +1239,12 @@ async function openDataDrilldown(type) {
                     if (el.style.display !== 'none' && !el.value.trim()) setInvalid(el);
                 });
             }
-            else if (step === 7) {
+            else if (step === 5) {
                 ['hasAccidental', 'hasHealth', 'paidPocket'].forEach(name => {
                     if (!sec.querySelector(`input[name="${name}"]:checked`)) {
                         const radios = sec.querySelectorAll(`input[name="${name}"]`);
                         if (radios.length > 0) {
-                            const group = radios[0].closest('.radio-group');
+                            const group = radios[0]?.closest('.radio-group');
                             if (group) {
                                 group.style.border = '2px solid var(--danger-color)';
                                 group.style.padding = '0.5rem';
@@ -1255,12 +1258,12 @@ async function openDataDrilldown(type) {
                     }
                 });
             }
-            else if (step === 7) {
+            else if (step === 6) {
                 const openEVRadio = sec.querySelector(`input[name="openEV"]:checked`);
                 if (!openEVRadio) {
                     const radios = sec.querySelectorAll(`input[name="openEV"]`);
                     if (radios.length > 0) {
-                        const group = radios[0].closest('.radio-group');
+                        const group = radios[0]?.closest('.radio-group');
                         if (group) {
                             group.style.border = '2px solid var(--danger-color)';
                             group.style.padding = '0.5rem';
@@ -1276,7 +1279,7 @@ async function openDataDrilldown(type) {
                     if (switchTriggers.length === 0) {
                         const firstTrigger = sec.querySelector(`input[name="switchTriggers"]`);
                         if (firstTrigger) {
-                            const group = firstTrigger.closest('.checkbox-group');
+                            const group = firstTrigger?.closest('.checkbox-group');
                             if (group) {
                                 group.style.border = '2px solid var(--danger-color)';
                                 group.style.padding = '0.5rem';
@@ -1293,7 +1296,7 @@ async function openDataDrilldown(type) {
                     if (!interestsRadio) {
                         const firstInterest = sec.querySelector(`input[name="interests"]`);
                         if (firstInterest) {
-                            const group = firstInterest.closest('.radio-group');
+                            const group = firstInterest?.closest('.radio-group');
                             if (group) {
                                 group.style.border = '2px solid var(--danger-color)';
                                 group.style.padding = '0.5rem';
@@ -1315,7 +1318,7 @@ async function openDataDrilldown(type) {
                     if (!sec.querySelector(`input[name="referredBy"]:checked`)) {
                         const radios = sec.querySelectorAll(`input[name="referredBy"]`);
                         if (radios.length > 0) {
-                            const group = radios[0].closest('.radio-group');
+                            const group = radios[0]?.closest('.radio-group');
                             if (group) {
                                 group.style.border = '2px solid var(--danger-color)';
                                 group.style.padding = '0.5rem';
@@ -1442,9 +1445,9 @@ async function openDataDrilldown(type) {
     async function sendMockOtp(phoneInputId = 'loginPhone', msgContainerId = 'otpSentMsg') {
         const phone = document.getElementById(phoneInputId).value;
         const phoneRegex = /^[6-9][0-9]{9}$/;
-        if (!phone || !phoneRegex.test(phone)) { showToast('Please enter a valid 10-digit Indian mobile number first', 'warning'); return; }
+        if (!phone || !phoneRegex.test(phone)) { showToast((window.t ? window.t('msg_2_please_enter_a_') : 'Please enter a valid 10-digit Indian mobile number first'), 'warning'); return; }
         
-        const btn = event && event.target ? event.target.closest('button') : null;
+        const btn = event && event.target ? event.target?.closest?.('button') : null;
         const origHtml = btn ? btn.innerHTML : 'Send OTP';
         if (btn) {
             btn.disabled = true;
@@ -1467,10 +1470,10 @@ async function openDataDrilldown(type) {
                 }
                 showToast(data.message || 'OTP Sent!', 'success');
             } else {
-                showToast('Failed to send OTP: ' + (data.error || 'Unknown error'), 'error');
+                showToast((window.t ? window.t('msg_3_failed_to_send_') : 'Failed to send OTP: ') + (data.error || 'Unknown error'), 'error');
             }
         } catch (err) {
-            showToast('Network error: ' + err.message, 'error');
+            showToast((window.t ? window.t('msg_4_network_error__') : 'Network error: ') + err.message, 'error');
         } finally {
             if (btn) {
                 btn.disabled = false;
@@ -1489,12 +1492,12 @@ async function openDataDrilldown(type) {
             const platform = document.getElementById('regPlatform').value;
             const exp = document.getElementById('regExp').value;
             const pass = document.getElementById('regPassword').value;
-            if (!name) { showToast('Please enter your full name', 'error'); return; }
-            if (phone.length !== 10) { showToast('Phone must be 10 digits', 'error'); return; }
-            if (!city) { showToast('Please select your city', 'error'); return; }
-            if (!platform) { showToast('Please select your delivery platform', 'error'); return; }
-            if (exp === '') { showToast('Please select your experience', 'error'); return; }
-            if (!pass) { showToast('Please set a password', 'error'); return; }
+            if (!name) { showToast((window.t ? window.t('msg_5_please_enter_yo') : 'Please enter your full name'), 'error'); return; }
+            if (phone.length !== 10) { showToast((window.t ? window.t('msg_6_phone_must_be_1') : 'Phone must be 10 digits'), 'error'); return; }
+            if (!city) { showToast((window.t ? window.t('msg_7_please_select_y') : 'Please select your city'), 'error'); return; }
+            if (!platform) { showToast((window.t ? window.t('msg_8_please_select_y') : 'Please select your delivery platform'), 'error'); return; }
+            if (exp === '') { showToast((window.t ? window.t('msg_9_please_select_y') : 'Please select your experience'), 'error'); return; }
+            if (!pass) { showToast((window.t ? window.t('msg_10_please_set_a_pa') : 'Please set a password'), 'error'); return; }
         }
 
         document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
@@ -1597,13 +1600,13 @@ async function openDataDrilldown(type) {
             } else {
                 msgEl.textContent = 'Failed to send OTP: ' + (data.error || 'Unknown error');
                 msgEl.style.color = '#ef4444';
-                showToast('Failed to send OTP', 'error');
+                showToast((window.t ? window.t('msg_11_failed_to_send_') : 'Failed to send OTP'), 'error');
                 document.getElementById('resendRegOtpBtn').style.display = 'block';
             }
         } catch (err) {
             msgEl.textContent = 'Network error: ' + err.message;
             msgEl.style.color = '#ef4444';
-            showToast('Network error', 'error');
+            showToast((window.t ? window.t('msg_12_network_error') : 'Network error'), 'error');
             document.getElementById('resendRegOtpBtn').style.display = 'block';
         }
     }
@@ -1641,7 +1644,7 @@ async function openDataDrilldown(type) {
         const phone = document.getElementById('regPhone').value;
         const otp = document.getElementById('regOtpInput').value;
         if (!otp) {
-            showToast('Please enter the OTP', 'warning');
+            showToast((window.t ? window.t('msg_13_please_enter_th') : 'Please enter the OTP'), 'warning');
             return;
         }
         
@@ -1665,14 +1668,14 @@ async function openDataDrilldown(type) {
                 void document.getElementById('regRestOfForm').offsetWidth;
                 document.getElementById('regRestOfForm').style.opacity = '1';
                 document.getElementById('submitRegBtn').disabled = false;
-                showToast('Phone verified! You can now complete the form.', 'success');
+                showToast((window.t ? window.t('msg_14_phone_verified_') : 'Phone verified! You can now complete the form.'), 'success');
             } else {
-                showToast('Verification failed: ' + (data.error || 'Invalid OTP'), 'error');
+                showToast((window.t ? window.t('msg_15_verification_fa') : 'Verification failed: ') + (data.error || 'Invalid OTP'), 'error');
                 btn.disabled = false;
                 btn.innerHTML = origHtml;
             }
         } catch (err) {
-            showToast('Network error: ' + err.message, 'error');
+            showToast((window.t ? window.t('msg_4_network_error__') : 'Network error: ') + err.message, 'error');
             btn.disabled = false;
             btn.innerHTML = origHtml;
         }
@@ -1966,7 +1969,7 @@ async function openDataDrilldown(type) {
             switchTriggers: getCheckedValues('switchTriggers'),
             interests: getRadioValue('interests'),
             referredByCode,
-            language: lang
+            language: localStorage.getItem('selectedLang') || 'en'
         };
 
         const doRegister = (finalPayload) => {
@@ -2025,13 +2028,13 @@ async function openDataDrilldown(type) {
                     }
                 };
 
-                showToast('🎉 Registration successful! Welcome to Road Warrior Pro!', 'success');
+                showToast((window.t ? window.t('msg_16____registration') : '🎉 Registration successful! Welcome to Road Warrior Pro!'), 'success');
             } else {
-                showToast('Registration failed: ' + (result.message || result.error || 'Unknown error'), 'error');
+                showToast((window.t ? window.t('msg_17_registration_fa') : 'Registration failed: ') + (result.message || result.error || 'Unknown error'), 'error');
             }
         }).catch(err => {
             btn.disabled = false; btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
-            showToast('Network error: ' + err.message, 'error');
+            showToast((window.t ? window.t('msg_4_network_error__') : 'Network error: ') + err.message, 'error');
         });
         }; // End doRegister
 
@@ -2118,7 +2121,7 @@ async function openDataDrilldown(type) {
     // ===== SCORE LOOKUP (public) =====
     window.lookupScore = function() {
         const phone = document.getElementById('scoreLookupPhone').value.trim();
-        if (phone.length !== 10) { showToast('Enter a valid 10-digit phone number', 'error'); return; }
+        if (phone.length !== 10) { showToast((window.t ? window.t('msg_18_enter_a_valid_1') : 'Enter a valid 10-digit phone number'), 'error'); return; }
         const result = document.getElementById('scoreLookupResult');
         result.style.display = 'block';
         result.innerHTML = '<div style="text-align:center; padding:1rem;"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem; color:var(--primary-color);"></i></div>';
@@ -2531,7 +2534,7 @@ async function openDataDrilldown(type) {
         const errText = document.getElementById('riderForgotErrorText');
 
         if (phone.length !== 10) {
-            showToast('Phone must be exactly 10 digits', 'error'); return;
+            showToast((window.t ? window.t('msg_19_phone_must_be_e') : 'Phone must be exactly 10 digits'), 'error'); return;
         }
 
         btn.disabled = true;
@@ -2546,7 +2549,7 @@ async function openDataDrilldown(type) {
             });
             const result = await res.json();
             if (result.success) {
-                showToast('Password reset successful! You can now login.', 'success');
+                showToast((window.t ? window.t('msg_20_password_reset_') : 'Password reset successful! You can now login.'), 'success');
                 showRiderLoginForm();
             } else {
                 errText.textContent = result.error || 'Failed to reset password';
@@ -2564,13 +2567,13 @@ async function openDataDrilldown(type) {
     function handleRegister(e) {
         e.preventDefault();
         fetch('/api/vehicles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ riderId: currentUser.id, vehicleType: document.getElementById('vehicleType').value, licensePlate: document.getElementById('licensePlate').value, color: document.getElementById('vehicleColor').value, make: document.getElementById('vehicleMake').value, model: document.getElementById('vehicleModel').value }) })
-        .then(r => r.json()).then(result => { if (result.success) { closeModal('vehicleModal'); document.getElementById('vehicleForm').reset(); showToast('Vehicle added!', 'success'); loadVehiclesData(); } });
+        .then(r => r.json()).then(result => { if (result.success) { closeModal('vehicleModal'); document.getElementById('vehicleForm').reset(); showToast((window.t ? window.t('msg_21_vehicle_added_') : 'Vehicle added!'), 'success'); loadVehiclesData(); } });
     }
 
     function handleAddVehicle(e) {
         e.preventDefault();
         fetch('/api/vehicles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ riderId: currentUser.id, vehicleType: document.getElementById('vehicleType').value, licensePlate: document.getElementById('licensePlate').value, color: document.getElementById('vehicleColor').value, make: document.getElementById('vehicleMake').value, model: document.getElementById('vehicleModel').value }) })
-        .then(r => r.json()).then(result => { if (result.success) { closeModal('vehicleModal'); document.getElementById('vehicleForm').reset(); showToast('Vehicle added!', 'success'); loadVehiclesData(); } });
+        .then(r => r.json()).then(result => { if (result.success) { closeModal('vehicleModal'); document.getElementById('vehicleForm').reset(); showToast((window.t ? window.t('msg_21_vehicle_added_') : 'Vehicle added!'), 'success'); loadVehiclesData(); } });
     }
 
     // ===== PROFILE & QR CODE =====
@@ -2613,18 +2616,18 @@ async function openDataDrilldown(type) {
     function updateProfileInfo(e) {
         e.preventDefault();
         const phone = document.getElementById('profilePhone').value;
-        if (phone.length !== 10) { showToast('Phone must be 10 digits', 'error'); return; }
+        if (phone.length !== 10) { showToast((window.t ? window.t('msg_6_phone_must_be_1') : 'Phone must be 10 digits'), 'error'); return; }
         fetch(`/api/riders/${currentUser.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fullName: document.getElementById('profileName').value, phone, city: document.getElementById('profileCity').value }) })
-        .then(r => r.json()).then(result => { if (result.success) { currentUser = result.data; showToast('Profile updated!', 'success'); loadProfileData(); } });
+        .then(r => r.json()).then(result => { if (result.success) { currentUser = result.data; showToast((window.t ? window.t('msg_22_profile_updated') : 'Profile updated!'), 'success'); loadProfileData(); } });
     }
 
-    function updatePaymentDetails(e) { e.preventDefault(); showToast('Bank details updated!', 'success'); }
+    function updatePaymentDetails(e) { e.preventDefault(); showToast((window.t ? window.t('msg_23_bank_details_up') : 'Bank details updated!'), 'success'); }
 
     function copyReferralCode() {
         const code = currentUser ? currentUser.referralCode : '';
         const refLink = getReferralLink(code);
-        navigator.clipboard.writeText(refLink).then(() => showToast('Referral link copied!', 'success')).catch(() => {
-            const inp = document.getElementById('referralLinkInput'); inp.select(); document.execCommand('copy'); showToast('Copied!', 'success');
+        navigator.clipboard.writeText(refLink).then(() => showToast((window.t ? window.t('msg_24_referral_link_c') : 'Referral link copied!'), 'success')).catch(() => {
+            const inp = document.getElementById('referralLinkInput'); inp.select(); document.execCommand('copy'); showToast((window.t ? window.t('msg_25_copied_') : 'Copied!'), 'success');
         });
     }
 
@@ -2762,7 +2765,7 @@ async function openDataDrilldown(type) {
             });
             const result = await res.json();
             if (result.success) {
-                showToast('Admin account created successfully!', 'success');
+                showToast((window.t ? window.t('msg_26_admin_account_c') : 'Admin account created successfully!'), 'success');
                 showAdminLoginForm();
                 checkAdminExists();
             } else {
@@ -2808,7 +2811,7 @@ async function openDataDrilldown(type) {
             if (result.success) {
                 sessionStorage.setItem('adminToken', result.token);
                 sessionStorage.setItem('adminRole', result.role || 'admin');
-                showToast('Admin login successful!', 'success');
+                showToast((window.t ? window.t('msg_27_admin_login_suc') : 'Admin login successful!'), 'success');
                 navigateTo('/admin');
             } else {
                 errText.textContent = result.message || result.error || 'Invalid admin credentials';
@@ -2889,7 +2892,7 @@ async function openDataDrilldown(type) {
             });
             const result = await res.json();
             if (result.success) {
-                showToast('Password reset successful! Please login.', 'success');
+                showToast((window.t ? window.t('msg_28_password_reset_') : 'Password reset successful! Please login.'), 'success');
                 showAdminLoginForm();
             } else {
                 errText.textContent = result.message || result.error || 'Failed to reset password';
@@ -2908,7 +2911,7 @@ async function openDataDrilldown(type) {
         sessionStorage.removeItem('adminToken');
         sessionStorage.removeItem('adminRole');
         sessionStorage.removeItem('adminJwt');
-        showToast('Admin logged out successfully', 'success');
+        showToast((window.t ? window.t('msg_29_admin_logged_ou') : 'Admin logged out successfully'), 'success');
         navigateTo('/home');
     }
 
@@ -3000,7 +3003,7 @@ async function openDataDrilldown(type) {
             a.click();
             a.remove();
             window.URL.revokeObjectURL(url);
-            showToast('CSV downloaded successfully!', 'success');
+            showToast((window.t ? window.t('msg_30_csv_downloaded_') : 'CSV downloaded successfully!'), 'success');
         })
         .catch(err => {
             showToast(`Error: ${err.message}`, 'error');
@@ -3151,12 +3154,12 @@ async function openDataDrilldown(type) {
                     <li style="margin-bottom:0.5rem;">${r}</li>
                 `).join('');
 
-                showToast('Website Audit completed successfully', 'success');
+                showToast((window.t ? window.t('msg_31_website_audit_c') : 'Website Audit completed successfully'), 'success');
             } else {
-                showToast('Error running audit: ' + (result.message || result.error || 'Unknown error'), 'error');
+                showToast((window.t ? window.t('msg_32_error_running_a') : 'Error running audit: ') + (result.message || result.error || 'Unknown error'), 'error');
             }
         } catch (err) {
-            showToast('Audit failed to run.', 'error');
+            showToast((window.t ? window.t('msg_33_audit_failed_to') : 'Audit failed to run.'), 'error');
         } finally {
             btn.innerHTML = '<i class="fas fa-play"></i> Run 25 Checks';
             btn.disabled = false;
@@ -3214,14 +3217,14 @@ async function openDataDrilldown(type) {
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
         
-        showToast('Generating PDF...', 'info');
+        showToast((window.t ? window.t('msg_34_generating_pdf_') : 'Generating PDF...'), 'info');
         html2pdf().set(opt).from(element).save().then(() => {
-            showToast('PDF downloaded successfully!', 'success');
+            showToast((window.t ? window.t('msg_35_pdf_downloaded_') : 'PDF downloaded successfully!'), 'success');
             if (checklistBody) checklistBody.setAttribute('style', originalStyle);
             document.getElementById(styleId)?.remove();
         }).catch(err => {
             console.error('PDF generation error:', err);
-            showToast('Failed to generate PDF.', 'error');
+            showToast((window.t ? window.t('msg_36_failed_to_gener') : 'Failed to generate PDF.'), 'error');
             if (checklistBody) checklistBody.setAttribute('style', originalStyle);
             document.getElementById(styleId)?.remove();
         });
@@ -3545,7 +3548,7 @@ function nextStep() {
     if (currentStep === 2) {
         const dupPhoneMsg = document.getElementById('dupPhoneMsg');
         if (dupPhoneMsg && !dupPhoneMsg.classList.contains('hidden')) {
-            showToast('This phone number is already registered. Please login.', 'error');
+            showToast((window.t ? window.t('msg_37_this_phone_numb') : 'This phone number is already registered. Please login.'), 'error');
             return;
         }
     }
@@ -3554,7 +3557,7 @@ function nextStep() {
     inputs.forEach(input => {
         // Skip validation if the input itself or any of its containers are hidden
         // offsetParent catches display:none, closest('.hidden-section') catches max-height:0 hiding
-        if (input.offsetParent === null || input.closest('.hidden-section')) {
+        if (input.offsetParent === null || input?.closest?.('.hidden-section')) {
             return;
         }
 
@@ -3569,13 +3572,13 @@ function nextStep() {
 
         let visualElement = input;
         if (input.type === 'radio') {
-            visualElement = input.closest('.radio-group') || input.closest('.form-group');
+            visualElement = input?.closest?.('.radio-group') || input?.closest?.('.form-group');
         } else if (input.id === 'regPlatform') {
             visualElement = document.getElementById('platformPillsContainer');
         } else if (input.id === 'regExp') {
             visualElement = document.getElementById('expPillsContainer');
         } else if (input.type === 'checkbox') {
-            visualElement = input.closest('.checkbox-group') || input.closest('.form-group');
+            visualElement = input?.closest?.('.checkbox-group') || input?.closest?.('.form-group');
         }
 
         if (visualElement) {
@@ -3601,7 +3604,7 @@ function nextStep() {
     });
     
     if(!isValid) {
-        showToast('Please fill all highlighted required fields before proceeding.', 'error');
+        showToast((window.t ? window.t('msg_38_please_fill_all') : 'Please fill all highlighted required fields before proceeding.'), 'error');
         if (firstInvalid) {
             firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
