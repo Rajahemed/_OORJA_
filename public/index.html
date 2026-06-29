@@ -748,28 +748,28 @@
                                             <div id="pwdBar3" style="flex:1; background:#e5e7eb; border-radius:3px; transition:background 0.3s;"></div>
                                             <div id="pwdBar4" style="flex:1; background:#e5e7eb; border-radius:3px; transition:background 0.3s;"></div>
                                         </div>
-                                        <small id="pwdStrengthText" style="color:var(--text-secondary); font-size:0.75rem; font-weight:600;">Password strength</small>
+                                        <small id="pwdStrengthText" data-i18n="pwd_strength_text" style="color:var(--text-secondary); font-size:0.75rem; font-weight:600;">Password strength</small>
                                     </div>
                                 </div>
                                 <div style="display:flex; gap:1rem; flex-wrap:wrap;">
                                     <div class="form-group" style="flex:1; min-width:200px;">
-                                        <label for="regState">State</label>
+                                        <label for="regState" data-i18n="label_state">State</label>
                                         <select id="regState" class="form-control" required onchange="onRegStateChange()">
                                             <option value="">Loading States...</option>
                                         </select>
-                                        <input type="text" id="regStateOther" class="form-control" placeholder="Enter State" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
+                                        <input type="text" id="regStateOther" class="form-control" placeholder="Enter State" data-i18n-placeholder="placeholder_state" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
                                     </div>
                                     <div class="form-group" style="flex:1; min-width:200px;">
                                         <label for="regCity" data-i18n="label_city">City</label>
                                         <select id="regCity" class="form-control" required onchange="onRegCityChange()" disabled>
                                             <option value="" data-i18n="select_city">Select your city</option>
                                         </select>
-                                        <input type="text" id="regCityOther" class="form-control" placeholder="Enter City" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
+                                        <input type="text" id="regCityOther" class="form-control" placeholder="Enter City" data-i18n-placeholder="placeholder_city" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="regPincode" data-i18n="label_pincode">Pincode</label>
-                                    <input type="text" id="regPincode" class="form-control" required placeholder="Type pincode (e.g. 560001)" pattern="[0-9]{6}" maxlength="6" title="Please enter a 6-digit valid pincode">
+                                    <input type="text" id="regPincode" class="form-control" required placeholder="Type pincode (e.g. 560001)" data-i18n-placeholder="placeholder_pincode" pattern="[0-9]{6}" maxlength="6" title="Please enter a 6-digit valid pincode">
                                 </div>
                                 <div style="display:flex; gap:1rem; flex-wrap:wrap;">
                                     <div class="form-group" style="position:relative; z-index:10; flex:1; min-width:200px;">

@@ -266,5 +266,17 @@
     "msg_33_generating_pdf_": "PDF व्युत्पन्न करत आहे...",
     "msg_34_pdf_downloaded_": "पीडीएफ यशस्वीरित्या डाउनलोड केले!",
     "msg_35_failed_to_gener": "PDF व्युत्पन्न करण्यात अयशस्वी.",
-    "msg_36_please_fill_all": "कृपया पुढे जाण्यापूर्वी सर्व हायलाइट केलेले आवश्यक फील्ड भरा."
+    "msg_36_please_fill_all": "कृपया पुढे जाण्यापूर्वी सर्व हायलाइट केलेले आवश्यक फील्ड भरा.",
+    "label_state": "राज्य",
+    "label_pincode": "पिनकोड",
+    "select_state": "राज्य निवडा",
+    "loading_states": "राज्ये लोड करत आहे...",
+    "weak_password": "कमकुवत - संख्या आणि चिन्हे जोडा",
+    "fair_password": "गोरा - मजबूत असू शकते",
+    "placeholder_pincode": "पिनकोड टाइप करा (उदा. 560001)",
+    "strong_password": "मजबूत पासवर्ड",
+    "pwd_strength_text": "पासवर्डची ताकद",
+    "placeholder_state": "राज्य प्रविष्ट करा",
+    "placeholder_city": "शहरात प्रवेश करा",
+    "good_password": "चांगला पासवर्ड"
 }

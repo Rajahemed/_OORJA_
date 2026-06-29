@@ -753,10 +753,17 @@ async function openDataDrilldown(type) {
         localStorage.setItem('selectedLang', lang);
         
         const imgMap = { 'en': 'English', 'hi': 'Hindi', 'kn': 'Kannada', 'ta': 'Tamil', 'te': 'Telugu', 'mr': 'Marathi', 'gu': 'Gujarati', 'bn': 'Bengali' };
+        
         const imgEl = document.getElementById('welcomeImage');
         if (imgEl && imgMap[lang]) {
             imgEl.style.opacity = '0';
             setTimeout(() => { imgEl.src = '/og-image-' + imgMap[lang] + '.png'; imgEl.style.opacity = '1'; }, 300);
+        }
+
+        const waImgEl = document.getElementById('whatsappBannerImage');
+        if (waImgEl && imgMap[lang]) {
+            waImgEl.style.opacity = '0';
+            setTimeout(() => { waImgEl.src = '/og-image-' + imgMap[lang] + '.png'; waImgEl.style.opacity = '1'; }, 300);
         }
         
         // Update grid buttons
@@ -1729,22 +1736,22 @@ async function openDataDrilldown(type) {
         resetBars();
         
         if (strength <= 1) {
-            text.innerText = 'Weak - add numbers & symbols';
+            text.innerText = window.t ? window.t('weak_password', 'Weak - add numbers & symbols') : 'Weak - add numbers & symbols';
             text.style.color = '#ef4444';
             b1.style.background = '#ef4444';
         } else if (strength === 2) {
-            text.innerText = 'Fair - could be stronger';
+            text.innerText = window.t ? window.t('fair_password', 'Fair - could be stronger') : 'Fair - could be stronger';
             text.style.color = '#f59e0b';
             b1.style.background = '#f59e0b';
             b2.style.background = '#f59e0b';
         } else if (strength === 3) {
-            text.innerText = 'Good password';
+            text.innerText = window.t ? window.t('good_password', 'Good password') : 'Good password';
             text.style.color = '#10b981';
             b1.style.background = '#10b981';
             b2.style.background = '#10b981';
             b3.style.background = '#10b981';
         } else {
-            text.innerText = 'Strong password';
+            text.innerText = window.t ? window.t('strong_password', 'Strong password') : 'Strong password';
             text.style.color = '#059669';
             [b1, b2, b3, b4].forEach(b => b.style.background = '#059669');
         }
@@ -1866,11 +1873,11 @@ async function openDataDrilldown(type) {
             const data = await res.json();
             if (data.success) {
                 const select = document.getElementById('regState');
-                select.innerHTML = '<option value="">Select State</option>';
+                select.innerHTML = `<option value="">${window.t ? window.t('select_state', 'Select State') : 'Select State'}</option>`;
                 data.data.forEach(st => {
                     select.innerHTML += `<option value="${st}">${st}</option>`;
                 });
-                select.innerHTML += '<option value="Other">Other</option>';
+                select.innerHTML += `<option value="Other">Other</option>`;
             }
         } catch(e) { console.error('Error fetching states', e); }
     }
@@ -1880,13 +1887,13 @@ async function openDataDrilldown(type) {
         const citySelect = document.getElementById('regCity');
         
         const state = stateSelect.value;
-        citySelect.innerHTML = '<option value="">Loading Cities...</option>';
+        citySelect.innerHTML = `<option value="">${window.t ? window.t('loading_cities', 'Loading Cities...') : 'Loading Cities...'}</option>`;
         
         if (state && state !== 'Other') {
             try {
                 const res = await fetch(`/api/locations/cities/${state}`);
                 const data = await res.json();
-                citySelect.innerHTML = '<option value="">Select City</option>';
+                citySelect.innerHTML = `<option value="">${window.t ? window.t('select_city', 'Select City') : 'Select City'}</option>`;
                 if (data.success) {
                     data.data.forEach(city => {
                         citySelect.innerHTML += `<option value="${city}">${city}</option>`;
@@ -1896,10 +1903,10 @@ async function openDataDrilldown(type) {
                 citySelect.disabled = false;
             } catch(e) { console.error('Error fetching cities', e); }
         } else if (state === 'Other') {
-            citySelect.innerHTML = '<option value="">Select City</option><option value="Other">Other</option>';
+            citySelect.innerHTML = `<option value="">${window.t ? window.t('select_city', 'Select City') : 'Select City'}</option><option value="Other">Other</option>`;
             citySelect.disabled = false;
         } else {
-            citySelect.innerHTML = '<option value="">Select your city</option>';
+            citySelect.innerHTML = `<option value="">${window.t ? window.t('select_city', 'Select your city') : 'Select your city'}</option>`;
             citySelect.disabled = true;
         }
         
@@ -2012,9 +2019,23 @@ async function openDataDrilldown(type) {
                 window.lastRegisteredWhatsAppMessage = result.whatsappMessage;
                 const actualText = result.whatsappMessage || getWhatsAppMessageText(regFullName, result.referralCode);
                 
+                const langMap = {
+                    'en': 'og-image-English.png',
+                    'hi': 'og-image-Hindi.png',
+                    'kn': 'og-image-Kannada.png',
+                    'ta': 'og-image-Tamil.png',
+                    'te': 'og-image-Telugu.png',
+                    'mr': 'og-image-Marathi.png',
+                    'gu': 'og-image-Gujarati.png',
+                    'bn': 'og-image-Bengali.png'
+                };
+                const currentLng = (window.i18next && window.i18next.language) || localStorage.getItem('i18nextLng') || 'en';
+                const baseLng = currentLng.split('-')[0];
+                const bannerImage = langMap[baseLng] || 'og-image.png';
+
                 let msgHtml = `
                     <div style="background:#eaf8f1; padding:0.75rem; border-radius:8px; border:1px solid #c3e6cf; text-align:left; margin-bottom:10px;">
-                        <img src="og-image.png" alt="Share Image" style="width:100%; border-radius:4px; margin-bottom:8px;">
+                        <img src="${bannerImage}" alt="Share Image" id="whatsappBannerImage" style="width:100%; border-radius:4px; margin-bottom:8px;">
                         <div style="white-space: pre-wrap; font-family: sans-serif; font-size: 0.9rem; color: #333;">${actualText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#007bff; font-weight:600; text-decoration:underline;">$1</a>')}</div>
                     </div>
                 `;

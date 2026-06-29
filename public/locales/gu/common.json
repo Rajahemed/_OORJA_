@@ -266,5 +266,17 @@
     "msg_33_generating_pdf_": "PDF જનરેટ કરી રહ્યું છે...",
     "msg_34_pdf_downloaded_": "PDF સફળતાપૂર્વક ડાઉનલોડ થઈ!",
     "msg_35_failed_to_gener": "PDF જનરેટ કરવામાં નિષ્ફળ.",
-    "msg_36_please_fill_all": "કૃપા કરીને આગળ વધતા પહેલા બધા હાઇલાઇટ કરેલ જરૂરી ફીલ્ડ ભરો."
+    "msg_36_please_fill_all": "કૃપા કરીને આગળ વધતા પહેલા બધા હાઇલાઇટ કરેલ જરૂરી ફીલ્ડ ભરો.",
+    "label_state": "રાજ્ય",
+    "label_pincode": "પિનકોડ",
+    "select_state": "રાજ્ય પસંદ કરો",
+    "placeholder_pincode": "પિનકોડ લખો (દા.ત. 560001)",
+    "weak_password": "નબળા - સંખ્યાઓ અને પ્રતીકો ઉમેરો",
+    "fair_password": "વાજબી - મજબૂત હોઈ શકે છે",
+    "loading_states": "સ્ટેટ્સ લોડ કરી રહ્યું છે...",
+    "strong_password": "મજબૂત પાસવર્ડ",
+    "placeholder_state": "રાજ્ય દાખલ કરો",
+    "placeholder_city": "શહેર દાખલ કરો",
+    "pwd_strength_text": "પાસવર્ડ તાકાત",
+    "good_password": "સારો પાસવર્ડ"
 }
