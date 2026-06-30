@@ -1,4 +1,4 @@
-# 🚗 Road Warrior Pro - Professional Delivery Management System v2.0
+# 🚗 Road Warrior Pro - Professional Management System v2.0
 
 A complete, production-ready delivery rider management and analytics platform with real-time features, professional UI/UX, and comprehensive admin dashboard.
 
