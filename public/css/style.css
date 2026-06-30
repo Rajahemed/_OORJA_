@@ -880,13 +880,23 @@ select.form-control option {
   .navbar {
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     gap: 0.75rem;
     padding: 1rem 1.25rem;
   }
-  .navbar-nav {
+  .navbar-brand {
+    order: 1;
+  }
+  .navbar-end {
+    order: 2;
     width: auto;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+  .navbar-nav {
+    order: 3;
+    width: 100%;
     justify-content: center;
     flex-wrap: wrap;
     overflow-x: auto;
@@ -895,11 +905,6 @@ select.form-control option {
     scrollbar-width: none;
   }
   .navbar-nav::-webkit-scrollbar { display: none; }
-  .navbar-end {
-    width: 100%;
-    justify-content: center;
-    gap: 1rem;
-  }
 }
 
 /* --- Small Tablet: ≤ 768px --- */
