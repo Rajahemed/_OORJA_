@@ -96,10 +96,11 @@
            ach_expert_title:"Referral King", ach_expert_desc:"Refer 50 riders",
            lang_auto_msg:"Language auto-set to English for this city",
            label_phone:"Phone Number",
-           radio_password:"Password", radio_otp:"OTP", forgot_password:"Forgot Password?"
+           radio_password:"Password", radio_otp:"OTP", forgot_password:"Forgot Password?",
+           act_enable_notifications:"Enable Notifications", act_my_qr_code:"My QR Code", act_rewards_missions:"Rewards & Missions", act_ev_charging_map:"EV Charging Map", act_community_feed:"Community Feed", chart_login_logout:"Login & Logout Activity",
+           adm_box_auditor:"Website Auditor", adm_box_analytics:"Visitor Analytics", adm_box_email:"Email Leads", adm_box_bot:"Bot Intelligence", adm_box_funnel:"Lead Funnel", logins:"Logins", logouts:"Logouts"
        },
        hi: {
-           nav_home:"αñ╣αÑïαñ«", nav_vehicles:"αñ╡αñ╛αñ╣αñ¿", nav_dashboard:"αñíαÑêαñ╢αñ¼αÑïαñ░αÑìαñí", nav_score:"αñ╕αÑìαñòαÑïαñ░", nav_profile:"αñ¬αÑìαñ░αÑïαñ½αñ╝αñ╛αñçαñ▓", nav_admin:"αñÅαñíαñ«αñ┐αñ¿",
            logout:"αñ▓αÑëαñùαñåαñëαñƒ", login:"αñ▓αÑëαñùαñ┐αñ¿", welcome_title:"αñàαñ¬αñ¿αÑÇ αñíαñ┐αñ▓αÑÇαñ╡αñ░αÑÇ αñ»αñ╛αññαÑìαñ░αñ╛ αñòαÑï αñ╕αñ╢αñòαÑìαññ αñ¼αñ¿αñ╛αñÅαñé",
            welcome_subtitle:"αñ╣αñ£αñ╛αñ░αÑïαñé αñ░αñ╛αñçαñíαñ░αÑìαñ╕ αñ╕αÑç αñ£αÑüαñíαñ╝αÑçαñéαÑñ αñ╕αñ░αÑìαñ╡αÑç αñ¬αÑéαñ░αñ╛ αñòαñ░αÑçαñé, αñ░αÑçαñ½αñ░αñ▓ αñòαÑïαñí αñ¬αñ╛αñÅαñé αñöαñ░ αñ¬αÑëαñçαñéαñƒαÑìαñ╕ αñ£αÑÇαññαÑçαñé!",
            label_total_riders:"αñ╕αñòαÑìαñ░αñ┐αñ» αñ░αñ╛αñçαñíαñ░αÑìαñ╕", label_start_points:"αñ╢αÑüαñ░αÑüαñåαññαÑÇ αñàαñéαñò", label_per_referral:"αñ¬αÑìαñ░αññαñ┐ αñ░αÑçαñ½αñ░αñ▓",

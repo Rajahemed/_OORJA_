@@ -269,6 +269,7 @@ let visitorId = '';
 let sessionId = '';
 let currentUser = null;
 let isLoggedIn = false;
+let activeCharts = {};
 
 function _rwGenerateId() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -638,6 +639,47 @@ async function loadEmailLeads() {
     }
 }
 
+    async function loadLeadFunnel() {
+        try {
+            const res = await fetch('/api/admin/analytics/leads-funnel', { headers: getAdminAuthHeaders() });
+            const data = await res.json();
+            if (data.success) {
+                const stats = data.data;
+                const el = (id) => document.getElementById(id);
+                if(el('funnelTotalLeads')) el('funnelTotalLeads').textContent = stats.totalLeads;
+                if(el('funnelPartial')) el('funnelPartial').textContent = stats.partial;
+                if(el('funnelCompleted')) el('funnelCompleted').textContent = stats.completed;
+                if(el('funnelAbandoned')) el('funnelAbandoned').textContent = stats.abandoned;
+                if(el('funnelConvRate')) el('funnelConvRate').textContent = stats.conversionRate + '%';
+                if(el('funnelAvgCompletion')) el('funnelAvgCompletion').textContent = stats.avgCompletion + '%';
+                
+                if (window.Chart) {
+                    const ctx = document.getElementById('funnelStepChart');
+                    if (ctx && !window.funnelChartInst) {
+                        window.funnelChartInst = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5', 'Step 6', 'Step 7'],
+                                datasets: [{
+                                    label: 'Users at Step',
+                                    data: [stats.stepCounts[1], stats.stepCounts[2], stats.stepCounts[3], stats.stepCounts[4], stats.stepCounts[5], stats.stepCounts[6], stats.stepCounts[7]],
+                                    backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                                    borderColor: 'rgb(59, 130, 246)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: { responsive: true, maintainAspectRatio: false }
+                        });
+                    } else if (window.funnelChartInst) {
+                        window.funnelChartInst.data.datasets[0].data = [stats.stepCounts[1], stats.stepCounts[2], stats.stepCounts[3], stats.stepCounts[4], stats.stepCounts[5], stats.stepCounts[6], stats.stepCounts[7]];
+                        window.funnelChartInst.update();
+                    }
+                } else {
+                    console.error('Chart.js is not defined. Cannot render funnel step chart.');
+                }
+            }
+        } catch (e) { console.error('Failed to load lead funnel', e); }
+    }
 async function openDataDrilldown(type) {
     if (type === 'conversion') return; // Just a calculated ratio, nothing to drill down
     
@@ -810,54 +852,225 @@ async function openDataDrilldown(type) {
     }
 
     // ===== THEME TOGGLE (BACKGROUND) =====
-    const THEMES = [
-        'default', 'pink-teal', 'orange-yellow', 'fuchsia-grey', 
-        'green-red', 'cream-black', 'black-white', 'dark-pink',
-        'blue-mint', 'red-black', 'green-tangerine', 'neon-trio',
-        'yellow-green', 'sky-blue', 'lime-white', 'beige-grey', 'pastel-purple'
-    ];
-    let currentThemeIndex = 0;
-    
-    function cycleTheme() {
-        currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
-        setTheme(THEMES[currentThemeIndex]);
-    }
+        // ==================== NEW FEATURES ====================
+    window.simulateWhatsAppLogin = async function() {
+        const phone = prompt("Enter your WhatsApp phone number to login:");
+        if (!phone) return; // User cancelled
 
-    function setTheme(newTheme) {
-        if (!THEMES.includes(newTheme)) return;
-        currentThemeIndex = THEMES.indexOf(newTheme);
-        
-        if (newTheme === 'default') {
-            document.body.removeAttribute('data-theme');
+        showToast('Simulating WhatsApp Login...', 'info');
+        try {
+            const res = await fetch('/auth/login', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ phone, loginMethod: 'whatsapp' }) 
+            });
+            const result = await res.json();
+            
+            if (result.success) {
+                localStorage.setItem('riderId', result.riderId);
+                localStorage.setItem('sessionId', result.sessionId);
+                fetchRiderProfile(result.riderId);
+                
+                showToast('Logged in successfully via WhatsApp!', 'success');
+                
+                const authSection = document.getElementById('authSection');
+                if (authSection) authSection.style.display = 'none';
+                const dashSection = document.getElementById('dashboardSection');
+                if (dashSection) dashSection.style.display = 'block';
+                
+            } else {
+                showToast(result.error || 'User not found. Please register first.', 'error');
+            }
+        } catch (e) {
+            showToast('Login error: ' + e.message, 'error');
+        }
+    };
+
+    window.requestPushNotifications = function() {
+        if ('Notification' in window) {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    showToast('Push notifications enabled!', 'success');
+                    if ('serviceWorker' in navigator) {
+                        navigator.serviceWorker.ready.then(registration => {
+                            registration.showNotification('Welcome to Road Warrior!', {
+                                body: 'You will now receive updates on your ranking and rewards.',
+                                icon: '/og-image.png'
+                            });
+                        });
+                    }
+                } else {
+                    showToast('Push notifications denied.', 'warning');
+                }
+            });
         } else {
-            document.body.setAttribute('data-theme', newTheme);
+            showToast('Push notifications not supported in this browser.', 'warning');
         }
-        localStorage.setItem('roadwarrior_theme', newTheme);
+    };
+
+    window.showReferralQR = function() {
+        if (!currentUser) return;
+        document.getElementById('qrReferralCodeText').innerText = currentUser.referralCode;
+        const qrContainer = document.getElementById('qrcode');
+        qrContainer.innerHTML = '';
+        if (typeof QRCode !== 'undefined') {
+            new QRCode(qrContainer, {
+                text: "https://roadwarrior.pro/?ref=" + currentUser.referralCode,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff"
+            });
+        } else {
+            qrContainer.innerText = "Please include qrcode.js in your index.html head to use this feature.";
+        }
+        openModal('qrModal');
+    };
+
+    window.shareReferralWhatsApp = async function() {
+        if (!currentUser) return;
         
-        const selector = document.getElementById('themeSelector');
-        if (selector) selector.value = newTheme;
+        const qrContainer = document.getElementById('qrcode');
+        const canvas = qrContainer.querySelector('canvas');
+        const img = qrContainer.querySelector('img');
+        
+        let dataUrl = '';
+        if (canvas) {
+            // Draw onto a new canvas with a white background to avoid transparency issues (black bg in some apps)
+            const newCanvas = document.createElement('canvas');
+            // Add padding so it looks like a nice square card
+            const padding = 20;
+            newCanvas.width = canvas.width + (padding * 2);
+            newCanvas.height = canvas.height + (padding * 2);
+            const ctx = newCanvas.getContext('2d');
+            
+            // Fill white background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+            
+            // Draw original QR code centered
+            ctx.drawImage(canvas, padding, padding);
+            
+            // Convert to JPEG to drop any potential alpha channel issues entirely
+            dataUrl = newCanvas.toDataURL('image/jpeg', 1.0);
+        } else if (img && img.src) {
+            dataUrl = img.src;
+        }
+        
+        if (!dataUrl) {
+            showToast('QR Code not ready yet.', 'error');
+            return;
+        }
+
+        try {
+            const arr = dataUrl.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while(n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            const blob = new Blob([u8arr], {type: mime});
+            const file = new File([blob], 'referral-qr.jpg', { type: 'image/jpeg' });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                // Share ONLY the file, without text or url, as requested by user
+                await navigator.share({
+                    files: [file]
+                });
+            } else {
+                // Fallback if sharing files is not supported
+                const a = document.createElement('a');
+                a.href = dataUrl;
+                a.download = 'roadwarrior-qr.jpg';
+                a.click();
+                showToast('Image downloaded! You can now send it on WhatsApp.', 'info');
+            }
+        } catch (err) {
+            console.error('Error sharing:', err);
+            if (err.name !== 'AbortError') {
+                showToast('Sharing failed, downloading image instead...', 'info');
+                const a = document.createElement('a');
+                a.href = dataUrl;
+                a.download = 'roadwarrior-qr.jpg';
+                a.click();
+            }
+        }
+    };
+
+    window.completeMission = function(btn, points) {
+        if (!currentUser) return;
+        currentUser.totalPoints += points;
+        updateUserInStorage(currentUser);
+        btn.innerText = 'Claimed!';
+        btn.disabled = true;
+        btn.style.background = 'var(--success-color)';
+        btn.style.borderColor = 'var(--success-color)';
+        btn.style.color = 'white';
+        const balElem = document.getElementById('rewardsPointsBalance');
+        if(balElem) balElem.innerText = currentUser.totalPoints;
+        showToast(`Mission complete! You earned ${points} points.`, 'success');
+        if (typeof renderLeaderboard === 'function') renderLeaderboard();
+        if (typeof updateUIForUser === 'function') updateUIForUser();
+    };
+
+    window.redeemReward = function(cost, item) {
+        if (!currentUser) return;
+        if (currentUser.totalPoints < cost) {
+            showToast('Not enough points to redeem this item.', 'warning');
+            return;
+        }
+        currentUser.totalPoints -= cost;
+        updateUserInStorage(currentUser);
+        const balElem = document.getElementById('rewardsPointsBalance');
+        if(balElem) balElem.innerText = currentUser.totalPoints;
+        showToast(`Successfully redeemed: ${item}!`, 'success');
+        if (typeof renderLeaderboard === 'function') renderLeaderboard();
+        if (typeof updateUIForUser === 'function') updateUIForUser();
+    };
+
+    let evMapInitialized = false;
+    window.initEVMap = function() {
+        if (evMapInitialized) return;
+        if (typeof L === 'undefined') {
+            setTimeout(window.initEVMap, 500);
+            return;
+        }
+        evMapInitialized = true;
+        
+        const map = L.map('evMap').setView([12.9716, 77.5946], 12);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '┬⌐ OpenStreetMap'
+        }).addTo(map);
+        
+        const stations = [
+            { lat: 12.9716, lng: 77.5946, name: "City Center Fast Charge" },
+            { lat: 12.9616, lng: 77.5846, name: "South Block Swap Station" },
+            { lat: 12.9816, lng: 77.6046, name: "Indiranagar EV Hub" },
+            { lat: 12.9516, lng: 77.6146, name: "Koramangala Supercharger" }
+        ];
+        
+        stations.forEach(station => {
+            L.marker([station.lat, station.lng]).addTo(map)
+                .bindPopup(`<b>${station.name}</b><br>Available slots: ${Math.floor(Math.random() * 5) + 1}`);
+        });
+        
+        // Fix map rendering issue when inside modal
+        setTimeout(() => map.invalidateSize(), 200);
+    };
+
+    function updateUserInStorage(user) {
+        let riders = JSON.parse(localStorage.getItem('roadwarrior_riders') || '[]');
+        const idx = riders.findIndex(r => r.id === user.id);
+        if (idx !== -1) {
+            riders[idx] = user;
+            localStorage.setItem('roadwarrior_riders', JSON.stringify(riders));
+        }
+        localStorage.setItem('roadwarrior_current_user', JSON.stringify(user));
     }
 
-    // Apply saved theme on load
-    window.addEventListener('DOMContentLoaded', () => {
-        let savedTheme = localStorage.getItem('roadwarrior_theme');
-        
-        if (!savedTheme || !THEMES.includes(savedTheme)) {
-            savedTheme = 'default'; // Set default as the default
-        }
-        
-        currentThemeIndex = THEMES.indexOf(savedTheme);
-        if (savedTheme !== 'default') {
-            document.body.setAttribute('data-theme', savedTheme);
-        }
-        const selector = document.getElementById('themeSelector');
-        if (selector) selector.value = savedTheme;
-        const icon = document.querySelector('#themeToggleBtn i');
-        if (icon) {
-            if (savedTheme === 'cream-black' || savedTheme === 'black-white') icon.className = 'fas fa-adjust';
-            else icon.className = 'fas fa-palette';
-        }
-    });
 
     // ===== LOCATION DATA =====
     const LOCATION_DATA = {
@@ -1015,7 +1228,7 @@ async function openDataDrilldown(type) {
             if (result.success) {
                 currentUser = result.data; isLoggedIn = true;
                 updateAuthNavbarState();
-                if (['/', '/home', '/login', '/register'].includes(window.location.pathname)) navigateTo('/dashboard');
+                if (['/', '/home', '/login', '/register', '/index.html'].some(p => window.location.pathname.endsWith(p))) navigateTo('/dashboard');
             } else {
                 if (result.error === 'Rider not found') logoutUser();
                 else showToast(`Session verification error: ${result.error}`, 'warning');
@@ -1032,6 +1245,8 @@ async function openDataDrilldown(type) {
         const navScore = document.getElementById('navScore');
         const navDashboard = document.getElementById('navDashboard');
         const navProfile = document.getElementById('navProfile');
+        const navHome = document.getElementById('navHome');
+        const navAdmin = document.getElementById('navAdmin');
 
         if (isLoggedIn) {
             btn.innerHTML = `<i class="fas fa-sign-out-alt"></i> <span>Logout</span>`;
@@ -1040,6 +1255,8 @@ async function openDataDrilldown(type) {
             if (navScore) navScore.parentElement.style.display = '';
             if (navDashboard) navDashboard.parentElement.style.display = '';
             if (navProfile) navProfile.parentElement.style.display = '';
+            if (navHome) navHome.parentElement.style.display = '';
+            if (navAdmin) navAdmin.parentElement.style.display = '';
         } else {
             btn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`;
             btn.classList.replace('btn-secondary', 'btn-primary');
@@ -1047,6 +1264,8 @@ async function openDataDrilldown(type) {
             if (navScore) navScore.parentElement.style.display = 'none';
             if (navDashboard) navDashboard.parentElement.style.display = 'none';
             if (navProfile) navProfile.parentElement.style.display = 'none';
+            if (navHome) navHome.parentElement.style.display = 'none';
+            if (navAdmin) navAdmin.parentElement.style.display = 'none';
         }
     }
 
@@ -1422,6 +1641,7 @@ async function openDataDrilldown(type) {
                 trackEvent('login', { method: payload.loginMethod });
                 btn.innerHTML = origText;
                 btn.disabled = false;
+                navigateTo('/dashboard');
             } else {
                 document.getElementById('loginErrorText').textContent = 'Login failed: ' + (result.message || result.error || 'Invalid credentials');
                 document.getElementById('loginErrorMsg').style.display = 'block';
@@ -2461,7 +2681,7 @@ async function openDataDrilldown(type) {
                             labels: result.data.map(d => d.day),
                             datasets: [
                                 {
-                                    label: 'Logins',
+                                    label: (window.t ? window.t('logins') : 'Logins'),
                                     data: result.data.map(d => d.logins),
                                     borderColor: 'rgba(59,130,246,1)',
                                     backgroundColor: 'rgba(59,130,246,0.1)',
@@ -2470,7 +2690,7 @@ async function openDataDrilldown(type) {
                                     fill: true
                                 },
                                 {
-                                    label: 'Logouts',
+                                    label: (window.t ? window.t('logouts') : 'Logouts'),
                                     data: result.data.map(d => d.logouts),
                                     borderColor: 'rgba(239,68,68,1)',
                                     backgroundColor: 'rgba(239,68,68,0.1)',
@@ -2765,6 +2985,7 @@ async function openDataDrilldown(type) {
         else if (tab === 'visitorAnalytics') loadVisitorAnalytics();
         else if (tab === 'botIntelligence') loadBotIntelligence();
         else if (tab === 'emailLeads') loadEmailLeads();
+        else if (tab === 'leadFunnel') loadLeadFunnel();
     }
 
     // Helper to include admin JWT token in Authorization header
@@ -3031,6 +3252,14 @@ async function openDataDrilldown(type) {
             filtered = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric'));
         } else if (val === 'PERSONAL_INSURANCE_LEAD' || val === 'BIKE_INSURANCE_LEAD') {
             filtered = allAdminRiders.filter(r => r.hasAccidentalInsurance === 'No' || r.hasAccidentalInsurance === 'Not sure' || r.hasHealthInsurance === 'No' || r.hasHealthInsurance === 'Not sure' || (r.tags || []).includes('Insurance Lead'));
+        } else if (val === 'STATUS_LEAD') {
+            filtered = allAdminRiders.filter(r => r.form_status === 'Lead');
+        } else if (val === 'STATUS_PARTIAL') {
+            filtered = allAdminRiders.filter(r => r.form_status === 'Partial');
+        } else if (val === 'STATUS_COMPLETED') {
+            filtered = allAdminRiders.filter(r => r.form_status === 'Completed');
+        } else if (val === 'STATUS_ABANDONED') {
+            filtered = allAdminRiders.filter(r => r.form_status === 'Abandoned');
         } else if (val !== 'ALL') {
             filtered = allAdminRiders.filter(r => (r.tags || []).includes(val));
         }
@@ -3594,7 +3823,58 @@ function showStep(step) {
     window.scrollTo({top: formTop - 20, behavior: 'smooth'});
 }
 
-function nextStep() {
+window.savePartialProgress = async function() {
+    const phone = document.getElementById('regPhone').value.trim();
+    if (!phone) return;
+    
+    const name = document.getElementById('regFullName').value.trim();
+    let state = document.getElementById('regState').value;
+    if (state === 'Other') state = document.getElementById('regStateOther').value.trim();
+    let city = document.getElementById('regCity').value;
+    if (city === 'Other') city = document.getElementById('regCityOther').value.trim();
+    let pincode = document.getElementById('regPincode').value;
+    let platform = document.getElementById('regPlatform').value;
+    if (platform === 'Other') platform = document.getElementById('regPlatformOther').value.trim();
+    const exp = document.getElementById('regExp').value;
+
+    const payload = {
+        phone: phone,
+        current_step: currentStep,
+        fullName: name,
+        state: state,
+        city: city,
+        pincode: pincode,
+        deliveryPlatform: platform,
+        experienceYears: exp,
+        vehicleType: getRadioValue('vehicleType') === 'Other' ? document.getElementById('regVehicleTypeOther').value.trim() : getRadioValue('vehicleType'),
+        vehicleModel: document.getElementById('regVehicleModel').value === 'Other' ? document.getElementById('regVehicleModelOther').value.trim() : document.getElementById('regVehicleModel').value,
+        fuelMethod: getRadioValue('fuelMethod') === 'Other' ? document.getElementById('regFuelMethodOther').value.trim() : getRadioValue('fuelMethod'),
+        fuelExpenseWeekly: document.getElementById('regFuelExp').value,
+        maintenanceExpenseMonthly: document.getElementById('regMaintExp').value,
+        challenges: getCheckedValuesWithOther('challenges', 'regChallengesOther'),
+        evChallenges: getCheckedValuesWithOther('evChallenges', 'regEvChallengesOther'),
+        petrolChallenges: getCheckedValuesWithOther('petrolChallenges', 'regPetrolChallengesOther'),
+        hasAccidentalInsurance: getRadioValue('hasAccidental'),
+        hasHealthInsurance: getRadioValue('hasHealth'),
+        paidOutofPocketAccident: getRadioValue('paidPocket'),
+        openToEV: getRadioValue('openEV'),
+        switchTriggers: getCheckedValues('switchTriggers'),
+        interests: getRadioValue('interests'),
+        language: localStorage.getItem('selectedLang') || 'en'
+    };
+
+    try {
+        await fetch('/api/riders/partial', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+    } catch (e) {
+        console.error('Failed to save partial progress', e);
+    }
+};
+
+window.nextStep = async function() {
     const currentSection = document.getElementById('regSection' + currentStep);
     const inputs = currentSection.querySelectorAll('input[required], select[required]');
     let isValid = true;
@@ -3610,8 +3890,6 @@ function nextStep() {
 
     let firstInvalid = null;
     inputs.forEach(input => {
-        // Skip validation if the input itself or any of its containers are hidden
-        // offsetParent catches display:none, closest('.hidden-section') catches max-height:0 hiding
         if (input.offsetParent === null || input?.closest?.('.hidden-section')) {
             return;
         }
@@ -3640,13 +3918,10 @@ function nextStep() {
             if (!isInputValid) {
                 isValid = false;
                 visualElement.classList.add('invalid-field-highlight');
-                
-                // For direct inputs/selects, also apply red border
                 if (visualElement.tagName === 'INPUT' || visualElement.tagName === 'SELECT') {
                     visualElement.style.borderColor = 'var(--danger-color)';
                     visualElement.style.backgroundColor = 'rgba(239, 68, 68, 0.05)';
                 }
-                
                 if (!firstInvalid) firstInvalid = visualElement;
             } else {
                 visualElement.classList.remove('invalid-field-highlight');
@@ -3666,6 +3941,37 @@ function nextStep() {
         return;
     }
     
+    const regPhone = document.getElementById('regPhone').value.trim();
+    if (currentStep === 1 && regPhone) {
+        try {
+            const res = await fetch(`/api/riders/partial/${regPhone}`);
+            const data = await res.json();
+            if (data.exists) {
+                if (data.is_completed) {
+                    showToast('Phone number already registered. Please login.', 'error');
+                    return; // block moving forward
+                } else if (!window.resumedPartial) {
+                    const pd = data.data;
+                    document.getElementById('regFullName').value = pd.fullName || '';
+                    document.getElementById('regState').value = pd.state || '';
+                    if (pd.state && window.onRegStateChange) window.onRegStateChange();
+                    document.getElementById('regCity').value = pd.city || '';
+                    document.getElementById('regPincode').value = pd.pincode || '';
+                    
+                    window.resumedPartial = true;
+                    if (pd.current_step > 1) {
+                         currentStep = pd.current_step;
+                         showStep(currentStep);
+                         showToast('Resuming your partial application', 'success');
+                         return; 
+                    }
+                }
+            }
+        } catch(e) {
+            console.error('Partial fetch error:', e);
+        }
+    }
+
     if (currentStep < totalSteps) {
         currentStep++;
         const vt = document.querySelector('input[name="vehicleType"]:checked');
@@ -3673,6 +3979,7 @@ function nextStep() {
             currentStep++; // Skip EV openness section
         }
         showStep(currentStep);
+        window.savePartialProgress();
     }
 }
 
@@ -3756,5 +4063,17 @@ window.loginAfterRegister = typeof loginAfterRegister !== 'undefined' ? loginAft
 window.goBackToLogin = typeof goBackToLogin !== 'undefined' ? goBackToLogin : function(){};
 window.handleAdminLogin = typeof handleAdminLogin !== 'undefined' ? handleAdminLogin : function(){};
 window.showStep = typeof showStep !== 'undefined' ? showStep : function(){};
-window.nextStep = typeof nextStep !== 'undefined' ? nextStep : function(){};
+window.nextStep = typeof nextStep !== 'undefined' ? nextStep : window.nextStep;
 window.prevStep = typeof prevStep !== 'undefined' ? prevStep : function(){};
+
+window.viewFunnelLeads = function(status) {
+    if (typeof switchAdminTab === 'function') switchAdminTab('allRiders');
+    const filter = document.getElementById('adminLeadFilter');
+    if (filter) {
+        if (status === 'Lead') filter.value = 'STATUS_LEAD';
+        else if (status === 'Partial') filter.value = 'STATUS_PARTIAL';
+        else if (status === 'Completed') filter.value = 'STATUS_COMPLETED';
+        else if (status === 'Abandoned') filter.value = 'STATUS_ABANDONED';
+        if (typeof filterAdminRiders === 'function') filterAdminRiders();
+    }
+};

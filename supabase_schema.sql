@@ -42,7 +42,12 @@ CREATE TABLE IF NOT EXISTS riders (
     "profileImage" TEXT,
     milestone10 BOOLEAN DEFAULT false,
     milestone25 BOOLEAN DEFAULT false,
-    milestone50 BOOLEAN DEFAULT false
+    milestone50 BOOLEAN DEFAULT false,
+    "current_step" INTEGER DEFAULT 1,
+    "progress_percentage" INTEGER DEFAULT 0,
+    "form_status" TEXT DEFAULT 'Lead',
+    "is_completed" BOOLEAN DEFAULT false,
+    "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Vehicles Table

@@ -91,7 +91,7 @@
     <link rel="stylesheet" href="/css/style.css?v=4">
     <link rel="stylesheet" href="/css/cookie-consent.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
     <style>
@@ -459,17 +459,17 @@
     <!-- End Google Tag Manager (noscript) -->
     <!-- Navigation Bar -->
     <nav class="navbar">
-        <div class="navbar-brand" onclick="navigateTo('/home')">
-            <img src="/img/new_ev_bike.png" alt="EV Scooter Logo" class="rw-logo" style="object-fit: contain; transform: scale(1.5);">
-            <span class="brand-text">Road Warrior EV</span>
+        <div class="navbar-brand" style="cursor: default;">
+            <img src="/img/new_ev_bike.png" alt="EV Scooter Logo" class="rw-logo" style="object-fit: contain; transform: scale(1.5); cursor: pointer;" onclick="navigateTo('/admin')">
+            <span class="brand-text" style="cursor: pointer;" onclick="navigateTo('/home')">Road Warrior EV</span>
         </div>
         <ul class="navbar-nav">
-            <li class="nav-item"><a href="/home" class="nav-link active" id="navHome" onclick="handleNavLinkClick(event, '/home')"><i class="fas fa-home"></i> <span data-i18n="nav_home">Home</span></a></li>
-            <li class="nav-item"><a href="/score" class="nav-link" id="navScore" onclick="handleNavLinkClick(event, '/score')"><i class="fas fa-trophy"></i> <span data-i18n="nav_score">Score</span></a></li>
+            <li class="nav-item" style="display: none;"><a href="/home" class="nav-link active" id="navHome" onclick="handleNavLinkClick(event, '/home')"><i class="fas fa-home"></i> <span data-i18n="nav_home">Home</span></a></li>
+            <li class="nav-item" style="display: none;"><a href="/score" class="nav-link" id="navScore" onclick="handleNavLinkClick(event, '/score')"><i class="fas fa-trophy"></i> <span data-i18n="nav_score">Score</span></a></li>
 
-            <li class="nav-item"><a href="/dashboard" class="nav-link" id="navDashboard" onclick="handleNavLinkClick(event, '/dashboard')"><i class="fas fa-chart-line"></i> <span data-i18n="nav_dashboard">Dashboard</span></a></li>
-            <li class="nav-item"><a href="/profile" class="nav-link" id="navProfile" onclick="handleNavLinkClick(event, '/profile')"><i class="fas fa-user"></i> <span data-i18n="nav_profile">Profile</span></a></li>
-            <li class="nav-item"><a href="/admin" class="nav-link" id="navAdmin" onclick="handleNavLinkClick(event, '/admin')"><i class="fas fa-cog"></i> <span data-i18n="nav_admin">Admin</span></a></li>
+            <li class="nav-item" style="display: none;"><a href="/dashboard" class="nav-link" id="navDashboard" onclick="handleNavLinkClick(event, '/dashboard')"><i class="fas fa-chart-line"></i> <span data-i18n="nav_dashboard">Dashboard</span></a></li>
+            <li class="nav-item" style="display: none;"><a href="/profile" class="nav-link" id="navProfile" onclick="handleNavLinkClick(event, '/profile')"><i class="fas fa-user"></i> <span data-i18n="nav_profile">Profile</span></a></li>
+
         </ul>
         <div class="navbar-end">
             <select class="lang-select" onchange="changeLanguage(this.value)" id="langSelector">
@@ -482,25 +482,7 @@
                 <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
                 <option value="bn">🇮🇳 বাংলা (Bengali)</option>
             </select>
-            <select class="lang-select" id="themeSelector" onchange="setTheme(this.value)" style="margin-right: 0.5rem; background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff); -webkit-background-clip: text; color: transparent; font-weight: bold;">
-                <option value="default" style="background-color: #ffffff; color: #000000;" selected>🟢 Default</option>
-                <option value="pink-teal" style="background-color: #ffffff; color: #000000;">🌸 Pink Teal</option>
-                <option value="orange-yellow" style="background-color: #ffffff; color: #000000;">🔥 Orange Yellow</option>
-                <option value="fuchsia-grey" style="background-color: #ffffff; color: #000000;">🟣 Fuchsia Grey</option>
-                <option value="green-red" style="background-color: #ffffff; color: #000000;">🍉 Green Red</option>
-                <option value="cream-black" style="background-color: #ffffff; color: #000000;">☕ Cream Black</option>
-                <option value="black-white" style="background-color: #ffffff; color: #000000;">🎹 Black White</option>
-                <option value="dark-pink" style="background-color: #ffffff; color: #000000;">🌺 Dark Pink</option>
-                <option value="blue-mint" style="background-color: #ffffff; color: #000000;">🧊 Blue Mint</option>
-                <option value="red-black" style="background-color: #ffffff; color: #000000;">🔴 Red Black</option>
-                <option value="green-tangerine" style="background-color: #ffffff; color: #000000;">🍊 Green Tangerine</option>
-                <option value="neon-trio" style="background-color: #ffffff; color: #000000;">✨ Neon Trio</option>
-                <option value="yellow-green" style="background-color: #ffffff; color: #000000;">🍋 Yellow Green</option>
-                <option value="sky-blue" style="background-color: #ffffff; color: #000000;">☁️ Sky Blue</option>
-                <option value="lime-white" style="background-color: #ffffff; color: #000000;">🍈 Lime White</option>
-                <option value="beige-grey" style="background-color: #ffffff; color: #000000;">🪨 Beige Grey</option>
-                <option value="pastel-purple" style="background-color: #ffffff; color: #000000;">🪻 Pastel Purple</option>
-            </select>
+
             <button class="btn btn-primary btn-small" id="loginLogoutBtn" onclick="toggleAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login</span></button>
         </div>
     </nav>
@@ -567,7 +549,7 @@
                         </div>
                         <div class="card-body" style="margin-top:1rem;">
                             <form id="loginForm" onsubmit="handleLogin(event)">
-                                <div style="display:flex; gap:1rem; margin-bottom:1rem; border-bottom:1px solid var(--card-border); padding-bottom:0.5rem;">
+                                <div style="display:none; gap:1rem; margin-bottom:1rem; border-bottom:1px solid var(--card-border); padding-bottom:0.5rem;">
                                     <label><input type="radio" name="loginMethod" value="password" checked onchange="toggleLoginMethod()"> <span data-i18n="radio_password">Password</span></label>
                                     <label><input type="radio" name="loginMethod" value="otp" onchange="toggleLoginMethod()"> <span data-i18n="radio_otp">OTP</span></label>
                                 </div>
@@ -1211,11 +1193,11 @@
                     <button class="btn btn-primary" onclick="openModal('vehicleModal')"><i class="fas fa-motorcycle"></i> <span data-i18n="act_add_vehicle">Add Vehicle</span></button>
                     <button class="btn btn-secondary" onclick="navigateTo('/profile')"><i class="fas fa-user-edit"></i> <span data-i18n="act_edit_profile">Edit Profile</span></button>
                     <button class="btn btn-secondary" onclick="navigateTo('/score')"><i class="fas fa-medal"></i> <span data-i18n="act_leaderboard">View Rankings</span></button>
-                    <button class="btn btn-secondary" onclick="requestPushNotifications()"><i class="fas fa-bell"></i> Enable Notifications</button>
-                    <button class="btn btn-secondary" onclick="showReferralQR()"><i class="fas fa-qrcode"></i> My QR Code</button>
-                    <button class="btn btn-secondary" onclick="openModal('rewardsModal')"><i class="fas fa-gift"></i> Rewards & Missions</button>
-                    <button class="btn btn-secondary" onclick="openModal('evMapModal'); initEVMap();"><i class="fas fa-map"></i> EV Charging Map</button>
-                    <button class="btn btn-secondary" onclick="window.location.href='/community.html'"><i class="fas fa-comments"></i> Community Feed</button>
+                    <button class="btn btn-secondary" onclick="requestPushNotifications()"><i class="fas fa-bell"></i> <span data-i18n="act_enable_notifications">Enable Notifications</span></button>
+                    <button class="btn btn-secondary" onclick="showReferralQR()"><i class="fas fa-qrcode"></i> <span data-i18n="act_my_qr_code">My QR Code</span></button>
+                    <button class="btn btn-secondary" onclick="openModal('rewardsModal')"><i class="fas fa-gift"></i> <span data-i18n="act_rewards_missions">Rewards & Missions</span></button>
+                    <button class="btn btn-secondary" onclick="openModal('evMapModal'); initEVMap();"><i class="fas fa-map"></i> <span data-i18n="act_ev_charging_map">EV Charging Map</span></button>
+                    <button class="btn btn-secondary" onclick="window.location.href='/community.html'"><i class="fas fa-comments"></i> <span data-i18n="act_community_feed">Community Feed</span></button>
                 </div>
             </div>
             <div class="row cols-2 mb-5">
@@ -1228,7 +1210,7 @@
                     <div class="card-body"><canvas id="citiesChart" style="max-height:300px;"></canvas></div>
                 </div>
                 <div class="card">
-                    <div class="card-header"><h3 class="card-title"><i class="fas fa-users text-primary-color"></i> Login & Logout Activity</h3></div>
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-users text-primary-color"></i> <span data-i18n="chart_login_logout">Login & Logout Activity</span></h3></div>
                     <div class="card-body"><canvas id="loginLogoutChart" style="max-height:300px;"></canvas></div>
                 </div>
             </div>
@@ -1466,9 +1448,11 @@
                 <div class="stat-box" onclick="clickAdminStat('insLeads')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">🛡️</span><div class="stat-value" id="adminInsLeads">0</div><div class="stat-label" data-i18n="adm_ins_leads">Insurance Leads</div></div>
                 <div class="stat-box" onclick="clickAdminStat('topReferrers')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🏆</span><div class="stat-label" data-i18n="tab_top_referrers">Top Referrers</div></div>
                 <div class="stat-box" onclick="clickAdminStat('cityStats')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🏙️</span><div class="stat-label" data-i18n="tab_city_stats">City Stats</div></div>
-                <div class="stat-box" onclick="clickAdminStat('auditor')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🔍</span><div class="stat-label">Website Auditor</div></div>
-                <div class="stat-box" onclick="clickAdminStat('visitorAnalytics')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">📊</span><div class="stat-label">Visitor Analytics</div></div>
-                <div class="stat-box" onclick="clickAdminStat('emailLeads')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">✉️</span><div class="stat-label">Email Leads</div></div>
+                <div class="stat-box" onclick="clickAdminStat('auditor')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🔍</span><div class="stat-label" data-i18n="adm_box_auditor">Website Auditor</div></div>
+                <div class="stat-box" onclick="clickAdminStat('visitorAnalytics')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">📊</span><div class="stat-label" data-i18n="adm_box_analytics">Visitor Analytics</div></div>
+                <div class="stat-box" onclick="clickAdminStat('emailLeads')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">✉️</span><div class="stat-label" data-i18n="adm_box_email">Email Leads</div></div>
+                <div class="stat-box" onclick="clickAdminStat('botIntelligence')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🤖</span><div class="stat-label" data-i18n="adm_box_bot">Bot Intelligence</div></div>
+                <div class="stat-box" onclick="clickAdminStat('leadFunnel')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">📉</span><div class="stat-label" data-i18n="adm_box_funnel">Lead Funnel</div></div>
             </div>
 
             <!-- Admin Tabs -->
@@ -1478,10 +1462,38 @@
                 <button class="admin-tab" onclick="switchAdminTab('insLeads')" data-i18n="tab_ins_leads">🛡️ Insurance Leads</button>
                 <button class="admin-tab" onclick="switchAdminTab('topReferrers')" data-i18n="tab_top_referrers">🏆 Top Referrers</button>
                 <button class="admin-tab" onclick="switchAdminTab('cityStats')" data-i18n="tab_city_stats">🏙️ City Stats</button>
-                <button class="admin-tab" onclick="switchAdminTab('auditor')"><i class="fas fa-search-dollar"></i> Website Auditor</button>
-                <button class="admin-tab" onclick="switchAdminTab('visitorAnalytics')"><i class="fas fa-chart-bar"></i> Visitor Analytics</button>
-                <button class="admin-tab" onclick="switchAdminTab('botIntelligence')"><i class="fas fa-robot"></i> Bot Intelligence</button>
-                <button class="admin-tab" onclick="switchAdminTab('emailLeads')"><i class="fas fa-envelope"></i> Email Leads</button>
+                <button class="admin-tab" onclick="switchAdminTab('auditor')"><i class="fas fa-search-dollar"></i> <span data-i18n="adm_box_auditor">Website Auditor</span></button>
+                <button class="admin-tab" onclick="switchAdminTab('visitorAnalytics')"><i class="fas fa-chart-bar"></i> <span data-i18n="adm_box_analytics">Visitor Analytics</span></button>
+                <button class="admin-tab" onclick="switchAdminTab('botIntelligence')"><i class="fas fa-robot"></i> <span data-i18n="adm_box_bot">Bot Intelligence</span></button>
+                <button class="admin-tab" onclick="switchAdminTab('emailLeads')"><i class="fas fa-envelope"></i> <span data-i18n="adm_box_email">Email Leads</span></button>
+                <button class="admin-tab" onclick="switchAdminTab('leadFunnel')"><i class="fas fa-funnel-dollar"></i> <span data-i18n="adm_box_funnel">Lead Funnel</span></button>
+            </div>
+
+            <!-- Tab: Lead Funnel -->
+            <div class="admin-panel" id="panel-leadFunnel">
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-chart-line text-primary-color"></i> Lead Capture Funnel</h3></div>
+                    <div class="card-body">
+                        <div class="row cols-4" style="margin-bottom: 2rem;">
+                            <div class="stat-box" onclick="viewFunnelLeads('Lead')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">🎯</span><div class="stat-value" id="funnelTotalLeads">0</div><div class="stat-label">Total Leads</div></div>
+                            <div class="stat-box" onclick="viewFunnelLeads('Partial')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">⏳</span><div class="stat-value" id="funnelPartial">0</div><div class="stat-label">Partial (In-Progress)</div></div>
+                            <div class="stat-box" onclick="viewFunnelLeads('Completed')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">✅</span><div class="stat-value" id="funnelCompleted">0</div><div class="stat-label">Completed Forms</div></div>
+                            <div class="stat-box" onclick="viewFunnelLeads('Abandoned')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">🗑️</span><div class="stat-value" id="funnelAbandoned">0</div><div class="stat-label">Abandoned Forms</div></div>
+                        </div>
+                        <div class="row cols-2" style="margin-bottom: 2rem;">
+                            <div class="stat-box" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
+                                <span class="stat-icon">📈</span><div class="stat-value" id="funnelConvRate">0%</div><div class="stat-label">Conversion Rate</div>
+                            </div>
+                            <div class="stat-box" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3);">
+                                <span class="stat-icon">📊</span><div class="stat-value" id="funnelAvgCompletion">0%</div><div class="stat-label">Avg Form Completion</div>
+                            </div>
+                        </div>
+                        <h4 style="margin-bottom: 1rem;">Drop-off by Step</h4>
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); border-radius: 8px; padding: 1.5rem;">
+                            <canvas id="funnelStepChart" style="width: 100%; height: 200px;"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Tab: All Riders -->
@@ -1495,6 +1507,10 @@
                                 <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Lead Segment:</span>
                                 <select id="adminLeadFilter" class="form-control" style="width: auto; min-width: 240px; padding: 0.4rem 2rem 0.4rem 0.75rem; font-size: 0.85rem; height: auto;" onchange="filterAdminRiders()">
                                     <option value="ALL">All Registered Riders</option>
+                                    <option value="STATUS_LEAD">All Leads (Basic Info)</option>
+                                    <option value="STATUS_PARTIAL">Partial Forms (In Progress)</option>
+                                    <option value="STATUS_COMPLETED">Completed Forms</option>
+                                    <option value="STATUS_ABANDONED">Abandoned Forms</option>
                                     <option value="EV_RIDERS">All EV Riders</option>
                                     <option value="PERSONAL_INSURANCE_LEAD">PERSONAL_INSURANCE_LEAD</option>
                                     <option value="BIKE_INSURANCE_LEAD">BIKE_INSURANCE_LEAD</option>

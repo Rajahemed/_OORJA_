@@ -724,4 +724,67 @@ router.get('/admin/analytics/export/csv', adminAuth(['SUPER_ADMIN', 'ADMIN']), a
   }
 });
 
+// ============================================================
+// GET /api/admin/analytics/leads-funnel
+// Leads and progressive form save analytics
+// ============================================================
+router.get('/admin/analytics/leads-funnel', adminAuth, adminAnalyticsRateLimit, async (req, res) => {
+  try {
+    const { data: riders, error } = await supabase.from('riders').select('id, form_status, current_step, progress_percentage, is_completed, updated_at');
+    if (error) throw error;
+
+    const totalLeads = riders.length;
+    let partial = 0;
+    let completed = 0;
+    let abandoned = 0;
+    
+    // Abandoned threshold: 24 hours
+    const abandonedThreshold = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    
+    // Step drop-off tracking
+    const stepCounts = {};
+    for (let i = 1; i <= 7; i++) { stepCounts[i] = 0; }
+    
+    let totalProgress = 0;
+
+    riders.forEach(r => {
+      totalProgress += r.progress_percentage || 0;
+      
+      const updatedAtDate = new Date(r.updated_at);
+      
+      if (r.is_completed) {
+        completed++;
+      } else {
+        if (updatedAtDate < abandonedThreshold) {
+          abandoned++;
+        } else {
+          partial++;
+        }
+      }
+      
+      const step = r.current_step || 1;
+      stepCounts[step] = (stepCounts[step] || 0) + 1;
+    });
+    
+    const conversionRate = totalLeads > 0 ? ((completed / totalLeads) * 100).toFixed(1) : 0;
+    const avgCompletion = totalLeads > 0 ? Math.round(totalProgress / totalLeads) : 0;
+
+    res.json({
+      success: true,
+      data: {
+        totalLeads,
+        partial,
+        completed,
+        abandoned,
+        conversionRate,
+        avgCompletion,
+        stepCounts
+      }
+    });
+  } catch (err) {
+    console.error('[Leads Funnel]', err);
+    res.status(500).json({ success: false, error: 'Server error fetching leads funnel' });
+  }
+});
+
 module.exports = router;

@@ -220,11 +220,20 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
     const normalizedPhone = phone.replace(/\D/g, '').slice(-10);
 
     // Check duplicate phone
-    const { data: dupPhoneRows, error: dupPhoneErr } = await supabase.from('riders').select('id').eq('phone', normalizedPhone);
+    const { data: dupPhoneRows, error: dupPhoneErr } = await supabase.from('riders').select('id, is_completed').eq('phone', normalizedPhone);
     if (dupPhoneErr) console.error('[Register] dupPhone error:', dupPhoneErr);
     const dupPhone = dupPhoneRows && dupPhoneRows.length > 0 ? dupPhoneRows[0] : null;
+    
+    let isUpdate = false;
+    let existingId = null;
+
     if (dupPhone) {
-      return res.status(400).json({ success: false, error: 'Phone number already registered. You can check your score at the Score page.' });
+      if (dupPhone.is_completed) {
+        return res.status(400).json({ success: false, error: 'Phone number already registered. You can check your score at the Score page.' });
+      } else {
+        isUpdate = true;
+        existingId = dupPhone.id;
+      }
     }
 
     // Check duplicate email if provided
@@ -310,15 +319,28 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       latitude: latitude ? parseFloat(latitude) : null,
       longitude: longitude ? parseFloat(longitude) : null,
       location_accuracy: locationAccuracy ? parseFloat(locationAccuracy) : null,
-      "registeredAt": new Date()
+      "registeredAt": new Date(),
+      "is_completed": true,
+      "form_status": 'Completed',
+      "progress_percentage": 100
     };
 
-    const { data: inserted, error: insertErr } = await supabase.from('riders').insert(rider).select('id').single();
-    if (insertErr) {
-      console.error('[Register] Insert error:', insertErr);
-      return res.status(500).json({ success: false, error: 'Registration failed: ' + insertErr.message });
+    let riderId;
+    if (isUpdate) {
+      const { data: updated, error: updateErr } = await supabase.from('riders').update(rider).eq('id', existingId).select('id').single();
+      if (updateErr) {
+        console.error('[Register] Update error:', updateErr);
+        return res.status(500).json({ success: false, error: 'Registration failed: ' + updateErr.message });
+      }
+      riderId = updated.id;
+    } else {
+      const { data: inserted, error: insertErr } = await supabase.from('riders').insert(rider).select('id').single();
+      if (insertErr) {
+        console.error('[Register] Insert error:', insertErr);
+        return res.status(500).json({ success: false, error: 'Registration failed: ' + insertErr.message });
+      }
+      riderId = inserted.id;
     }
-    const riderId = inserted.id;
 
     // Use the actual request origin or the configured API_BASE_URL
     // Fallback to a production domain if missing. If origin is localhost, whatsapp won't linkify it but that's expected in dev.
@@ -618,7 +640,14 @@ router.get('/admin/export/csv', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEWER']), a
     const { data: leadsRaw } = await supabase.from('riders').select('*');
     let leads = leadsRaw || [];
     if (segment && segment !== 'ALL') {
-       leads = leads.filter(r => r.tags && r.tags.includes(segment));
+       if (segment === 'STATUS_LEAD') leads = leads.filter(r => r.form_status === 'Lead');
+       else if (segment === 'STATUS_PARTIAL') leads = leads.filter(r => r.form_status === 'Partial');
+       else if (segment === 'STATUS_COMPLETED') leads = leads.filter(r => r.form_status === 'Completed');
+       else if (segment === 'STATUS_ABANDONED') leads = leads.filter(r => r.form_status === 'Abandoned');
+       else if (segment === 'EV_SALE_LEAD') leads = leads.filter(r => r.openToEV === 'Yes' || r.openToEV === 'Need more information' || (r.tags || []).includes('Hot EV Lead'));
+       else if (segment === 'EV_RIDERS') leads = leads.filter(r => (r.vehicleType || '').toLowerCase().includes('electric'));
+       else if (segment === 'PERSONAL_INSURANCE_LEAD' || segment === 'BIKE_INSURANCE_LEAD') leads = leads.filter(r => r.hasAccidentalInsurance === 'No' || r.hasAccidentalInsurance === 'Not sure' || r.hasHealthInsurance === 'No' || r.hasHealthInsurance === 'Not sure' || (r.tags || []).includes('Insurance Lead'));
+       else leads = leads.filter(r => r.tags && r.tags.includes(segment));
     }
     
     // Build CSV
@@ -794,3 +823,84 @@ router.get('/health', async (req, res) => {
 });
 
 module.exports = router;
+
+// ----------------------------------------------------------------------
+// PROGRESSIVE FORM SAVE ENDPOINTS
+// ----------------------------------------------------------------------
+
+router.post('/riders/partial', async (req, res) => {
+  try {
+    const { phone, current_step, total_steps = 7, ...partialData } = req.body;
+    
+    if (!phone) {
+      return res.status(400).json({ success: false, error: 'Phone is required' });
+    }
+
+    const normalizedPhone = phone.replace(/\D/g, '').slice(-10);
+    const progress_percentage = current_step ? Math.min(100, Math.round((current_step / total_steps) * 100)) : 0;
+    const form_status = current_step > 1 ? 'Partial' : 'Lead';
+
+    const { data: dupPhoneRows } = await supabase.from('riders').select('id, is_completed').eq('phone', normalizedPhone);
+    const dupPhone = dupPhoneRows && dupPhoneRows.length > 0 ? dupPhoneRows[0] : null;
+
+    if (dupPhone) {
+      if (dupPhone.is_completed) {
+        return res.status(400).json({ success: false, error: 'Phone number already registered and completed.' });
+      }
+      // Update
+      const { error: updateErr } = await supabase.from('riders').update({
+        ...partialData,
+        current_step,
+        progress_percentage,
+        form_status
+      }).eq('id', dupPhone.id);
+      
+      if (updateErr) throw updateErr;
+      return res.json({ success: true, message: 'Partial updated' });
+    } else {
+      // Insert new partial
+      const referralCode = generateReferralCode();
+      const rider = {
+        phone: normalizedPhone,
+        fullName: partialData.fullName || '',
+        ...partialData,
+        current_step,
+        progress_percentage,
+        form_status,
+        referralCode,
+        is_completed: false
+      };
+      
+      const { error: insertErr } = await supabase.from('riders').insert(rider);
+      if (insertErr) throw insertErr;
+      return res.json({ success: true, message: 'Lead created' });
+    }
+  } catch (err) {
+    console.error('[Partial Form Save] error:', err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
+router.get('/riders/partial/:phone', async (req, res) => {
+  try {
+    const normalizedPhone = req.params.phone.replace(/\D/g, '').slice(-10);
+    const { data: riderRows, error } = await supabase.from('riders').select('*').eq('phone', normalizedPhone);
+    
+    if (error) throw error;
+    if (!riderRows || riderRows.length === 0) {
+      return res.json({ success: true, exists: false });
+    }
+    
+    const rider = riderRows[0];
+    return res.json({ 
+      success: true, 
+      exists: true, 
+      is_completed: rider.is_completed,
+      current_step: rider.current_step,
+      data: rider
+    });
+  } catch (err) {
+    console.error('[Get Partial] error:', err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
