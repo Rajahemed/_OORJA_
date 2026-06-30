@@ -467,10 +467,18 @@ router.get('/admin/analytics/traffic', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEWE
       .gte('started_at', since.toISOString())
       .order('started_at', { ascending: true });
 
-    // Group by date
+    // Pre-fill dailyMap for the last 'days' days to ensure all dates (including today) show up
     const dailyMap = {};
+    const tz = 'Asia/Kolkata';
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toLocaleDateString('en-IN', { timeZone: tz, day: '2-digit', month: 'short' });
+      dailyMap[dateStr] = { date: dateStr, sessions: 0, pages: {} };
+    }
+
     (sessions || []).forEach(s => {
-      const date = new Date(s.started_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+      const date = new Date(s.started_at).toLocaleDateString('en-IN', { timeZone: tz, day: '2-digit', month: 'short' });
       if (!dailyMap[date]) dailyMap[date] = { date, sessions: 0, pages: {} };
       dailyMap[date].sessions++;
       const page = s.page || '/';
