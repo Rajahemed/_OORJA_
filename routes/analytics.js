@@ -730,7 +730,7 @@ router.get('/admin/analytics/export/csv', adminAuth(['SUPER_ADMIN', 'ADMIN']), a
 // ============================================================
 router.get('/admin/analytics/leads-funnel', adminAuth, adminAnalyticsRateLimit, async (req, res) => {
   try {
-    const { data: riders, error } = await supabase.from('riders').select('id, form_status, current_step, progress_percentage, is_completed, updated_at');
+    const { data: riders, error } = await supabase.from('riders').select('*');
     if (error) throw error;
 
     const totalLeads = riders.length;
@@ -750,9 +750,10 @@ router.get('/admin/analytics/leads-funnel', adminAuth, adminAnalyticsRateLimit, 
     riders.forEach(r => {
       totalProgress += r.progress_percentage || 0;
       
-      const updatedAtDate = new Date(r.updated_at);
+      const updatedAtDate = new Date(r.updated_at || r.registeredAt || r.joinedDate);
       
-      if (r.is_completed) {
+      // If is_completed is true OR they have no current_step column (meaning they are from the old schema where all users were fully registered)
+      if (r.is_completed === true || r.is_completed === 'true' || r.progress_percentage === 100 || r.current_step === undefined) {
         completed++;
       } else {
         if (updatedAtDate < abandonedThreshold) {

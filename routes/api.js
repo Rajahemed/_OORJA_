@@ -321,7 +321,6 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       location_accuracy: locationAccuracy ? parseFloat(locationAccuracy) : null,
       "registeredAt": new Date(),
       "is_completed": true,
-      "form_status": 'Completed',
       "progress_percentage": 100
     };
 
@@ -624,6 +623,13 @@ router.get('/admin/leads/segment/:segment', adminAuth(['SUPER_ADMIN', 'ADMIN']),
     const { segment } = req.params;
     const { data: leadsRaw } = await supabase.from('riders').select('*');
     let leads = leadsRaw || [];
+    const abandonedThreshold = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    leads.forEach(r => {
+       if (r.is_completed) r.form_status = 'Completed';
+       else if (new Date(r.updated_at) < abandonedThreshold) r.form_status = 'Abandoned';
+       else if (r.current_step > 1) r.form_status = 'Partial';
+       else r.form_status = 'Lead';
+    });
     if (segment !== 'ALL') {
        leads = leads.filter(r => r.tags && r.tags.includes(segment));
     }
@@ -639,6 +645,13 @@ router.get('/admin/export/csv', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEWER']), a
     const { segment } = req.query;
     const { data: leadsRaw } = await supabase.from('riders').select('*');
     let leads = leadsRaw || [];
+    const abandonedThreshold = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    leads.forEach(r => {
+       if (r.is_completed) r.form_status = 'Completed';
+       else if (new Date(r.updated_at) < abandonedThreshold) r.form_status = 'Abandoned';
+       else if (r.current_step > 1) r.form_status = 'Partial';
+       else r.form_status = 'Lead';
+    });
     if (segment && segment !== 'ALL') {
        if (segment === 'STATUS_LEAD') leads = leads.filter(r => r.form_status === 'Lead');
        else if (segment === 'STATUS_PARTIAL') leads = leads.filter(r => r.form_status === 'Partial');
@@ -851,8 +864,7 @@ router.post('/riders/partial', async (req, res) => {
       const { error: updateErr } = await supabase.from('riders').update({
         ...partialData,
         current_step,
-        progress_percentage,
-        form_status
+        progress_percentage
       }).eq('id', dupPhone.id);
       
       if (updateErr) throw updateErr;
@@ -866,7 +878,6 @@ router.post('/riders/partial', async (req, res) => {
         ...partialData,
         current_step,
         progress_percentage,
-        form_status,
         referralCode,
         is_completed: false
       };

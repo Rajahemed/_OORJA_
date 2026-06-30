@@ -1011,7 +1011,8 @@ select.form-control option {
     font-size: 0.95rem;
   }
   .navbar-end {
-    gap: 0.625rem;
+    flex: 1;
+    justify-content: space-evenly;
   }
   .lang-select {
     font-size: 0.8rem;
