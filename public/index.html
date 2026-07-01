@@ -460,7 +460,7 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-brand" style="cursor: default;">
-            <img src="/img/new_ev_bike.png" alt="EV Scooter Logo" class="rw-logo" style="object-fit: contain; transform: scale(1.5); cursor: pointer;" onclick="navigateTo('/admin')">
+            <img src="/img/new_ev_bike.png" alt="EV Scooter Logo" class="rw-logo" style="object-fit: contain; transform: scale(1.5); cursor: pointer;" onclick="navigateTo('/home')">
             <span class="brand-text" style="cursor: pointer;" onclick="navigateTo('/home')">Road Warrior EV</span>
         </div>
         <ul class="navbar-nav">
@@ -534,7 +534,59 @@
             }
             /* Make text readable on skyblue if needed, though dark text usually works fine on skyblue */
         </style>
-        <section id="home-view" class="section-view active">
+        <!-- ======= SECTION 1: HOME VIEW ======= -->
+        <section id="home-view" class="section-view">
+            <!-- Sliding Banner Popup (Hero) -->
+            <div class="home-hero-slider" id="homeHeroSlider">
+                <div class="hero-slide active" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)), url('/img/home-bg.jpg');">
+                    <div class="hero-content">
+                        <h1 class="hero-title" data-i18n="hero_title_1">Road Warrior EV</h1>
+                        <p class="hero-subtitle" data-i18n="hero_subtitle_1">The ultimate EV platform for riders to maximize profit and save on fuel.</p>
+                        <div class="hero-cta">
+                            <button class="btn btn-primary" onclick="navigateTo('/vehicles')"><i class="fas fa-motorcycle"></i> <span data-i18n="hero_btn_explore">Explore EVs</span></button>
+                            <button class="btn btn-secondary" onclick="navigateTo('/dashboard')"><i class="fas fa-chart-line"></i> <span data-i18n="nav_dashboard">Dashboard</span></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)), url('/img/refer-earn-win-banner.jpg');">
+                    <div class="hero-content">
+                        <h1 class="hero-title" data-i18n="hero_title_2">Refer & Earn</h1>
+                        <p class="hero-subtitle" data-i18n="hero_subtitle_2">Invite your friends and earn reward points when they join!</p>
+                        <div class="hero-cta">
+                            <button class="btn btn-primary" onclick="navigateTo('/dashboard')"><i class="fas fa-share-alt"></i> <span data-i18n="hero_btn_refer">Refer Now</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About the Project -->
+            <div class="container home-about-section">
+                <div class="card" style="margin-top: -40px; position: relative; z-index: 10;">
+                    <div class="card-body" style="text-align: center;">
+                        <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 2rem; margin-bottom: 1rem;"><i class="fas fa-info-circle text-primary-color"></i> <span data-i18n="about_title">About Road Warrior</span></h2>
+                        <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 800px; margin: 0 auto; line-height: 1.8;" data-i18n="about_text">
+                            Road Warrior is the ultimate EV challenge platform for riders across India. Earn reward points for your green miles, climb the global leaderboard, and get exclusive access to EV rentals and retrofits. Join our community and accelerate your zero-emission journey!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top 5 Riders Sliding Popup (Full Page) -->
+            <div class="home-top-riders-section full-page-slider" style="background: transparent; position: relative;">
+                <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%;">
+                    <h2 class="top-riders-title" style="color: #ffffff; text-shadow: 0 4px 10px rgba(0,0,0,0.4); margin-bottom: 2rem; position: relative; z-index: 10;"><i class="fas fa-crown" style="color: #FFD700; margin-right: 0.5rem;"></i> <span data-i18n="top_riders_title">Top Riders</span></h2>
+                    <div class="top-riders-slider-container full-page" style="width: 100%;">
+                        <div class="top-riders-slider full-page-height" id="topRidersSlider" style="width: 100%;">
+                            <div class="rider-slide active"><div class="rider-slide-content">Loading Top Riders...</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- ======= SECTION 1.5: LOGIN / REGISTER VIEW ======= -->
+        <section id="login-view" class="section-view active">
             <div class="row" id="authLayout" style="margin-top:1rem; justify-content: center; align-items: flex-start; flex-direction: column;">
 
 
@@ -709,7 +761,8 @@
                                 <div class="section-title-badge"><i class="fas fa-user"></i> <span data-i18n="sec_a_title">Section A — Basic Profile</span></div>
                                 <div class="form-group">
                                     <label for="regFullName" data-i18n="label_fullname">Full Name</label>
-                                    <input type="text" id="regFullName" class="form-control" placeholder="Ramesh Kumar" required>
+                                    <input type="text" id="regFullName" class="form-control" placeholder="Ramesh Kumar" required oninput="validateRegName(this)">
+                                    <small id="nameWarning" class="text-danger-color" style="display:none; font-weight:600; margin-top:0.25rem; display:none;" data-i18n="warning_no_numbers">Numbers are not allowed in names</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="regPhone"><span data-i18n="label_whatsapp">WhatsApp Number</span> (10 digits)</label>
@@ -1070,7 +1123,7 @@
         <section id="score-view" class="section-view">
             <div class="flex-between mb-4">
                 <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="score_title"><i class="fas fa-trophy text-warning-color"></i> Score & Leaderboard</h2>
-                <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
+                <button class="btn-back" onclick="navigateTo('/home')"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
             </div>
 
             <!-- Phone Lookup (Public, no login needed) -->
@@ -1149,7 +1202,7 @@
                 <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="vehicles_title"><i class="fas fa-car text-primary-color"></i> My Vehicles</h2>
                 <div class="flex gap-2">
                     <button class="btn btn-primary btn-small" onclick="openModal('vehicleModal')"><i class="fas fa-plus"></i> <span data-i18n="act_add_vehicle">Add Vehicle</span></button>
-                    <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
+                    <button class="btn-back" onclick="navigateTo('/home')"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
                 </div>
             </div>
             <div class="row cols-2" id="vehiclesGrid"></div>
@@ -1180,7 +1233,7 @@
         <section id="dashboard-view" class="section-view">
             <div class="flex-between mb-4">
                 <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="dashboard_title"><i class="fas fa-chart-line text-primary-color"></i> Rider Dashboard</h2>
-                <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
+                <button class="btn-back" onclick="navigateTo('/home')"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
             </div>
             <div class="row cols-3" id="statsGrid">
                 <div class="stat-box"><span class="stat-icon">👥</span><div class="stat-value" id="totalReferrals">0</div><div class="stat-label" data-i18n="stat_referrals">Total Referrals</div><div class="stat-change positive"><i class="fas fa-caret-up"></i> +10%</div></div>
@@ -1189,15 +1242,39 @@
             </div>
             <div class="card mb-5">
                 <div class="card-header"><h3 class="card-title" data-i18n="quick_actions"><i class="fas fa-bolt text-warning-color"></i> Quick Actions</h3></div>
-                <div class="card-body" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.25rem;">
-                    <button class="btn btn-primary" onclick="openModal('vehicleModal')"><i class="fas fa-motorcycle"></i> <span data-i18n="act_add_vehicle">Add Vehicle</span></button>
-                    <button class="btn btn-secondary" onclick="navigateTo('/profile')"><i class="fas fa-user-edit"></i> <span data-i18n="act_edit_profile">Edit Profile</span></button>
-                    <button class="btn btn-secondary" onclick="navigateTo('/score')"><i class="fas fa-medal"></i> <span data-i18n="act_leaderboard">View Rankings</span></button>
-                    <button class="btn btn-secondary" onclick="requestPushNotifications()"><i class="fas fa-bell"></i> <span data-i18n="act_enable_notifications">Enable Notifications</span></button>
-                    <button class="btn btn-secondary" onclick="showReferralQR()"><i class="fas fa-qrcode"></i> <span data-i18n="act_my_qr_code">My QR Code</span></button>
-                    <button class="btn btn-secondary" onclick="openModal('rewardsModal')"><i class="fas fa-gift"></i> <span data-i18n="act_rewards_missions">Rewards & Missions</span></button>
-                    <button class="btn btn-secondary" onclick="openModal('evMapModal'); initEVMap();"><i class="fas fa-map"></i> <span data-i18n="act_ev_charging_map">EV Charging Map</span></button>
-                    <button class="btn btn-secondary" onclick="window.location.href='/community.html'"><i class="fas fa-comments"></i> <span data-i18n="act_community_feed">Community Feed</span></button>
+                <div class="card-body" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.25rem;">
+                    <div onclick="openModal('vehicleModal')" style="cursor: pointer; padding: 1.5rem 1rem; border-radius: 12px; background: var(--bg-color); border: 1px solid var(--card-border); text-align: center; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;" onmouseover="this.style.borderColor='var(--primary-color)';" onmouseout="this.style.borderColor='var(--card-border)';">
+                        <i class="fas fa-motorcycle" style="font-size: 2rem; color: var(--primary-color);"></i>
+                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);" data-i18n="act_add_vehicle">Add Vehicle</span>
+                    </div>
+                    <div onclick="navigateTo('/profile')" style="cursor: pointer; padding: 1.5rem 1rem; border-radius: 12px; background: var(--bg-color); border: 1px solid var(--card-border); text-align: center; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;" onmouseover="this.style.borderColor='var(--primary-color)';" onmouseout="this.style.borderColor='var(--card-border)';">
+                        <i class="fas fa-user-edit" style="font-size: 2rem; color: var(--text-secondary);"></i>
+                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);" data-i18n="act_edit_profile">Edit Profile</span>
+                    </div>
+                    <div onclick="navigateTo('/score')" style="cursor: pointer; padding: 1.5rem 1rem; border-radius: 12px; background: var(--bg-color); border: 1px solid var(--card-border); text-align: center; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;" onmouseover="this.style.borderColor='var(--primary-color)';" onmouseout="this.style.borderColor='var(--card-border)';">
+                        <i class="fas fa-medal" style="font-size: 2rem; color: var(--warning-color);"></i>
+                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);" data-i18n="act_leaderboard">View Rankings</span>
+                    </div>
+                    <div onclick="requestPushNotifications()" style="cursor: pointer; padding: 1.5rem 1rem; border-radius: 12px; background: var(--bg-color); border: 1px solid var(--card-border); text-align: center; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;" onmouseover="this.style.borderColor='var(--primary-color)';" onmouseout="this.style.borderColor='var(--card-border)';">
+                        <i class="fas fa-bell" style="font-size: 2rem; color: var(--danger-color);"></i>
+                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);" data-i18n="act_enable_notifications">Enable Notifications</span>
+                    </div>
+                    <div onclick="showReferralQR()" style="cursor: pointer; padding: 1.5rem 1rem; border-radius: 12px; background: var(--bg-color); border: 1px solid var(--card-border); text-align: center; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;" onmouseover="this.style.borderColor='var(--primary-color)';" onmouseout="this.style.borderColor='var(--card-border)';">
+                        <i class="fas fa-qrcode" style="font-size: 2rem; color: var(--primary-color);"></i>
+                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);" data-i18n="act_my_qr_code">My QR Code</span>
+                    </div>
+                    <div onclick="openModal('rewardsModal')" style="cursor: pointer; padding: 1.5rem 1rem; border-radius: 12px; background: var(--bg-color); border: 1px solid var(--card-border); text-align: center; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;" onmouseover="this.style.borderColor='var(--primary-color)';" onmouseout="this.style.borderColor='var(--card-border)';">
+                        <i class="fas fa-gift" style="font-size: 2rem; color: var(--success-color);"></i>
+                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);" data-i18n="act_rewards_missions">Rewards & Missions</span>
+                    </div>
+                    <div onclick="openModal('evMapModal'); initEVMap();" style="cursor: pointer; padding: 1.5rem 1rem; border-radius: 12px; background: var(--bg-color); border: 1px solid var(--card-border); text-align: center; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;" onmouseover="this.style.borderColor='var(--primary-color)';" onmouseout="this.style.borderColor='var(--card-border)';">
+                        <i class="fas fa-map" style="font-size: 2rem; color: var(--info-color);"></i>
+                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);" data-i18n="act_ev_charging_map">EV Charging Map</span>
+                    </div>
+                    <div onclick="window.location.href='/community.html'" style="cursor: pointer; padding: 1.5rem 1rem; border-radius: 12px; background: var(--bg-color); border: 1px solid var(--card-border); text-align: center; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;" onmouseover="this.style.borderColor='var(--primary-color)';" onmouseout="this.style.borderColor='var(--card-border)';">
+                        <i class="fas fa-comments" style="font-size: 2rem; color: #8A2BE2;"></i>
+                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);" data-i18n="act_community_feed">Community Feed</span>
+                    </div>
                 </div>
             </div>
             <div class="row cols-2 mb-5">
@@ -1220,25 +1297,57 @@
         <section id="profile-view" class="section-view">
             <div class="flex-between mb-4">
                 <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="profile_title"><i class="fas fa-user-circle text-primary-color"></i> My Profile</h2>
-                <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
+                <button class="btn-back" onclick="navigateTo('/dashboard')"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
             </div>
             <div style="margin-bottom: 2rem;">
                 <div class="card">
-                    <div class="card-header"><h3 class="card-title" data-i18n="title_profile_info"><i class="fas fa-id-card text-primary-color"></i> Basic Information</h3></div>
-                    <div class="card-body">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 class="card-title" data-i18n="title_profile_info" style="margin: 0;"><i class="fas fa-id-card text-primary-color"></i> Basic Information</h3>
+                        <button type="button" class="btn btn-secondary btn-small" id="editProfileBtn" onclick="document.getElementById('profileFormContainer').style.display = 'block'; document.getElementById('profileDisplayContainer').style.display = 'none'; this.style.display = 'none';"><i class="fas fa-edit"></i> Edit</button>
+                    </div>
+                    <div class="card-body" id="profileDisplayContainer">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Full Name</label>
+                                <div id="displayProfileName" style="font-size: 1.1rem; font-weight: 500;">-</div>
+                            </div>
+                            <div>
+                                <label style="font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Email</label>
+                                <div id="displayProfileEmail" style="font-size: 1.1rem; font-weight: 500;">-</div>
+                            </div>
+                            <div>
+                                <label style="font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Phone Number</label>
+                                <div id="displayProfilePhone" style="font-size: 1.1rem; font-weight: 500;">-</div>
+                            </div>
+                            <div>
+                                <label style="font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Location</label>
+                                <div id="displayProfileLocation" style="font-size: 1.1rem; font-weight: 500;">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" id="profileFormContainer" style="display: none;">
                         <form id="profileForm" onsubmit="updateProfileInfo(event)">
                             <div class="form-group"><label for="profileName" data-i18n="label_fullname">Full Name</label><input type="text" id="profileName" class="form-control" required></div>
                             <div class="form-group"><label for="profileEmail" data-i18n="label_email">Email</label><input type="email" id="profileEmail" class="form-control" readonly style="opacity:0.6; cursor:not-allowed;"></div>
                             <div class="form-group"><label for="profilePhone" data-i18n="label_phone">Phone</label><input type="tel" id="profilePhone" class="form-control" maxlength="10" required></div>
-                            <div class="form-group"><label for="profileCity" data-i18n="label_city">City</label>
-                                <select id="profileCity" class="form-control" required>
-                                    <option value="Bangalore">Bangalore</option><option value="Mysore">Mysore</option>
-                                    <option value="Mumbai">Mumbai</option><option value="Pune">Pune</option>
-                                    <option value="Delhi">Delhi</option><option value="Hyderabad">Hyderabad</option>
-                                    <option value="Chennai">Chennai</option><option value="Kolkata">Kolkata</option>
-                                </select>
+                            <div class="form-group" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                                <div style="flex:1; min-width:200px;">
+                                    <label for="profileState" data-i18n="label_state">State</label>
+                                    <select id="profileState" class="form-control" required onchange="onProfileStateChange()">
+                                        <option value="">Loading States...</option>
+                                    </select>
+                                </div>
+                                <div style="flex:1; min-width:200px;">
+                                    <label for="profileCity" data-i18n="label_city">City</label>
+                                    <select id="profileCity" class="form-control" required disabled>
+                                        <option value="" data-i18n="select_city">Select your city</option>
+                                    </select>
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100" id="profileSubmitBtn"><i class="fas fa-save"></i> <span data-i18n="btn_save">Save Changes</span></button>
+                            <div style="display: flex; gap: 1rem;">
+                                <button type="button" class="btn btn-secondary w-100" onclick="document.getElementById('profileFormContainer').style.display = 'none'; document.getElementById('profileDisplayContainer').style.display = 'block'; document.getElementById('editProfileBtn').style.display = 'block';"><i class="fas fa-times"></i> Cancel</button>
+                                <button type="submit" class="btn btn-primary w-100" id="profileSubmitBtn"><i class="fas fa-save"></i> <span data-i18n="btn_save">Save Changes</span></button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -1433,7 +1542,7 @@
             <div class="flex-between mb-4">
                 <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="admin_title"><i class="fas fa-cog text-primary-color"></i> Admin Dashboard</h2>
                 <div style="display: flex; gap: 1rem; align-items: center;">
-                    <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
+                    <button class="btn-back" onclick="navigateTo('/home')"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
                     <button class="btn btn-outline" style="padding: 0.4rem 1rem; border-color: var(--danger-color); color: var(--danger-color);" onclick="handleAdminLogout()">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
@@ -1931,7 +2040,7 @@
     <!-- ===== FOOTER ===== -->
     <footer id="site-footer">
         <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 100%; background: transparent; padding: 0.5rem 2rem; border-radius: 0; box-shadow: none; border: none; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 1rem;">
-            <div class="footer-logo" style="font-size: 1.5rem; font-weight: 800; margin: 0;">
+            <div class="footer-logo" style="font-size: 1.5rem; font-weight: 800; margin: 0; cursor: default;" onclick="navigateTo('/admin')">
                 <span class="footer-logo-icon" style="color: var(--primary-color);">⚡</span>
                 <span class="footer-logo-text" style="color: var(--text-primary);">Road Warrior <span style="color: var(--primary-color);">Pro</span></span>
             </div>

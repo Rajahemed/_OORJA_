@@ -278,5 +278,14 @@
     "strong_password": "Strong password",
     "placeholder_state": "Enter State",
     "placeholder_city": "Enter City",
-    "pwd_strength_text": "Password strength"
+    "pwd_strength_text": "Password strength",
+    "hero_title_1": "Road Warrior EV",
+    "hero_subtitle_1": "The ultimate EV platform for riders to maximize profit and save on fuel.",
+    "hero_btn_explore": "Explore EVs",
+    "hero_btn_refer": "Refer Now",
+    "hero_title_2": "Refer & Earn",
+    "hero_subtitle_2": "Invite your friends and earn reward points when they join!",
+    "about_title": "About Road Warrior",
+    "about_text": "Road Warrior is the ultimate EV challenge platform for riders across India. Earn reward points for your green miles, climb the global leaderboard, and get exclusive access to EV rentals and retrofits. Join our community and accelerate your zero-emission journey!",
+    "top_riders_title": "Top Riders"
 }

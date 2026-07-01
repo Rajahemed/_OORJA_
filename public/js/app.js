@@ -1135,13 +1135,15 @@ async function openDataDrilldown(type) {
         if (siteFooter) siteFooter.style.display = 'block';
             if (topRidersSection) topRidersSection.style.display = 'block';
 
-        let activeTab = 'home';
-        if (path === '/vehicles') activeTab = 'vehicles';
+        let activeTab = 'login';
+        if (path === '/home') activeTab = 'home';
+        else if (path === '/vehicles') activeTab = 'vehicles';
         else if (path === '/dashboard') activeTab = 'dashboard';
         else if (path === '/score') activeTab = 'score';
         else if (path === '/profile') activeTab = 'profile';
         else if (path === '/admin') activeTab = 'admin';
         else if (path === '/privacy') activeTab = 'privacy';
+        else if (path === '/login') activeTab = 'login';
 
         const fullUrl = window.location.origin + path;
         const canTag = document.querySelector('link[rel="canonical"]');
@@ -1153,6 +1155,7 @@ async function openDataDrilldown(type) {
         if (activeTab === 'dashboard') titleStr = "Dashboard - Road Warrior EV";
         else if (activeTab === 'score') titleStr = "Leaderboard - Road Warrior EV";
         else if (activeTab === 'privacy') titleStr = "Privacy Policy - Road Warrior EV";
+        else if (activeTab === 'login') titleStr = "Login / Register - Road Warrior EV";
         document.title = titleStr;
         const ogTitle = document.querySelector('meta[property="og:title"]');
         if (ogTitle) ogTitle.content = titleStr;
@@ -1161,16 +1164,16 @@ async function openDataDrilldown(type) {
         if (activeTab === 'admin' && !(sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt'))) {
             activeTab = 'admin-login';
             checkAdminExists();
-        } else if (activeTab !== 'home' && activeTab !== 'score' && activeTab !== 'admin-login' && activeTab !== 'admin' && activeTab !== 'privacy' && !isLoggedIn) {
+        } else if (activeTab !== 'score' && activeTab !== 'admin-login' && activeTab !== 'admin' && activeTab !== 'privacy' && activeTab !== 'login' && !isLoggedIn) {
             showToast((window.t ? window.t('msg_0_please_login_or') : 'Please login or register first.'), 'warning');
-            navigateTo('/home'); return;
+            navigateTo('/login'); return;
         }
 
         document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
         const av = document.getElementById(`${activeTab}-view`);
         if (av) av.classList.add('active');
         
-        document.body.classList.toggle('home-page-active', activeTab === 'home');
+        document.body.classList.toggle('home-page-active', activeTab === 'home' || activeTab === 'login');
 
         document.querySelectorAll('.navbar-nav .nav-link').forEach(l => l.classList.remove('active'));
         const al = document.getElementById(`nav${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}`);
@@ -1186,10 +1189,10 @@ async function openDataDrilldown(type) {
         
         // Header and Footer visibility logic
         const reg = document.getElementById('registerCard');
-        const isRegOpen = (reg && reg.style.display !== 'none' && activeTab === 'home');
+        const isRegOpen = (reg && reg.style.display !== 'none' && (activeTab === 'home' || activeTab === 'login'));
         
         if (siteFooter) {
-            siteFooter.style.display = (activeTab === 'home' && !isRegOpen) ? 'block' : 'none';
+            siteFooter.style.display = ((activeTab === 'home' || activeTab === 'login') && !isRegOpen) ? 'block' : 'none';
         }
         if (topRidersSection) {
             topRidersSection.style.display = (activeTab === 'home' && !isRegOpen) ? 'block' : 'none';
@@ -1203,8 +1206,9 @@ async function openDataDrilldown(type) {
 
     function refreshActiveView() {
         const path = window.location.pathname;
-        let tab = 'home';
-        if (path === '/vehicles') tab = 'vehicles';
+        let tab = 'login';
+        if (path === '/home') tab = 'home';
+        else if (path === '/vehicles') tab = 'vehicles';
         else if (path === '/dashboard') tab = 'dashboard';
         else if (path === '/score') tab = 'score';
         else if (path === '/profile') tab = 'profile';
@@ -1228,7 +1232,7 @@ async function openDataDrilldown(type) {
             if (result.success) {
                 currentUser = result.data; isLoggedIn = true;
                 updateAuthNavbarState();
-                if (['/', '/home', '/login', '/register', '/index.html'].some(p => window.location.pathname.endsWith(p))) navigateTo('/dashboard');
+                if (['/', '/home', '/login', '/register', '/index.html'].some(p => window.location.pathname.endsWith(p))) navigateTo('/home');
             } else {
                 if (result.error === 'Rider not found') logoutUser();
                 else showToast(`Session verification error: ${result.error}`, 'warning');
@@ -1273,24 +1277,26 @@ async function openDataDrilldown(type) {
         if (isLoggedIn) {
             logoutUser();
         } else {
-            navigateTo('/home');
+            navigateTo('/login');
             const login = document.getElementById('loginCard');
             const reg = document.getElementById('registerCard');
-            const switchLink = document.getElementById('loginSwitchLink');
-            const navbar = document.querySelector('nav.navbar');
-            const siteFooter = document.getElementById('site-footer');
-        const topRidersSection = document.getElementById('topRidersSection');
             if (login && reg) {
                 login.style.display = 'block';
                 reg.style.display = 'none';
-                if (switchLink) switchLink.style.display = 'block';
-                if (navbar) navbar.style.display = '';
-                if (siteFooter) siteFooter.style.display = 'block';
-            if (topRidersSection) topRidersSection.style.display = 'block';
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
+
+    window.showRegisterForm = function() {
+        const login = document.getElementById('loginCard');
+        const reg = document.getElementById('registerCard');
+        if (login && reg) {
+            login.style.display = 'none';
+            reg.style.display = 'block';
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     function togglePasswordVisibility(inputId, spanElem) {
         const input = document.getElementById(inputId);
@@ -1311,7 +1317,7 @@ async function openDataDrilldown(type) {
         .finally(() => {
             localStorage.removeItem('riderId'); localStorage.removeItem('sessionId');
             currentUser = null; isLoggedIn = false;
-            updateAuthNavbarState(); navigateTo('/home');
+            updateAuthNavbarState(); navigateTo('/login');
         });
     }
 
@@ -1578,22 +1584,11 @@ async function openDataDrilldown(type) {
         if (e) e.preventDefault();
         const login = document.getElementById('loginCard');
         const reg = document.getElementById('registerCard');
-        const switchLink = document.getElementById('loginSwitchLink');
-        const navbar = document.querySelector('nav.navbar');
-        const siteFooter = document.getElementById('site-footer');
-        const topRidersSection = document.getElementById('topRidersSection');
         
         if (login.style.display === 'none') {
             login.style.display = 'block'; reg.style.display = 'none';
-            if (switchLink) switchLink.style.display = 'block';
-            if (navbar) navbar.style.display = '';
-            if (siteFooter) siteFooter.style.display = 'block';
-            if (topRidersSection) topRidersSection.style.display = 'block';
         } else {
             login.style.display = 'none'; reg.style.display = 'block';
-            if (navbar) navbar.style.display = 'none';
-            if (siteFooter) siteFooter.style.display = 'none';
-            if (topRidersSection) topRidersSection.style.display = 'none';
         }
     }
 
@@ -1641,7 +1636,7 @@ async function openDataDrilldown(type) {
                 trackEvent('login', { method: payload.loginMethod });
                 btn.innerHTML = origText;
                 btn.disabled = false;
-                navigateTo('/dashboard');
+                navigateTo('/home');
             } else {
                 document.getElementById('loginErrorText').textContent = 'Login failed: ' + (result.message || result.error || 'Invalid credentials');
                 document.getElementById('loginErrorMsg').style.display = 'block';
@@ -1772,6 +1767,18 @@ async function openDataDrilldown(type) {
             if (warningEl) {
                 warningEl.style.display = 'none';
             }
+        }
+    }
+
+    function validateRegName(input) {
+        const warning = document.getElementById('nameWarning');
+        if (/\d/.test(input.value)) {
+            // Strip out numbers
+            input.value = input.value.replace(/\d/g, '');
+            if (warning) warning.style.display = 'block';
+            setTimeout(() => { if(warning) warning.style.display = 'none'; }, 3000);
+        } else {
+            if (warning) warning.style.display = 'none';
         }
     }
 
@@ -2113,11 +2120,22 @@ async function openDataDrilldown(type) {
             const data = await res.json();
             if (data.success) {
                 const select = document.getElementById('regState');
-                select.innerHTML = `<option value="">${window.t ? window.t('select_state', 'Select State') : 'Select State'}</option>`;
-                data.data.forEach(st => {
-                    select.innerHTML += `<option value="${st}">${st}</option>`;
-                });
-                select.innerHTML += `<option value="Other">Other</option>`;
+                if (select) {
+                    select.innerHTML = `<option value="">${window.t ? window.t('select_state', 'Select State') : 'Select State'}</option>`;
+                    data.data.forEach(st => {
+                        select.innerHTML += `<option value="${st}">${st}</option>`;
+                    });
+                    select.innerHTML += `<option value="Other">Other</option>`;
+                }
+                
+                const profileSelect = document.getElementById('profileState');
+                if (profileSelect) {
+                    profileSelect.innerHTML = `<option value="">${window.t ? window.t('select_state', 'Select State') : 'Select State'}</option>`;
+                    data.data.forEach(st => {
+                        profileSelect.innerHTML += `<option value="${st}">${st}</option>`;
+                    });
+                    profileSelect.innerHTML += `<option value="Other">Other</option>`;
+                }
             }
         } catch(e) { console.error('Error fetching states', e); }
     }
@@ -2156,8 +2174,38 @@ async function openDataDrilldown(type) {
     // The static onRegCityChange handles the change logic (defined above).
     // Removed the fetch-based onRegCityChange since pincodes are now direct input.
     
+    async function onProfileStateChange() {
+        const stateSelect = document.getElementById('profileState');
+        const citySelect = document.getElementById('profileCity');
+        
+        const state = stateSelect.value;
+        citySelect.innerHTML = `<option value="">${window.t ? window.t('loading_cities', 'Loading Cities...') : 'Loading Cities...'}</option>`;
+        
+        if (state && state !== 'Other') {
+            try {
+                const res = await fetch(`/api/locations/cities/${state}`);
+                const data = await res.json();
+                citySelect.innerHTML = `<option value="">${window.t ? window.t('select_city', 'Select City') : 'Select City'}</option>`;
+                if (data.success) {
+                    data.data.forEach(city => {
+                        citySelect.innerHTML += `<option value="${city}">${city}</option>`;
+                    });
+                }
+                citySelect.innerHTML += '<option value="Other">Other</option>';
+                citySelect.disabled = false;
+            } catch(e) { console.error('Error fetching profile cities', e); }
+        } else if (state === 'Other') {
+            citySelect.innerHTML = `<option value="">${window.t ? window.t('select_city', 'Select City') : 'Select City'}</option><option value="Other">Other</option>`;
+            citySelect.disabled = false;
+        } else {
+            citySelect.innerHTML = `<option value="">${window.t ? window.t('select_city', 'Select your city') : 'Select your city'}</option>`;
+            citySelect.disabled = true;
+        }
+    }
+
     window.onRegStateChange = onRegStateChange;
     window.onRegCityChange = onRegCityChange;
+    window.onProfileStateChange = onProfileStateChange;
     
     // Call fetchStates on load
     setTimeout(() => { fetchStates(); }, 500);
@@ -2838,12 +2886,36 @@ async function openDataDrilldown(type) {
     }
 
     // ===== PROFILE & QR CODE =====
-    function loadProfileData() {
+    async function loadProfileData() {
         if (!currentUser) return;
         document.getElementById('profileName').value = currentUser.fullName || '';
         document.getElementById('profileEmail').value = currentUser.email || '';
         document.getElementById('profilePhone').value = currentUser.phone || '';
-        document.getElementById('profileCity').value = currentUser.city || '';
+        
+        // Populate display fields
+        if (document.getElementById('displayProfileName')) {
+            document.getElementById('displayProfileName').textContent = currentUser.fullName || '-';
+            document.getElementById('displayProfileEmail').textContent = currentUser.email || '-';
+            document.getElementById('displayProfilePhone').textContent = currentUser.phone || '-';
+            
+            const loc = [currentUser.city, currentUser.state].filter(Boolean).join(', ');
+            document.getElementById('displayProfileLocation').textContent = loc || 'Not provided';
+        }
+        
+        // Handle State & City
+        const stateSelect = document.getElementById('profileState');
+        const citySelect = document.getElementById('profileCity');
+        if (currentUser.state) {
+            stateSelect.value = currentUser.state;
+            await onProfileStateChange();
+            if (currentUser.city) {
+                citySelect.value = currentUser.city;
+            }
+        } else if (currentUser.city) {
+            citySelect.innerHTML = `<option value="${currentUser.city}">${currentUser.city}</option>`;
+            citySelect.value = currentUser.city;
+            citySelect.disabled = false;
+        }
 
         const code = currentUser.referralCode || 'RW-XXXX';
         const refLink = getReferralLink(code);
@@ -2878,7 +2950,11 @@ async function openDataDrilldown(type) {
         e.preventDefault();
         const phone = document.getElementById('profilePhone').value;
         if (phone.length !== 10) { showToast((window.t ? window.t('msg_6_phone_must_be_1') : 'Phone must be 10 digits'), 'error'); return; }
-        fetch(`/api/riders/${currentUser.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fullName: document.getElementById('profileName').value, phone, city: document.getElementById('profileCity').value }) })
+        
+        const state = document.getElementById('profileState').value;
+        const city = document.getElementById('profileCity').value;
+        
+        fetch(`/api/riders/${currentUser.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fullName: document.getElementById('profileName').value, phone, state, city }) })
         .then(r => r.json()).then(result => { if (result.success) { currentUser = result.data; showToast((window.t ? window.t('msg_22_profile_updated') : 'Profile updated!'), 'success'); loadProfileData(); } });
     }
 
@@ -3998,3 +4074,98 @@ window.viewFunnelLeads = function(status) {
         if (typeof filterAdminRiders === 'function') filterAdminRiders();
     }
 };
+
+// ==========================================
+// HOME PAGE SLIDERS (Hero & Top 5 Riders)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Hero Slider Logic
+    const heroSlides = document.querySelectorAll('.hero-slide');
+    if (heroSlides.length > 0) {
+        let currentHero = 0;
+        setInterval(() => {
+            heroSlides[currentHero].classList.remove('active');
+            currentHero = (currentHero + 1) % heroSlides.length;
+            heroSlides[currentHero].classList.add('active');
+        }, 6000); // 6 seconds for hero
+    }
+    
+    // Top 5 Riders Slider Logic
+    const topRidersSlider = document.getElementById('topRidersSlider');
+    if (topRidersSlider) {
+        async function loadTop5Riders() {
+            try {
+                const res = await fetch('/api/leaderboard');
+                const data = await res.json();
+                let riders = [];
+                if (data.success && data.data && data.data.length > 0) {
+                    riders = data.data.slice(0, 5);
+                } else {
+                    // Fallback to dummy data
+                    riders = [
+                        { fullName: "Rahul Sharma", points: 1250, city: "Bengaluru" },
+                        { fullName: "Priya Singh", points: 1100, city: "Delhi" },
+                        { fullName: "Amit Kumar", points: 1050, city: "Mumbai" },
+                        { fullName: "Sneha Reddy", points: 980, city: "Hyderabad" },
+                        { fullName: "Vikas Verma", points: 920, city: "Pune" }
+                    ];
+                }
+                
+                topRidersSlider.innerHTML = '';
+                riders.forEach((r, idx) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'rider-slide' + (idx === 0 ? ' active' : '');
+                    slide.innerHTML = `<div class="rider-slide-content glass-card">
+                        <div class="rider-avatar-placeholder"></div>
+                        <div class="rider-rank">#${idx + 1}</div>
+                        <div class="rider-name">${r.fullName || 'Anonymous'}</div>
+                        <div class="rider-details">
+                            <span class="rider-city"><i class="fas fa-map-marker-alt" style="color: #333;"></i> ${r.city || 'India'}</span>
+                            <span class="rider-points"><i class="fas fa-star" style="color: #FFA500;"></i> ${r.totalPoints !== undefined ? r.totalPoints : (r.points || 0)} pts</span>
+                        </div>
+                    </div>`;
+                    topRidersSlider.appendChild(slide);
+                });
+                
+                // Set up the interval for sliding (every 5 seconds)
+                const slides = topRidersSlider.querySelectorAll('.rider-slide');
+                if (slides.length > 1) {
+                    let currentSlide = 0;
+                    setInterval(() => {
+                        slides[currentSlide].classList.remove('active');
+                        currentSlide = (currentSlide + 1) % slides.length;
+                        slides[currentSlide].classList.add('active');
+                    }, 5000); // 5 seconds for top 5 riders
+                }
+            } catch (err) {
+                console.error("Failed to load top 5 riders:", err);
+            }
+        }
+        
+        loadTop5Riders();
+    }
+});
+
+// ==========================================
+// SPA INITIALIZATION & STATE PERSISTENCE
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Restore session on page refresh so user isn't logged out
+    if (typeof loadSession === 'function') {
+        loadSession();
+    }
+    
+    // Initialize the correct view based on URL
+    if (typeof routeSPA === 'function') {
+        routeSPA(window.location.pathname);
+    }
+});
+
+// Handle browser Back/Forward buttons
+window.addEventListener('popstate', (e) => {
+    if (typeof handlePopState === 'function') {
+        handlePopState();
+    } else if (typeof routeSPA === 'function') {
+        routeSPA(window.location.pathname);
+    }
+});
