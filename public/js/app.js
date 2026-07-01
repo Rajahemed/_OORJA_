@@ -2339,7 +2339,7 @@ async function openDataDrilldown(type) {
 
                 showToast((window.t ? window.t('msg_16____registration') : '🎉 Registration successful! Welcome to Road Warrior Pro!'), 'success');
             } else {
-                showToast((window.t ? window.t('msg_17_registration_fa') : 'Registration failed: ') + (result.message || result.error || 'Unknown error'), 'error');
+                showToast((window.t ? window.t('msg_16_registration_fa') : 'Registration failed: ') + (result.message || result.error || 'Unknown error'), 'error');
             }
         }).catch(err => {
             btn.disabled = false; btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
