@@ -536,6 +536,11 @@
             body.register-page-active #site-footer {
                 display: none !important;
             }
+            #login-view.active {
+                display: flex !important;
+                flex-direction: column;
+                justify-content: center;
+            }
         </style>
         <!-- ======= SECTION 1: HOME VIEW ======= -->
         <section id="home-view" class="section-view">
@@ -585,11 +590,10 @@
                     </div>
                 </div>
             </div>
-            </div>
         </section>
 
         <!-- ======= SECTION 1.5: LOGIN / REGISTER VIEW ======= -->
-        <section id="login-view" class="section-view active" style="min-height: calc(100vh - 250px); display: flex; flex-direction: column; justify-content: center;">
+        <section id="login-view" class="section-view active" style="min-height: calc(100vh - 250px);">
             <div class="row" id="authLayout" style="margin-top:1rem; justify-content: center; align-items: flex-start; flex-direction: column;">
 
 
@@ -1254,7 +1258,7 @@
             </div>
             <div class="card mb-5">
                 <div class="card-header"><h3 class="card-title" data-i18n="quick_actions"><i class="fas fa-bolt text-warning-color"></i> Quick Actions</h3></div>
-                <div class="card-body" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.25rem;">
+                <div class="card-body" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1.25rem;">
                     <div onclick="openModal('vehicleModal')" style="cursor: pointer; padding: 1.5rem 1rem; border-radius: 12px; background: var(--bg-color); border: 1px solid var(--card-border); text-align: center; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;" onmouseover="this.style.borderColor='var(--primary-color)';" onmouseout="this.style.borderColor='var(--card-border)';">
                         <i class="fas fa-motorcycle" style="font-size: 2rem; color: var(--primary-color);"></i>
                         <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);" data-i18n="act_add_vehicle">Add Vehicle</span>
@@ -1317,7 +1321,7 @@
                         <button type="button" class="btn btn-secondary btn-small" id="editProfileBtn" onclick="document.getElementById('profileFormContainer').style.display = 'block'; document.getElementById('profileDisplayContainer').style.display = 'none'; this.style.display = 'none';"><i class="fas fa-edit"></i> Edit</button>
                     </div>
                     <div class="card-body" id="profileDisplayContainer">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1rem;">
                             <div>
                                 <label style="font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Full Name</label>
                                 <div id="displayProfileName" style="font-size: 1.1rem; font-weight: 500;">-</div>
