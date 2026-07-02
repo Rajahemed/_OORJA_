@@ -611,7 +611,8 @@ async function loadEmailLeads() {
             return;
         }
 
-        tbody.innerHTML = leads.map(lead => {
+        const recentLeads = [...leads].reverse().slice(0, 20);
+        tbody.innerHTML = recentLeads.map(lead => {
             const emails = lead.emailStatus || [];
             const getStatus = (dayIndex) => {
                 // campaigns are ordered by delay_days: 0=day0, 1=day7, 2=day15
@@ -1228,7 +1229,7 @@ async function openDataDrilldown(type) {
     }
 
     function fetchRiderProfile(riderId) {
-        fetch(`/api/riders/${riderId}`).then(r => r.json()).then(result => {
+        return fetch(`/api/riders/${riderId}`).then(r => r.json()).then(result => {
             if (result.success) {
                 currentUser = result.data; isLoggedIn = true;
                 updateAuthNavbarState();
@@ -1587,8 +1588,10 @@ async function openDataDrilldown(type) {
         
         if (login.style.display === 'none') {
             login.style.display = 'block'; reg.style.display = 'none';
+            document.body.classList.remove('register-page-active');
         } else {
             login.style.display = 'none'; reg.style.display = 'block';
+            document.body.classList.add('register-page-active');
         }
     }
 
@@ -1632,7 +1635,7 @@ async function openDataDrilldown(type) {
             if (result.success) {
                 localStorage.setItem('riderId', result.riderId);
                 localStorage.setItem('sessionId', result.sessionId);
-                fetchRiderProfile(result.riderId);
+                await fetchRiderProfile(result.riderId);
                 trackEvent('login', { method: payload.loginMethod });
                 btn.innerHTML = origText;
                 btn.disabled = false;
@@ -2210,6 +2213,25 @@ async function openDataDrilldown(type) {
     // Call fetchStates on load
     setTimeout(() => { fetchStates(); }, 500);
 
+    function getPlatformString() {
+        let selectedPlatforms = Array.from(document.getElementById('regPlatform').selectedOptions).map(opt => opt.value);
+        let platformList = [];
+        selectedPlatforms.forEach(p => {
+            let pName = p;
+            if (p === 'Other') {
+                const otherVal = document.getElementById('regPlatformOther').value.trim();
+                if (otherVal) pName = otherVal;
+            } else {
+                const idInp = document.getElementById(`platformId_${p}`);
+                if (idInp && idInp.value.trim()) {
+                    pName = `${pName} (ID: ${idInp.value.trim()})`;
+                }
+            }
+            if(pName) platformList.push(pName);
+        });
+        return platformList.join(', ');
+    }
+
     function submitRegistration() {
         const name = document.getElementById('regFullName').value.trim();
         const phone = document.getElementById('regPhone').value.trim();
@@ -2218,8 +2240,7 @@ async function openDataDrilldown(type) {
         let city = document.getElementById('regCity').value;
         if (city === 'Other') city = document.getElementById('regCityOther').value.trim();
         let pincode = document.getElementById('regPincode').value;
-        let platform = document.getElementById('regPlatform').value;
-        if (platform === 'Other') platform = document.getElementById('regPlatformOther').value.trim();
+        let platform = getPlatformString();
         
         const exp = document.getElementById('regExp').value;
         const pass = document.getElementById('regPassword').value;
@@ -2398,12 +2419,12 @@ async function openDataDrilldown(type) {
 
     function getWhatsAppShareLink(code) {
         const baseUrl = window.location.origin + window.location.pathname;
-        return `${baseUrl}?ref=${code}`;
+        return `${baseUrl}?ref=${code}&register=true`;
     }
 
     function getWhatsAppMessageText(fullName, code) {
         const baseUrl = window.location.origin + window.location.pathname;
-        const refLink = baseUrl + '?ref=' + code;
+        const refLink = baseUrl + '?ref=' + code + '&register=true';
         const lang = localStorage.getItem('selectedLang') || 'en';
         
         let msg = '';
@@ -3376,8 +3397,12 @@ async function openDataDrilldown(type) {
     function renderAdminRidersTable(riders) {
         const tbody = document.getElementById('adminRidersTableBody');
         if (!tbody) return;
-        if (!riders.length) { tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">No riders in DB</td></tr>`; return; }
-        tbody.innerHTML = riders.map(r => {
+        
+        // Show only the 20 most recent riders
+        const recentRiders = [...riders].reverse().slice(0, 20);
+        
+        if (!recentRiders.length) { tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">No riders in DB</td></tr>`; return; }
+        tbody.innerHTML = recentRiders.map(r => {
             const tags = (r.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
             const locationLink = (r.latitude && r.longitude) ? `<a href="https://www.google.com/maps?q=${r.latitude},${r.longitude}" target="_blank" style="color: #10b981; font-weight: 600; text-decoration: none;"><i class="fas fa-map-marker-alt"></i> Map (${Math.round(r.location_accuracy || 0)}m)</a>` : '<span class="text-muted">No GPS</span>';
             return `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || '—'}</td><td>${r.vehicleType || '—'}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td>${locationLink}</td><td>${tags || '—'}</td></tr>`;
@@ -3830,8 +3855,7 @@ window.savePartialProgress = async function() {
     let city = document.getElementById('regCity').value;
     if (city === 'Other') city = document.getElementById('regCityOther').value.trim();
     let pincode = document.getElementById('regPincode').value;
-    let platform = document.getElementById('regPlatform').value;
-    if (platform === 'Other') platform = document.getElementById('regPlatformOther').value.trim();
+    let platform = getPlatformString();
     const exp = document.getElementById('regExp').value;
 
     const payload = {
@@ -3995,17 +4019,23 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.form-section:not(.active)').forEach(el => el.style.display = 'none');
 });
 
+window.goToStep = function(step) {
+    if (step < currentStep) {
+        currentStep = step;
+        showStep(currentStep);
+    }
+};
+
 window.selectPlatformPill = function(value, element) {
-    // Update active UI
-    document.querySelectorAll('#platformPillsContainer .platform-pill').forEach(el => el.classList.remove('active'));
-    element.classList.add('active');
+    // Toggle active UI
+    element.classList.toggle('active');
     
     // Update hidden select
     const nativeSelect = document.getElementById('regPlatform');
     let optionFound = false;
     Array.from(nativeSelect.options).forEach(opt => {
         if (opt.value === value) {
-            opt.selected = true;
+            opt.selected = element.classList.contains('active');
             optionFound = true;
         }
     });
@@ -4014,18 +4044,51 @@ window.selectPlatformPill = function(value, element) {
         const newOpt = document.createElement('option');
         newOpt.value = value;
         newOpt.text = value;
-        newOpt.selected = true;
+        newOpt.selected = element.classList.contains('active');
         nativeSelect.appendChild(newOpt);
     }
-
-    if (value === 'Other') {
+    let isOtherSelected = Array.from(nativeSelect.options).some(opt => opt.value === 'Other' && opt.selected);
+    if (isOtherSelected) {
         document.getElementById('regPlatformOther').style.display = 'block';
         document.getElementById('regPlatformOther').required = true;
     } else {
         document.getElementById('regPlatformOther').style.display = 'none';
         document.getElementById('regPlatformOther').required = false;
+        document.getElementById('regPlatformOther').value = '';
+    }    
+
+    // Update platform IDs container
+    const idsContainer = document.getElementById('platformIdsContainer');
+    if (idsContainer) {
+        Array.from(nativeSelect.options).filter(opt => opt.value !== 'Other' && opt.value !== '').forEach(opt => {
+            const platform = opt.value;
+            const groupId = `group_platformId_${platform}`;
+            let groupEl = document.getElementById(groupId);
+            
+            if (opt.selected) {
+                if (!groupEl) {
+                    groupEl = document.createElement('div');
+                    groupEl.id = groupId;
+                    groupEl.className = 'form-group';
+                    groupEl.style.marginBottom = '0.5rem';
+                    groupEl.innerHTML = `
+                        <label style="font-size: 0.85rem; margin-bottom: 0.2rem;">${platform} ID</label>
+                        <input type="text" class="form-control" name="platformId_${platform}" id="platformId_${platform}" required>
+                    `;
+                    idsContainer.appendChild(groupEl);
+                } else {
+                    groupEl.style.display = 'block';
+                    groupEl.querySelector('input').required = true;
+                }
+            } else {
+                if (groupEl) {
+                    groupEl.style.display = 'none';
+                    groupEl.querySelector('input').required = false;
+                    groupEl.querySelector('input').value = '';
+                }
+            }
+        });
     }
-    
     // Clear validation error if any
     if (nativeSelect.value) {
         nativeSelect.classList.remove('is-invalid');
@@ -4115,8 +4178,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 riders.forEach((r, idx) => {
                     const slide = document.createElement('div');
                     slide.className = 'rider-slide' + (idx === 0 ? ' active' : '');
+                    
+                    let medalColor = '#3b82f6';
+                    if(idx === 0) medalColor = '#FFD700'; // Gold
+                    else if(idx === 1) medalColor = '#C0C0C0'; // Silver
+                    else if(idx === 2) medalColor = '#CD7F32'; // Bronze
+
                     slide.innerHTML = `<div class="rider-slide-content glass-card">
-                        <div class="rider-avatar-placeholder"></div>
+                        <div class="rider-avatar-placeholder" style="display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-medal" style="font-size: 40px; color: ${medalColor};"></i>
+                        </div>
                         <div class="rider-rank">#${idx + 1}</div>
                         <div class="rider-name">${r.fullName || 'Anonymous'}</div>
                         <div class="rider-details">

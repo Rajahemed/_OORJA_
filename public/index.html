@@ -210,9 +210,7 @@
         }
         .section-title-badge {
             display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: var(--primary-color);
             border-radius: var(--border-radius-md);
             padding: 0.75rem 1rem;
             font-size: 1rem;
@@ -492,9 +490,7 @@
         <!-- ======= SECTION 1: HOME / REGISTER VIEW ======= -->
         <style>
             body.home-page-active {
-                background: url('/img/home-bg.jpg') no-repeat center bottom fixed !important;
-                background-size: cover !important;
-                background-color: #1a75ff !important;
+                background-color: transparent !important;
             }
             @media (max-width: 768px) {
                 body.home-page-active {
@@ -533,6 +529,13 @@
                 color: #000000 !important;
             }
             /* Make text readable on skyblue if needed, though dark text usually works fine on skyblue */
+            body.register-page-active {
+                background-color: transparent !important; 
+            }
+            body.register-page-active .navbar,
+            body.register-page-active #site-footer {
+                display: none !important;
+            }
         </style>
         <!-- ======= SECTION 1: HOME VIEW ======= -->
         <section id="home-view" class="section-view">
@@ -592,7 +595,7 @@
 
 
                 <!-- Auth/Register Card -->
-                <div class="card" id="authBox" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                <div class="card" id="authBox" style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #BFE4FF !important;">
 
                     <!-- Login Form -->
                     <div id="loginCard">
@@ -607,9 +610,9 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="loginPhone" data-i18n="label_phone">Phone Number</label>
-                                    <div style="position: relative; display: flex; align-items: center; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: var(--border-radius-md); padding: 0 12px;">
+                                    <div style="position: relative; display: flex; align-items: center; background: #f9fafb; border: 1px solid var(--card-border); border-radius: var(--border-radius-md); padding: 0 12px;">
                                         <span style="color: var(--text-secondary); font-weight: 500; margin-right: 8px;">+91</span>
-                                        <input type="tel" id="loginPhone" style="border: none; background: transparent; outline: none; flex: 1; padding: 0.875rem 0; font-size: 0.975rem; color: var(--text-primary);" placeholder="9876543210" maxlength="10" required oninput="validateLoginPhone(this)">
+                                        <input type="tel" id="loginPhone" style="border: none; background: transparent; outline: none; flex: 1; padding: 0.875rem 0; font-size: 0.975rem; color: var(--text-primary);" maxlength="10" required oninput="validateLoginPhone(this)">
                                         <i id="loginPhoneErrorIcon" class="fas fa-times-circle" style="color: var(--danger-color); display: none; font-size: 1.1rem; margin-left: 8px;"></i>
                                     </div>
                                     <small id="loginPhoneWarning" style="color:var(--warning-color); display:none; margin-top:4px;"><i class="fas fa-exclamation-circle"></i> Only numbers are allowed</small>
@@ -621,13 +624,13 @@
                                         <a href="#" onclick="showRiderForgotForm()" style="font-size: 0.8rem; color: var(--primary-color);" data-i18n="forgot_password">Forgot Password?</a>
                                     </div>
                                     <div style="position: relative;">
-                                        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                                        <input type="password" id="loginPassword" class="form-control" required>
                                         <i id="toggleLoginPwd" class="fas fa-eye" style="position: absolute; right: 40px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('loginPassword', 'toggleLoginPwd')"></i>
                                     </div>
                                 </div>
                                 <div class="form-group" id="loginOtpGroup" style="display:none;">
                                     <div style="display:flex; gap:0.5rem;">
-                                        <input type="text" id="loginOtp" class="form-control" placeholder="Enter OTP">
+                                        <input type="text" id="loginOtp" class="form-control">
                                         <button type="button" class="btn btn-secondary" onclick="sendMockOtp()" id="sendOtpBtn">Send OTP</button>
                                     </div>
                                     <small id="otpSentMsg" style="color:var(--primary-color); display:none; margin-top:4px;">OTP sent! (mock: use 123456)</small>
@@ -645,16 +648,16 @@
                                 <h4 style="margin-bottom:1rem;"><i class="fas fa-unlock-alt"></i> Reset Password</h4>
                                 <div class="form-group">
                                     <label for="riderForgotPhone">Phone Number</label>
-                                    <div style="position: relative; display: flex; align-items: center; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: var(--border-radius-md); padding: 0 12px;">
+                                    <div style="position: relative; display: flex; align-items: center; background: #f9fafb; border: 1px solid var(--card-border); border-radius: var(--border-radius-md); padding: 0 12px;">
                                         <span style="color: var(--text-secondary); font-weight: 500; margin-right: 8px;">+91</span>
-                                        <input type="tel" id="riderForgotPhone" style="border: none; background: transparent; outline: none; flex: 1; padding: 0.875rem 0; font-size: 0.975rem; color: var(--text-primary);" placeholder="9876543210" maxlength="10" required oninput="validateLoginPhone(this)">
+                                        <input type="tel" id="riderForgotPhone" style="border: none; background: transparent; outline: none; flex: 1; padding: 0.875rem 0; font-size: 0.975rem; color: var(--text-primary);" maxlength="10" required oninput="validateLoginPhone(this)">
                                     </div>
                                     <small id="riderForgotPhoneWarning" style="color:var(--warning-color); display:none; margin-top:4px;"><i class="fas fa-exclamation-circle"></i> Only numbers are allowed</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="riderForgotOtp">Enter OTP</label>
                                     <div style="display:flex; gap:0.5rem;">
-                                        <input type="text" id="riderForgotOtp" class="form-control" placeholder="6-digit OTP" pattern="[0-9]{6}" required>
+                                        <input type="text" id="riderForgotOtp" class="form-control" pattern="[0-9]{6}" required>
                                         <button type="button" class="btn btn-secondary" onclick="sendMockOtp('riderForgotPhone', 'forgotOtpSentMsg')" id="sendForgotOtpBtn">Send OTP</button>
                                     </div>
                                     <small id="forgotOtpSentMsg" style="color:var(--primary-color); display:none; margin-top:4px;">OTP sent!</small>
@@ -662,7 +665,7 @@
                                 <div class="form-group">
                                     <label for="riderForgotNewPassword">New Password</label>
                                     <div style="position: relative;">
-                                        <input type="password" id="riderForgotNewPassword" class="form-control" placeholder="Enter new password" required>
+                                        <input type="password" id="riderForgotNewPassword" class="form-control" required>
                                         <i id="toggleRiderResetPwd" class="fas fa-eye" style="position: absolute; right: 40px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('riderForgotNewPassword', 'toggleRiderResetPwd')"></i>
                                     </div>
                                 </div>
@@ -697,31 +700,31 @@
                             <!-- Form Progress Indicator -->
                             
                             <div class="form-progress" id="regProgress">
-                                <div class="progress-step active" id="stepIndicator1">
+                                <div class="progress-step active" id="stepIndicator1" onclick="window.goToStep(1)" style="cursor:pointer;">
                                     <div class="step-circle">1</div>
                                     <div class="step-label">Welcome</div>
                                 </div>
-                                <div class="progress-step" id="stepIndicator2">
+                                <div class="progress-step" id="stepIndicator2" onclick="window.goToStep(2)" style="cursor:pointer;">
                                     <div class="step-circle">2</div>
                                     <div class="step-label">Profile</div>
                                 </div>
-                                <div class="progress-step" id="stepIndicator3">
+                                <div class="progress-step" id="stepIndicator3" onclick="window.goToStep(3)" style="cursor:pointer;">
                                     <div class="step-circle">3</div>
                                     <div class="step-label">Vehicle</div>
                                 </div>
-                                <div class="progress-step" id="stepIndicator4">
+                                <div class="progress-step" id="stepIndicator4" onclick="window.goToStep(4)" style="cursor:pointer;">
                                     <div class="step-circle">4</div>
                                     <div class="step-label">Challenges</div>
                                 </div>
-                                <div class="progress-step" id="stepIndicator5">
+                                <div class="progress-step" id="stepIndicator5" onclick="window.goToStep(5)" style="cursor:pointer;">
                                     <div class="step-circle">5</div>
                                     <div class="step-label">Insurance</div>
                                 </div>
-                                <div class="progress-step" id="stepIndicator6">
+                                <div class="progress-step" id="stepIndicator6" onclick="window.goToStep(6)" style="cursor:pointer;">
                                     <div class="step-circle">6</div>
                                     <div class="step-label">EV Open</div>
                                 </div>
-                                <div class="progress-step" id="stepIndicator7">
+                                <div class="progress-step" id="stepIndicator7" onclick="window.goToStep(7)" style="cursor:pointer;">
                                     <div class="step-circle">7</div>
                                     <div class="step-label">Referral</div>
                                 </div>
@@ -729,27 +732,25 @@
 
                             
 <!-- SECTION 1: Welcome & Language -->
-<div class="form-section active" id="regSection1" style="margin-bottom:2rem; text-align:center;">
+<div class="form-section active" id="regSection1" style="margin-bottom:1rem; text-align:center;">
     <div class="section-title-badge"><i class="fas fa-globe"></i> <span data-i18n="sec_welcome_title">Choose Language</span></div>
+
+    <div style="margin: 0.5rem auto; max-width: 500px;">
+        <img id="welcomeImage" src="/og-image-English.png" alt="Welcome" style="width: 100%; max-height: 200px; object-fit: contain; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.3s ease;">
+    </div>
     
-    <div id="languageSwitcherContainer" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; margin-top:1rem; margin-bottom:1.5rem;">
-        
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:0.5rem; width: 100%; max-width: 500px;">
-            <button type="button" onclick="changeLanguage('en')" class="lang-btn" id="lang-btn-en" style="padding:0.75rem; border-radius:8px; border:2px solid var(--primary-color); background:var(--primary-color); color:#fff; font-weight:700; cursor:pointer; transition:all 0.2s;">🇺🇸 English</button>
-            <button type="button" onclick="changeLanguage('hi')" class="lang-btn" id="lang-btn-hi" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 हिंदी (Hindi)</button>
-            <button type="button" onclick="changeLanguage('kn')" class="lang-btn" id="lang-btn-kn" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 ಕನ್ನಡ (Kannada)</button>
-            <button type="button" onclick="changeLanguage('ta')" class="lang-btn" id="lang-btn-ta" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 தமிழ் (Tamil)</button>
-            <button type="button" onclick="changeLanguage('te')" class="lang-btn" id="lang-btn-te" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 తెలుగు (Telugu)</button>
-            <button type="button" onclick="changeLanguage('mr')" class="lang-btn" id="lang-btn-mr" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 मराठी (Marathi)</button>
-            <button type="button" onclick="changeLanguage('gu')" class="lang-btn" id="lang-btn-gu" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 ગુજરાતી (Gujarati)</button>
-            <button type="button" onclick="changeLanguage('bn')" class="lang-btn" id="lang-btn-bn" style="padding:0.75rem; border-radius:8px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 বাংলা (Bengali)</button>
+    <div id="languageSwitcherContainer" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem; margin-top:0.5rem; margin-bottom:0.5rem;">
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:0.25rem; width: 100%; max-width: 500px;">
+            <button type="button" onclick="changeLanguage('en')" class="lang-btn" id="lang-btn-en" style="padding:0.4rem; font-size:0.8rem; border-radius:6px; border:2px solid var(--primary-color); background:var(--primary-color); color:#fff; font-weight:700; cursor:pointer; transition:all 0.2s;">🇺🇸 English</button>
+            <button type="button" onclick="changeLanguage('hi')" class="lang-btn" id="lang-btn-hi" style="padding:0.4rem; font-size:0.8rem; border-radius:6px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 हिंदी</button>
+            <button type="button" onclick="changeLanguage('kn')" class="lang-btn" id="lang-btn-kn" style="padding:0.4rem; font-size:0.8rem; border-radius:6px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 ಕನ್ನಡ</button>
+            <button type="button" onclick="changeLanguage('ta')" class="lang-btn" id="lang-btn-ta" style="padding:0.4rem; font-size:0.8rem; border-radius:6px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 தமிழ்</button>
+            <button type="button" onclick="changeLanguage('te')" class="lang-btn" id="lang-btn-te" style="padding:0.4rem; font-size:0.8rem; border-radius:6px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 తెలుగు</button>
+            <button type="button" onclick="changeLanguage('mr')" class="lang-btn" id="lang-btn-mr" style="padding:0.4rem; font-size:0.8rem; border-radius:6px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 मराठी</button>
+            <button type="button" onclick="changeLanguage('gu')" class="lang-btn" id="lang-btn-gu" style="padding:0.4rem; font-size:0.8rem; border-radius:6px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 ગુજરાતી</button>
+            <button type="button" onclick="changeLanguage('bn')" class="lang-btn" id="lang-btn-bn" style="padding:0.4rem; font-size:0.8rem; border-radius:6px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 বাংলা</button>
         </div>
     </div>
-    
-    <div style="margin: 1.5rem auto; max-width: 500px;">
-        <img id="welcomeImage" src="/og-image-English.png" alt="Welcome" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.3s ease;">
-    </div>
-    
     <div class="form-navigation" style="margin-top:2rem;">
         <button type="button" class="btn btn-primary w-100" onclick="nextStep()" style="font-size: 1.1rem; padding: 1rem;"><span data-i18n="btn_continue">Continue</span> <i class="fas fa-arrow-right"></i></button>
     </div>
@@ -761,14 +762,14 @@
                                 <div class="section-title-badge"><i class="fas fa-user"></i> <span data-i18n="sec_a_title">Section A — Basic Profile</span></div>
                                 <div class="form-group">
                                     <label for="regFullName" data-i18n="label_fullname">Full Name</label>
-                                    <input type="text" id="regFullName" class="form-control" placeholder="Ramesh Kumar" required oninput="validateRegName(this)">
+                                    <input type="text" id="regFullName" class="form-control" required oninput="validateRegName(this)" onblur="window.savePartialProgress && window.savePartialProgress()">
                                     <small id="nameWarning" class="text-danger-color" style="display:none; font-weight:600; margin-top:0.25rem; display:none;" data-i18n="warning_no_numbers">Numbers are not allowed in names</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="regPhone"><span data-i18n="label_whatsapp">WhatsApp Number</span> (10 digits)</label>
                                     <div style="position:relative; display:flex; align-items:center;">
                                         <span style="position:absolute; left:1rem; font-weight:500; color:var(--text-secondary); pointer-events:none;">+91</span>
-                                        <input type="tel" id="regPhone" class="form-control" placeholder="9876543210" maxlength="10" required style="padding-left:3.2rem; padding-right:2.5rem;" oninput="validateRegPhone(this)">
+                                        <input type="tel" id="regPhone" class="form-control" maxlength="10" required style="padding-left:3.2rem; padding-right:2.5rem;" oninput="validateRegPhone(this)" onblur="window.savePartialProgress && window.savePartialProgress()">
                                         <span id="phoneValIcon" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); display:none;">
                                             <i class="fas fa-check-circle text-success-color" id="phoneCheckIcon" style="display:none;"></i>
                                             <i class="fas fa-times-circle text-danger-color" id="phoneCrossIcon" style="display:none;"></i>
@@ -782,7 +783,7 @@
                                 <div class="form-group">
                                     <label for="regPassword" data-i18n="label_password">Password</label>
                                     <div style="position:relative;">
-                                        <input type="password" id="regPassword" class="form-control" placeholder="Create password" minlength="8" required style="padding-right:2.5rem;" oninput="validateRegPassword(this)">
+                                        <input type="password" id="regPassword" class="form-control" minlength="8" required style="padding-right:2.5rem;" oninput="validateRegPassword(this)">
                                         <span onclick="togglePasswordVisibility('regPassword', this)" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); cursor:pointer; color:var(--text-secondary);">
                                             <i class="fas fa-eye"></i>
                                         </span>
@@ -804,19 +805,19 @@
                                         <select id="regState" class="form-control" required onchange="onRegStateChange()">
                                             <option value="">Loading States...</option>
                                         </select>
-                                        <input type="text" id="regStateOther" class="form-control" placeholder="Enter State" data-i18n-placeholder="placeholder_state" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
+                                        <input type="text" id="regStateOther" class="form-control" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
                                     </div>
                                     <div class="form-group" style="flex:1; min-width:200px;">
                                         <label for="regCity" data-i18n="label_city">City</label>
                                         <select id="regCity" class="form-control" required onchange="onRegCityChange()" disabled>
                                             <option value="" data-i18n="select_city">Select your city</option>
                                         </select>
-                                        <input type="text" id="regCityOther" class="form-control" placeholder="Enter City" data-i18n-placeholder="placeholder_city" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
+                                        <input type="text" id="regCityOther" class="form-control" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="regPincode" data-i18n="label_pincode">Pincode</label>
-                                    <input type="text" id="regPincode" class="form-control" required placeholder="Type pincode (e.g. 560001)" data-i18n-placeholder="placeholder_pincode" pattern="[0-9]{6}" maxlength="6" title="Please enter a 6-digit valid pincode">
+                                    <input type="text" id="regPincode" class="form-control" required pattern="[0-9]{6}" maxlength="6" title="Please enter a 6-digit valid pincode">
                                 </div>
                                 <div style="display:flex; gap:1rem; flex-wrap:wrap;">
                                     <div class="form-group" style="position:relative; z-index:10; flex:1; min-width:200px;">
@@ -838,6 +839,7 @@
                                         }
                                         .platform-pill:hover { background-color: #d1fae5; border-color: #34d399; }
                                         .platform-pill.active { background-color: #a7f3d0; border-color: #10b981; font-weight: 600; }
+                                        .platform-pill.active::after { content: '\f00c'; font-family: 'Font Awesome 5 Free'; font-weight: 900; margin-left: 6px; }
                                     </style>
                                     <div class="platform-pills" id="platformPillsContainer">
                                         <div class="platform-pill" onclick="selectPlatformPill('Swiggy', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f96e2a'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>S</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Swiggy</div>
@@ -853,7 +855,7 @@
                                     </div>
                                     
                                     <!-- Hidden actual select for form submission and validation -->
-                                    <select id="regPlatform" class="form-control" style="display:none;" required onchange="handleOtherDropdown(this, 'regPlatformOther')">
+                                    <select id="regPlatform" class="form-control" style="display:none;" multiple required onchange="handleOtherDropdown(this, 'regPlatformOther')">
                                         <option value="">Select platform</option>
                                         <option value="Swiggy">Swiggy</option>
                                         <option value="Zomato">Zomato</option>
@@ -867,22 +869,29 @@
                                         <option value="Other">Other</option>
                                     </select>
                                     
-                                    <input type="text" id="regPlatformOther" class="form-control" placeholder="Enter Platform" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regPlatformOther" class="form-control" style="display:none; margin-top:0.5rem;">
+                                    <div id="platformIdsContainer" style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;"></div>
                                     </div>
                                     <div class="form-group" style="flex:1; min-width:200px;">
                                         <label for="regExp" data-i18n="label_exp">Years of Experience</label>
                                         <div class="platform-pills" id="expPillsContainer">
-                                            <div class="platform-pill" onclick="selectExpPill('0-1', this)">0-1 Years</div>
-                                            <div class="platform-pill" onclick="selectExpPill('1-3', this)">1-3 Years</div>
-                                            <div class="platform-pill" onclick="selectExpPill('3-5', this)">3-5 Years</div>
-                                            <div class="platform-pill" onclick="selectExpPill('5+', this)">5+ Years</div>
+                                            <div class="platform-pill" onclick="selectExpPill('0-6 months', this)">0-6 months</div>
+                                            <div class="platform-pill" onclick="selectExpPill('1-2', this)">1-2 Years</div>
+                                            <div class="platform-pill" onclick="selectExpPill('2-3', this)">2-3 Years</div>
+                                            <div class="platform-pill" onclick="selectExpPill('3-4', this)">3-4 Years</div>
+                                            <div class="platform-pill" onclick="selectExpPill('4-5', this)">4-5 Years</div>
+                                            <div class="platform-pill" onclick="selectExpPill('5-6', this)">5-6 Years</div>
+                                            <div class="platform-pill" onclick="selectExpPill('6+', this)">6+ Years</div>
                                         </div>
                                         <select id="regExp" class="form-control" style="display:none;" required>
                                             <option value="">Select experience</option>
-                                            <option value="0-1">0-1 Years</option>
-                                            <option value="1-3">1-3 Years</option>
-                                            <option value="3-5">3-5 Years</option>
-                                            <option value="5+">5+ Years</option>
+                                            <option value="0-6 months">0-6 months</option>
+                                            <option value="1-2">1-2 Years</option>
+                                            <option value="2-3">2-3 Years</option>
+                                            <option value="3-4">3-4 Years</option>
+                                            <option value="4-5">4-5 Years</option>
+                                            <option value="5-6">5-6 Years</option>
+                                            <option value="6+">6+ Years</option>
                                         </select>
                                     </div>
                                 </div>
@@ -899,14 +908,14 @@
                                         <label class="radio-item"><input type="radio" name="vehicleType" required value="Electric two-wheeler" onchange="onVehicleTypeChange(this.value)"> ⚡ <span data-i18n="vt_electric">Electric Two-Wheeler</span></label>
                                         <label class="radio-item"><input type="radio" name="vehicleType" required value="Other" onchange="onVehicleTypeChange(this.value)"> 🚲 <span data-i18n="vt_other">Other</span></label>
                                     </div>
-                                    <input type="text" id="regVehicleTypeOther" class="form-control" placeholder="Enter Vehicle Type" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regVehicleTypeOther" class="form-control" style="display:none; margin-top:0.5rem;">
                                 </div>
                                 <div class="form-group">
                                     <label for="regVehicleModel" data-i18n="label_vehicle_model">Vehicle Brand & Model </label>
                                     <select required id="regVehicleModel" class="form-control" onchange="handleOtherDropdown(this, 'regVehicleModelOther')">
                                         <option value="">Select Brand/Model</option>
                                     </select>
-                                    <input type="text" id="regVehicleModelOther" class="form-control" placeholder="Enter Brand & Model" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regVehicleModelOther" class="form-control" style="display:none; margin-top:0.5rem;">
                                 </div>
                                 <div class="form-group">
                                     <label data-i18n="label_fuel_method">How do you fuel/charge?</label>
@@ -916,15 +925,15 @@
                                         <label class="radio-item"><input type="radio" name="fuelMethod" required value="Battery swapping station" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔋 <span data-i18n="fm_swap">Battery Swap</span></label>
                                         <label class="radio-item"><input type="radio" name="fuelMethod" required value="Other" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔌 <span data-i18n="fm_other">Other</span></label>
                                     </div>
-                                    <input type="text" id="regFuelMethodOther" class="form-control" placeholder="Specify fuel/charge method" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regFuelMethodOther" class="form-control" style="display:none; margin-top:0.5rem;">
                                 </div>
                                 <div class="form-group">
                                     <label for="regFuelExp" data-i18n="label_fuel_expense">Weekly Fuel/Charge Expense (₹)</label>
-                                    <input required type="number" id="regFuelExp" class="form-control" placeholder="e.g. 600" min="0">
+                                    <input required type="number" id="regFuelExp" class="form-control" min="0">
                                 </div>
                                 <div class="form-group">
                                     <label for="regMaintExp" data-i18n="label_maint_expense">Monthly Maintenance Expense (₹)</label>
-                                    <input required type="number" id="regMaintExp" class="form-control" placeholder="e.g. 300" min="0">
+                                    <input required type="number" id="regMaintExp" class="form-control" min="0">
                                 </div>
                             <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
                             </div> <!-- End of regSection2 -->
@@ -942,7 +951,7 @@
                                         <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Long refuelling time"> ⏱️ <span data-i18n="ch_refuel">Long refuelling time</span></label>
                                         <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
                                     </div>
-                                    <input type="text" id="regChallengesOther" class="form-control" placeholder="Specify challenge" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;">
                                 </div>
 
                                 <!-- EV-specific challenges (conditional) -->
@@ -956,7 +965,7 @@
                                         <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Service centre not nearby"> 🔧 <span data-i18n="evc_service">Service centre not nearby</span></label>
                                         <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Other" onchange="toggleOtherCheckbox(this, 'regEvChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
                                     </div>
-                                    <input type="text" id="regEvChallengesOther" class="form-control" placeholder="Specify EV challenge" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regEvChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;">
                                 </div>
 
                                 <!-- Petrol-specific challenges (conditional) -->
@@ -969,7 +978,7 @@
                                         <label class="checkbox-item"><input type="checkbox" required name="petrolChallenges" value="High servicing cost"> 💸 <span data-i18n="pc_service">High servicing cost</span></label>
                                         <label class="checkbox-item"><input type="checkbox" required name="petrolChallenges" value="Other" onchange="toggleOtherCheckbox(this, 'regPetrolChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
                                     </div>
-                                    <input type="text" id="regPetrolChallengesOther" class="form-control" placeholder="Specify petrol challenge" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regPetrolChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;">
                                 </div>
 
                             <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
@@ -1121,6 +1130,7 @@
 
         <!-- ======= SECTION 2: SCORE (PUBLIC) VIEW ======= -->
         <section id="score-view" class="section-view">
+            <div class="card" style="background-color: #BFE4FF !important; padding: 1.5rem; margin-bottom: 2rem;">
             <div class="flex-between mb-4">
                 <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="score_title"><i class="fas fa-trophy text-warning-color"></i> Score & Leaderboard</h2>
                 <button class="btn-back" onclick="navigateTo('/home')"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
@@ -1194,6 +1204,7 @@
                     <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1.5rem;" id="achievementsGrid"></div>
                 </div>
             </div>
+            </div>
         </section>
 
         <!-- ======= SECTION 3: MY VEHICLES VIEW ======= -->
@@ -1231,6 +1242,7 @@
 
         <!-- ======= SECTION 4: DASHBOARD VIEW ======= -->
         <section id="dashboard-view" class="section-view">
+            <div class="card" style="background-color: #BFE4FF !important; padding: 1.5rem; margin-bottom: 2rem;">
             <div class="flex-between mb-4">
                 <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="dashboard_title"><i class="fas fa-chart-line text-primary-color"></i> Rider Dashboard</h2>
                 <button class="btn-back" onclick="navigateTo('/home')"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
@@ -1267,10 +1279,7 @@
                         <i class="fas fa-gift" style="font-size: 2rem; color: var(--success-color);"></i>
                         <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);" data-i18n="act_rewards_missions">Rewards & Missions</span>
                     </div>
-                    <div onclick="openModal('evMapModal'); initEVMap();" style="cursor: pointer; padding: 1.5rem 1rem; border-radius: 12px; background: var(--bg-color); border: 1px solid var(--card-border); text-align: center; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;" onmouseover="this.style.borderColor='var(--primary-color)';" onmouseout="this.style.borderColor='var(--card-border)';">
-                        <i class="fas fa-map" style="font-size: 2rem; color: var(--info-color);"></i>
-                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);" data-i18n="act_ev_charging_map">EV Charging Map</span>
-                    </div>
+
                     <div onclick="window.location.href='/community.html'" style="cursor: pointer; padding: 1.5rem 1rem; border-radius: 12px; background: var(--bg-color); border: 1px solid var(--card-border); text-align: center; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;" onmouseover="this.style.borderColor='var(--primary-color)';" onmouseout="this.style.borderColor='var(--card-border)';">
                         <i class="fas fa-comments" style="font-size: 2rem; color: #8A2BE2;"></i>
                         <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);" data-i18n="act_community_feed">Community Feed</span>
@@ -1291,10 +1300,12 @@
                     <div class="card-body"><canvas id="loginLogoutChart" style="max-height:300px;"></canvas></div>
                 </div>
             </div>
+            </div>
         </section>
 
         <!-- ======= SECTION 5: PROFILE VIEW ======= -->
         <section id="profile-view" class="section-view">
+            <div class="card" style="background-color: #BFE4FF !important; padding: 1.5rem; margin-bottom: 2rem;">
             <div class="flex-between mb-4">
                 <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;" data-i18n="profile_title"><i class="fas fa-user-circle text-primary-color"></i> My Profile</h2>
                 <button class="btn-back" onclick="navigateTo('/dashboard')"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button>
@@ -1424,6 +1435,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </section>
 
@@ -2044,16 +2056,7 @@
                 <span class="footer-logo-icon" style="color: var(--primary-color);">⚡</span>
                 <span class="footer-logo-text" style="color: var(--text-primary);">Road Warrior <span style="color: var(--primary-color);">Pro</span></span>
             </div>
-            <div style="display: flex; gap: 1rem;">
-                <a href="tel:+916360483386" class="footer-btn-download" style="background: linear-gradient(135deg, #25D366, #128C7E); color: white; border: none; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2); display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; border-radius: 8px; text-decoration: none; font-weight: 600;">
-                    <span>Click To Call</span>
-                    <i class="fas fa-phone-alt"></i>
-                </a>
-                <a href="https://wa.me/916360483386" target="_blank" class="footer-btn-download" style="background: linear-gradient(135deg, #25D366, #075E54); color: white; border: none; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2); display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; border-radius: 8px; text-decoration: none; font-weight: 600;">
-                    <span>WhatsApp Us</span>
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-            </div>
+
         </div>
         <!-- Footer Bottom Bar -->
         <div class="footer-bottom">

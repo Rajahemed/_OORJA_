@@ -53,8 +53,12 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', sans-serif;
-  background: #ffffff !important;
-  color: #000000 !important;
+  background-color: #ffffff !important;
+  background-image: url('/img/home-bg.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-attachment: fixed !important;
+  color: #111827 !important;
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -300,16 +304,22 @@ label {
   color: var(--text-primary);
 }
 
+.form-group:has([required]) > label::after,
+#loginPasswordGroup label::after {
+  content: " *";
+  color: var(--danger-color, #ef4444);
+}
+
 .form-control {
   width: 100%;
   padding: 0.8rem 1rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid #9ca3af;
   border-radius: var(--border-radius-md);
   font-family: inherit;
   font-size: 1rem;
   font-weight: 600;
   transition: all 0.3s;
-  background-color: var(--card-bg);
+  background-color: #f9fafb;
   color: var(--text-primary);
 }
 
@@ -511,15 +521,17 @@ select.form-control option {
 .stat-box:nth-child(4n+4) { --stat-color: 239, 68, 68; } /* Red */
 
 .stat-box {
-  background: linear-gradient(135deg, rgba(var(--stat-color, 59, 130, 246), 0.12), rgba(var(--stat-color, 59, 130, 246), 0.02));
-  border: 1px solid rgba(var(--stat-color, 59, 130, 246), 0.2);
+  background: linear-gradient(135deg, rgba(var(--stat-color, 59, 130, 246), 0.15), rgba(var(--stat-color, 59, 130, 246), 0.05)), rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(var(--stat-color, 59, 130, 246), 0.3);
   border-radius: var(--border-radius-lg);
   padding: 2rem 1.5rem;
   text-align: center;
   transition: var(--transition);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
@@ -563,9 +575,9 @@ select.form-control option {
 }
 
 .stat-label {
-  color: var(--text-secondary);
+  color: #1f2937;
   font-size: 0.825rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.75px;
 }

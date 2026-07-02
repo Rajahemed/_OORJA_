@@ -736,7 +736,7 @@ router.get('/admin/analytics/export/csv', adminAuth(['SUPER_ADMIN', 'ADMIN']), a
 // GET /api/admin/analytics/leads-funnel
 // Leads and progressive form save analytics
 // ============================================================
-router.get('/admin/analytics/leads-funnel', adminAuth, adminAnalyticsRateLimit, async (req, res) => {
+router.get('/admin/analytics/leads-funnel', adminAuth(), adminAnalyticsRateLimit, async (req, res) => {
   try {
     const { data: riders, error } = await supabase.from('riders').select('*');
     if (error) throw error;
