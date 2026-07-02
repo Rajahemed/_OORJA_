@@ -365,10 +365,8 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       whatsappMessage = `Welcome ${fullName}! You are now registered. Your referral code is ${referralCode}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV 🏆`;
     }
 
-    if (latitude && longitude) {
-      whatsappMessage += `\n📍 Registration Location: https://maps.google.com/?q=${latitude},${longitude}`;
-    }
-
+    // Location is no longer appended to the WhatsApp message for privacy reasons
+    
     // Attempt to directly send the WhatsApp message if Twilio is configured
     const twilio = require('twilio');
     const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_ACCOUNT_SID !== 'your_twilio_account_sid'
