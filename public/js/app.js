@@ -1146,6 +1146,10 @@ async function openDataDrilldown(type) {
         else if (path === '/privacy') activeTab = 'privacy';
         else if (path === '/login') activeTab = 'login';
 
+        if (activeTab !== 'login') {
+            document.body.classList.remove('register-page-active');
+        }
+
         const fullUrl = window.location.origin + path;
         const canTag = document.querySelector('link[rel="canonical"]');
         if (canTag) canTag.href = fullUrl;
@@ -4235,14 +4239,16 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
         const urlParams = new URLSearchParams(window.location.search);
         const refCode = urlParams.get('ref');
+        const registerParam = urlParams.get('register');
         
-        if (refCode) {
+        if (refCode || registerParam === 'true') {
             // Auto-open registration form
             const loginCard = document.getElementById('loginCard');
             const registerCard = document.getElementById('registerCard');
             if (loginCard && registerCard) {
                 loginCard.style.display = 'none';
                 registerCard.style.display = 'block';
+                document.body.classList.add('register-page-active');
             }
             
             // Auto-fill referral code
