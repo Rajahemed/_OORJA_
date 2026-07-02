@@ -1920,3 +1920,9 @@ height: 40px;
     gap: 1rem;
   }
 }
+
+/* Hide header and footer when registration form is active */
+body.register-page-active .navbar,
+body.register-page-active #site-footer {
+    display: none !important;
+}
