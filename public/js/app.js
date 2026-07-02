@@ -4230,6 +4230,49 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof routeSPA === 'function') {
         routeSPA(window.location.pathname);
     }
+
+    // Process referral URL parameters
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        
+        if (refCode) {
+            // Auto-open registration form
+            const loginCard = document.getElementById('loginCard');
+            const registerCard = document.getElementById('registerCard');
+            if (loginCard && registerCard) {
+                loginCard.style.display = 'none';
+                registerCard.style.display = 'block';
+            }
+            
+            // Auto-fill referral code
+            const regRefCode = document.getElementById('regReferralCode');
+            if (regRefCode) {
+                regRefCode.value = refCode;
+            }
+            
+            // Automatically select "Yes" for "Were you referred?"
+            const yesRadio = document.querySelector('input[name="referredBy"][value="yes"]');
+            if (yesRadio) {
+                yesRadio.checked = true;
+                if (typeof toggleReferralInput === 'function') {
+                    toggleReferralInput('yes');
+                }
+            }
+            
+            // Hide the question block and show the applied badge
+            const questionBlock = document.getElementById('referralQuestionBlock');
+            if (questionBlock) questionBlock.style.display = 'none';
+            
+            const badge = document.getElementById('referralAppliedBadge');
+            if (badge) badge.style.display = 'flex';
+            
+            const appliedText = document.getElementById('appliedReferralCodeText');
+            if (appliedText) appliedText.textContent = refCode;
+        }
+    } catch (e) {
+        console.error('Error parsing referral URL:', e);
+    }
 });
 
 // Handle browser Back/Forward buttons
