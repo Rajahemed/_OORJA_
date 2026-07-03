@@ -714,23 +714,23 @@
                                 </div>
                                 <div class="progress-step" id="stepIndicator3" onclick="window.goToStep(3)" style="cursor:pointer;">
                                     <div class="step-circle">3</div>
-                                    <div class="step-label">Vehicle</div>
+                                    <div class="step-label">Vehicle Info</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator4" onclick="window.goToStep(4)" style="cursor:pointer;">
                                     <div class="step-circle">4</div>
-                                    <div class="step-label">Challenges</div>
+                                    <div class="step-label">Fuel Info</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator5" onclick="window.goToStep(5)" style="cursor:pointer;">
                                     <div class="step-circle">5</div>
-                                    <div class="step-label">Insurance</div>
+                                    <div class="step-label">Challenges</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator6" onclick="window.goToStep(6)" style="cursor:pointer;">
                                     <div class="step-circle">6</div>
-                                    <div class="step-label">EV Open</div>
+                                    <div class="step-label">Safety</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator7" onclick="window.goToStep(7)" style="cursor:pointer;">
                                     <div class="step-circle">7</div>
-                                    <div class="step-label">Referral</div>
+                                    <div class="step-label">Consent</div>
                                 </div>
                             </div>
 
@@ -744,7 +744,7 @@
     <div class="section-title-badge"><i class="fas fa-globe"></i> <span data-i18n="sec_welcome_title">Choose Language</span></div>
     
     <div id="languageSwitcherContainer" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem; margin-top:0.5rem; margin-bottom:0.5rem;">
-        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:0.25rem; width: 100%; max-width: 500px;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap:0.25rem; width: 100%; max-width: 500px;">
             <button type="button" onclick="changeLanguage('en')" class="lang-btn" id="lang-btn-en" style="padding:0.4rem; font-size:0.8rem; border-radius:6px; border:2px solid var(--primary-color); background:var(--primary-color); color:#fff; font-weight:700; cursor:pointer; transition:all 0.2s;">🇺🇸 English</button>
             <button type="button" onclick="changeLanguage('hi')" class="lang-btn" id="lang-btn-hi" style="padding:0.4rem; font-size:0.8rem; border-radius:6px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 हिंदी</button>
             <button type="button" onclick="changeLanguage('kn')" class="lang-btn" id="lang-btn-kn" style="padding:0.4rem; font-size:0.8rem; border-radius:6px; border:2px solid var(--card-border); background:transparent; color:var(--text-secondary); font-weight:700; cursor:pointer; transition:all 0.2s;">🇮🇳 ಕನ್ನಡ</button>
@@ -846,31 +846,31 @@
                                         .platform-pill.active::after { content: '\f00c'; font-family: 'Font Awesome 5 Free'; font-weight: 900; margin-left: 6px; }
                                     </style>
                                     <div class="platform-pills" id="platformPillsContainer">
-                                        <div class="platform-pill" onclick="selectPlatformPill('Swiggy', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f96e2a'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>S</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Swiggy</div>
-                                        <div class="platform-pill" onclick="selectPlatformPill('Zomato', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23e23744'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Zomato</div>
-                                        <div class="platform-pill" onclick="selectPlatformPill('Blinkit', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f8cb46'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>B</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Blinkit</div>
-                                        <div class="platform-pill" onclick="selectPlatformPill('Porter', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232d62e1'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>P</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Porter</div>
-                                        <div class="platform-pill" onclick="selectPlatformPill('Dunzo', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%2300d290'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Dunzo</div>
-                                        <div class="platform-pill" onclick="selectPlatformPill('DHL', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23ffcc00'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23d40511' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">DHL</div>
-                                        <div class="platform-pill" onclick="selectPlatformPill('Amazon', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23ff9900'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>A</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Amazon</div>
-                                        <div class="platform-pill" onclick="selectPlatformPill('Flipkart', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232874f0'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>F</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Flipkart</div>
-                                        <div class="platform-pill" onclick="selectPlatformPill('Zepto', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%234B0082'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;">Zepto</div>
-                                        <div class="platform-pill" onclick="selectPlatformPill('Other', this)"><div style="width:18px; height:18px; border-radius:4px; background:var(--card-border); display:inline-flex; align-items:center; justify-content:center; margin-right: 6px; flex-shrink:0;"><i class="fas fa-ellipsis-h" style="font-size:10px; color:var(--text-secondary);"></i></div>Other</div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Swiggy', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f96e2a'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>S</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;"><span data-i18n="plat_swiggy">Swiggy</span></div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Zomato', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23e23744'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;"><span data-i18n="plat_zomato">Zomato</span></div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Blinkit', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f8cb46'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>B</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;"><span data-i18n="plat_blinkit">Blinkit</span></div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Porter', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232d62e1'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>P</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;"><span data-i18n="plat_porter">Porter</span></div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Dunzo', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%2300d290'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;"><span data-i18n="plat_dunzo">Dunzo</span></div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('DHL', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23ffcc00'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23d40511' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;"><span data-i18n="plat_dhl">DHL</span></div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Amazon', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23ff9900'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>A</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;"><span data-i18n="plat_amazon">Amazon</span></div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Flipkart', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232874f0'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>F</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;"><span data-i18n="plat_flipkart">Flipkart</span></div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Zepto', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%234B0082'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;"><span data-i18n="plat_zepto">Zepto</span></div>
+                                        <div class="platform-pill" onclick="selectPlatformPill('Other', this)"><div style="width:18px; height:18px; border-radius:4px; background:var(--card-border); display:inline-flex; align-items:center; justify-content:center; margin-right: 6px; flex-shrink:0;"><i class="fas fa-ellipsis-h" style="font-size:10px; color:var(--text-secondary);"></i></div><span data-i18n="plat_other">Other</span></div>
                                     </div>
                                     
                                     <!-- Hidden actual select for form submission and validation -->
                                     <select id="regPlatform" class="form-control" style="display:none;" multiple required onchange="handleOtherDropdown(this, 'regPlatformOther')">
                                         <option value="">Select platform</option>
-                                        <option value="Swiggy">Swiggy</option>
-                                        <option value="Zomato">Zomato</option>
-                                        <option value="Blinkit">Blinkit</option>
-                                        <option value="Porter">Porter</option>
-                                        <option value="Dunzo">Dunzo</option>
-                                        <option value="DHL">DHL</option>
-                                        <option value="Amazon">Amazon</option>
-                                        <option value="Flipkart">Flipkart</option>
-                                        <option value="Zepto">Zepto</option>
-                                        <option value="Other">Other</option>
+                                        <option value="Swiggy" data-i18n="plat_swiggy">Swiggy</option>
+                                        <option value="Zomato" data-i18n="plat_zomato">Zomato</option>
+                                        <option value="Blinkit" data-i18n="plat_blinkit">Blinkit</option>
+                                        <option value="Porter" data-i18n="plat_porter">Porter</option>
+                                        <option value="Dunzo" data-i18n="plat_dunzo">Dunzo</option>
+                                        <option value="DHL" data-i18n="plat_dhl">DHL</option>
+                                        <option value="Amazon" data-i18n="plat_amazon">Amazon</option>
+                                        <option value="Flipkart" data-i18n="plat_flipkart">Flipkart</option>
+                                        <option value="Zepto" data-i18n="plat_zepto">Zepto</option>
+                                        <option value="Other" data-i18n="plat_other">Other</option>
                                     </select>
                                     
                                     <input type="text" id="regPlatformOther" class="form-control" style="display:none; margin-top:0.5rem;">
@@ -879,179 +879,283 @@
                                     <div class="form-group" style="flex:1; min-width:200px;">
                                         <label for="regExp" data-i18n="label_exp">Years of Experience</label>
                                         <div class="platform-pills" id="expPillsContainer">
-                                            <div class="platform-pill" onclick="selectExpPill('0-6 months', this)">0-6 months</div>
-                                            <div class="platform-pill" onclick="selectExpPill('1-2', this)">1-2 Years</div>
-                                            <div class="platform-pill" onclick="selectExpPill('2-3', this)">2-3 Years</div>
-                                            <div class="platform-pill" onclick="selectExpPill('3-4', this)">3-4 Years</div>
-                                            <div class="platform-pill" onclick="selectExpPill('4-5', this)">4-5 Years</div>
-                                            <div class="platform-pill" onclick="selectExpPill('5-6', this)">5-6 Years</div>
-                                            <div class="platform-pill" onclick="selectExpPill('6+', this)">6+ Years</div>
+                                            <div class="platform-pill" onclick="selectExpPill('0-6 months', this)"><span data-i18n="exp_0_6">0-6 months</span></div>
+                                            <div class="platform-pill" onclick="selectExpPill('1-2', this)"><span data-i18n="exp_1_2">1-2 Years</span></div>
+                                            <div class="platform-pill" onclick="selectExpPill('2-3', this)"><span data-i18n="exp_2_3">2-3 Years</span></div>
+                                            <div class="platform-pill" onclick="selectExpPill('3-4', this)"><span data-i18n="exp_3_4">3-4 Years</span></div>
+                                            <div class="platform-pill" onclick="selectExpPill('4-5', this)"><span data-i18n="exp_4_5">4-5 Years</span></div>
+                                            <div class="platform-pill" onclick="selectExpPill('5-6', this)"><span data-i18n="exp_5_6">5-6 Years</span></div>
+                                            <div class="platform-pill" onclick="selectExpPill('6+', this)"><span data-i18n="exp_6_plus">6+ Years</span></div>
                                         </div>
                                         <select id="regExp" class="form-control" style="display:none;" required>
                                             <option value="">Select experience</option>
-                                            <option value="0-6 months">0-6 months</option>
-                                            <option value="1-2">1-2 Years</option>
-                                            <option value="2-3">2-3 Years</option>
-                                            <option value="3-4">3-4 Years</option>
-                                            <option value="4-5">4-5 Years</option>
-                                            <option value="5-6">5-6 Years</option>
-                                            <option value="6+">6+ Years</option>
+                                            <option value="0-6 months" data-i18n="exp_0_6">0-6 months</option>
+                                            <option value="1-2" data-i18n="exp_1_2">1-2 Years</option>
+                                            <option value="2-3" data-i18n="exp_2_3">2-3 Years</option>
+                                            <option value="3-4" data-i18n="exp_3_4">3-4 Years</option>
+                                            <option value="4-5" data-i18n="exp_4_5">4-5 Years</option>
+                                            <option value="5-6" data-i18n="exp_5_6">5-6 Years</option>
+                                            <option value="6+" data-i18n="exp_6_plus">6+ Years</option>
                                         </select>
                                     </div>
                                 </div>
 
                             <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
                             </div> <!-- End of regSection1 -->
-                            <!-- SECTION B: Current Vehicle -->
+                            <!-- SECTION B: Vehicle & Work Info -->
                             <div class="form-section" id="regSection3" style="margin-bottom:2rem;">
-                                <div class="section-title-badge"><i class="fas fa-motorcycle"></i> <span data-i18n="sec_b_title">Section B — Current Vehicle</span></div>
+                                <div class="section-title-badge"><i class="fas fa-motorcycle"></i> <span data-i18n="sec_b_title">Section B — Vehicle & Work Info</span></div>
+                                
                                 <div class="form-group">
                                     <label data-i18n="label_vehicle_type">Vehicle Type</label>
                                     <div class="radio-group inline" id="vehicleTypeGroup">
-                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Petrol two-wheeler" onchange="onVehicleTypeChange(this.value)"> 🛵 <span data-i18n="vt_petrol">Petrol Two-Wheeler</span></label>
-                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Electric two-wheeler" onchange="onVehicleTypeChange(this.value)"> ⚡ <span data-i18n="vt_electric">Electric Two-Wheeler</span></label>
-                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Other" onchange="onVehicleTypeChange(this.value)"> 🚲 <span data-i18n="vt_other">Other</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Petrol Two Wheeler" onchange="onVehicleTypeChange(this.value)"> 🛵 <span data-i18n="vt_petrol_2w">Petrol Two Wheeler</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Electric Two Wheeler" onchange="onVehicleTypeChange(this.value)"> ⚡ <span data-i18n="vt_electric_2w">Electric Two Wheeler</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Three Wheeler" onchange="onVehicleTypeChange(this.value)"> 🛺 <span data-i18n="vt_three_w">Three Wheeler</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Four Wheeler" onchange="onVehicleTypeChange(this.value)"> 🚗 <span data-i18n="vt_four_w">Four Wheeler</span></label>
                                     </div>
-                                    <input type="text" id="regVehicleTypeOther" class="form-control" style="display:none; margin-top:0.5rem;">
                                 </div>
+                                
                                 <div class="form-group">
                                     <label for="regVehicleModel" data-i18n="label_vehicle_model">Vehicle Brand & Model </label>
                                     <select required id="regVehicleModel" class="form-control" onchange="handleOtherDropdown(this, 'regVehicleModelOther')">
-                                        <option value="">Select Brand/Model</option>
+                                        <option value="" data-i18n="lbl_select_brand">Select Brand/Model</option>
                                     </select>
                                     <input type="text" id="regVehicleModelOther" class="form-control" style="display:none; margin-top:0.5rem;">
                                 </div>
+                                
                                 <div class="form-group">
-                                    <label data-i18n="label_fuel_method">How do you fuel/charge?</label>
+                                    <label data-i18n="lbl_ownership">Vehicle Ownership</label>
                                     <div class="radio-group inline">
-                                        <label class="radio-item"><input type="radio" name="fuelMethod" required value="Petrol pump" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> ⛽ <span data-i18n="fm_petrol">Petrol Pump</span></label>
-                                        <label class="radio-item"><input type="radio" name="fuelMethod" required value="Home charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🏠 <span data-i18n="fm_home">Home Charging</span></label>
-                                        <label class="radio-item"><input type="radio" name="fuelMethod" required value="Battery swapping station" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔋 <span data-i18n="fm_swap">Battery Swap</span></label>
-                                        <label class="radio-item"><input type="radio" name="fuelMethod" required value="Other" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔌 <span data-i18n="fm_other">Other</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleOwnership" required value="Own" onchange="toggleRentFields(this.value)"> 🏍️ <span data-i18n="own_own">Own</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleOwnership" required value="Rented" onchange="toggleRentFields(this.value)"> 🤝 <span data-i18n="own_rented">Rented</span></label>
+                                    </div>
+                                </div>
+                                
+                                <div id="rentFields" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
+                                    <div class="form-group">
+                                        <label data-i18n="lbl_weekly_rent">Weekly Rent (₹)</label>
+                                        <input type="number" id="regWeeklyRent" class="form-control" min="0">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label data-i18n="lbl_monthly_rent">Monthly Rent (₹)</label>
+                                        <input type="number" id="regMonthlyRent" class="form-control" min="0">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label data-i18n="lbl_hours">How many hours do you work daily?</label>
+                                    <select id="regWorkingHours" class="form-control" required>
+                                        <option value="" data-i18n="lbl_select_hours">Select Working Hours</option>
+                                        <option value="Less than 4 hours" data-i18n="hours_lt_4">Less than 4 hours</option>
+                                        <option value="4-8 hours" data-i18n="hours_4_8">4-8 hours</option>
+                                        <option value="8-12 hours" data-i18n="hours_8_12">8-12 hours</option>
+                                        <option value="More than 12 hours" data-i18n="hours_mt_12">More than 12 hours</option>
+                                    </select>
+                                </div>
+
+                                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                                    <div class="form-group" style="flex:1; min-width:150px;">
+                                        <label data-i18n="lbl_km_day">Km driven per day</label>
+                                        <input type="number" id="regKmPerDay" class="form-control" required min="0">
+                                    </div>
+                                    <div class="form-group" style="flex:1; min-width:150px;">
+                                        <label data-i18n="lbl_km_month">Km driven per month</label>
+                                        <input type="number" id="regKmPerMonth" class="form-control" required min="0">
+                                    </div>
+                                </div>
+
+                                <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
+                            </div> <!-- End of regSection3 -->
+
+                            <!-- SECTION C: Fuel & Maintenance Info -->
+                            <div class="form-section" id="regSection4" style="margin-bottom:2rem;">
+                                <div class="section-title-badge"><i class="fas fa-gas-pump"></i> <span data-i18n="sec_c_title">Section C — Fuel & Maintenance</span></div>
+                                
+                                <div class="form-group">
+                                    <label data-i18n="lbl_fuel_type">Fuel Type</label>
+                                    <div class="radio-group inline" id="fuelTypeGroup">
+                                        <label class="radio-item"><input type="radio" name="fuelType" required value="Petrol" onchange="onFuelTypeChange(this.value)"> ⛽ <span data-i18n="fuel_petrol">Petrol</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelType" required value="Diesel" onchange="onFuelTypeChange(this.value)"> ⛽ <span data-i18n="fuel_diesel">Diesel</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelType" required value="CNG" onchange="onFuelTypeChange(this.value)"> 💨 <span data-i18n="fuel_cng">CNG</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelType" required value="Electric" onchange="onFuelTypeChange(this.value)"> ⚡ <span data-i18n="fuel_electric">Electric</span></label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group conditional-section hidden-section" id="fuelExpenseSection">
+                                    <label for="regFuelExp" data-i18n="label_fuel_expense">Weekly Fuel Expense (₹)</label>
+                                    <input type="number" id="regFuelExp" class="form-control" min="0">
+                                </div>
+
+                                <div class="form-group conditional-section hidden-section" id="evChargingSection">
+                                    <label data-i18n="label_fuel_method">How do you charge?</label>
+                                    <div class="radio-group inline">
+                                        <label class="radio-item"><input type="radio" name="fuelMethod" value="Home charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🏠 <span data-i18n="fm_home">Home Charging</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelMethod" value="Battery swapping station" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔋 <span data-i18n="fm_swap">Battery Swap</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelMethod" value="Public charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔌 <span data-i18n="fm_public">Public Charging</span></label>
+                                        <label class="radio-item"><input type="radio" name="fuelMethod" value="Other" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> ⚡ <span data-i18n="fm_other">Other</span></label>
                                     </div>
                                     <input type="text" id="regFuelMethodOther" class="form-control" style="display:none; margin-top:0.5rem;">
                                 </div>
-                                <div class="form-group">
-                                    <label for="regFuelExp" data-i18n="label_fuel_expense">Weekly Fuel/Charge Expense (₹)</label>
-                                    <input required type="number" id="regFuelExp" class="form-control" min="0">
+                                
+                                <h4 style="margin: 1.5rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;"><span data-i18n="lbl_maintenance">Vehicle Maintenance</span></h4>
+                                
+                                <div class="maintenance-cards" style="display:flex; flex-direction:column; gap:1rem; margin-bottom:1.5rem;">
+                                    <!-- Card 1 -->
+                                    <div class="maint-card" style="border: 1px solid var(--card-border); border-radius: 8px; overflow:hidden;">
+                                        <div class="maint-header" onclick="toggleMaintCard('maintTyre', this)" style="background: #f9fafb; padding: 1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600;">
+                                            <span data-i18n="lbl_tyre">Tyre Replacement Frequency</span>
+                                            <i class="fas fa-chevron-down maint-icon"></i>
+                                        </div>
+                                        <div class="maint-body" id="maintTyre" style="display:none; padding: 1rem; background: #fff; border-top: 1px solid var(--card-border);">
+                                            <select id="regMaintTyre" class="form-control" style="margin-bottom:0;">
+                                                <option value="" data-i18n="lbl_select_freq">Select frequency</option>
+                                                <option value="Every 3 Months" data-i18n="freq_3_months">Every 3 Months</option>
+                                                <option value="Every 6 Months" data-i18n="freq_6_months">Every 6 Months</option>
+                                                <option value="Once a year" data-i18n="freq_year">Once a year</option>
+                                                <option value="Rarely" data-i18n="freq_rarely">Rarely</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Card 2 -->
+                                    <div class="maint-card" style="border: 1px solid var(--card-border); border-radius: 8px; overflow:hidden;">
+                                        <div class="maint-header" onclick="toggleMaintCard('maintOil', this)" style="background: #f9fafb; padding: 1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600;">
+                                            <span data-i18n="lbl_oil">Engine Oil Change Frequency</span>
+                                            <i class="fas fa-chevron-down maint-icon"></i>
+                                        </div>
+                                        <div class="maint-body" id="maintOil" style="display:none; padding: 1rem; background: #fff; border-top: 1px solid var(--card-border);">
+                                            <select id="regMaintOil" class="form-control" style="margin-bottom:0;">
+                                                <option value="" data-i18n="lbl_select_freq">Select frequency</option>
+                                                <option value="Every Month" data-i18n="freq_month">Every Month</option>
+                                                <option value="Every 3 Months" data-i18n="freq_3_months">Every 3 Months</option>
+                                                <option value="Every 6 Months" data-i18n="freq_6_months">Every 6 Months</option>
+                                                <option value="Rarely" data-i18n="freq_rarely">Rarely</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card 3 -->
+                                    <div class="maint-card" style="border: 1px solid var(--card-border); border-radius: 8px; overflow:hidden;">
+                                        <div class="maint-header" onclick="toggleMaintCard('maintService', this)" style="background: #f9fafb; padding: 1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600;">
+                                            <span data-i18n="lbl_service">General Servicing Frequency</span>
+                                            <i class="fas fa-chevron-down maint-icon"></i>
+                                        </div>
+                                        <div class="maint-body" id="maintService" style="display:none; padding: 1rem; background: #fff; border-top: 1px solid var(--card-border);">
+                                            <select id="regMaintService" class="form-control" style="margin-bottom:0;">
+                                                <option value="" data-i18n="lbl_select_freq">Select frequency</option>
+                                                <option value="Every Month" data-i18n="freq_month">Every Month</option>
+                                                <option value="Every 3 Months" data-i18n="freq_3_months">Every 3 Months</option>
+                                                <option value="Every 6 Months" data-i18n="freq_6_months">Every 6 Months</option>
+                                                <option value="Rarely" data-i18n="freq_rarely">Rarely</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
+
                                 <div class="form-group">
-                                    <label for="regMaintExp" data-i18n="label_maint_expense">Monthly Maintenance Expense (₹)</label>
+                                    <label for="regMaintExp" data-i18n="lbl_maint_cost">Overall Monthly Maintenance Cost (₹)</label>
                                     <input required type="number" id="regMaintExp" class="form-control" min="0">
                                 </div>
-                            <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
-                            </div> <!-- End of regSection2 -->
-<!-- SECTION C: Challenges -->
-                            <div class="form-section" id="regSection4" style="margin-bottom:2rem;">
-                                <div class="section-title-badge"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="sec_c_title">Section C — Challenges & Pain Points</span></div>
-                                <div class="form-group conditional-section" id="generalChallengesSection">
-                                    <label data-i18n="label_top_challenges">Top Challenges (select up to 3)</label>
-                                    <div class="checkbox-group" id="challengesGroup">
-                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="High fuel cost"> ⛽ <span data-i18n="ch_fuel">High fuel cost</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Frequent breakdown"> 🔧 <span data-i18n="ch_breakdown">Frequent breakdown</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="No nearby charging station"> 🔌 <span data-i18n="ch_charging">No nearby charging station</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Battery range anxiety"> 📉 <span data-i18n="ch_range">Battery range anxiety</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Repair costs"> 💸 <span data-i18n="ch_repair">Repair costs</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Long refuelling time"> ⏱️ <span data-i18n="ch_refuel">Long refuelling time</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
-                                    </div>
-                                    <input type="text" id="regChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;">
-                                </div>
+
+                                <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
+                            </div> <!-- End of regSection4 -->
+
+                            <!-- SECTION D: Challenges -->
+                            <div class="form-section" id="regSection5" style="margin-bottom:2rem;">
+                                <div class="section-title-badge"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="sec_d_title">Section D — Challenges & Pain Points</span></div>
 
                                 <!-- EV-specific challenges (conditional) -->
                                 <div class="form-group conditional-section hidden-section" id="evChallengesSection">
-                                    <label data-i18n="label_ev_challenges">EV Specific Challenges</label>
+                                    <label><span data-i18n="label_ev_challenges">EV Specific Challenges</span> <span style="color:var(--danger-color);">*</span></label>
                                     <div class="checkbox-group">
-                                        <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Battery drains too fast"> ⚡ <span data-i18n="evc_drain">Battery drains too fast</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Swapping station too far"> 📍 <span data-i18n="evc_swap">Swapping station too far</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Long charging time at home"> 🏠 <span data-i18n="evc_charge">Long charging time at home</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Vehicle not powerful enough"> 💪 <span data-i18n="evc_power">Vehicle not powerful enough</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Service centre not nearby"> 🔧 <span data-i18n="evc_service">Service centre not nearby</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="evChallenges" value="Other" onchange="toggleOtherCheckbox(this, 'regEvChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="No nearby charging station"> 🔌 <span data-i18n="ch_charging">No nearby charging station</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Battery range anxiety"> 📉 <span data-i18n="ch_range">Battery range anxiety</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Battery drains too fast"> ⚡ <span data-i18n="evc_drain">Battery drains too fast</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Swapping station too far"> 📍 <span data-i18n="evc_swap">Swapping station too far</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Long charging time at home"> 🏠 <span data-i18n="evc_charge">Long charging time at home</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Vehicle not powerful enough"> 💪 <span data-i18n="evc_power">Vehicle not powerful enough</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Service centre not nearby"> 🔧 <span data-i18n="evc_service">Service centre not nearby</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regEvChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
                                     </div>
                                     <input type="text" id="regEvChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;">
                                 </div>
 
-                                <!-- Petrol-specific challenges (conditional) -->
+                                <!-- Petrol/Diesel/CNG-specific challenges (conditional) -->
                                 <div class="form-group conditional-section hidden-section" id="petrolChallengesSection">
-                                    <label data-i18n="label_petrol_challenges">Petrol Specific Challenges</label>
+                                    <label><span data-i18n="label_petrol_challenges">Petrol Specific Challenges</span> <span style="color:var(--danger-color);">*</span></label>
                                     <div class="checkbox-group">
-                                        <label class="checkbox-item"><input type="checkbox" required name="petrolChallenges" value="Fuel price too high"> 💰 <span data-i18n="pc_price">Fuel price too high</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="petrolChallenges" value="Frequent engine issues"> 🔧 <span data-i18n="pc_engine">Frequent engine issues</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="petrolChallenges" value="Pollution fine risk"> 🌫️ <span data-i18n="pc_pollution">Pollution fine risk</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="petrolChallenges" value="High servicing cost"> 💸 <span data-i18n="pc_service">High servicing cost</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="petrolChallenges" value="Other" onchange="toggleOtherCheckbox(this, 'regPetrolChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="High fuel cost"> ⛽ <span data-i18n="ch_fuel">High fuel cost</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Frequent breakdown"> 🔧 <span data-i18n="ch_breakdown">Frequent breakdown</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Repair costs"> 💸 <span data-i18n="ch_repair">Repair costs</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Long refuelling time"> ⏱️ <span data-i18n="ch_refuel">Long refuelling time</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Frequent engine issues"> 🔧 <span data-i18n="pc_engine">Frequent engine issues</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Traffic Police"> 👮 <span data-i18n="ch_traffic">Traffic Police</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="RTO"> 🏢 <span data-i18n="ch_rto">RTO</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Challans"> 📜 <span data-i18n="ch_challans">Challans</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Parking Issues"> 🅿️ <span data-i18n="ch_parking">Parking Issues</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Vehicle Documents"> 📄 <span data-i18n="ch_documents">Vehicle Documents</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="High servicing cost"> 💸 <span data-i18n="pc_service">High servicing cost</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regPetrolChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
                                     </div>
                                     <input type="text" id="regPetrolChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;">
+                                    
+                                    <div class="form-group" style="margin-top:1.5rem; background:rgba(255,153,0,0.05); padding:1rem; border-radius:8px; border:1px solid rgba(255,153,0,0.2);">
+                                        <label data-i18n="q_fuel_cost">Is fuel cost a major challenge for you?</label>
+                                        <div class="radio-group inline">
+                                            <label class="radio-item"><input type="radio" name="fuelCostChallenge" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
+                                            <label class="radio-item"><input type="radio" name="fuelCostChallenge" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
+                                        </div>
+                                    </div>
                                 </div>
 
-                            <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
-                            </div> <!-- End of regSection3 -->
-<!-- SECTION D: Insurance -->
-                            <div class="form-section" id="regSection5" style="margin-bottom:2rem;">
-                                <div class="section-title-badge"><i class="fas fa-shield-alt"></i> <span data-i18n="sec_d_title">Section D — Insurance</span></div>
-                                <div class="form-group">
-                                    <label data-i18n="label_accidental_ins">Do you have accidental insurance?</label>
-                                    <div class="radio-group inline">
-                                        <label class="radio-item"><input type="radio" required name="hasAccidental" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
-                                        <label class="radio-item"><input type="radio" required name="hasAccidental" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label data-i18n="label_health_ins">Do you have personal health insurance?</label>
-                                    <div class="radio-group inline">
-                                        <label class="radio-item"><input type="radio" name="hasHealth" required value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
-                                        <label class="radio-item"><input type="radio" name="hasHealth" required value="No"> ❌ <span data-i18n="opt_no">No</span></label>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label data-i18n="label_paid_pocket">Have you ever paid out-of-pocket for an accident?</label>
-                                    <div class="radio-group inline">
-                                        <label class="radio-item"><input type="radio" required name="paidPocket" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
-                                        <label class="radio-item"><input type="radio" required name="paidPocket" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
-                                    </div>
-                                </div>
-                            <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
-                            </div> <!-- End of regSection4 -->
-<!-- SECTION E: Openness to Change -->
-                            <div class="form-section" id="regSection6" style="margin-bottom:2rem;">
-                                <div class="section-title-badge"><i class="fas fa-bolt"></i> <span data-i18n="sec_e_title">Section E — Openness to EV</span></div>
-                                <div class="form-group">
-                                    <label data-i18n="label_open_ev">Are you open to switching to an EV?</label>
-                                    <div class="radio-group inline">
-                                        <label class="radio-item"><input type="radio" name="openEV" required value="Yes" onchange="toggleOpenEV(this.value)"> ⚡ <span data-i18n="ev_yes">Yes</span></label>
-                                        <label class="radio-item"><input type="radio" name="openEV" required value="No" onchange="toggleOpenEV(this.value)"> 🚫 <span data-i18n="ev_no">No</span></label>
-                                    </div>
-                                </div>
-                                <div id="evSwitchFollowup" style="display:none;">
-                                    <div class="form-group">
-                                        <label data-i18n="label_switch_triggers">What would make you switch? (multi-select)</label>
-                                        <div class="checkbox-group">
-                                            <label class="checkbox-item"><input type="checkbox" required name="switchTriggers" value="Lower rental cost"> 💰 <span data-i18n="st_rental">Lower rental cost</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required name="switchTriggers" value="Better battery range"> 📱 <span data-i18n="st_range">Better battery range</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required name="switchTriggers" value="Swap stations nearby"> 🔋 <span data-i18n="st_swap">Swap stations nearby</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required name="switchTriggers" value="Income guarantee"> 📈 <span data-i18n="st_income">Income guarantee</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required name="switchTriggers" value="Employer subsidy"> 🏢 <span data-i18n="st_subsidy">Employer subsidy</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required name="switchTriggers" value="Other"> 📝 <span data-i18n="ch_other">Other</span></label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label data-i18n="label_interests">Would you be interested in:</label>
-                                        <div class="radio-group">
-                                            <label class="radio-item"><input type="radio" required name="interests" value="EV rental offer"> ⚡ <span data-i18n="int_ev">EV Rental Offer</span></label>
-                                            <label class="radio-item"><input type="radio" required name="interests" value="Insurance quote"> 🛡️ <span data-i18n="int_ins">Insurance Quote</span></label>
-                                            <label class="radio-item"><input type="radio" required name="interests" value="Retrofit information"> 🔧 <span data-i18n="int_retrofit">Retrofit Information</span></label>
-                                            <label class="radio-item"><input type="radio" required name="interests" value="All of the above"> 🌟 <span data-i18n="int_all">All of the above</span></label>
-                                            <label class="radio-item"><input type="radio" required name="interests" value="None"> — <span data-i18n="int_none">None</span></label>
-                                        </div>
-                                    </div>
-                                </div>
-                            <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
+                                <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
                             </div> <!-- End of regSection5 -->
-<!-- SECTION F: Referral -->
-                            <div class="form-section" id="regSection7" style="margin-bottom:2rem;">
-                                <div class="section-title-badge"><i class="fas fa-share-alt"></i> <span data-i18n="sec_f_title">Section F — Referral</span></div>
 
+                            <!-- SECTION E: Safety & Facilities -->
+                            <div class="form-section" id="regSection6" style="margin-bottom:2rem;">
+                                <div class="section-title-badge"><i class="fas fa-hard-hat"></i> <span data-i18n="sec_e_title">Section E — Safety & Facilities</span></div>
+                                
+                                <div class="form-group">
+                                    <label data-i18n="lbl_helmet">Do you wear a helmet while delivering?</label>
+                                    <div class="radio-group inline">
+                                        <label class="radio-item"><input type="radio" required name="helmetUsage" value="Always"> 🛡️ <span data-i18n="helm_always">Always</span></label>
+                                        <label class="radio-item"><input type="radio" required name="helmetUsage" value="Sometimes"> ⚠️ <span data-i18n="helm_sometimes">Sometimes</span></label>
+                                        <label class="radio-item"><input type="radio" required name="helmetUsage" value="Never"> 🚫 <span data-i18n="helm_never">Never</span></label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label data-i18n="lbl_training">Have you received training for:</label>
+                                    <div class="checkbox-group" style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="trainingCustomer"> <span style="margin-left:0.5rem;" data-i18n="tr_customer">Customer Handling</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="trainingAccident"> <span style="margin-left:0.5rem;" data-i18n="tr_accident">Accident Response</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="trainingBreakdown"> <span style="margin-left:0.5rem;" data-i18n="tr_breakdown">Vehicle Breakdown</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="trainingEmergency"> <span style="margin-left:0.5rem;" data-i18n="tr_emergency">Emergency Protocols</span></label>
+                                    </div>
+                                </div>
+                                
+                                <h4 style="margin: 2rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;"><span data-i18n="lbl_workplace">Workplace Facilities</span></h4>
+
+                                <div class="form-group">
+                                    <label data-i18n="lbl_facilities">Which of these facilities are provided by your company/platform?</label>
+                                    <div class="checkbox-group" style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilitySeating"> <span style="margin-left:0.5rem;" data-i18n="fac_seating">Seating Area</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilityWater"> <span style="margin-left:0.5rem;" data-i18n="fac_water">Drinking Water</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilityToilet"> <span style="margin-left:0.5rem;" data-i18n="fac_toilets">Clean Toilets</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilityRest"> <span style="margin-left:0.5rem;" data-i18n="fac_rest">Rest Zones</span></label>
+                                    </div>
+                                </div>
+
+                                <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
+                            </div> <!-- End of regSection6 -->
+
+                            <!-- SECTION F: Referral & Consent -->
+                            <div class="form-section" id="regSection7" style="margin-bottom:2rem;">
+                                <div class="section-title-badge"><i class="fas fa-shield-alt"></i> <span data-i18n="sec_f_title">Section F — Referral & Consent</span></div>
+
+                                <h4 style="margin: 1rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Referral</h4>
+                                
                                 <!-- Shown only when NO referral link was used -->
                                 <div id="referralQuestionBlock">
                                     <div class="form-group">
@@ -1069,27 +1173,28 @@
                                 </div>
 
                                 <!-- Shown when user came via referral link — question is hidden -->
-                                <div id="referralAppliedBadge" style="display:none; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:12px; padding:1rem 1.25rem; display:none; align-items:center; gap:0.75rem;">
+                                <div id="referralAppliedBadge" style="display:none; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:12px; padding:1rem 1.25rem; align-items:center; gap:0.75rem;">
                                     <i class="fas fa-check-circle" style="color:var(--success-color); font-size:1.3rem;"></i>
                                     <div>
                                         <div style="font-weight:600; color:var(--success-color);">Referral Applied!</div>
                                         <div style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">Referral code <strong id="appliedReferralCodeText" style="color:var(--text-primary);"></strong> has been automatically applied.</div>
                                     </div>
                                 </div>
-                                <div style="background:rgba(37,211,102,0.05); border:1px solid rgba(37,211,102,0.2); border-radius:var(--border-radius-md); padding:1rem; margin-bottom:1rem;">
+                                
+
+                                <div style="background:rgba(37,211,102,0.05); border:1px solid rgba(37,211,102,0.2); border-radius:var(--border-radius-md); padding:1rem; margin-bottom:1rem; margin-top:1.5rem;">
                                     <p style="font-size:0.875rem; color:var(--text-secondary); margin:0;">
                                         <i class="fab fa-whatsapp" style="color:#25D366;"></i> <span data-i18n="whatsapp_hint">After registration, you'll receive a WhatsApp confirmation with your referral code.</span>
                                     </p>
                                 </div>
                                 
-
                                 <div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
                                     <button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
                                     <button type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#3b82f6,#f97316); flex:1; margin-left:1rem;" onclick="submitRegistration()" id="submitRegBtn">
                                         <i class="fas fa-check-circle"></i> <span data-i18n="btn_submit_reg">Complete Registration</span>
                                     </button>
                                 </div>
-                            </div> <!-- End of regSection6 -->
+                            </div> <!-- End of regSection7 -->
                             </div>
                             </div>
 

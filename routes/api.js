@@ -190,14 +190,14 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       fullName, phone, state, city, pincode, deliveryPlatform, experienceYears,
       // Auth
       email, password,
-      // Section B
-      vehicleType, vehicleModel, fuelMethod, fuelExpenseWeekly, maintenanceExpenseMonthly,
-      // Section C
-      challenges, evChallenges, petrolChallenges,
+      // Section B & C
+      vehicleType, vehicleModel, vehicleOwnership, weeklyRent, monthlyRent,
+      workingHours, kmPerDay, kmPerMonth, fuelType, fuelMethod, fuelExpenseWeekly,
+      maintenanceTyre, maintenanceOil, maintenanceService, maintenanceExpenseMonthly,
       // Section D
-      hasAccidentalInsurance, hasHealthInsurance, paidOutofPocketAccident,
+      challenges, evChallenges, petrolChallenges, fuelCostChallenge,
       // Section E
-      openToEV, switchTriggers, interests,
+      helmetUsage, trainingReceived, workplaceFacilities,
       // Section F
       referredByCode,
       // Section G
@@ -245,8 +245,8 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       }
     }
 
-    // Compute auto tags
-    const tags = computeSegmentTags({ vehicleType, openToEV, hasAccidentalInsurance, hasHealthInsurance, interests, switchTriggers });
+    // Compute auto tags (legacy fields removed; passing available data if needed or empty)
+    const tags = computeSegmentTags({ vehicleType });
 
     // Process referral code if provided
     let milestones = [];
@@ -298,18 +298,26 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       referrals: 0,
       "vehicleType": vehicleType || '',
       "vehicleModel": vehicleModel || '',
+      "vehicleOwnership": vehicleOwnership || '',
+      "weeklyRent": parseFloat(weeklyRent) || 0,
+      "monthlyRent": parseFloat(monthlyRent) || 0,
+      "workingHours": workingHours || '',
+      "kmPerDay": parseFloat(kmPerDay) || 0,
+      "kmPerMonth": parseFloat(kmPerMonth) || 0,
+      "fuelType": fuelType || '',
       "fuelMethod": fuelMethod || '',
       "fuelExpenseWeekly": parseFloat(fuelExpenseWeekly) || 0,
+      "maintenanceTyre": maintenanceTyre || '',
+      "maintenanceOil": maintenanceOil || '',
+      "maintenanceService": maintenanceService || '',
       "maintenanceExpenseMonthly": parseFloat(maintenanceExpenseMonthly) || 0,
       challenges: Array.isArray(challenges) ? challenges : [],
       "evChallenges": Array.isArray(evChallenges) ? evChallenges : [],
       "petrolChallenges": Array.isArray(petrolChallenges) ? petrolChallenges : [],
-      "hasAccidentalInsurance": hasAccidentalInsurance || '',
-      "hasHealthInsurance": hasHealthInsurance || '',
-      "paidOutofPocketAccident": paidOutofPocketAccident || '',
-      "openToEV": openToEV || '',
-      "switchTriggers": Array.isArray(switchTriggers) ? switchTriggers : [],
-      interests: interests || '',
+      "fuelCostChallenge": fuelCostChallenge || '',
+      "helmetUsage": helmetUsage || '',
+      "trainingReceived": trainingReceived || '',
+      "workplaceFacilities": workplaceFacilities || '',
       "referredByCode": referredByCode || null,
       "consentPrivacy": !!consentPrivacy,
       "consentMarketing": !!consentMarketing,

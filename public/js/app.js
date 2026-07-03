@@ -1237,7 +1237,7 @@ async function openDataDrilldown(type) {
             if (result.success) {
                 currentUser = result.data; isLoggedIn = true;
                 updateAuthNavbarState();
-                if (['/', '/home', '/login', '/register', '/index.html'].some(p => window.location.pathname.endsWith(p))) navigateTo('/home');
+                if (['/', '/login', '/register', '/index.html'].some(p => window.location.pathname.endsWith(p))) navigateTo('/dashboard');
             } else {
                 if (result.error === 'Rider not found') logoutUser();
                 else showToast(`Session verification error: ${result.error}`, 'warning');
@@ -1643,7 +1643,7 @@ async function openDataDrilldown(type) {
                 trackEvent('login', { method: payload.loginMethod });
                 btn.innerHTML = origText;
                 btn.disabled = false;
-                navigateTo('/home');
+                navigateTo('/dashboard');
             } else {
                 document.getElementById('loginErrorText').textContent = 'Login failed: ' + (result.message || result.error || 'Invalid credentials');
                 document.getElementById('loginErrorMsg').style.display = 'block';
@@ -2236,6 +2236,88 @@ async function openDataDrilldown(type) {
         return platformList.join(', ');
     }
 
+    window.toggleRentFields = function(val) {
+        const rentFields = document.getElementById('rentFields');
+        if (rentFields) {
+            rentFields.style.display = (val === 'Rented') ? 'block' : 'none';
+        }
+    };
+
+    window.toggleMaintCard = function(id, headerEl) {
+        const bodyEl = document.getElementById(id);
+        const icon = headerEl.querySelector('.maint-icon');
+        if (bodyEl.style.display === 'none') {
+            bodyEl.style.display = 'block';
+            if (icon) {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+        } else {
+            bodyEl.style.display = 'none';
+            if (icon) {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+    };
+
+    window.toggleInsuranceDate = function(val) {
+        const section = document.getElementById('insuranceDateSection');
+        if (section) {
+            section.style.display = (val === 'Yes') ? 'block' : 'none';
+        }
+    };
+
+    window.onVehicleTypeChange = function(val) {
+        const brands = {
+            'Petrol Two Wheeler': ['Hero', 'Honda', 'Bajaj', 'TVS', 'Yamaha', 'Suzuki', 'Royal Enfield', 'Other'],
+            'Electric Two Wheeler': ['Ola', 'Ather', 'Yulu', 'TVS iQube', 'Bajaj Chetak', 'Other'],
+            'Three Wheeler': ['Bajaj RE', 'Piaggio Ape', 'Mahindra Treo', 'Atul Auto', 'Other'],
+            'Four Wheeler': ['Maruti Suzuki', 'Hyundai', 'Tata', 'Mahindra', 'Toyota', 'Other']
+        };
+        const modelSelect = document.getElementById('regVehicleModel');
+        if (modelSelect) {
+            modelSelect.innerHTML = '<option value="" data-i18n="lbl_select_brand">' + (window.i18next ? window.i18next.t("lbl_select_brand") : "Select Brand/Model") + '</option>';
+            if (brands[val]) {
+                brands[val].forEach(b => {
+                    const opt = document.createElement('option');
+                    opt.value = b;
+                    opt.textContent = b;
+                    modelSelect.appendChild(opt);
+                });
+            }
+            document.getElementById('regVehicleModelOther').style.display = 'none';
+            document.getElementById('regVehicleModelOther').value = '';
+        }
+
+        const evChallengesSection = document.getElementById('evChallengesSection');
+        const petrolChallengesSection = document.getElementById('petrolChallengesSection');
+        if (evChallengesSection && petrolChallengesSection) {
+            if (val === 'Electric Two Wheeler') {
+                evChallengesSection.classList.remove('hidden-section');
+                petrolChallengesSection.classList.add('hidden-section');
+            } else {
+                evChallengesSection.classList.add('hidden-section');
+                petrolChallengesSection.classList.remove('hidden-section');
+            }
+        }
+    };
+
+    window.onFuelTypeChange = function(val) {
+        const evSection = document.getElementById('evChargingSection');
+        const fuelExpSection = document.getElementById('fuelExpenseSection');
+        
+        if (evSection && fuelExpSection) {
+            if (val === 'Electric') {
+                evSection.classList.remove('hidden-section');
+                fuelExpSection.classList.add('hidden-section');
+            } else {
+                evSection.classList.add('hidden-section');
+                fuelExpSection.classList.remove('hidden-section');
+            }
+        }
+    };
+
     function submitRegistration() {
         const name = document.getElementById('regFullName').value.trim();
         const phone = document.getElementById('regPhone').value.trim();
@@ -2265,6 +2347,18 @@ async function openDataDrilldown(type) {
         const referredBy = getRadioValue('referredBy');
         const referredByCode = hiddenCode || (referredBy === 'yes' ? '' : null) || localStorage.getItem('pendingReferralCode') || null;
 
+        const trainingArr = [];
+        if(document.getElementById('trainingCustomer').checked) trainingArr.push('Customer Handling');
+        if(document.getElementById('trainingAccident').checked) trainingArr.push('Accident Response');
+        if(document.getElementById('trainingBreakdown').checked) trainingArr.push('Vehicle Breakdown');
+        if(document.getElementById('trainingEmergency').checked) trainingArr.push('Emergency Protocols');
+
+        const facilityArr = [];
+        if(document.getElementById('facilitySeating').checked) facilityArr.push('Seating Area');
+        if(document.getElementById('facilityWater').checked) facilityArr.push('Drinking Water');
+        if(document.getElementById('facilityToilet').checked) facilityArr.push('Clean Toilets');
+        if(document.getElementById('facilityRest').checked) facilityArr.push('Rest Zones');
+
         const payload = {
             fullName: name,
             phone: phone,
@@ -2274,20 +2368,28 @@ async function openDataDrilldown(type) {
             deliveryPlatform: platform,
             experienceYears: exp,
             password: pass,
-            vehicleType: getRadioValue('vehicleType') === 'Other' ? document.getElementById('regVehicleTypeOther').value.trim() : getRadioValue('vehicleType'),
+            vehicleType: getRadioValue('vehicleType'),
             vehicleModel: document.getElementById('regVehicleModel').value === 'Other' ? document.getElementById('regVehicleModelOther').value.trim() : document.getElementById('regVehicleModel').value,
-            fuelMethod: getRadioValue('fuelMethod') === 'Other' ? document.getElementById('regFuelMethodOther').value.trim() : getRadioValue('fuelMethod'),
+            vehicleOwnership: getRadioValue('vehicleOwnership'),
+            weeklyRent: document.getElementById('regWeeklyRent').value,
+            monthlyRent: document.getElementById('regMonthlyRent').value,
+            workingHours: document.getElementById('regWorkingHours').value,
+            kmPerDay: document.getElementById('regKmPerDay').value,
+            kmPerMonth: document.getElementById('regKmPerMonth').value,
+            fuelType: getRadioValue('fuelType'),
             fuelExpenseWeekly: document.getElementById('regFuelExp').value,
+            fuelMethod: getRadioValue('fuelMethod') === 'Other' ? document.getElementById('regFuelMethodOther').value.trim() : getRadioValue('fuelMethod'),
+            maintenanceTyre: document.getElementById('regMaintTyre').value,
+            maintenanceOil: document.getElementById('regMaintOil').value,
+            maintenanceService: document.getElementById('regMaintService').value,
             maintenanceExpenseMonthly: document.getElementById('regMaintExp').value,
             challenges: getCheckedValuesWithOther('challenges', 'regChallengesOther'),
             evChallenges: getCheckedValuesWithOther('evChallenges', 'regEvChallengesOther'),
             petrolChallenges: getCheckedValuesWithOther('petrolChallenges', 'regPetrolChallengesOther'),
-            hasAccidentalInsurance: getRadioValue('hasAccidental'),
-            hasHealthInsurance: getRadioValue('hasHealth'),
-            paidOutofPocketAccident: getRadioValue('paidPocket'),
-            openToEV: getRadioValue('openEV'),
-            switchTriggers: getCheckedValues('switchTriggers'),
-            interests: getRadioValue('interests'),
+            fuelCostChallenge: getRadioValue('fuelCostChallenge'),
+            helmetUsage: getRadioValue('helmetUsage'),
+            trainingReceived: trainingArr.join(', '),
+            workplaceFacilities: facilityArr.join(', '),
             referredByCode,
             language: localStorage.getItem('selectedLang') || 'en'
         };
@@ -4076,7 +4178,7 @@ window.selectPlatformPill = function(value, element) {
                     groupEl.className = 'form-group';
                     groupEl.style.marginBottom = '0.5rem';
                     groupEl.innerHTML = `
-                        <label style="font-size: 0.85rem; margin-bottom: 0.2rem;">${platform} ID</label>
+                        <label style="font-size: 0.85rem; margin-bottom: 0.2rem;">${window.i18next ? window.i18next.t("plat_" + platform.toLowerCase()) : platform} ${window.i18next ? window.i18next.t("lbl_id") : "ID"}</label>
                         <input type="text" class="form-control" name="platformId_${platform}" id="platformId_${platform}" required>
                     `;
                     idsContainer.appendChild(groupEl);

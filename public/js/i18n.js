@@ -11,9 +11,19 @@
            label_fullname:"Full Name", label_whatsapp:"WhatsApp Number", label_city:"City", select_city:"Select your city",
            label_platform:"Delivery Platform", select_platform:"Select platform", label_exp:"Years of Experience",
            step_profile:"Profile", step_vehicle:"Vehicle", step_challenges:"Challenges", step_insurance:"Insurance", step_ev:"EV", step_referral:"Referral",
-           sec_a_title:"Section A ΓÇö Basic Profile", sec_b_title:"Section B ΓÇö Current Vehicle",
-           sec_c_title:"Section C ΓÇö Challenges & Pain Points", sec_d_title:"Section D ΓÇö Insurance",
-           sec_e_title:"Section E ΓÇö Openness to EV", sec_f_title:"Section F ΓÇö Referral",
+           sec_a_title:"Section A — Basic Profile", sec_b_title:"Section B — Vehicle & Work Info",
+           sec_c_title:"Section C — Fuel & Maintenance", sec_d_title:"Section D — Challenges & Pain Points",
+            label_petrol_challenges:"Petrol Specific Challenges",
+            label_ev_challenges:"EV Specific Challenges",
+            ch_traffic:"Traffic Police",
+            ch_rto:"RTO",
+            ch_challans:"Challans",
+            ch_parking:"Parking Issues",
+            ch_documents:"Vehicle Documents",
+            q_fuel_cost:"Is fuel cost a major challenge for you?",
+            opt_yes:"Yes",
+            opt_no:"No",
+           sec_e_title:"Section E — Safety & Facilities", sec_f_title:"Section F — Referral & Consent",
            label_vehicle_type:"Vehicle Type", vt_petrol:"Petrol Two-Wheeler", vt_diesel:"Diesel Two-Wheeler",
            vt_electric:"Electric Two-Wheeler", vt_other:"Other",
            label_vehicle_model:"Vehicle Brand & Model (optional)", label_fuel_method:"How do you fuel/charge?",
@@ -99,7 +109,11 @@
            radio_password:"Password", radio_otp:"OTP", forgot_password:"Forgot Password?",
            act_enable_notifications:"Enable Notifications", act_my_qr_code:"My QR Code", act_rewards_missions:"Rewards & Missions", act_ev_charging_map:"EV Charging Map", act_community_feed:"Community Feed", chart_login_logout:"Login & Logout Activity",
            adm_box_auditor:"Website Auditor", adm_box_analytics:"Visitor Analytics", adm_box_email:"Email Leads", adm_box_bot:"Bot Intelligence", adm_box_funnel:"Lead Funnel", logins:"Logins", logouts:"Logouts"
-       },
+       ,
+            msg_16_registration_fa:"Registration failed: ",
+            msg_16____registration:"🎉 Registration successful! Welcome to Road Warrior Pro!",
+            msg_4_network_error__:"Network error: "
+        },
        hi: {
            logout:"αñ▓αÑëαñùαñåαñëαñƒ", login:"αñ▓αÑëαñùαñ┐αñ¿", welcome_title:"αñàαñ¬αñ¿αÑÇ αñíαñ┐αñ▓αÑÇαñ╡αñ░αÑÇ αñ»αñ╛αññαÑìαñ░αñ╛ αñòαÑï αñ╕αñ╢αñòαÑìαññ αñ¼αñ¿αñ╛αñÅαñé",
            welcome_subtitle:"αñ╣αñ£αñ╛αñ░αÑïαñé αñ░αñ╛αñçαñíαñ░αÑìαñ╕ αñ╕αÑç αñ£αÑüαñíαñ╝αÑçαñéαÑñ αñ╕αñ░αÑìαñ╡αÑç αñ¬αÑéαñ░αñ╛ αñòαñ░αÑçαñé, αñ░αÑçαñ½αñ░αñ▓ αñòαÑïαñí αñ¬αñ╛αñÅαñé αñöαñ░ αñ¬αÑëαñçαñéαñƒαÑìαñ╕ αñ£αÑÇαññαÑçαñé!",
@@ -196,7 +210,11 @@
            ach_expert_title:"αñ░αÑçαñ½αñ░αñ▓ αñòαñ┐αñéαñù", ach_expert_desc:"50 αñ░αñ╛αñçαñíαñ░αÑìαñ╕ αñ░αÑçαñ½αñ░ αñòαñ░αÑçαñé",
            lang_auto_msg:"αñçαñ╕ αñ╢αñ╣αñ░ αñòαÑç αñ▓αñ┐αñÅ αñ¡αñ╛αñ╖αñ╛ αñ╣αñ┐αñéαñªαÑÇ αñ«αÑçαñé αñ¼αñªαñ▓αÑÇ αñùαñê",
            label_phone:"αñ½αñ╝αÑïαñ¿ αñ¿αñéαñ¼αñ░"
-       },
+       ,
+            msg_16_registration_fa:"पंजीकरण विफल रहा:",
+            msg_16____registration:"🎉पंजीकरण सफल! रोड वारियर प्रो में आपका स्वागत है!",
+            msg_4_network_error__:"नेटवर्क त्रुटि:"
+        },
        kn: {
            nav_home:"α▓«α│üα▓ûα▓¬α│üα▓ƒ", nav_vehicles:"α▓╡α▓╛α▓╣α▓¿α▓ùα▓│α│ü", nav_dashboard:"α▓íα│ìα▓»α▓╛α▓╢α│ìΓÇîα▓¼α│ïα▓░α│ìα▓íα│ì", nav_score:"α▓╕α│ìα▓òα│ïα▓░α│ì", nav_profile:"α▓¬α│ìα▓░α│èα▓½α│êα▓▓α│ì", nav_admin:"α▓àα▓íα│ìα▓«α▓┐α▓¿α│ì",
            logout:"α▓▓α▓╛α▓ùα│ì α▓öα▓ƒα│ì", login:"α▓▓α▓╛α▓ùα│ì α▓çα▓¿α│ì", welcome_title:"α▓¿α▓┐α▓«α│ìα▓« α▓íα│åα▓▓α▓┐α▓╡α▓░α▓┐ α▓¬α│ìα▓░α▓»α▓╛α▓úα▓╡α▓¿α│ìα▓¿α│ü α▓╕α▓╢α▓òα│ìα▓ñα▓ùα│èα▓│α▓┐α▓╕α▓┐",
@@ -294,7 +312,11 @@
            lang_auto_msg:"α▓ê α▓¿α▓ùα▓░α▓òα│ìα▓òα▓╛α▓ùα▓┐ α▓¡α▓╛α▓╖α│å α▓òα▓¿α│ìα▓¿α▓íα▓òα│ìα▓òα│å α▓¼α▓ªα▓▓α▓╛α▓ùα▓┐α▓ªα│å",
            label_phone:"α▓½α│ïα▓¿α│ì α▓╕α▓éα▓ûα│ìα▓»α│å",
            radio_password:"α▓¬α▓╛α▓╕α│ìΓÇîα▓╡α▓░α│ìα▓íα│ì", radio_otp:"α▓ôα▓ƒα▓┐α▓¬α▓┐", forgot_password:"α▓¬α▓╛α▓╕α│ìΓÇîα▓╡α▓░α│ìα▓íα│ì α▓«α▓░α│åα▓ñα▓┐α▓ªα│ìα▓ªα│Çα▓░α▓╛?"
-       }
+       ,
+            msg_16_registration_fa:"ನೋಂದಣಿ ವಿಫಲವಾಗಿದೆ:",
+            msg_16____registration:"🎉 ನೋಂದಣಿ ಯಶಸ್ವಿಯಾಗಿದೆ! ರೋಡ್ ವಾರಿಯರ್ ಪ್ರೊಗೆ ಸುಸ್ವಾಗತ!",
+            msg_4_network_error__:"ನೆಟ್‌ವರ್ಕ್ ದೋಷ:"
+        }
    };
 
 window.TRANSLATIONS = TRANSLATIONS;
