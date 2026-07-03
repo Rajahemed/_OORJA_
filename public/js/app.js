@@ -2314,6 +2314,21 @@ async function openDataDrilldown(type) {
             document.getElementById('regVehicleModelOther').value = '';
         }
 
+        // Auto-select Fuel Type if obvious
+        const ftGroup = document.querySelectorAll('input[name="fuelType"]');
+        if (ftGroup.length) {
+            if (val === 'Electric Two Wheeler') {
+                const el = document.querySelector('input[name="fuelType"][value="Electric"]');
+                if (el) { el.checked = true; window.onFuelTypeChange('Electric'); }
+            } else if (val === 'Petrol Two Wheeler') {
+                const el = document.querySelector('input[name="fuelType"][value="Petrol"]');
+                if (el) { el.checked = true; window.onFuelTypeChange('Petrol'); }
+            } else {
+                ftGroup.forEach(r => r.checked = false);
+                window.onFuelTypeChange('');
+            }
+        }
+
         const evChallengesSection = document.getElementById('evChallengesSection');
         const petrolChallengesSection = document.getElementById('petrolChallengesSection');
         if (evChallengesSection && petrolChallengesSection) {
