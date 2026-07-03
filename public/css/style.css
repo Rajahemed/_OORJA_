@@ -1952,6 +1952,10 @@ body.register-page-active #site-footer {
     display: none !important;
 }
 
+body.register-page-active {
+    padding-top: 0 !important; /* Remove 80px offset since navbar is hidden */
+}
+
 /* Make registration theme light blue instead of green */
 body.register-page-active {
     --primary-color: var(--info-color);

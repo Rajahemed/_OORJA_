@@ -95,6 +95,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
 // CSRF Protection
 const csrfProtection = csrf({ cookie: true });
 app.get('/api/csrf-token', csrfProtection, (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   res.json({ csrfToken: req.csrfToken() });
 });
 
