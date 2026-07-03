@@ -1145,9 +1145,30 @@ async function openDataDrilldown(type) {
         else if (path === '/admin') activeTab = 'admin';
         else if (path === '/privacy') activeTab = 'privacy';
         else if (path === '/login') activeTab = 'login';
+        else if (path === '/register') activeTab = 'register';
 
-        if (activeTab !== 'login') {
+        if (activeTab !== 'login' && activeTab !== 'register') {
             document.body.classList.remove('register-page-active');
+            document.body.classList.remove('login-route-active');
+        } else {
+            document.body.classList.add('login-route-active');
+            if (activeTab === 'register') {
+                document.body.classList.add('register-page-active');
+            } else {
+                document.body.classList.remove('register-page-active');
+            }
+            
+            const loginCard = document.getElementById('loginCard');
+            const regCard = document.getElementById('registerCard');
+            if (loginCard && regCard) {
+                if (activeTab === 'register') {
+                    loginCard.style.display = 'none';
+                    regCard.style.display = 'block';
+                } else {
+                    loginCard.style.display = 'block';
+                    regCard.style.display = 'none';
+                }
+            }
         }
 
         const fullUrl = window.location.origin + path;
@@ -1160,7 +1181,8 @@ async function openDataDrilldown(type) {
         if (activeTab === 'dashboard') titleStr = "Dashboard - Road Warrior EV";
         else if (activeTab === 'score') titleStr = "Leaderboard - Road Warrior EV";
         else if (activeTab === 'privacy') titleStr = "Privacy Policy - Road Warrior EV";
-        else if (activeTab === 'login') titleStr = "Login / Register - Road Warrior EV";
+        else if (activeTab === 'login') titleStr = "Login - Road Warrior EV";
+        else if (activeTab === 'register') titleStr = "Register - Road Warrior EV";
         document.title = titleStr;
         const ogTitle = document.querySelector('meta[property="og:title"]');
         if (ogTitle) ogTitle.content = titleStr;
@@ -1169,16 +1191,18 @@ async function openDataDrilldown(type) {
         if (activeTab === 'admin' && !(sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt'))) {
             activeTab = 'admin-login';
             checkAdminExists();
-        } else if (activeTab !== 'score' && activeTab !== 'admin-login' && activeTab !== 'admin' && activeTab !== 'privacy' && activeTab !== 'login' && !isLoggedIn) {
+        } else if (activeTab !== 'score' && activeTab !== 'admin-login' && activeTab !== 'admin' && activeTab !== 'privacy' && activeTab !== 'login' && activeTab !== 'register' && !isLoggedIn) {
             showToast((window.t ? window.t('msg_0_please_login_or') : 'Please login or register first.'), 'warning');
             navigateTo('/login'); return;
         }
 
         document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
-        const av = document.getElementById(`${activeTab}-view`);
+        let viewToActivate = activeTab;
+        if (activeTab === 'register') viewToActivate = 'login';
+        const av = document.getElementById(`${viewToActivate}-view`);
         if (av) av.classList.add('active');
         
-        document.body.classList.toggle('home-page-active', activeTab === 'home' || activeTab === 'login');
+        document.body.classList.toggle('home-page-active', activeTab === 'home' || activeTab === 'login' || activeTab === 'register');
 
         document.querySelectorAll('.navbar-nav .nav-link').forEach(l => l.classList.remove('active'));
         const al = document.getElementById(`nav${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}`);

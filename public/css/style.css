@@ -64,21 +64,29 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ==================== STICKY NAV BAR (GLASS) ==================== */
+/* ==================== FIXED NAV BAR (GLASS) ==================== */
 .navbar {
   background: #ffffff;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   padding: 1.25rem 2.5rem;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 1000;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
   transition: var(--transition);
+  box-sizing: border-box;
+}
+
+body {
+  padding-top: 80px; /* Offset for fixed navbar */
 }
 
 .navbar-brand {
@@ -1746,6 +1754,20 @@ height: 40px;
   justify-content: center;
 }
 
+.hero-cta .btn {
+  flex: 1;
+  max-width: 250px;
+  justify-content: center;
+}
+
+#leadCaptureFAB {
+  display: none !important;
+}
+
+body.login-route-active:not(.register-page-active) #leadCaptureFAB {
+  display: flex !important;
+}
+
 /* About Section */
 .home-about-section {
   position: relative;
@@ -1848,25 +1870,28 @@ height: 40px;
 .top-riders-slider.full-page-height {
   height: 400px;
   width: 100%;
-  max-width: 800px;
+  max-width: none;
 }
 
 .full-page-height .rider-slide-content.glass-card {
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   padding: 3rem 4rem;
   width: 100%;
-  max-width: 800px;
+  max-width: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .rider-avatar-placeholder {
@@ -1925,4 +1950,11 @@ height: 40px;
 body.register-page-active .navbar,
 body.register-page-active #site-footer {
     display: none !important;
+}
+
+/* Make registration theme light blue instead of green */
+body.register-page-active {
+    --primary-color: var(--info-color);
+    --primary-dark: #0891b2;
+    --primary-glow: rgba(6, 182, 212, 0.3);
 }
