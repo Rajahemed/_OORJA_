@@ -12,7 +12,7 @@
            label_platform:"Delivery Platform", select_platform:"Select platform", label_exp:"Years of Experience",
            step_profile:"Profile", step_vehicle:"Vehicle", step_challenges:"Challenges", step_insurance:"Insurance", step_ev:"EV", step_referral:"Referral",
            sec_a_title:"Section A — Basic Profile", sec_b_title:"Section B — Vehicle & Work Info",
-           sec_c_title:"Section C — Fuel & Maintenance", sec_d_title:"Section D — Challenges & Pain Points",
+           sec_c_title:"Section C — Fuel & Maintenance", sec_d_title:"Section D � Challenges Faced",
             label_petrol_challenges:"Petrol Specific Challenges",
             label_ev_challenges:"EV Specific Challenges",
             ch_traffic:"Traffic Police",
@@ -23,7 +23,7 @@
             q_fuel_cost:"Is fuel cost a major challenge for you?",
             opt_yes:"Yes",
             opt_no:"No",
-           sec_e_title:"Section E — Safety & Facilities", sec_f_title:"Section F — Referral & Consent",
+           sec_e_title:"Section E � Safety", sec_f_title:"Section F — Referral & Consent",
            label_vehicle_type:"Vehicle Type", vt_petrol:"Petrol Two-Wheeler", vt_diesel:"Diesel Two-Wheeler",
            vt_electric:"Electric Two-Wheeler", vt_other:"Other",
            label_vehicle_model:"Vehicle Brand & Model (optional)", label_fuel_method:"How do you fuel/charge?",
@@ -113,6 +113,16 @@
             msg_16_registration_fa:"Registration failed: ",
             msg_16____registration:"🎉 Registration successful! Welcome to Road Warrior Pro!",
             msg_4_network_error__:"Network error: "
+        ,
+            fuel_lpg:"LPG",
+            vt_2_wheeler:"2 Wheeler",
+            vt_3_wheeler:"3 Wheeler",
+            vt_4_wheeler:"4 Wheeler",
+            val_fuel_req:"Please select a valid fuel type.",
+            fuel_electric:"Electric",
+            fuel_petrol:"Petrol",
+            fuel_diesel:"Diesel",
+            fuel_cng:"CNG"
         },
        hi: {
            logout:"αñ▓αÑëαñùαñåαñëαñƒ", login:"αñ▓αÑëαñùαñ┐αñ¿", welcome_title:"αñàαñ¬αñ¿αÑÇ αñíαñ┐αñ▓αÑÇαñ╡αñ░αÑÇ αñ»αñ╛αññαÑìαñ░αñ╛ αñòαÑï αñ╕αñ╢αñòαÑìαññ αñ¼αñ¿αñ╛αñÅαñé",
@@ -214,6 +224,16 @@
             msg_16_registration_fa:"पंजीकरण विफल रहा:",
             msg_16____registration:"🎉पंजीकरण सफल! रोड वारियर प्रो में आपका स्वागत है!",
             msg_4_network_error__:"नेटवर्क त्रुटि:"
+        ,
+            fuel_lpg:"रसोई गैस",
+            vt_2_wheeler:"2 व्हीलर",
+            vt_3_wheeler:"3 व्हीलर",
+            vt_4_wheeler:"4 पहिया वाहन",
+            val_fuel_req:"कृपया एक वैध ईंधन प्रकार चुनें।",
+            fuel_electric:"बिजली",
+            fuel_petrol:"पेट्रोल",
+            fuel_diesel:"डीज़ल",
+            fuel_cng:"सीएनजी"
         },
        kn: {
            nav_home:"α▓«α│üα▓ûα▓¬α│üα▓ƒ", nav_vehicles:"α▓╡α▓╛α▓╣α▓¿α▓ùα▓│α│ü", nav_dashboard:"α▓íα│ìα▓»α▓╛α▓╢α│ìΓÇîα▓¼α│ïα▓░α│ìα▓íα│ì", nav_score:"α▓╕α│ìα▓òα│ïα▓░α│ì", nav_profile:"α▓¬α│ìα▓░α│èα▓½α│êα▓▓α│ì", nav_admin:"α▓àα▓íα│ìα▓«α▓┐α▓¿α│ì",
@@ -316,6 +336,16 @@
             msg_16_registration_fa:"ನೋಂದಣಿ ವಿಫಲವಾಗಿದೆ:",
             msg_16____registration:"🎉 ನೋಂದಣಿ ಯಶಸ್ವಿಯಾಗಿದೆ! ರೋಡ್ ವಾರಿಯರ್ ಪ್ರೊಗೆ ಸುಸ್ವಾಗತ!",
             msg_4_network_error__:"ನೆಟ್‌ವರ್ಕ್ ದೋಷ:"
+        ,
+            fuel_lpg:"ಎಲ್.ಪಿ.ಜಿ",
+            vt_2_wheeler:"2 ವೀಲರ್",
+            vt_3_wheeler:"3 ವೀಲರ್",
+            vt_4_wheeler:"4 ವೀಲರ್",
+            val_fuel_req:"ದಯವಿಟ್ಟು ಮಾನ್ಯ ಇಂಧನ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+            fuel_electric:"ಎಲೆಕ್ಟ್ರಿಕ್",
+            fuel_petrol:"ಪೆಟ್ರೋಲ್",
+            fuel_diesel:"ಡೀಸೆಲ್",
+            fuel_cng:"CNG"
         }
    };
 

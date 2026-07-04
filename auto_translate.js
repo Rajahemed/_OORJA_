@@ -3,9 +3,15 @@ const https = require('https');
 
 // Define the new keys you want to add and their English values
 const newKeys = {
-    "msg_16_registration_fa": "Registration failed: ",
-    "msg_16____registration": "🎉 Registration successful! Welcome to Road Warrior Pro!",
-    "msg_4_network_error__": "Network error: "
+    "fuel_lpg": "LPG",
+    "vt_2_wheeler": "2 Wheeler",
+    "vt_3_wheeler": "3 Wheeler",
+    "vt_4_wheeler": "4 Wheeler",
+    "val_fuel_req": "Please select a valid fuel type.",
+    "fuel_electric": "Electric",
+    "fuel_petrol": "Petrol",
+    "fuel_diesel": "Diesel",
+    "fuel_cng": "CNG"
 };
 
 const languages = ['hi', 'kn', 'ta', 'te', 'mr', 'gu', 'bn'];
@@ -35,7 +41,7 @@ async function run() {
 
     // 1. Inject English keys
     const enRegex = /(en:\s*\{[^}]*)(\})/;
-    if (!code.includes('msg_16_registration_fa')) {
+    if (!code.includes('fuel_lpg')) {
         const enKeysStr = ',\n            ' + Object.entries(newKeys)
             .map(([k, v]) => `${k}:"${v.replace(/"/g, '\\"')}"`)
             .join(',\n            ');

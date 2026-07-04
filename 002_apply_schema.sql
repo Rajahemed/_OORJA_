@@ -17,8 +17,8 @@ ADD COLUMN IF NOT EXISTS "fuelType" TEXT;
 -- Section 4: Maintenance Information
 ALTER TABLE riders
 ADD COLUMN IF NOT EXISTS "maintenanceTyre" TEXT,
-ADD COLUMN IF NOT EXISTS "maintenanceEngineOil" TEXT,
-ADD COLUMN IF NOT EXISTS "maintenanceServicing" TEXT;
+ADD COLUMN IF NOT EXISTS "maintenanceOil" TEXT,
+ADD COLUMN IF NOT EXISTS "maintenanceService" TEXT;
 -- Note: "maintenanceExpenseMonthly" already exists.
 
 -- Section 5: Rider Challenges
@@ -29,17 +29,11 @@ ADD COLUMN IF NOT EXISTS "fuelCostChallenge" TEXT;
 -- Section 6: Safety & Wellbeing
 ALTER TABLE riders
 ADD COLUMN IF NOT EXISTS "helmetUsage" TEXT,
-ADD COLUMN IF NOT EXISTS "trainingCustomer" BOOLEAN DEFAULT false,
-ADD COLUMN IF NOT EXISTS "trainingAccident" BOOLEAN DEFAULT false,
-ADD COLUMN IF NOT EXISTS "trainingBreakdown" BOOLEAN DEFAULT false,
-ADD COLUMN IF NOT EXISTS "trainingEmergency" BOOLEAN DEFAULT false;
+ADD COLUMN IF NOT EXISTS "trainingReceived" TEXT;
 
 -- Section 7: Workplace Facilities
 ALTER TABLE riders
-ADD COLUMN IF NOT EXISTS "facilitySeating" BOOLEAN DEFAULT false,
-ADD COLUMN IF NOT EXISTS "facilityWater" BOOLEAN DEFAULT false,
-ADD COLUMN IF NOT EXISTS "facilityToilet" BOOLEAN DEFAULT false,
-ADD COLUMN IF NOT EXISTS "facilityRest" BOOLEAN DEFAULT false;
+ADD COLUMN IF NOT EXISTS "workplaceFacilities" TEXT;
 
 -- Section 8: Insurance
 ALTER TABLE riders

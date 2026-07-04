@@ -40,8 +40,8 @@
     "sec_a_title": "Section A — Basic Profile",
     "sec_b_title": "Section B — Current Vehicle",
     "sec_c_title": "Section C — Challenges & Pain Points",
-    "sec_d_title": "Section D — Insurance",
-    "sec_e_title": "Section E — Openness to EV",
+    "sec_d_title": "Section D — Challenges Faced",
+    "sec_e_title": "Section E — Safety",
     "sec_f_title": "Section F — Referral",
     "label_vehicle_type": "Vehicle Type",
     "vt_petrol": "Petrol Two-Wheeler",
@@ -365,7 +365,7 @@
     "helm_always": "Always",
     "helm_sometimes": "Sometimes",
     "helm_never": "Never",
-    "lbl_training": "Have you received training for:",
+    "lbl_training": "Have you received training?",
     "tr_customer": "Customer Handling",
     "tr_accident": "Accident Response",
     "tr_breakdown": "Vehicle Breakdown",
@@ -375,5 +375,10 @@
     "fac_seating": "Seating Area",
     "fac_water": "Drinking Water",
     "fac_toilets": "Clean Toilets",
-    "fac_rest": "Rest Zones"
+    "fac_rest": "Rest Zones",
+    "fuel_lpg": "LPG",
+    "vt_2_wheeler": "2 Wheeler",
+    "vt_3_wheeler": "3 Wheeler",
+    "vt_4_wheeler": "4 Wheeler",
+    "val_fuel_req": "Please select a valid fuel type."
 }

@@ -906,12 +906,10 @@
                                 <div class="section-title-badge"><i class="fas fa-motorcycle"></i> <span data-i18n="sec_b_title">Section B — Vehicle & Work Info</span></div>
                                 
                                 <div class="form-group">
-                                    <label data-i18n="label_vehicle_type">Vehicle Type</label>
                                     <div class="radio-group inline" id="vehicleTypeGroup">
-                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Petrol Two Wheeler" onchange="onVehicleTypeChange(this.value)"> 🛵 <span data-i18n="vt_petrol_2w">Petrol Two Wheeler</span></label>
-                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Electric Two Wheeler" onchange="onVehicleTypeChange(this.value)"> ⚡ <span data-i18n="vt_electric_2w">Electric Two Wheeler</span></label>
-                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Three Wheeler" onchange="onVehicleTypeChange(this.value)"> 🛺 <span data-i18n="vt_three_w">Three Wheeler</span></label>
-                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="Four Wheeler" onchange="onVehicleTypeChange(this.value)"> 🚗 <span data-i18n="vt_four_w">Four Wheeler</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="2 Wheeler" onchange="onVehicleTypeChange(this.value)"> 🛵 <span data-i18n="vt_2_wheeler">2 Wheeler</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="3 Wheeler" onchange="onVehicleTypeChange(this.value)"> 🛺 <span data-i18n="vt_3_wheeler">3 Wheeler</span></label>
+                                        <label class="radio-item"><input type="radio" name="vehicleType" required value="4 Wheeler" onchange="onVehicleTypeChange(this.value)"> 🚗 <span data-i18n="vt_4_wheeler">4 Wheeler</span></label>
                                     </div>
                                 </div>
                                 
@@ -971,14 +969,16 @@
                             <div class="form-section" id="regSection4" style="margin-bottom:2rem;">
                                 <div class="section-title-badge"><i class="fas fa-gas-pump"></i> <span data-i18n="sec_c_title">Section C — Fuel & Maintenance</span></div>
                                 
-                                <div class="form-group">
-                                    <label data-i18n="lbl_fuel_type">Fuel Type</label>
+                                <div class="form-group" id="fuelTypeSection" style="display:none;">
+                                    <label data-i18n="lbl_fuel_type">Fuel Type <span style="color:var(--danger-color);">*</span></label>
                                     <div class="radio-group inline" id="fuelTypeGroup">
-                                        <label class="radio-item"><input type="radio" name="fuelType" required value="Petrol" onchange="onFuelTypeChange(this.value)"> ⛽ <span data-i18n="fuel_petrol">Petrol</span></label>
-                                        <label class="radio-item"><input type="radio" name="fuelType" required value="Diesel" onchange="onFuelTypeChange(this.value)"> ⛽ <span data-i18n="fuel_diesel">Diesel</span></label>
-                                        <label class="radio-item"><input type="radio" name="fuelType" required value="CNG" onchange="onFuelTypeChange(this.value)"> 💨 <span data-i18n="fuel_cng">CNG</span></label>
-                                        <label class="radio-item"><input type="radio" name="fuelType" required value="Electric" onchange="onFuelTypeChange(this.value)"> ⚡ <span data-i18n="fuel_electric">Electric</span></label>
+                                        <label class="radio-item fuel-opt" data-fuel="Electric"><input type="radio" name="fuelType" required value="Electric" onchange="onFuelTypeChange(this.value)"> ⚡ <span data-i18n="fuel_electric">Electric</span></label>
+                                        <label class="radio-item fuel-opt" data-fuel="Petrol"><input type="radio" name="fuelType" required value="Petrol" onchange="onFuelTypeChange(this.value)"> ⛽ <span data-i18n="fuel_petrol">Petrol</span></label>
+                                        <label class="radio-item fuel-opt" data-fuel="Diesel"><input type="radio" name="fuelType" required value="Diesel" onchange="onFuelTypeChange(this.value)"> ⛽ <span data-i18n="fuel_diesel">Diesel</span></label>
+                                        <label class="radio-item fuel-opt" data-fuel="CNG"><input type="radio" name="fuelType" required value="CNG" onchange="onFuelTypeChange(this.value)"> 💨 <span data-i18n="fuel_cng">CNG</span></label>
+                                        <label class="radio-item fuel-opt" data-fuel="LPG"><input type="radio" name="fuelType" required value="LPG" onchange="onFuelTypeChange(this.value)"> 💨 <span data-i18n="fuel_lpg">LPG</span></label>
                                     </div>
+                                    <div id="fuelTypeValMsg" style="color:var(--danger-color); display:none; margin-top:0.5rem; font-size:0.875rem;"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="val_fuel_req">Please select a valid fuel type.</span></div>
                                 </div>
 
                                 <div class="form-group conditional-section hidden-section" id="fuelExpenseSection">
@@ -1113,24 +1113,21 @@
 
                             <!-- SECTION E: Safety & Facilities -->
                             <div class="form-section" id="regSection6" style="margin-bottom:2rem;">
-                                <div class="section-title-badge"><i class="fas fa-hard-hat"></i> <span data-i18n="sec_e_title">Section E — Safety & Facilities</span></div>
+                                <div class="section-title-badge"><i class="fas fa-hard-hat"></i> <span data-i18n="sec_e_title">Section E — Safety</span></div>
                                 
-                                <div class="form-group">
+                                <div class="form-group conditional-section hidden-section" id="helmetSection" style="display:none;">
                                     <label data-i18n="lbl_helmet">Do you wear a helmet while delivering?</label>
                                     <div class="radio-group inline">
-                                        <label class="radio-item"><input type="radio" required name="helmetUsage" value="Always"> 🛡️ <span data-i18n="helm_always">Always</span></label>
-                                        <label class="radio-item"><input type="radio" required name="helmetUsage" value="Sometimes"> ⚠️ <span data-i18n="helm_sometimes">Sometimes</span></label>
-                                        <label class="radio-item"><input type="radio" required name="helmetUsage" value="Never"> 🚫 <span data-i18n="helm_never">Never</span></label>
+                                        <label class="radio-item"><input type="radio" required name="helmetUsage" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
+                                        <label class="radio-item"><input type="radio" required name="helmetUsage" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label data-i18n="lbl_training">Have you received training for:</label>
-                                    <div class="checkbox-group" style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">
-                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="trainingCustomer"> <span style="margin-left:0.5rem;" data-i18n="tr_customer">Customer Handling</span></label>
-                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="trainingAccident"> <span style="margin-left:0.5rem;" data-i18n="tr_accident">Accident Response</span></label>
-                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="trainingBreakdown"> <span style="margin-left:0.5rem;" data-i18n="tr_breakdown">Vehicle Breakdown</span></label>
-                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="trainingEmergency"> <span style="margin-left:0.5rem;" data-i18n="tr_emergency">Emergency Protocols</span></label>
+                                    <label data-i18n="lbl_training">Have you received training?</label>
+                                    <div class="radio-group inline">
+                                        <label class="radio-item"><input type="radio" name="trainingReceived" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
+                                        <label class="radio-item"><input type="radio" name="trainingReceived" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
                                     </div>
                                 </div>
                                 

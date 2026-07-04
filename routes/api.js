@@ -851,6 +851,14 @@ router.post('/riders/partial', async (req, res) => {
   try {
     const { phone, current_step, total_steps = 7, ...partialData } = req.body;
     
+    // Sanitize numeric fields to prevent 'invalid input syntax for type numeric: ""' error
+    const numericFields = ['weeklyRent', 'monthlyRent', 'kmPerDay', 'kmPerMonth', 'fuelExpenseWeekly', 'maintenanceExpenseMonthly', 'experienceYears'];
+    numericFields.forEach(field => {
+      if (partialData[field] === '') {
+        partialData[field] = null;
+      }
+    });
+    
     if (!phone) {
       return res.status(400).json({ success: false, error: 'Phone is required' });
     }

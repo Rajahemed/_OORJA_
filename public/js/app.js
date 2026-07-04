@@ -1469,15 +1469,15 @@ async function openDataDrilldown(type) {
 
                 // Check fuel/maintenance expenses if they are visible
                 const fuelExp = document.getElementById('regFuelExp');
-                if (fuelExp && fuelExp.parentElement.style.display !== 'none' && !fuelExp.value.trim()) setInvalid(fuelExp);
+                if (fuelExp && fuelExp.parentElement.style.display !== 'none' && !fuelExp.parentElement.classList.contains('hidden-section') && !fuelExp.value.trim()) setInvalid(fuelExp);
                 const maintExp = document.getElementById('regMaintExp');
-                if (maintExp && maintExp.parentElement.style.display !== 'none' && !maintExp.value.trim()) setInvalid(maintExp);
+                if (maintExp && maintExp.parentElement.style.display !== 'none' && !maintExp.parentElement.classList.contains('hidden-section') && !maintExp.value.trim()) setInvalid(maintExp);
             }
             else if (step === 4) {
                 // Check if visible checkbox groups have at least one selection
                 ['generalChallengesSection', 'evChallengesSection', 'petrolChallengesSection'].forEach(sectionId => {
                     const section = document.getElementById(sectionId);
-                    if (section && section.style.display !== 'none' && !section.classList.contains('hidden-section') && window.getComputedStyle(section).display !== 'none') {
+                    if (section && section.style && section.style.display !== 'none' && section.classList && !section.classList.contains('hidden-section') && window.getComputedStyle(section).display !== 'none') {
                         const group = section.querySelector('.checkbox-group') || section;
                         const checkboxes = section.querySelectorAll('input[type="checkbox"]');
                         if (checkboxes.length > 0) {
@@ -2044,6 +2044,14 @@ async function openDataDrilldown(type) {
         evSec.classList.toggle('visible-section', isEV);
         petrolSec.classList.toggle('hidden-section', !isPetrol);
         petrolSec.classList.toggle('visible-section', isPetrol);
+        
+        const helmetSec = document.getElementById('helmetSection');
+        const isTwoWheeler = value.toLowerCase().includes('two wheeler');
+        if (helmetSec) {
+            helmetSec.style.display = isTwoWheeler ? 'block' : 'none';
+            helmetSec.classList.toggle('hidden-section', !isTwoWheeler);
+            helmetSec.classList.toggle('visible-section', isTwoWheeler);
+        }
 
         // Populate Brand & Model dropdown
         const brandSelect = document.getElementById('regVehicleModel');
@@ -2294,10 +2302,9 @@ async function openDataDrilldown(type) {
 
     window.onVehicleTypeChange = function(val) {
         const brands = {
-            'Petrol Two Wheeler': ['Hero', 'Honda', 'Bajaj', 'TVS', 'Yamaha', 'Suzuki', 'Royal Enfield', 'Other'],
-            'Electric Two Wheeler': ['Ola', 'Ather', 'Yulu', 'TVS iQube', 'Bajaj Chetak', 'Other'],
-            'Three Wheeler': ['Bajaj RE', 'Piaggio Ape', 'Mahindra Treo', 'Atul Auto', 'Other'],
-            'Four Wheeler': ['Maruti Suzuki', 'Hyundai', 'Tata', 'Mahindra', 'Toyota', 'Other']
+            '2 Wheeler': ['Hero', 'Honda', 'Bajaj', 'TVS', 'Yamaha', 'Suzuki', 'Royal Enfield', 'Ola', 'Ather', 'Yulu', 'TVS iQube', 'Bajaj Chetak', 'Other'],
+            '3 Wheeler': ['Bajaj RE', 'Piaggio Ape', 'Mahindra Treo', 'Atul Auto', 'Other'],
+            '4 Wheeler': ['Maruti Suzuki', 'Hyundai', 'Tata', 'Mahindra', 'Toyota', 'Other']
         };
         const modelSelect = document.getElementById('regVehicleModel');
         if (modelSelect) {
@@ -2314,30 +2321,54 @@ async function openDataDrilldown(type) {
             document.getElementById('regVehicleModelOther').value = '';
         }
 
-        // Auto-select Fuel Type if obvious
-        const ftGroup = document.querySelectorAll('input[name="fuelType"]');
-        if (ftGroup.length) {
-            if (val === 'Electric Two Wheeler') {
-                const el = document.querySelector('input[name="fuelType"][value="Electric"]');
-                if (el) { el.checked = true; window.onFuelTypeChange('Electric'); }
-            } else if (val === 'Petrol Two Wheeler') {
-                const el = document.querySelector('input[name="fuelType"][value="Petrol"]');
-                if (el) { el.checked = true; window.onFuelTypeChange('Petrol'); }
-            } else {
-                ftGroup.forEach(r => r.checked = false);
-                window.onFuelTypeChange('');
-            }
-        }
+        const fuelTypeSection = document.getElementById('fuelTypeSection');
+        if (fuelTypeSection) fuelTypeSection.style.display = 'block';
 
+        const fuelOptions = {
+            '2 Wheeler': ['Electric', 'Petrol'],
+            '3 Wheeler': ['Electric', 'CNG', 'Diesel', 'LPG'],
+            '4 Wheeler': ['Petrol', 'Diesel', 'CNG']
+        };
+
+        const allowedFuels = fuelOptions[val] || [];
+        const fuelItems = document.querySelectorAll('.fuel-opt');
+        let fuelChanged = false;
+        
+        fuelItems.forEach(item => {
+            const fuelVal = item.getAttribute('data-fuel');
+            const radioInput = item.querySelector('input[type="radio"]');
+            
+            if (allowedFuels.includes(fuelVal)) {
+                item.style.display = 'inline-flex';
+            } else {
+                item.style.display = 'none';
+                if (radioInput && radioInput.checked) {
+                    radioInput.checked = false;
+                    fuelChanged = true;
+                }
+            }
+        });
+
+        // Always reset fuel type when vehicle type changes to ensure they actively select
+        const ftGroup = document.querySelectorAll('input[name="fuelType"]');
+        ftGroup.forEach(r => r.checked = false);
+        window.onFuelTypeChange('');
+        
         const evChallengesSection = document.getElementById('evChallengesSection');
         const petrolChallengesSection = document.getElementById('petrolChallengesSection');
-        if (evChallengesSection && petrolChallengesSection) {
-            if (val === 'Electric Two Wheeler') {
-                evChallengesSection.classList.remove('hidden-section');
-                petrolChallengesSection.classList.add('hidden-section');
+        if (evChallengesSection) evChallengesSection.classList.add('hidden-section');
+        if (petrolChallengesSection) petrolChallengesSection.classList.add('hidden-section');
+        
+        const helmetSection = document.getElementById('helmetSection');
+        if (helmetSection) {
+            if (val === '2 Wheeler') {
+                helmetSection.style.display = 'block';
+                helmetSection.classList.remove('hidden-section');
             } else {
-                evChallengesSection.classList.add('hidden-section');
-                petrolChallengesSection.classList.remove('hidden-section');
+                helmetSection.style.display = 'none';
+                helmetSection.classList.add('hidden-section');
+                const helmetRadios = helmetSection.querySelectorAll('input[type="radio"]');
+                helmetRadios.forEach(r => r.checked = false);
             }
         }
     };
@@ -2345,15 +2376,38 @@ async function openDataDrilldown(type) {
     window.onFuelTypeChange = function(val) {
         const evSection = document.getElementById('evChargingSection');
         const fuelExpSection = document.getElementById('fuelExpenseSection');
+        const evChallengesSection = document.getElementById('evChallengesSection');
+        const petrolChallengesSection = document.getElementById('petrolChallengesSection');
         
         if (evSection && fuelExpSection) {
             if (val === 'Electric') {
                 evSection.classList.remove('hidden-section');
                 fuelExpSection.classList.add('hidden-section');
-            } else {
+            } else if (val) {
                 evSection.classList.add('hidden-section');
                 fuelExpSection.classList.remove('hidden-section');
+            } else {
+                evSection.classList.add('hidden-section');
+                fuelExpSection.classList.add('hidden-section');
             }
+        }
+        
+        if (evChallengesSection && petrolChallengesSection) {
+            if (val === 'Electric') {
+                evChallengesSection.classList.remove('hidden-section');
+                petrolChallengesSection.classList.add('hidden-section');
+            } else if (val) {
+                evChallengesSection.classList.add('hidden-section');
+                petrolChallengesSection.classList.remove('hidden-section');
+            } else {
+                evChallengesSection.classList.add('hidden-section');
+                petrolChallengesSection.classList.add('hidden-section');
+            }
+        }
+        
+        const fuelTypeValMsg = document.getElementById('fuelTypeValMsg');
+        if (fuelTypeValMsg && val) {
+            fuelTypeValMsg.style.display = 'none';
         }
     };
 
@@ -2386,11 +2440,8 @@ async function openDataDrilldown(type) {
         const referredBy = getRadioValue('referredBy');
         const referredByCode = hiddenCode || (referredBy === 'yes' ? '' : null) || localStorage.getItem('pendingReferralCode') || null;
 
-        const trainingArr = [];
-        if(document.getElementById('trainingCustomer').checked) trainingArr.push('Customer Handling');
-        if(document.getElementById('trainingAccident').checked) trainingArr.push('Accident Response');
-        if(document.getElementById('trainingBreakdown').checked) trainingArr.push('Vehicle Breakdown');
-        if(document.getElementById('trainingEmergency').checked) trainingArr.push('Emergency Protocols');
+        const trainingRadio = document.querySelector('input[name="trainingReceived"]:checked');
+        const trainingVal = trainingRadio ? trainingRadio.value : '';
 
         const facilityArr = [];
         if(document.getElementById('facilitySeating').checked) facilityArr.push('Seating Area');
@@ -2427,7 +2478,7 @@ async function openDataDrilldown(type) {
             petrolChallenges: getCheckedValuesWithOther('petrolChallenges', 'regPetrolChallengesOther'),
             fuelCostChallenge: getRadioValue('fuelCostChallenge'),
             helmetUsage: getRadioValue('helmetUsage'),
-            trainingReceived: trainingArr.join(', '),
+            trainingReceived: trainingVal,
             workplaceFacilities: facilityArr.join(', '),
             referredByCode,
             language: localStorage.getItem('selectedLang') || 'en'

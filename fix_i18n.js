@@ -1,0 +1,1 @@
+const fs = require('fs'); let c = fs.readFileSync('public/js/i18n.js','utf8'); c = c.replace(/sec_d_title:.*?,/, 'sec_d_title:"Section D — Challenges Faced",'); c = c.replace(/sec_e_title:.*?,/, 'sec_e_title:"Section E — Safety",'); fs.writeFileSync('public/js/i18n.js', c);
