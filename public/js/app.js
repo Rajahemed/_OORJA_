@@ -2268,10 +2268,59 @@ async function openDataDrilldown(type) {
         return platformList.join(', ');
     }
 
-    window.toggleRentFields = function(val) {
+    window.toggleOwnershipFields = function(val) {
         const rentFields = document.getElementById('rentFields');
         if (rentFields) {
-            rentFields.style.display = (val === 'Rented') ? 'block' : 'none';
+            rentFields.style.display = (val === 'Rental Vehicle') ? 'block' : 'none';
+        }
+
+        const ownSec = document.getElementById('ownVehicleQuestions');
+        const rentalSec = document.getElementById('rentalVehicleQuestions');
+        const companySec = document.getElementById('companyVehicleQuestions');
+
+        if (ownSec) ownSec.style.display = 'none';
+        if (rentalSec) rentalSec.style.display = 'none';
+        if (companySec) companySec.style.display = 'none';
+        
+        if (ownSec) ownSec.classList.add('hidden-section');
+        if (rentalSec) rentalSec.classList.add('hidden-section');
+        if (companySec) companySec.classList.add('hidden-section');
+
+        const clearRadios = (container) => {
+            if(!container) return;
+            const radios = container.querySelectorAll('input[type="radio"]');
+            radios.forEach(r => { r.checked = false; });
+        };
+        
+        if (val === 'My Own Vehicle') {
+            if(ownSec) {
+                ownSec.style.display = 'block';
+                ownSec.classList.remove('hidden-section');
+            }
+            clearRadios(rentalSec);
+            clearRadios(companySec);
+            if (rentFields) {
+               document.getElementById('regWeeklyRent').value = '';
+               document.getElementById('regMonthlyRent').value = '';
+            }
+        } else if (val === 'Rental Vehicle') {
+            if(rentalSec) {
+                rentalSec.style.display = 'block';
+                rentalSec.classList.remove('hidden-section');
+            }
+            clearRadios(ownSec);
+            clearRadios(companySec);
+        } else if (val === 'Company Vehicle') {
+            if(companySec) {
+                companySec.style.display = 'block';
+                companySec.classList.remove('hidden-section');
+            }
+            clearRadios(ownSec);
+            clearRadios(rentalSec);
+            if (rentFields) {
+               document.getElementById('regWeeklyRent').value = '';
+               document.getElementById('regMonthlyRent').value = '';
+            }
         }
     };
 
@@ -2326,8 +2375,8 @@ async function openDataDrilldown(type) {
 
         const fuelOptions = {
             '2 Wheeler': ['Electric', 'Petrol'],
-            '3 Wheeler': ['Electric', 'CNG', 'Diesel', 'LPG'],
-            '4 Wheeler': ['Petrol', 'Diesel', 'CNG']
+            '3 Wheeler': ['Electric', 'Petrol', 'CNG/LPG', 'Diesel'],
+            '4 Wheeler': ['Electric', 'Petrol', 'Diesel', 'CNG']
         };
 
         const allowedFuels = fuelOptions[val] || [];
