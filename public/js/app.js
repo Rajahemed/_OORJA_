@@ -1846,6 +1846,25 @@ async function openDataDrilldown(type) {
         }
     }
 
+    // Auto-save lead when they type a valid phone and name (debounced)
+    let autoSaveTimeout;
+    function tryAutoSaveLead() {
+        const phone = document.getElementById('regPhone').value.replace(/\D/g, '');
+        const name = document.getElementById('regFullName').value.trim();
+        if (phone.length === 10 && name.length > 1) {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(() => {
+                const dup = document.getElementById('dupPhoneMsg');
+                // Only save if it's not a duplicate!
+                if (dup && dup.classList.contains('hidden')) {
+                    if (window.savePartialProgress) window.savePartialProgress();
+                }
+            }, 1000);
+        }
+    }
+    document.getElementById('regPhone').addEventListener('input', tryAutoSaveLead);
+    document.getElementById('regFullName').addEventListener('input', tryAutoSaveLead);
+
     async function sendRegistrationOtp(phoneNum) {
         const phone = phoneNum || document.getElementById('regPhone').value;
         const msgEl = document.getElementById('regOtpMsg');
@@ -2645,7 +2664,7 @@ async function openDataDrilldown(type) {
                     console.warn('Geolocation failed or denied:', error.message);
                     doRegister(payload); // Proceed without GPS
                 },
-                { timeout: 15000, maximumAge: 0, enableHighAccuracy: false }
+                { timeout: 5000, maximumAge: 0, enableHighAccuracy: false }
             );
         } else {
             console.warn('Browser completely disabled geolocation on this connection.');
