@@ -117,7 +117,7 @@
     "wa_confirm_title": "WhatsApp Confirmation",
     "btn_send_whatsapp": "Share WhatsApp to friends",
     "phone_error": "Phone must be exactly 10 digits",
-    "phone_dup": "Already registered! Check your score.",
+    "phone_dup": "Already registered!",
     "score_title": "Score & Leaderboard",
     "title_score_lookup": "Check Your Score",
     "score_lookup_hint": "Enter your WhatsApp number to see your points and referral count.",

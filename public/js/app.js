@@ -1833,7 +1833,11 @@ async function openDataDrilldown(type) {
             // Check for duplicate
             fetch(`/api/riders/check-phone/${clean}`).then(r => r.json()).then(res => {
                 if (res.exists) { 
-                    dup.classList.remove('hidden'); check.style.display = 'none'; cross.style.display = 'inline-block'; 
+                    if (res.isCompleted) {
+                        dup.classList.remove('hidden'); check.style.display = 'none'; cross.style.display = 'inline-block';
+                    } else {
+                        dup.classList.add('hidden'); check.style.display = 'inline-block'; cross.style.display = 'none';
+                    }
                 }
             }).catch(() => {});
         } else {
@@ -2268,6 +2272,20 @@ async function openDataDrilldown(type) {
         return platformList.join(', ');
     }
 
+    window.handleTrainingChange = function(checkbox) {
+        const allCheckboxes = document.querySelectorAll('input[name="trainingReceived"]');
+        const noneCheckbox = Array.from(allCheckboxes).find(cb => cb.value === 'I Have Not Received Any Training');
+        if (!noneCheckbox) return;
+
+        if (checkbox.value === 'I Have Not Received Any Training' && checkbox.checked) {
+            allCheckboxes.forEach(cb => {
+                if (cb !== noneCheckbox) cb.checked = false;
+            });
+        } else if (checkbox.checked) {
+            noneCheckbox.checked = false;
+        }
+    };
+
     window.toggleOwnershipFields = function(val) {
         const rentFields = document.getElementById('rentFields');
         if (rentFields) {
@@ -2489,8 +2507,8 @@ async function openDataDrilldown(type) {
         const referredBy = getRadioValue('referredBy');
         const referredByCode = hiddenCode || (referredBy === 'yes' ? '' : null) || localStorage.getItem('pendingReferralCode') || null;
 
-        const trainingRadio = document.querySelector('input[name="trainingReceived"]:checked');
-        const trainingVal = trainingRadio ? trainingRadio.value : '';
+        const trainingRadios = document.querySelectorAll('input[name="trainingReceived"]:checked');
+        const trainingVal = Array.from(trainingRadios).map(r => r.value).join(', ');
 
         const facilityArr = [];
         if(document.getElementById('facilitySeating').checked) facilityArr.push('Seating Area');
@@ -4103,7 +4121,7 @@ window.savePartialProgress = async function() {
     let platform = getPlatformString();
     const exp = document.getElementById('regExp').value;
 
-    const payload = {
+    let payload = {
         phone: phone,
         current_step: currentStep,
         fullName: name,
@@ -4128,6 +4146,16 @@ window.savePartialProgress = async function() {
         interests: getRadioValue('interests'),
         language: localStorage.getItem('selectedLang') || 'en'
     };
+
+    if (window.resumedPartialData) {
+        for (const [k, v] of Object.entries(window.resumedPartialData)) {
+            if (!payload[k] || payload[k] === '' || (Array.isArray(payload[k]) && payload[k].length === 0)) {
+                if (v !== null && v !== undefined && v !== '') {
+                    payload[k] = v;
+                }
+            }
+        }
+    }
 
     try {
         await fetch('/api/riders/partial', {
@@ -4208,7 +4236,7 @@ window.nextStep = async function() {
     }
     
     const regPhone = document.getElementById('regPhone').value.trim();
-    if (currentStep === 1 && regPhone) {
+    if (currentStep === 2 && regPhone) {
         try {
             const res = await fetch(`/api/riders/partial/${regPhone}`);
             const data = await res.json();
@@ -4218,6 +4246,7 @@ window.nextStep = async function() {
                     return; // block moving forward
                 } else if (!window.resumedPartial) {
                     const pd = data.data;
+                    window.resumedPartialData = pd; // Store globally
                     document.getElementById('regFullName').value = pd.fullName || '';
                     document.getElementById('regState').value = pd.state || '';
                     if (pd.state && window.onRegStateChange) window.onRegStateChange();
@@ -4225,7 +4254,7 @@ window.nextStep = async function() {
                     document.getElementById('regPincode').value = pd.pincode || '';
                     
                     window.resumedPartial = true;
-                    if (pd.current_step > 1) {
+                    if (pd.current_step > 2) { // Changed from 1 to 2
                          currentStep = pd.current_step;
                          showStep(currentStep);
                          showToast('Resuming your partial application', 'success');

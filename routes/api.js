@@ -103,11 +103,19 @@ function checkMilestoneBonuses(referrer) {
 router.get('/riders/check-phone/:phone', async (req, res) => {
   try {
     const { phone } = req.params;
-    const { data: rows } = await supabase.from('riders').select('fullName').eq('phone', phone);
+    const { data: rows } = await supabase.from('riders').select('fullName, is_completed, totalPoints, joinedDate').eq('phone', phone);
     const rider = rows && rows.length > 0 ? rows[0] : null;
     let exists = !!rider;
     let riderName = rider ? rider.fullName : null;
-    res.json({ success: true, exists, riderName });
+    
+    let isCompleted = false;
+    if (rider) {
+      const isLegacyDate = rider.joinedDate ? new Date(rider.joinedDate) < new Date('2026-07-01') : false;
+      const hasPoints = rider.totalPoints > 0;
+      isCompleted = rider.is_completed !== false || isLegacyDate || hasPoints;
+    }
+    
+    res.json({ success: true, exists, riderName, isCompleted });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -223,15 +231,17 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
     const normalizedPhone = phone.replace(/\D/g, '').slice(-10);
 
     // Check duplicate phone
-    const { data: dupPhoneRows, error: dupPhoneErr } = await supabase.from('riders').select('id, is_completed').eq('phone', normalizedPhone);
-    if (dupPhoneErr) console.error('[Register] dupPhone error:', dupPhoneErr);
+    const { data: dupPhoneRows, error: dupPhoneErr } = await supabase.from('riders').select('id, is_completed, joinedDate, totalPoints').eq('phone', normalizedPhone);
+    if (dupPhoneErr) { console.error('[Register] dupPhone error:', dupPhoneErr); }
     const dupPhone = dupPhoneRows && dupPhoneRows.length > 0 ? dupPhoneRows[0] : null;
     
     let isUpdate = false;
     let existingId = null;
 
     if (dupPhone) {
-      if (dupPhone.is_completed) {
+      const isLegacyDate = dupPhone.joinedDate ? new Date(dupPhone.joinedDate) < new Date('2026-07-01') : false;
+      const hasPoints = dupPhone.totalPoints > 0;
+      if (dupPhone.is_completed !== false || isLegacyDate || hasPoints) {
         return res.status(400).json({ success: false, error: 'Phone number already registered. You can check your score at the Score page.' });
       } else {
         isUpdate = true;
@@ -243,7 +253,7 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
     if (email) {
       const { data: dupEmailRows } = await supabase.from('riders').select('id').eq('email', email);
       const dupEmail = dupEmailRows && dupEmailRows.length > 0 ? dupEmailRows[0] : null;
-      if (dupEmail) {
+      if (dupEmail && dupEmail.id !== existingId) {
         return res.status(400).json({ success: false, error: 'Email already registered' });
       }
     }
@@ -885,13 +895,14 @@ router.post('/riders/partial', async (req, res) => {
 
     const normalizedPhone = phone.replace(/\D/g, '').slice(-10);
     const progress_percentage = current_step ? Math.min(100, Math.round((current_step / total_steps) * 100)) : 0;
-    const form_status = current_step > 1 ? 'Partial' : 'Lead';
-
-    const { data: dupPhoneRows } = await supabase.from('riders').select('id, is_completed').eq('phone', normalizedPhone);
+    
+    const { data: dupPhoneRows } = await supabase.from('riders').select('id, is_completed, joinedDate, totalPoints').eq('phone', normalizedPhone);
     const dupPhone = dupPhoneRows && dupPhoneRows.length > 0 ? dupPhoneRows[0] : null;
 
     if (dupPhone) {
-      if (dupPhone.is_completed) {
+      const isLegacyDate = dupPhone.joinedDate ? new Date(dupPhone.joinedDate) < new Date('2026-07-01') : false;
+      const hasPoints = dupPhone.totalPoints > 0;
+      if (dupPhone.is_completed !== false || isLegacyDate || hasPoints) {
         return res.status(400).json({ success: false, error: 'Phone number already registered and completed.' });
       }
       // Update

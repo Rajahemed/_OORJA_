@@ -779,7 +779,10 @@
                                         </span>
                                     </div>
                                     <span id="phoneErrMsg" class="error-message hidden"><i class="fas fa-times-circle"></i> <span data-i18n="phone_error">Phone must be 10 digits</span></span>
-                                    <span id="dupPhoneMsg" class="error-message hidden" style="color:#f97316;"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="phone_dup">This phone is already registered!</span></span>
+                                    <span id="dupPhoneMsg" class="error-message hidden" style="color:#f97316;">
+                                        <i class="fas fa-exclamation-triangle"></i> <span data-i18n="phone_dup">This phone is already registered!</span>
+                                        <a href="#" onclick="toggleAuthCards(event)" style="color:var(--primary-color); text-decoration:underline; font-weight:600; margin-left:0.5rem;" data-i18n="login_link">Login here</a>
+                                    </span>
                                 </div>
                                 
                                 
@@ -820,7 +823,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="regPincode" data-i18n="label_pincode">Pincode</label>
-                                    <input type="text" id="regPincode" class="form-control" required pattern="[0-9]{6}" maxlength="6" title="Please enter a 6-digit valid pincode">
+                                    <input type="text" id="regPincode" class="form-control" required pattern="[0-9]{6}" inputmode="numeric" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '')" title="Please enter a 6-digit valid pincode">
                                 </div>
                                 <div style="display:flex; gap:1rem; flex-wrap:wrap;">
                                     <div class="form-group" style="position:relative; z-index:10; flex:1; min-width:200px;">
@@ -1026,7 +1029,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>6. How often do you service your vehicle?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="Every Month"> Every Month</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="Every 2 Months"> Every 2 Months</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="Every 3 Months"> Every 3 Months</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="Only When Needed"> Only When Needed</label></div>
+                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="3 months"> 3 months</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="6 months"> 6 months</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="1 years"> 1 years</label></div>
                                         </div>
                                     </div>
 
@@ -1155,10 +1158,21 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label data-i18n="lbl_training">Have you received training?</label>
-                                    <div class="radio-group inline">
-                                        <label class="radio-item"><input type="radio" name="trainingReceived" value="Yes"> ✅ <span data-i18n="opt_yes">Yes</span></label>
-                                        <label class="radio-item"><input type="radio" name="trainingReceived" value="No"> ❌ <span data-i18n="opt_no">No</span></label>
+                                    <label data-i18n="lbl_training">Have you received training on the following topics? <span style="color:var(--danger-color);">*</span></label>
+                                    <div class="checkbox-group" style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="Customer Greeting & Professional Behaviour" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_greeting">Customer Greeting & Professional Behaviour</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="Handling Customer Complaints / Grievances" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_complaints">Handling Customer Complaints / Grievances</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="What to Do in Case of an Accident" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_accident">What to Do in Case of an Accident</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="RTO Rules and Traffic Regulations" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_rto">RTO Rules and Traffic Regulations</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="Roadside Assistance / Vehicle Breakdown Procedure" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_roadside">Roadside Assistance / Vehicle Breakdown Procedure</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="Handling Delivery Delays" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_delays">Handling Delivery Delays</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="Safe Driving Practices" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_driving">Safe Driving Practices</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="Emergency Contact & SOS Procedure" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_sos">Emergency Contact & SOS Procedure</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="Vehicle Inspection Before Starting Work" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_inspection">Vehicle Inspection Before Starting Work</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="Delivery Platform Rules & Guidelines" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_platform">Delivery Platform Rules & Guidelines</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="Digital Payment & Cash Handling" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_payment">Digital Payment & Cash Handling</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="Personal Safety During Deliveries" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_safety">Personal Safety During Deliveries</span></label>
+                                        <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required name="trainingReceived" value="I Have Not Received Any Training" onchange="handleTrainingChange(this)"> <span style="margin-left:0.5rem;" data-i18n="train_none">I Have Not Received Any Training</span></label>
                                     </div>
                                 </div>
                                 
