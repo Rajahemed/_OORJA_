@@ -380,5 +380,8 @@
     "vt_4_wheeler": "4 వీలర్",
     "sec_d_title": "విభాగం D — ఎదుర్కొన్న సవాళ్లు",
     "sec_e_title": "విభాగం E - భద్రత",
-    "lbl_training": "మీరు శిక్షణ పొందారా?"
+    "lbl_training": "మీరు శిక్షణ పొందారా?",
+    "referral_applied_title": "రెఫరల్ వర్తింపజేయబడింది!",
+    "referral_applied_desc_1": "రెఫరల్ కోడ్",
+    "referral_applied_desc_2": "స్వయంచాలకంగా వర్తింపజేయబడింది."
 }

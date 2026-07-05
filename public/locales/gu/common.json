@@ -380,5 +380,8 @@
     "vt_4_wheeler": "4 વ્હીલર",
     "sec_d_title": "વિભાગ D — પડકારોનો સામનો કરવો પડ્યો",
     "sec_e_title": "વિભાગ E — સલામતી",
-    "lbl_training": "શું તમે તાલીમ લીધી છે?"
+    "lbl_training": "શું તમે તાલીમ લીધી છે?",
+    "referral_applied_title": "રેફરલ લાગુ!",
+    "referral_applied_desc_1": "રેફરલ કોડ",
+    "referral_applied_desc_2": "આપોઆપ લાગુ કરવામાં આવ્યું છે."
 }

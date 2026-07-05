@@ -17,7 +17,7 @@ window.trackEvent = function(eventName, params = {}) {
 let csrfToken = '';
 // Use a promise so mutating requests wait for the token to be available
 let csrfTokenReady = (function fetchCsrfToken() {
-    return fetch('/api/csrf-token', { credentials: 'same-origin' })
+    return fetch('/api/csrf-token?t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' })
         .then(r => r.json())
         .then(data => {
             csrfToken = data.csrfToken;
@@ -25,7 +25,7 @@ let csrfTokenReady = (function fetchCsrfToken() {
         .catch(e => {
             console.error('Failed to load CSRF token, retrying in 1s...', e);
             return new Promise(resolve => setTimeout(resolve, 1000))
-                .then(() => fetch('/api/csrf-token', { credentials: 'same-origin' }))
+                .then(() => fetch('/api/csrf-token?t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' }))
                 .then(r => r.json())
                 .then(data => { csrfToken = data.csrfToken; })
                 .catch(e2 => console.error('CSRF token fetch failed after retry:', e2));

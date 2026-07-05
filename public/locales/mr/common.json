@@ -380,5 +380,8 @@
     "vt_4_wheeler": "4 चाकी",
     "sec_d_title": "विभाग डी - आव्हाने",
     "sec_e_title": "विभाग ई - सुरक्षा",
-    "lbl_training": "तुम्ही प्रशिक्षण घेतले आहे का?"
+    "lbl_training": "तुम्ही प्रशिक्षण घेतले आहे का?",
+    "referral_applied_desc_1": "रेफरल कोड",
+    "referral_applied_desc_2": "आपोआप लागू केले आहे.",
+    "referral_applied_title": "रेफरल लागू!"
 }

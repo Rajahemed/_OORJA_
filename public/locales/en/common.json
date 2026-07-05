@@ -380,5 +380,8 @@
     "vt_2_wheeler": "2 Wheeler",
     "vt_3_wheeler": "3 Wheeler",
     "vt_4_wheeler": "4 Wheeler",
-    "val_fuel_req": "Please select a valid fuel type."
+    "val_fuel_req": "Please select a valid fuel type.",
+    "referral_applied_title": "Referral Applied!",
+    "referral_applied_desc_1": "Referral code",
+    "referral_applied_desc_2": "has been automatically applied."
 }
