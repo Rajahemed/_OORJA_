@@ -202,9 +202,6 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       vehicleType, vehicleModel, vehicleOwnership, weeklyRent, monthlyRent,
       workingHours, kmPerDay, kmPerMonth, fuelType, fuelMethod, fuelExpenseWeekly,
       maintenanceTyre, maintenanceOil, maintenanceService, maintenanceExpenseMonthly,
-      maintPayServicing, maintPayPuncture, maintPayWear, maintPayAccident, maintInsured, maintServiceFreq,
-      rentServiceHistory, rentTyreInspect, rentBrakeInspect, rentLightsInspect, rentDamagePay, rentAccidentPay, rentInsuranceIncluded,
-      companyMaintPay, companyInsurance, companyDamagePay, companyAccidentPay,
       // Section D
       challenges, evChallenges, petrolChallenges, fuelCostChallenge,
       // Section E
