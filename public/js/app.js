@@ -2559,6 +2559,23 @@ async function openDataDrilldown(type) {
             maintenanceOil: document.getElementById('regMaintOil')?.value || '',
             maintenanceService: document.getElementById('regMaintService')?.value || '',
             maintenanceExpenseMonthly: document.getElementById('regMaintExp')?.value || '',
+            maintPayServicing: getRadioValue('maintPayServicing'),
+            maintPayPuncture: getRadioValue('maintPayPuncture'),
+            maintPayWear: getRadioValue('maintPayWear'),
+            maintPayAccident: getRadioValue('maintPayAccident'),
+            maintInsured: getRadioValue('maintInsured'),
+            maintServiceFreq: getRadioValue('maintServiceFreq'),
+            rentServiceHistory: getRadioValue('rentServiceHistory'),
+            rentTyreInspect: getRadioValue('rentTyreInspect'),
+            rentBrakeInspect: getRadioValue('rentBrakeInspect'),
+            rentLightsInspect: getRadioValue('rentLightsInspect'),
+            rentDamagePay: getRadioValue('rentDamagePay'),
+            rentAccidentPay: getRadioValue('rentAccidentPay'),
+            rentInsuranceIncluded: getRadioValue('rentInsuranceIncluded'),
+            companyMaintPay: getRadioValue('companyMaintPay'),
+            companyInsurance: getRadioValue('companyInsurance'),
+            companyDamagePay: getRadioValue('companyDamagePay'),
+            companyAccidentPay: getRadioValue('companyAccidentPay'),
             challenges: getCheckedValuesWithOther('challenges', 'regChallengesOther'),
             evChallenges: getCheckedValuesWithOther('evChallenges', 'regEvChallengesOther'),
             petrolChallenges: getCheckedValuesWithOther('petrolChallenges', 'regPetrolChallengesOther'),
@@ -4140,6 +4157,15 @@ window.savePartialProgress = async function() {
     let platform = getPlatformString();
     const exp = document.getElementById('regExp').value;
 
+    const trainingRadios = document.querySelectorAll('input[name="trainingReceived"]:checked');
+    const trainingVal = Array.from(trainingRadios).map(r => r.value).join(', ');
+
+    const facilityArr = [];
+    if(document.getElementById('facilitySeating')?.checked) facilityArr.push('Seating Area');
+    if(document.getElementById('facilityWater')?.checked) facilityArr.push('Drinking Water');
+    if(document.getElementById('facilityToilet')?.checked) facilityArr.push('Clean Toilets');
+    if(document.getElementById('facilityRest')?.checked) facilityArr.push('Rest Zones');
+
     let payload = {
         phone: phone,
         current_step: currentStep,
@@ -4149,20 +4175,45 @@ window.savePartialProgress = async function() {
         pincode: pincode,
         deliveryPlatform: platform,
         experienceYears: exp,
-        vehicleType: getRadioValue('vehicleType') === 'Other' ? document.getElementById('regVehicleTypeOther').value.trim() : getRadioValue('vehicleType'),
-        vehicleModel: document.getElementById('regVehicleModel').value === 'Other' ? document.getElementById('regVehicleModelOther').value.trim() : document.getElementById('regVehicleModel').value,
-        fuelMethod: getRadioValue('fuelMethod') === 'Other' ? document.getElementById('regFuelMethodOther').value.trim() : getRadioValue('fuelMethod'),
-        fuelExpenseWeekly: document.getElementById('regFuelExp').value,
-        maintenanceExpenseMonthly: document.getElementById('regMaintExp').value,
+        vehicleType: getRadioValue('vehicleType'),
+        vehicleModel: document.getElementById('regVehicleModel')?.value === 'Other' ? document.getElementById('regVehicleModelOther')?.value.trim() : document.getElementById('regVehicleModel')?.value,
+        vehicleOwnership: getRadioValue('vehicleOwnership'),
+        weeklyRent: document.getElementById('regWeeklyRent')?.value || '',
+        monthlyRent: document.getElementById('regMonthlyRent')?.value || '',
+        workingHours: document.getElementById('regWorkingHours')?.value || '',
+        kmPerDay: document.getElementById('regKmPerDay')?.value || '',
+        kmPerMonth: document.getElementById('regKmPerMonth')?.value || '',
+        fuelType: getRadioValue('fuelType'),
+        fuelExpenseWeekly: document.getElementById('regFuelExp')?.value || '',
+        fuelMethod: getRadioValue('fuelMethod') === 'Other' ? document.getElementById('regFuelMethodOther')?.value.trim() : getRadioValue('fuelMethod'),
+        maintenanceTyre: document.getElementById('regMaintTyre')?.value || '',
+        maintenanceOil: document.getElementById('regMaintOil')?.value || '',
+        maintenanceService: document.getElementById('regMaintService')?.value || '',
+        maintenanceExpenseMonthly: document.getElementById('regMaintExp')?.value || '',
+        maintPayServicing: getRadioValue('maintPayServicing'),
+        maintPayPuncture: getRadioValue('maintPayPuncture'),
+        maintPayWear: getRadioValue('maintPayWear'),
+        maintPayAccident: getRadioValue('maintPayAccident'),
+        maintInsured: getRadioValue('maintInsured'),
+        maintServiceFreq: getRadioValue('maintServiceFreq'),
+        rentServiceHistory: getRadioValue('rentServiceHistory'),
+        rentTyreInspect: getRadioValue('rentTyreInspect'),
+        rentBrakeInspect: getRadioValue('rentBrakeInspect'),
+        rentLightsInspect: getRadioValue('rentLightsInspect'),
+        rentDamagePay: getRadioValue('rentDamagePay'),
+        rentAccidentPay: getRadioValue('rentAccidentPay'),
+        rentInsuranceIncluded: getRadioValue('rentInsuranceIncluded'),
+        companyMaintPay: getRadioValue('companyMaintPay'),
+        companyInsurance: getRadioValue('companyInsurance'),
+        companyDamagePay: getRadioValue('companyDamagePay'),
+        companyAccidentPay: getRadioValue('companyAccidentPay'),
         challenges: getCheckedValuesWithOther('challenges', 'regChallengesOther'),
         evChallenges: getCheckedValuesWithOther('evChallenges', 'regEvChallengesOther'),
         petrolChallenges: getCheckedValuesWithOther('petrolChallenges', 'regPetrolChallengesOther'),
-        hasAccidentalInsurance: getRadioValue('hasAccidental'),
-        hasHealthInsurance: getRadioValue('hasHealth'),
-        paidOutofPocketAccident: getRadioValue('paidPocket'),
-        openToEV: getRadioValue('openEV'),
-        switchTriggers: getCheckedValues('switchTriggers'),
-        interests: getRadioValue('interests'),
+        fuelCostChallenge: getRadioValue('fuelCostChallenge'),
+        helmetUsage: getRadioValue('helmetUsage'),
+        trainingReceived: trainingVal,
+        workplaceFacilities: facilityArr.join(', '),
         language: localStorage.getItem('selectedLang') || 'en'
     };
 
@@ -4261,16 +4312,83 @@ window.nextStep = async function() {
             const data = await res.json();
             if (data.exists) {
                 if (data.is_completed) {
-                    showToast('Phone number already registered. Please login.', 'error');
+                    const modal = document.getElementById('alreadyCompletedModal');
+                    if(modal) modal.classList.add('active');
                     return; // block moving forward
                 } else if (!window.resumedPartial) {
                     const pd = data.data;
                     window.resumedPartialData = pd; // Store globally
-                    document.getElementById('regFullName').value = pd.fullName || '';
-                    document.getElementById('regState').value = pd.state || '';
+                    
+                    // Helper to prefill inputs
+                    const fillInput = (id, val) => { if(document.getElementById(id) && val) { document.getElementById(id).value = val; document.getElementById(id).dispatchEvent(new Event('change')); } };
+                    const fillRadio = (name, val) => { 
+                        if(val) {
+                            const r = document.querySelector(`input[name="${name}"][value="${val}"]`);
+                            if(r) { r.checked = true; r.dispatchEvent(new Event('change')); }
+                        }
+                    };
+                    const fillCheckboxes = (name, vals) => {
+                        if(Array.isArray(vals)) {
+                            vals.forEach(v => {
+                                const c = document.querySelector(`input[name="${name}"][value="${v}"]`);
+                                if(c) { c.checked = true; c.dispatchEvent(new Event('change')); }
+                            });
+                        }
+                    };
+
+                    fillInput('regFullName', pd.fullName);
+                    fillInput('regState', pd.state);
                     if (pd.state && window.onRegStateChange) window.onRegStateChange();
-                    document.getElementById('regCity').value = pd.city || '';
-                    document.getElementById('regPincode').value = pd.pincode || '';
+                    fillInput('regCity', pd.city);
+                    fillInput('regPincode', pd.pincode);
+                    
+                    // Pre-select Platform pills if any
+                    if(pd.deliveryPlatform) {
+                        const plats = pd.deliveryPlatform.split(', ');
+                        plats.forEach(p => {
+                            const pill = Array.from(document.querySelectorAll('#platformPillsContainer .platform-pill')).find(el => el.textContent.trim() === p);
+                            if(pill && !pill.classList.contains('active')) pill.click();
+                        });
+                    }
+                    
+                    if(pd.experienceYears) {
+                        const pill = Array.from(document.querySelectorAll('#expPillsContainer .platform-pill')).find(el => el.textContent.trim() === pd.experienceYears);
+                        if(pill && !pill.classList.contains('active')) pill.click();
+                        fillInput('regExp', pd.experienceYears);
+                    }
+                    
+                    fillRadio('vehicleType', pd.vehicleType);
+                    fillInput('regVehicleModel', pd.vehicleModel);
+                    fillRadio('vehicleOwnership', pd.vehicleOwnership);
+                    fillInput('regWeeklyRent', pd.weeklyRent);
+                    fillInput('regMonthlyRent', pd.monthlyRent);
+                    fillInput('regWorkingHours', pd.workingHours);
+                    fillInput('regKmPerDay', pd.kmPerDay);
+                    fillInput('regKmPerMonth', pd.kmPerMonth);
+                    fillRadio('fuelType', pd.fuelType);
+                    fillInput('regFuelExp', pd.fuelExpenseWeekly);
+                    fillRadio('fuelMethod', pd.fuelMethod);
+                    fillInput('regMaintTyre', pd.maintenanceTyre);
+                    fillInput('regMaintOil', pd.maintenanceOil);
+                    fillInput('regMaintService', pd.maintenanceService);
+                    fillInput('regMaintExp', pd.maintenanceExpenseMonthly);
+                    
+                    fillCheckboxes('challenges', pd.challenges);
+                    fillCheckboxes('evChallenges', pd.evChallenges);
+                    fillCheckboxes('petrolChallenges', pd.petrolChallenges);
+                    fillRadio('fuelCostChallenge', pd.fuelCostChallenge);
+                    fillRadio('helmetUsage', pd.helmetUsage);
+                    
+                    if(pd.trainingReceived) {
+                        fillCheckboxes('trainingReceived', pd.trainingReceived.split(', '));
+                    }
+                    if(pd.workplaceFacilities) {
+                        const fac = pd.workplaceFacilities;
+                        if(fac.includes('Seating Area') && document.getElementById('facilitySeating')) document.getElementById('facilitySeating').checked = true;
+                        if(fac.includes('Drinking Water') && document.getElementById('facilityWater')) document.getElementById('facilityWater').checked = true;
+                        if(fac.includes('Clean Toilets') && document.getElementById('facilityToilet')) document.getElementById('facilityToilet').checked = true;
+                        if(fac.includes('Rest Zones') && document.getElementById('facilityRest')) document.getElementById('facilityRest').checked = true;
+                    }
                     
                     window.resumedPartial = true;
                     if (pd.current_step > 2) { // Changed from 1 to 2

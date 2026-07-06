@@ -180,6 +180,54 @@ router.get('/riders/by-phone/:phone', async (req, res) => {
   }
 });
 
+// Get partial rider data by phone
+router.get('/riders/partial/:phone', async (req, res) => {
+  try {
+    const normalizedPhone = req.params.phone.replace(/\D/g, '').slice(-10);
+    const { data: rows } = await supabase.from('riders').select('*').eq('phone', normalizedPhone);
+    const foundRider = rows && rows.length > 0 ? rows[0] : null;
+    
+    if (!foundRider) {
+      return res.json({ exists: false });
+    }
+    
+    if (foundRider.is_completed) {
+      return res.json({ exists: true, is_completed: true });
+    }
+    
+    return res.json({ exists: true, is_completed: false, data: foundRider });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Save partial registration data
+router.post('/riders/partial', async (req, res) => {
+  try {
+    const payload = req.body;
+    if (!payload.phone) return res.status(400).json({ error: 'Phone is required' });
+    
+    const normalizedPhone = payload.phone.replace(/\D/g, '').slice(-10);
+    payload.phone = normalizedPhone;
+    
+    // Check if exists and completed
+    const { data: rows } = await supabase.from('riders').select('id, is_completed').eq('phone', normalizedPhone);
+    const existing = rows && rows.length > 0 ? rows[0] : null;
+    
+    if (existing && existing.is_completed) {
+      return res.status(400).json({ success: false, error: 'Registration already completed' });
+    }
+    
+    // Upsert
+    const { data, error } = await supabase.from('riders').upsert([payload], { onConflict: 'phone', ignoreDuplicates: false });
+    if (error) throw error;
+    
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Create/Register Rider - Full Questionnaire (Sections A-F)
 
 // Rate limiter: Maximum 3 registrations per IP address
@@ -202,6 +250,9 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       vehicleType, vehicleModel, vehicleOwnership, weeklyRent, monthlyRent,
       workingHours, kmPerDay, kmPerMonth, fuelType, fuelMethod, fuelExpenseWeekly,
       maintenanceTyre, maintenanceOil, maintenanceService, maintenanceExpenseMonthly,
+      maintPayServicing, maintPayPuncture, maintPayWear, maintPayAccident, maintInsured, maintServiceFreq,
+      rentServiceHistory, rentTyreInspect, rentBrakeInspect, rentLightsInspect, rentDamagePay, rentAccidentPay, rentInsuranceIncluded,
+      companyMaintPay, companyInsurance, companyDamagePay, companyAccidentPay,
       // Section D
       challenges, evChallenges, petrolChallenges, fuelCostChallenge,
       // Section E
