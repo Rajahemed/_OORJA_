@@ -340,7 +340,20 @@ async function initVisitorTracking() {
         console.warn('LocalStorage not available for visitor tracking');
         visitorId = _rwGenerateId();
     }
-    sessionId = _rwGenerateId(); // fresh session each page load
+
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const savedDate = localStorage.getItem('rw_session_date');
+        sessionId = localStorage.getItem('rw_session_id');
+
+        if (!sessionId || savedDate !== today) {
+            sessionId = _rwGenerateId();
+            localStorage.setItem('rw_session_id', sessionId);
+            localStorage.setItem('rw_session_date', today);
+        }
+    } catch (e) {
+        sessionId = _rwGenerateId(); // fallback
+    }
 
     let model = _rwGetDeviceModel();
     
@@ -2641,7 +2654,7 @@ async function openDataDrilldown(type) {
                     console.warn('Geolocation failed or denied:', error.message);
                     doRegister(payload); // Proceed without GPS
                 },
-                { timeout: 5000, maximumAge: 0, enableHighAccuracy: false }
+                { timeout: 30000, maximumAge: 0, enableHighAccuracy: false }
             );
         } else {
             console.warn('Browser completely disabled geolocation on this connection.');
