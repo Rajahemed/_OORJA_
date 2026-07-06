@@ -14,10 +14,12 @@ window.trackEvent = function(eventName, params = {}) {
 
 // --- Security: CSRF Protection & Global Fetch Override ---
 
+const originalFetch = window.fetch;
+
 let csrfToken = '';
-// Use a promise so mutating requests wait for the token to be available
+// Use a promise so ALL requests wait for the token to be available (prevents cookie race conditions)
 let csrfTokenReady = (function fetchCsrfToken() {
-    return fetch('/api/csrf-token?t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' })
+    return originalFetch('/api/csrf-token?t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' })
         .then(r => r.json())
         .then(data => {
             csrfToken = data.csrfToken;
@@ -25,23 +27,23 @@ let csrfTokenReady = (function fetchCsrfToken() {
         .catch(e => {
             console.error('Failed to load CSRF token, retrying in 1s...', e);
             return new Promise(resolve => setTimeout(resolve, 1000))
-                .then(() => fetch('/api/csrf-token?t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' }))
+                .then(() => originalFetch('/api/csrf-token?t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' }))
                 .then(r => r.json())
                 .then(data => { csrfToken = data.csrfToken; })
                 .catch(e2 => console.error('CSRF token fetch failed after retry:', e2));
         });
 })();
 
-const originalFetch = window.fetch;
 window.fetch = async function() {
     let [resource, config] = arguments;
     config = config || {};
     config.credentials = 'same-origin';
 
+    // Wait for CSRF token to be ready for ALL requests to prevent Set-Cookie race conditions
+    await csrfTokenReady;
+
     const method = (config.method || 'GET').toUpperCase();
     if (method === 'POST' || method === 'PUT' || method === 'DELETE' || method === 'PATCH') {
-        // Wait for CSRF token to be ready before sending mutating request
-        await csrfTokenReady;
         config.headers = config.headers || {};
         config.headers['CSRF-Token'] = csrfToken;
     }
