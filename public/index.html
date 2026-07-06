@@ -622,14 +622,16 @@
                                     <div id="loginErrorMsg" class="error-message" style="color: var(--warning-color); margin-top:0.5rem; display:none; font-size:0.875rem;"><i class="fas fa-exclamation-triangle"></i> <span id="loginErrorText"></span></div>
                                 </div>
                                 <div class="form-group" id="loginPasswordGroup">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <label for="loginPassword" data-i18n="label_password">Password <span style="color:var(--danger-color, #ef4444);">*</span></label>
-                                        <a href="#" onclick="showRiderForgotForm()" style="font-size: 0.8rem; color: var(--primary-color);" data-i18n="forgot_password">Forgot Password?</a>
+                                    <label for="loginPassword" data-i18n="label_password">4-Digit PIN <span style="color:var(--danger-color, #ef4444);">*</span></label>
+                                    <div class="pin-input-group" id="loginPinGroup" style="display: flex; gap: 10px; position: relative; margin-bottom: 5px;">
+                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 0, 'loginPassword')" onkeydown="handlePinKeydown(event, this, 0, 'loginPassword')" onpaste="handlePinPaste(event, this, 'loginPassword')">
+                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 1, 'loginPassword')" onkeydown="handlePinKeydown(event, this, 1, 'loginPassword')" onpaste="handlePinPaste(event, this, 'loginPassword')">
+                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 2, 'loginPassword')" onkeydown="handlePinKeydown(event, this, 2, 'loginPassword')" onpaste="handlePinPaste(event, this, 'loginPassword')">
+                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 3, 'loginPassword')" onkeydown="handlePinKeydown(event, this, 3, 'loginPassword')" onpaste="handlePinPaste(event, this, 'loginPassword')">
+                                        <i class="fas fa-eye" onclick="togglePinVisibility('loginPinGroup')" style="position: absolute; right: 10px; top: 12px; cursor: pointer; color: var(--text-secondary);"></i>
                                     </div>
-                                    <div style="position: relative;">
-                                        <input type="password" id="loginPassword" class="form-control" required>
-                                        <i id="toggleLoginPwd" class="fas fa-eye" style="position: absolute; right: 40px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('loginPassword', 'toggleLoginPwd')"></i>
-                                    </div>
+                                    <input type="hidden" id="loginPassword" required>
+                                    <a href="#" onclick="showRiderForgotForm()" style="font-size: 0.8rem; color: var(--primary-color); display: block; margin-top: 5px;" data-i18n="forgot_password">Forgot Password?</a>
                                 </div>
                                 <div class="form-group" id="loginOtpGroup" style="display:none;">
                                     <div style="display:flex; gap:0.5rem;">
@@ -666,11 +668,15 @@
                                     <small id="forgotOtpSentMsg" style="color:var(--primary-color); display:none; margin-top:4px;">OTP sent!</small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="riderForgotNewPassword">New Password</label>
-                                    <div style="position: relative;">
-                                        <input type="password" id="riderForgotNewPassword" class="form-control" required>
-                                        <i id="toggleRiderResetPwd" class="fas fa-eye" style="position: absolute; right: 40px; top: 12px; cursor: pointer; color: var(--text-secondary);" onclick="togglePasswordVisibility('riderForgotNewPassword', 'toggleRiderResetPwd')"></i>
+                                    <label for="riderForgotNewPassword">New 4-Digit PIN</label>
+                                    <div class="pin-input-group" id="forgotPinGroup" style="display: flex; gap: 10px; position: relative;">
+                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 0, 'riderForgotNewPassword')" onkeydown="handlePinKeydown(event, this, 0, 'riderForgotNewPassword')" onpaste="handlePinPaste(event, this, 'riderForgotNewPassword')">
+                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 1, 'riderForgotNewPassword')" onkeydown="handlePinKeydown(event, this, 1, 'riderForgotNewPassword')" onpaste="handlePinPaste(event, this, 'riderForgotNewPassword')">
+                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 2, 'riderForgotNewPassword')" onkeydown="handlePinKeydown(event, this, 2, 'riderForgotNewPassword')" onpaste="handlePinPaste(event, this, 'riderForgotNewPassword')">
+                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 3, 'riderForgotNewPassword')" onkeydown="handlePinKeydown(event, this, 3, 'riderForgotNewPassword')" onpaste="handlePinPaste(event, this, 'riderForgotNewPassword')">
+                                        <i class="fas fa-eye" onclick="togglePinVisibility('forgotPinGroup')" style="position: absolute; right: 10px; top: 12px; cursor: pointer; color: var(--text-secondary);"></i>
                                     </div>
+                                    <input type="hidden" id="riderForgotNewPassword" required>
                                 </div>
                                 <div id="riderForgotErrorMsg" style="display:none; color:var(--danger-color); background:rgba(239, 68, 68, 0.1); padding:0.75rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;">
                                     <i class="fas fa-exclamation-triangle"></i> <span id="riderForgotErrorText"></span>
@@ -787,23 +793,16 @@
                                 
                                 
                                 <div class="form-group">
-                                    <label for="regPassword" data-i18n="label_password">Password <span style="color:var(--danger-color, #ef4444);">*</span></label>
-                                    <div style="position:relative;">
-                                        <input type="password" id="regPassword" class="form-control" minlength="8" required style="padding-right:2.5rem;" oninput="validateRegPassword(this)">
-                                        <span onclick="togglePasswordVisibility('regPassword', this)" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); cursor:pointer; color:var(--text-secondary);">
-                                            <i class="fas fa-eye"></i>
-                                        </span>
+                                    <label for="regPassword" data-i18n="label_password">4-Digit PIN <span style="color:var(--danger-color, #ef4444);">*</span></label>
+                                    <div class="pin-input-group" id="regPinGroup" style="display: flex; gap: 10px; position: relative;">
+                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 0, 'regPassword')" onkeydown="handlePinKeydown(event, this, 0, 'regPassword')" onpaste="handlePinPaste(event, this, 'regPassword')">
+                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 1, 'regPassword')" onkeydown="handlePinKeydown(event, this, 1, 'regPassword')" onpaste="handlePinPaste(event, this, 'regPassword')">
+                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 2, 'regPassword')" onkeydown="handlePinKeydown(event, this, 2, 'regPassword')" onpaste="handlePinPaste(event, this, 'regPassword')">
+                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 3, 'regPassword')" onkeydown="handlePinKeydown(event, this, 3, 'regPassword')" onpaste="handlePinPaste(event, this, 'regPassword')">
+                                        <i class="fas fa-eye" onclick="togglePinVisibility('regPinGroup')" style="position: absolute; right: 10px; top: 12px; cursor: pointer; color: var(--text-secondary);"></i>
                                     </div>
-                                    <span id="passErrMsg" class="error-message hidden" style="color:#f97316; margin-top:0.5rem; display:block;"><i class="fas fa-exclamation-circle"></i> Password must be at least 8 characters</span>
-                                    <div class="password-strength-meter" style="margin-top:0.5rem; display:none;" id="pwdStrengthContainer">
-                                        <div style="display:flex; height:6px; gap:4px; margin-bottom:4px;">
-                                            <div id="pwdBar1" style="flex:1; background:#e5e7eb; border-radius:3px; transition:background 0.3s;"></div>
-                                            <div id="pwdBar2" style="flex:1; background:#e5e7eb; border-radius:3px; transition:background 0.3s;"></div>
-                                            <div id="pwdBar3" style="flex:1; background:#e5e7eb; border-radius:3px; transition:background 0.3s;"></div>
-                                            <div id="pwdBar4" style="flex:1; background:#e5e7eb; border-radius:3px; transition:background 0.3s;"></div>
-                                        </div>
-                                        <small id="pwdStrengthText" data-i18n="pwd_strength_text" style="color:var(--text-secondary); font-size:0.75rem; font-weight:600;">Password strength</small>
-                                    </div>
+                                    <input type="hidden" id="regPassword" required>
+                                    <span id="passErrMsg" class="error-message hidden" style="color:#f97316; margin-top:0.5rem; display:block;"><i class="fas fa-exclamation-circle"></i> Password must be a 4-digit PIN</span>
                                 </div>
                                 <div style="display:flex; gap:1rem; flex-wrap:wrap;">
                                     <div class="form-group" style="flex:1; min-width:200px;">
@@ -1124,8 +1123,7 @@
                                         <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Long refuelling time"> ⏱️ <span data-i18n="ch_refuel">Long refuelling time</span></label>
                                         <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Frequent engine issues"> 🔧 <span data-i18n="pc_engine">Frequent engine issues</span></label>
                                         <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Traffic Police"> 👮 <span data-i18n="ch_traffic">Traffic Police</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="RTO"> 🏢 <span data-i18n="ch_rto">RTO</span></label>
-                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Challans"> 📜 <span data-i18n="ch_challans">Challans</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" required name="challenges" value="RTO Issue"> 🏢 <span data-i18n="ch_rto_issue">RTO Issue</span></label>
                                         <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Parking Issues"> 🅿️ <span data-i18n="ch_parking">Parking Issues</span></label>
                                         <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Vehicle Documents"> 📄 <span data-i18n="ch_documents">Vehicle Documents</span></label>
                                         <label class="checkbox-item"><input type="checkbox" required name="challenges" value="High servicing cost"> 💸 <span data-i18n="pc_service">High servicing cost</span></label>

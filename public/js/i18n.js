@@ -126,6 +126,8 @@
             fuel_petrol:"Petrol",
             fuel_diesel:"Diesel",
             fuel_cng:"CNG"
+        ,
+            ch_rto_issue:"RTO Issue"
         },
        hi: {
            logout:"αñ▓αÑëαñùαñåαñëαñƒ", login:"αñ▓αÑëαñùαñ┐αñ¿", welcome_title:"αñàαñ¬αñ¿αÑÇ αñíαñ┐αñ▓αÑÇαñ╡αñ░αÑÇ αñ»αñ╛αññαÑìαñ░αñ╛ αñòαÑï αñ╕αñ╢αñòαÑìαññ αñ¼αñ¿αñ╛αñÅαñé",
@@ -237,6 +239,8 @@
             fuel_petrol:"पेट्रोल",
             fuel_diesel:"डीज़ल",
             fuel_cng:"सीएनजी"
+        ,
+            ch_rto_issue:"आरटीओ मुद्दा"
         },
        kn: {
            nav_home:"α▓«α│üα▓ûα▓¬α│üα▓ƒ", nav_vehicles:"α▓╡α▓╛α▓╣α▓¿α▓ùα▓│α│ü", nav_dashboard:"α▓íα│ìα▓»α▓╛α▓╢α│ìΓÇîα▓¼α│ïα▓░α│ìα▓íα│ì", nav_score:"α▓╕α│ìα▓òα│ïα▓░α│ì", nav_profile:"α▓¬α│ìα▓░α│èα▓½α│êα▓▓α│ì", nav_admin:"α▓àα▓íα│ìα▓«α▓┐α▓¿α│ì",
@@ -349,6 +353,8 @@
             fuel_petrol:"ಪೆಟ್ರೋಲ್",
             fuel_diesel:"ಡೀಸೆಲ್",
             fuel_cng:"CNG"
+        ,
+            ch_rto_issue:"RTO ಸಂಚಿಕೆ"
         }
    };
 

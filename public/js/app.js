@@ -445,7 +445,10 @@ async function submitLeadForm(event) {
     try {
         const response = await fetch('/api/leads/capture', {
             method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
             body:    JSON.stringify({
                 full_name:         fullName,
                 email:             email,
@@ -1410,9 +1413,9 @@ async function openDataDrilldown(type) {
                         isFieldValid = false;
                         errorMsg = 'Please enter a valid 10-digit mobile number.';
                     }
-                    if (id === 'regPassword' && el.value.length < 8) {
+                    if (id === 'regPassword' && (el.value.length !== 4 || !/^\d{4}$/.test(el.value))) {
                         isFieldValid = false;
-                        errorMsg = 'Password must be at least 8 characters long.';
+                        errorMsg = 'Password must be exactly 4 digits.';
                     }
                     
                     if (!isFieldValid) {
@@ -1982,61 +1985,16 @@ async function openDataDrilldown(type) {
     });
 
     function validateRegPassword(input) {
+        // Enforce numeric only and max 4 digits
+        input.value = input.value.replace(/\D/g, '').slice(0, 4);
+
         const err = document.getElementById('passErrMsg');
-        const pwdStr = document.getElementById('pwdStrengthContainer');
-        const text = document.getElementById('pwdStrengthText');
-        const b1 = document.getElementById('pwdBar1');
-        const b2 = document.getElementById('pwdBar2');
-        const b3 = document.getElementById('pwdBar3');
-        const b4 = document.getElementById('pwdBar4');
-
         const val = input.value;
-        if (val.length > 0 && val.length < 8) {
-            err.classList.remove('hidden');
+        
+        if (val.length > 0 && val.length < 4) {
+            if(err) err.classList.remove('hidden');
         } else {
-            err.classList.add('hidden');
-        }
-
-        if (!pwdStr) return; // fail-safe
-
-        if (val.length === 0) {
-            pwdStr.style.display = 'none';
-            return;
-        }
-        
-        pwdStr.style.display = 'block';
-        
-        let strength = 0;
-        if (val.length >= 8) strength++;
-        if (/[A-Z]/.test(val) && /[a-z]/.test(val)) strength++;
-        if (/[0-9]/.test(val)) strength++;
-        if (/[^A-Za-z0-9]/.test(val)) strength++;
-        
-        const resetBars = () => {
-            [b1, b2, b3, b4].forEach(b => b.style.background = '#e5e7eb');
-        };
-        
-        resetBars();
-        
-        if (strength <= 1) {
-            text.innerText = window.t ? window.t('weak_password', 'Weak - add numbers & symbols') : 'Weak - add numbers & symbols';
-            text.style.color = '#ef4444';
-            b1.style.background = '#ef4444';
-        } else if (strength === 2) {
-            text.innerText = window.t ? window.t('fair_password', 'Fair - could be stronger') : 'Fair - could be stronger';
-            text.style.color = '#f59e0b';
-            b1.style.background = '#f59e0b';
-            b2.style.background = '#f59e0b';
-        } else if (strength === 3) {
-            text.innerText = window.t ? window.t('good_password', 'Good password') : 'Good password';
-            text.style.color = '#10b981';
-            b1.style.background = '#10b981';
-            b2.style.background = '#10b981';
-            b3.style.background = '#10b981';
-        } else {
-            text.innerText = window.t ? window.t('strong_password', 'Strong password') : 'Strong password';
-            text.style.color = '#059669';
-            [b1, b2, b3, b4].forEach(b => b.style.background = '#059669');
+            if(err) err.classList.add('hidden');
         }
     }
 
@@ -4245,7 +4203,10 @@ window.savePartialProgress = async function() {
     try {
         await fetch('/api/riders/partial', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
             body: JSON.stringify(payload)
         });
     } catch (e) {
@@ -4711,3 +4672,74 @@ window.addEventListener('popstate', (e) => {
         routeSPA(window.location.pathname);
     }
 });
+
+// --- PIN Input Handlers ---
+function handlePinInput(input, index, hiddenId) {
+    input.value = input.value.replace(/\D/g, ''); // Ensure only digits
+    const group = input.parentElement;
+    if (input.value.length === 1) {
+        const nextInput = group.querySelectorAll('.pin-box')[index + 1];
+        if (nextInput) nextInput.focus();
+    }
+    updateHiddenPin(group, hiddenId);
+}
+
+function handlePinKeydown(event, input, index, hiddenId) {
+    const group = input.parentElement;
+    if (event.key === 'Backspace' && input.value === '') {
+        const prevInput = group.querySelectorAll('.pin-box')[index - 1];
+        if (prevInput) {
+            prevInput.focus();
+        }
+    }
+}
+
+function handlePinPaste(event, input, hiddenId) {
+    event.preventDefault();
+    const paste = (event.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 4);
+    if (!paste) return;
+    const group = input.parentElement;
+    const inputs = group.querySelectorAll('.pin-box');
+    for (let i = 0; i < paste.length; i++) {
+        if (inputs[i]) inputs[i].value = paste[i];
+    }
+    updateHiddenPin(group, hiddenId);
+    const focusIdx = Math.min(paste.length, 3);
+    inputs[focusIdx].focus();
+}
+
+function updateHiddenPin(group, hiddenId) {
+    const inputs = group.querySelectorAll('.pin-box');
+    let pin = '';
+    inputs.forEach(inp => pin += inp.value);
+    
+    const hiddenInput = document.getElementById(hiddenId);
+    if (hiddenInput) {
+        hiddenInput.value = pin;
+        // Trigger validation if it's the reg password
+        if (hiddenId === 'regPassword' && typeof validateRegPassword === 'function') {
+            validateRegPassword(hiddenInput);
+        }
+    }
+}
+
+function togglePinVisibility(groupId, iconId) {
+    const group = document.getElementById(groupId);
+    if (!group) return;
+    const inputs = group.querySelectorAll('.pin-box');
+    const icon = document.getElementById(iconId) || group.querySelector('.fa-eye, .fa-eye-slash');
+    
+    if (!inputs.length) return;
+    const isPassword = inputs[0].type === 'password';
+    inputs.forEach(inp => inp.type = isPassword ? 'text' : 'password');
+    
+    if (icon) {
+        if (isPassword) {
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+}
