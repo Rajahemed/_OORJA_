@@ -515,10 +515,27 @@ select.form-control option {
 }
 
 @media (max-width: 768px) {
-  .row.cols-2,
-  .row.cols-3,
-  .row.cols-4 {
+  .row.cols-3 {
     grid-template-columns: 1fr;
+  }
+  .row.cols-2,
+  .row.cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  .stat-box {
+    padding: 1.25rem 0.5rem;
+  }
+  .stat-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .stat-value {
+    font-size: 1.5rem;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
   }
 }
 
