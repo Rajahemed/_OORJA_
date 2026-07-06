@@ -3599,7 +3599,20 @@ async function openDataDrilldown(type) {
         
         fetch('/api/admin/riders', { headers: getAdminAuthHeaders() }).then(r => r.json()).then(result => {
             if (result.success) {
-                allAdminRiders = result.data;
+                const abandonedThreshold = Date.now() - 24 * 60 * 60 * 1000;
+                allAdminRiders = result.data.map(r => {
+                    if (r.is_completed === true || String(r.is_completed) === 'true' || r.progress_percentage === 100 || r.current_step === undefined) {
+                        r.form_status = 'Completed';
+                    } else {
+                        const updatedAt = new Date(r.updated_at || r.registeredAt || r.joinedDate || Date.now()).getTime();
+                        if (updatedAt < abandonedThreshold) {
+                            r.form_status = 'Abandoned';
+                        } else {
+                            r.form_status = 'Partial';
+                        }
+                    }
+                    return r;
+                });
                 document.getElementById('adminTotalRiders').textContent = allAdminRiders.length;
                 document.getElementById('adminEVRiders').textContent = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric')).length;
                 document.getElementById('adminHotLeads').textContent = allAdminRiders.filter(r => r.openToEV === 'Yes' || r.openToEV === 'Need more information' || (r.tags || []).includes('Hot EV Lead')).length;
@@ -3649,7 +3662,7 @@ async function openDataDrilldown(type) {
         } else if (val === 'PERSONAL_INSURANCE_LEAD' || val === 'BIKE_INSURANCE_LEAD') {
             filtered = allAdminRiders.filter(r => r.hasAccidentalInsurance === 'No' || r.hasAccidentalInsurance === 'Not sure' || r.hasHealthInsurance === 'No' || r.hasHealthInsurance === 'Not sure' || (r.tags || []).includes('Insurance Lead'));
         } else if (val === 'STATUS_LEAD') {
-            filtered = allAdminRiders.filter(r => r.form_status === 'Lead');
+            filtered = allAdminRiders; // Total Leads includes everyone in the funnel
         } else if (val === 'STATUS_PARTIAL') {
             filtered = allAdminRiders.filter(r => r.form_status === 'Partial');
         } else if (val === 'STATUS_COMPLETED') {
