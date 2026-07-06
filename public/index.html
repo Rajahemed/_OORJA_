@@ -990,10 +990,6 @@
                                     <div id="fuelTypeValMsg" style="color:var(--danger-color); display:none; margin-top:0.5rem; font-size:0.875rem;"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="val_fuel_req">Please select a valid fuel type.</span></div>
                                 </div>
 
-                                <div class="form-group conditional-section hidden-section" id="fuelExpenseSection">
-                                    <label for="regFuelExp" data-i18n="label_fuel_expense">Weekly Fuel Expense (₹)</label>
-                                    <input type="number" id="regFuelExp" class="form-control" min="0">
-                                </div>
 
                                 <div class="form-group conditional-section hidden-section" id="evChargingSection">
                                     <label data-i18n="label_fuel_method">How do you charge?</label>
@@ -1008,92 +1004,98 @@
                                 
                                 <h4 style="margin: 1.5rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;"><span data-i18n="lbl_maint_resp">Maintenance and Vehicle Responsibility</span></h4>
                                 
+                                <div id="fuelExpenseSection" class="conditional-section">
+                                    <div class="form-group">
+                                        <label for="regMaintExp" data-i18n="lbl_maint_cost">Average monthly maintenance cost (₹)</label>
+                                        <input required type="number" id="regMaintExp" class="form-control" min="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="regFuelExp" data-i18n="label_fuel_expense">Average monthly fuel/charging cost (₹)</label>
+                                        <input type="number" id="regFuelExp" class="form-control" min="0" required>
+                                    </div>
+                                </div>
+
                                 <div id="dynamicOwnershipContainer">
                                     <!-- My Own Vehicle Section -->
                                     <div id="ownVehicleQuestions" class="conditional-section hidden-section" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
                                         <div class="form-group">
-                                            <label data-i18n="lbl_maint_own_1">1. Who pays for regular servicing?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayServicing" required value="Self"> Self</label><label class="radio-item"><input type="radio" name="maintPayServicing" required value="Company"> Company</label><label class="radio-item"><input type="radio" name="maintPayServicing" required value="Other"> Other</label></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label data-i18n="lbl_maint_own_2">2. Who pays for puncture repairs?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayPuncture" required value="Self"> Self</label><label class="radio-item"><input type="radio" name="maintPayPuncture" required value="Company"> Company</label><label class="radio-item"><input type="radio" name="maintPayPuncture" required value="Shared"> Shared</label></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label data-i18n="lbl_maint_own_3">3. Who pays for wear and tear (wire replacement, brake pads, clutch, etc.)?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayWear" required value="Self"> Self</label><label class="radio-item"><input type="radio" name="maintPayWear" required value="Company"> Company</label><label class="radio-item"><input type="radio" name="maintPayWear" required value="Shared"> Shared</label></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label data-i18n="lbl_maint_own_4">4. In case of an accident, who bears the repair expenses?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayAccident" required value="Self"> Self</label><label class="radio-item"><input type="radio" name="maintPayAccident" required value="Company"> Company</label><label class="radio-item"><input type="radio" name="maintPayAccident" required value="Insurance"> Insurance</label><label class="radio-item"><input type="radio" name="maintPayAccident" required value="Shared"> Shared</label></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label data-i18n="lbl_maint_own_5">5. Is your vehicle insured?</label>
+                                            <label data-i18n="lbl_maint_own_5">1. Is your vehicle insured?</label>
                                             <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintInsured" required value="Yes"> Yes</label><label class="radio-item"><input type="radio" name="maintInsured" required value="No"> No</label></div>
                                         </div>
                                         <div class="form-group">
-                                            <label data-i18n="lbl_maint_own_6">6. How often do you service your vehicle?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="3 months"> 3 months</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="6 months"> 6 months</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="1 years"> 1 years</label></div>
+                                            <label data-i18n="lbl_maint_own_6">2. How often do you service your vehicle?</label>
+                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="Every 3 Months"> 3 Months</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="Every 6 Months"> 6 Months</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="Every Year"> 1 Year</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required value="Only When Needed"> Only When Needed</label></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>3. Have you had any major repairs in the last 12 months?</label>
+                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="majorRepairs" required value="Yes" onchange="document.getElementById('majorRepairCostGroup').style.display='block'"> Yes</label><label class="radio-item"><input type="radio" name="majorRepairs" required value="No" onchange="document.getElementById('majorRepairCostGroup').style.display='none'; document.getElementById('regMajorRepairCost').value='';"> No</label></div>
+                                        </div>
+                                        <div class="form-group" id="majorRepairCostGroup" style="display:none; margin-top: 0.5rem;">
+                                            <label>Approximate repair cost (₹)</label>
+                                            <input type="number" id="regMajorRepairCost" class="form-control" min="0">
                                         </div>
                                     </div>
 
                                     <!-- Rental Vehicle Section -->
                                     <div id="rentalVehicleQuestions" class="conditional-section hidden-section" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
                                         <div class="form-group">
-                                            <label data-i18n="lbl_maint_rent_1">1. Before renting the vehicle, did you check its service history?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="rentServiceHistory" required value="Yes"> Yes</label><label class="radio-item"><input type="radio" name="rentServiceHistory" required value="No"> No</label></div>
+                                            <label data-i18n="lbl_maint_rent_1">1. Who pays for regular servicing?</label>
+                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayServicing" required value="Rental Company"> Rental Company</label><label class="radio-item"><input type="radio" name="maintPayServicing" required value="Rider"> Rider</label><label class="radio-item"><input type="radio" name="maintPayServicing" required value="Shared"> Shared</label></div>
                                         </div>
                                         <div class="form-group">
-                                            <label data-i18n="lbl_maint_rent_2">2. Before taking the vehicle, did you inspect the condition of the tyres?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="rentTyreInspect" required value="Yes"> Yes</label><label class="radio-item"><input type="radio" name="rentTyreInspect" required value="No"> No</label></div>
+                                            <label data-i18n="lbl_maint_rent_2">2. Who pays for puncture repairs?</label>
+                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayPuncture" required value="Rental Company"> Rental Company</label><label class="radio-item"><input type="radio" name="maintPayPuncture" required value="Rider"> Rider</label><label class="radio-item"><input type="radio" name="maintPayPuncture" required value="Shared"> Shared</label></div>
                                         </div>
                                         <div class="form-group">
-                                            <label data-i18n="lbl_maint_rent_3">3. Did you check the brakes before taking the vehicle?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="rentBrakeInspect" required value="Yes"> Yes</label><label class="radio-item"><input type="radio" name="rentBrakeInspect" required value="No"> No</label></div>
+                                            <label data-i18n="lbl_maint_rent_3">3. Who pays for wear and tear?</label>
+                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayWear" required value="Rental Company"> Rental Company</label><label class="radio-item"><input type="radio" name="maintPayWear" required value="Rider"> Rider</label><label class="radio-item"><input type="radio" name="maintPayWear" required value="Shared"> Shared</label></div>
                                         </div>
                                         <div class="form-group">
-                                            <label data-i18n="lbl_maint_rent_4">4. Did you check the lights and indicators?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="rentLightsInspect" required value="Yes"> Yes</label><label class="radio-item"><input type="radio" name="rentLightsInspect" required value="No"> No</label></div>
+                                            <label data-i18n="lbl_maint_rent_4">4. In case of an accident, who pays for repairs?</label>
+                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayAccident" required value="Rental Company"> Rental Company</label><label class="radio-item"><input type="radio" name="maintPayAccident" required value="Insurance"> Insurance</label><label class="radio-item"><input type="radio" name="maintPayAccident" required value="Rider"> Rider</label><label class="radio-item"><input type="radio" name="maintPayAccident" required value="Shared"> Shared</label></div>
                                         </div>
                                         <div class="form-group">
-                                            <label data-i18n="lbl_maint_rent_5">5. If the rented vehicle gets damaged during work, who pays?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="rentDamagePay" required value="Rental Company"> Rental Company</label><label class="radio-item"><input type="radio" name="rentDamagePay" required value="Rider"> Rider</label><label class="radio-item"><input type="radio" name="rentDamagePay" required value="Shared"> Shared</label><label class="radio-item"><input type="radio" name="rentDamagePay" required value="Don't Know"> Don't Know</label></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label data-i18n="lbl_maint_rent_6">6. If the vehicle meets with an accident, who covers the repair expenses?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="rentAccidentPay" required value="Rental Company"> Rental Company</label><label class="radio-item"><input type="radio" name="rentAccidentPay" required value="Insurance"> Insurance</label><label class="radio-item"><input type="radio" name="rentAccidentPay" required value="Rider"> Rider</label><label class="radio-item"><input type="radio" name="rentAccidentPay" required value="Don't Know"> Don't Know</label></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label data-i18n="lbl_maint_rent_7">7. Is insurance included with the rental vehicle?</label>
+                                            <label data-i18n="lbl_maint_rent_7">5. Is insurance included with the rental vehicle?</label>
                                             <div class="radio-group inline"><label class="radio-item"><input type="radio" name="rentInsuranceIncluded" required value="Yes"> Yes</label><label class="radio-item"><input type="radio" name="rentInsuranceIncluded" required value="No"> No</label><label class="radio-item"><input type="radio" name="rentInsuranceIncluded" required value="Don't Know"> Don't Know</label></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>6. Before taking the vehicle, did you check:</label>
+                                            <div class="checkbox-group" style="margin-top:0.5rem;">
+                                                <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" name="rentChecks" value="Service History"> <span style="margin-left:0.5rem;">Service History</span></label>
+                                                <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" name="rentChecks" value="Tyre Condition"> <span style="margin-left:0.5rem;">Tyre Condition</span></label>
+                                                <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" name="rentChecks" value="Brakes"> <span style="margin-left:0.5rem;">Brakes</span></label>
+                                                <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" name="rentChecks" value="Lights"> <span style="margin-left:0.5rem;">Lights</span></label>
+                                                <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" name="rentChecks" value="Insurance"> <span style="margin-left:0.5rem;">Insurance</span></label>
+                                            </div>
                                         </div>
                                     </div>
 
                                     <!-- Company Vehicle Section -->
                                     <div id="companyVehicleQuestions" class="conditional-section hidden-section" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
                                         <div class="form-group">
-                                            <label data-i18n="lbl_maint_comp_1">1. Who pays for maintenance?</label>
+                                            <label data-i18n="lbl_maint_comp_1">1. Who pays for regular servicing?</label>
                                             <div class="radio-group inline"><label class="radio-item"><input type="radio" name="companyMaintPay" required value="Company"> Company</label><label class="radio-item"><input type="radio" name="companyMaintPay" required value="Rider"> Rider</label><label class="radio-item"><input type="radio" name="companyMaintPay" required value="Shared"> Shared</label></div>
                                         </div>
                                         <div class="form-group">
-                                            <label data-i18n="lbl_maint_comp_2">2. Is insurance provided by the company?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="companyInsurance" required value="Yes"> Yes</label><label class="radio-item"><input type="radio" name="companyInsurance" required value="No"> No</label><label class="radio-item"><input type="radio" name="companyInsurance" required value="Don't Know"> Don't Know</label></div>
+                                            <label>2. Who pays for puncture repairs?</label>
+                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="companyPuncturePay" required value="Company"> Company</label><label class="radio-item"><input type="radio" name="companyPuncturePay" required value="Rider"> Rider</label><label class="radio-item"><input type="radio" name="companyPuncturePay" required value="Shared"> Shared</label></div>
                                         </div>
                                         <div class="form-group">
-                                            <label data-i18n="lbl_maint_comp_3">3. If the vehicle is damaged during delivery, who pays?</label>
-                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="companyDamagePay" required value="Company"> Company</label><label class="radio-item"><input type="radio" name="companyDamagePay" required value="Rider"> Rider</label><label class="radio-item"><input type="radio" name="companyDamagePay" required value="Shared"> Shared</label></div>
+                                            <label>3. Who pays for wear and tear?</label>
+                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="companyWearPay" required value="Company"> Company</label><label class="radio-item"><input type="radio" name="companyWearPay" required value="Rider"> Rider</label><label class="radio-item"><input type="radio" name="companyWearPay" required value="Shared"> Shared</label></div>
                                         </div>
                                         <div class="form-group">
-                                            <label data-i18n="lbl_maint_comp_4">4. If there is an accident, who pays for repairs?</label>
+                                            <label data-i18n="lbl_maint_comp_4">4. In case of an accident, who pays?</label>
                                             <div class="radio-group inline"><label class="radio-item"><input type="radio" name="companyAccidentPay" required value="Company"> Company</label><label class="radio-item"><input type="radio" name="companyAccidentPay" required value="Insurance"> Insurance</label><label class="radio-item"><input type="radio" name="companyAccidentPay" required value="Shared"> Shared</label><label class="radio-item"><input type="radio" name="companyAccidentPay" required value="Rider"> Rider</label></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label data-i18n="lbl_maint_comp_2">5. Is the vehicle insured by the company?</label>
+                                            <div class="radio-group inline"><label class="radio-item"><input type="radio" name="companyInsurance" required value="Yes"> Yes</label><label class="radio-item"><input type="radio" name="companyInsurance" required value="No"> No</label><label class="radio-item"><input type="radio" name="companyInsurance" required value="Don't Know"> Don't Know</label></div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="regMaintExp" data-i18n="lbl_maint_cost">Overall Monthly Maintenance Cost (₹)</label>
-                                    <input required type="number" id="regMaintExp" class="form-control" min="0">
-                                </div>
+
 
                                 <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
                             </div> <!-- End of regSection4 -->

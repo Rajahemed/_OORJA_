@@ -601,10 +601,9 @@ router.get('/admin/analytics/drilldown', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIE
     } else if (type === 'sessions') {
       // Just returning recent sessions (events marked as page_view or similar)
       const { data: sessions } = await supabase
-        .from('visitor_events')
-        .select('session_id, visitor_id, page_url, created_at')
-        .eq('event_type', 'page_view')
-        .order('created_at', { ascending: false })
+        .from('sessions')
+        .select('session_id, visitor_id, page, started_at')
+        .order('started_at', { ascending: false })
         .limit(100);
       data = sessions || [];
     } else {

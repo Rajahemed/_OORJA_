@@ -797,8 +797,8 @@ async function openDataDrilldown(type) {
                 <tr>
                     <td style="font-size:0.85rem;">${(s.session_id || '').substring(0,8)}...</td>
                     <td style="font-size:0.85rem;">${(s.visitor_id || '').substring(0,8)}...</td>
-                    <td><small style="background:rgba(108,71,255,0.1);padding:2px 8px;border-radius:50px;color:#a78bfa;">${s.page_url}</small></td>
-                    <td style="font-size:0.8rem;color:var(--text-secondary);">${new Date(s.created_at).toLocaleString()}</td>
+                    <td><small style="background:rgba(108,71,255,0.1);padding:2px 8px;border-radius:50px;color:#a78bfa;">${s.page}</small></td>
+                    <td style="font-size:0.8rem;color:var(--text-secondary);">${new Date(s.started_at).toLocaleString()}</td>
                 </tr>
             `).join('');
         }
@@ -1487,9 +1487,9 @@ async function openDataDrilldown(type) {
 
                 // Check fuel/maintenance expenses if they are visible
                 const fuelExp = document.getElementById('regFuelExp');
-                if (fuelExp && fuelExp.parentElement.style.display !== 'none' && !fuelExp.parentElement.classList.contains('hidden-section') && !fuelExp.value.trim()) setInvalid(fuelExp);
+                if (fuelExp && !fuelExp.closest('.hidden-section') && !fuelExp.value.trim()) setInvalid(fuelExp);
                 const maintExp = document.getElementById('regMaintExp');
-                if (maintExp && maintExp.parentElement.style.display !== 'none' && !maintExp.parentElement.classList.contains('hidden-section') && !maintExp.value.trim()) setInvalid(maintExp);
+                if (maintExp && !maintExp.closest('.hidden-section') && !maintExp.value.trim()) setInvalid(maintExp);
             }
             else if (step === 4) {
                 // Check if visible checkbox groups have at least one selection
@@ -2296,10 +2296,18 @@ async function openDataDrilldown(type) {
         if (rentalSec) rentalSec.classList.add('hidden-section');
         if (companySec) companySec.classList.add('hidden-section');
 
-        const clearRadios = (container) => {
+        const clearInputs = (container) => {
             if(!container) return;
-            const radios = container.querySelectorAll('input[type="radio"]');
-            radios.forEach(r => { r.checked = false; });
+            const inputs = container.querySelectorAll('input');
+            inputs.forEach(input => {
+                if(input.type === 'radio' || input.type === 'checkbox') {
+                    input.checked = false;
+                } else if(input.type === 'number' || input.type === 'text') {
+                    input.value = '';
+                }
+            });
+            const majorRepairCostGroup = container.querySelector('#majorRepairCostGroup');
+            if (majorRepairCostGroup) majorRepairCostGroup.style.display = 'none';
         };
         
         if (val === 'My Own Vehicle') {
@@ -2307,8 +2315,8 @@ async function openDataDrilldown(type) {
                 ownSec.style.display = 'block';
                 ownSec.classList.remove('hidden-section');
             }
-            clearRadios(rentalSec);
-            clearRadios(companySec);
+            clearInputs(rentalSec);
+            clearInputs(companySec);
             if (rentFields) {
                document.getElementById('regWeeklyRent').value = '';
                document.getElementById('regMonthlyRent').value = '';
@@ -2318,15 +2326,15 @@ async function openDataDrilldown(type) {
                 rentalSec.style.display = 'block';
                 rentalSec.classList.remove('hidden-section');
             }
-            clearRadios(ownSec);
-            clearRadios(companySec);
+            clearInputs(ownSec);
+            clearInputs(companySec);
         } else if (val === 'Company Vehicle') {
             if(companySec) {
                 companySec.style.display = 'block';
                 companySec.classList.remove('hidden-section');
             }
-            clearRadios(ownSec);
-            clearRadios(rentalSec);
+            clearInputs(ownSec);
+            clearInputs(rentalSec);
             if (rentFields) {
                document.getElementById('regWeeklyRent').value = '';
                document.getElementById('regMonthlyRent').value = '';
@@ -2438,16 +2446,21 @@ async function openDataDrilldown(type) {
         const evChallengesSection = document.getElementById('evChallengesSection');
         const petrolChallengesSection = document.getElementById('petrolChallengesSection');
         
-        if (evSection && fuelExpSection) {
+        if (evSection) {
             if (val === 'Electric') {
                 evSection.classList.remove('hidden-section');
-                fuelExpSection.classList.add('hidden-section');
+                if (fuelExpSection) {
+                    fuelExpSection.classList.add('hidden-section');
+                    // clear values when hiding
+                    const inputs = fuelExpSection.querySelectorAll('input');
+                    inputs.forEach(input => input.value = '');
+                }
             } else if (val) {
                 evSection.classList.add('hidden-section');
-                fuelExpSection.classList.remove('hidden-section');
+                if (fuelExpSection) fuelExpSection.classList.remove('hidden-section');
             } else {
                 evSection.classList.add('hidden-section');
-                fuelExpSection.classList.add('hidden-section');
+                if (fuelExpSection) fuelExpSection.classList.add('hidden-section');
             }
         }
         
@@ -2549,6 +2562,11 @@ async function openDataDrilldown(type) {
             companyInsurance: getRadioValue('companyInsurance'),
             companyDamagePay: getRadioValue('companyDamagePay'),
             companyAccidentPay: getRadioValue('companyAccidentPay'),
+            majorRepairs: getRadioValue('majorRepairs'),
+            majorRepairCost: document.getElementById('regMajorRepairCost')?.value || '',
+            rentChecks: Array.from(document.querySelectorAll('input[name="rentChecks"]:checked')).map(r => r.value).join(', '),
+            companyPuncturePay: getRadioValue('companyPuncturePay'),
+            companyWearPay: getRadioValue('companyWearPay'),
             challenges: getCheckedValuesWithOther('challenges', 'regChallengesOther'),
             evChallenges: getCheckedValuesWithOther('evChallenges', 'regEvChallengesOther'),
             petrolChallenges: getCheckedValuesWithOther('petrolChallenges', 'regPetrolChallengesOther'),
