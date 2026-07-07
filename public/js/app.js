@@ -995,7 +995,7 @@ async function openDataDrilldown(type) {
                 u8arr[n] = bstr.charCodeAt(n);
             }
             const blob = new Blob([u8arr], {type: mime});
-            const file = new File([blob], 'referral-qr.jpg', { type: 'image/jpeg' });
+            const file = new File([blob], 'referral-qr.png', { type: 'image/png' });
 
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 // Share ONLY the file, without text or url, as requested by user
@@ -3321,7 +3321,6 @@ async function openDataDrilldown(type) {
             
             // Draw the QR code on the image using canvas
             const img = new Image();
-            img.crossOrigin = "Anonymous";
             const imgUrl = URL.createObjectURL(imageBlob);
             
             const file = await new Promise((resolve, reject) => {
@@ -3347,7 +3346,7 @@ async function openDataDrilldown(type) {
                                 correctLevel: QRCode.CorrectLevel.H
                             });
                             qrCanvas = tempDiv.querySelector('canvas');
-                        } catch(e) {}
+                        } catch(e) { console.error('QR Gen error:', e); }
                     }
 
                     if (qrCanvas) {
@@ -3363,14 +3362,14 @@ async function openDataDrilldown(type) {
                     }
                     
                     canvas.toBlob(blob => {
-                        resolve(new File([blob], imageToShare, { type: 'image/jpeg' }));
-                    }, 'image/jpeg', 0.95);
+                        resolve(new File([blob], imageToShare, { type: 'image/png' }));
+                    }, 'image/png');
                 };
                 img.onerror = () => reject(new Error('Failed to load image for canvas'));
                 img.src = imgUrl;
             });
 
-            // We must use navigator.share to attach an actual image file.
+            // Try Web Share API first
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 await navigator.share({
                     files: [file],
@@ -3378,31 +3377,34 @@ async function openDataDrilldown(type) {
                     text: text
                 });
                 if (typeof trackEvent === 'function') trackEvent('share_with_image', { success: true });
-            } else if (navigator.share) {
-                // Fallback to text only if file sharing is not supported
-                await navigator.share({
-                    title: 'Join Road Warrior EV',
-                    text: text
-                });
-                if (typeof trackEvent === 'function') trackEvent('share_text_only', { success: true });
             } else {
-                // If Web Share API is completely missing, fallback to direct whatsapp URL (text only)
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                if (isMobile) {
-                    window.location.href = fallbackUrl;
-                } else {
-                    window.open(webFallbackUrl, '_blank');
-                }
+                throw new Error('File sharing not supported');
             }
         } catch (err) {
-            console.error('Sharing failed', err);
+            console.error('Sharing failed or not supported:', err);
+            // If the user didn't intentionally cancel the share dialog, fallback to download + text
             if (err.name !== 'AbortError') {
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                if (isMobile) {
-                    window.location.href = fallbackUrl;
-                } else {
-                    window.open(webFallbackUrl, '_blank');
+                showToast('Downloading poster... Attach it in WhatsApp!', 'info');
+                // Force download the image
+                if (typeof file !== 'undefined' && file) {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(file);
+                    a.download = 'roadwarrior-referral-poster.png';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(a.href);
                 }
+                
+                // Open WhatsApp with text
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                setTimeout(() => {
+                    if (isMobile) {
+                        window.location.href = fallbackUrl;
+                    } else {
+                        window.open(webFallbackUrl, '_blank');
+                    }
+                }, 500);
             }
         }
     }
