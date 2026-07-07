@@ -1987,3 +1987,41 @@ body.register-page-active {
     --primary-dark: #0891b2;
     --primary-glow: rgba(6, 182, 212, 0.3);
 }
+
+/* Analytics Metric Boxes */
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.analytics-metric-box {
+    background-color: rgba(169, 210, 255, 0.4);
+    border: 1px solid rgba(130, 150, 255, 0.2);
+    border-radius: 8px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.analytics-metric-box:hover {
+    background-color: rgba(169, 210, 255, 0.6);
+}
+
+.analytics-metric-box .metric-value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #213590;
+    margin-bottom: 0.5rem;
+    font-family: 'Outfit', sans-serif;
+}
+
+.analytics-metric-box .metric-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #6a7c92;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

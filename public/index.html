@@ -815,14 +815,14 @@
                                         <select id="regState" class="form-control" required onchange="onRegStateChange()">
                                             <option value="">Loading States...</option>
                                         </select>
-                                        <input type="text" id="regStateOther" class="form-control" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
+                                        <input type="text" id="regStateOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *" oninput="this.value = this.value.toUpperCase()">
                                     </div>
                                     <div class="form-group" style="flex:1; min-width:200px;">
                                         <label for="regCity" data-i18n="label_city">City</label>
                                         <select id="regCity" class="form-control" required onchange="onRegCityChange()" disabled>
                                             <option value="" data-i18n="select_city">Select your city</option>
                                         </select>
-                                        <input type="text" id="regCityOther" class="form-control" style="display:none; margin-top:0.5rem;" oninput="this.value = this.value.toUpperCase()">
+                                        <input type="text" id="regCityOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *" oninput="this.value = this.value.toUpperCase()">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -879,7 +879,7 @@
                                         <option value="Other" data-i18n="plat_other">Other</option>
                                     </select>
                                     
-                                    <input type="text" id="regPlatformOther" class="form-control" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regPlatformOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *">
                                     <div id="platformIdsContainer" style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;"></div>
                                     </div>
                                     <div class="form-group" style="flex:1; min-width:200px;">
@@ -925,7 +925,7 @@
                                     <select required id="regVehicleModel" class="form-control" onchange="handleOtherDropdown(this, 'regVehicleModelOther')">
                                         <option value="" data-i18n="lbl_select_brand">Select Brand/Model</option>
                                     </select>
-                                    <input type="text" id="regVehicleModelOther" class="form-control" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regVehicleModelOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *">
                                 </div>
                                 
                                 <div class="form-group">
@@ -999,7 +999,7 @@
                                         <label class="radio-item"><input type="radio" name="fuelMethod" value="Public charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> 🔌 <span data-i18n="fm_public">Public Charging</span></label>
                                         <label class="radio-item"><input type="radio" name="fuelMethod" value="Other" onchange="toggleOtherRadio(this, 'regFuelMethodOther')"> ⚡ <span data-i18n="fm_other">Other</span></label>
                                     </div>
-                                    <input type="text" id="regFuelMethodOther" class="form-control" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regFuelMethodOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *">
                                 </div>
                                 
                                 <h4 style="margin: 1.5rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;"><span data-i18n="lbl_maint_resp">Maintenance and Vehicle Responsibility</span></h4>
@@ -1117,7 +1117,7 @@
                                         <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Service centre not nearby"> 🔧 <span data-i18n="evc_service">Service centre not nearby</span></label>
                                         <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regEvChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
                                     </div>
-                                    <input type="text" id="regEvChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regEvChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *">
                                 </div>
 
                                 <!-- Petrol/Diesel/CNG-specific challenges (conditional) -->
@@ -1136,7 +1136,7 @@
                                         <label class="checkbox-item"><input type="checkbox" required name="challenges" value="High servicing cost"> 💸 <span data-i18n="pc_service">High servicing cost</span></label>
                                         <label class="checkbox-item"><input type="checkbox" required name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regPetrolChallengesOther')"> 📝 <span data-i18n="ch_other">Other</span></label>
                                     </div>
-                                    <input type="text" id="regPetrolChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;">
+                                    <input type="text" id="regPetrolChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *">
                                     
                                     <div class="form-group" style="margin-top:1.5rem; background:rgba(255,153,0,0.05); padding:1rem; border-radius:8px; border:1px solid rgba(255,153,0,0.2);">
                                         <label data-i18n="q_fuel_cost">Is fuel cost a major challenge for you?</label>
@@ -2219,31 +2219,49 @@
     </section>
 
     <!-- ===== FOOTER ===== -->
-    <footer id="site-footer">
-        <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 100%; background: transparent; padding: 0.5rem 2rem; border-radius: 0; box-shadow: none; border: none; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 1rem;">
-            <div class="footer-logo" style="font-size: 1.5rem; font-weight: 800; margin: 0; cursor: default;" onclick="navigateTo('/admin')">
-                <span class="footer-logo-icon" style="color: var(--primary-color);">⚡</span>
-                <span class="footer-logo-text" style="color: var(--text-primary);">Road Warrior <span style="color: var(--primary-color);">Pro</span></span>
+    <footer id="site-footer" style="background-color: transparent; padding-top: 3rem;">
+        <div class="footer-inner" style="display: flex; justify-content: space-around; align-items: flex-start; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 2rem; margin-bottom: 2rem; flex-wrap: wrap; gap: 2rem;">
+            
+            <div style="flex: 1; min-width: 250px; text-align: left;">
+                <div class="footer-logo" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; cursor: default; display: flex; align-items: center; justify-content: flex-start;" onclick="navigateTo('/admin')">
+                    <span class="footer-logo-icon" style="color: #059669;">⚡</span>
+                    <span class="footer-logo-text" style="color: #0f172a; margin-left: 0.5rem;">Road Warrior <span style="color: #059669;">Pro</span></span>
+                </div>
+                <p style="color: #000000; font-size: 1.05rem; line-height: 1.6; margin-top: 1rem; font-weight: bold; max-width: 90%; text-align: justify;">
+                    Join India's fastest growing community of EV delivery riders. Maximize your earnings, unlock exclusive rewards, and ride towards a greener future today!
+                </p>
+            </div>
+
+            <div style="flex: 1; min-width: 250px;">
+                <h4 style="color: #059669; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 1.5rem; letter-spacing: 1px;">CONTACT</h4>
+                <p style="margin-bottom: 1rem; font-size: 1.05rem; font-weight: bold;"><a href="https://wa.me/919886650133" style="color: #000000; text-decoration: none;">WhatsApp: +91 98866 50133</a></p>
+                <p style="margin-bottom: 1rem; font-size: 1.05rem; color: #000000; font-weight: bold;">Phone: +91 98866 50133</p>
+                <p style="margin-bottom: 1rem; font-size: 1.05rem; color: #000000; font-weight: bold;">Find us on Google Maps</p>
+            </div>
+
+            <div style="flex: 1; min-width: 250px;">
+                <h4 style="color: #059669; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 1.5rem; letter-spacing: 1px;">LEGAL</h4>
+                <p style="margin-bottom: 1rem; font-size: 1.05rem; font-weight: bold;"><a href="/privacy.html" target="_blank" rel="noopener" style="color: #000000; text-decoration: none;">Privacy Policy</a></p>
+                <p style="margin-bottom: 1rem; font-size: 1.05rem; font-weight: bold;"><a href="/terms.html" target="_blank" rel="noopener" style="color: #000000; text-decoration: none;">Terms of Service</a></p>
+                <p style="margin-bottom: 1rem; font-size: 1.05rem; font-weight: bold;"><a href="https://wa.me/919886650133" style="color: #000000; text-decoration: none;">WhatsApp Us</a></p>
             </div>
 
         </div>
         <!-- Footer Bottom Bar -->
-        <div class="footer-bottom">
-            <div class="footer-bottom-left">
+        <div class="footer-bottom" style="background-color: rgba(0,0,0,0.05); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 1px solid rgba(0,0,0,0.1);">
+            <div class="footer-bottom-left" style="color: #000000; display: flex; align-items: center; font-weight: bold;">
                 <span>2026 © Road Warrior Pro</span>
-                <a href="#" onclick="navigateTo('/privacy'); return false;">Terms & Privacy Policy</a>
-                <a href="/sitemap">Sitemap</a>
+                <span style="margin: 0 0.5rem;">|</span>
+                <a href="/sitemap" style="color: #000000; text-decoration: none;">Sitemap</a>
             </div>
             
-            <div class="footer-social">
-                <a href="https://twitter.com/roadwarriorpro" target="_blank" rel="noopener" class="social-link twitter" title="Twitter / X"><i class="fab fa-twitter"></i></a>
-                <a href="https://www.youtube.com/@roadwarriorpro" target="_blank" rel="noopener" class="social-link youtube" title="YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="https://www.instagram.com/roadwarriorpro" target="_blank" rel="noopener" class="social-link instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.facebook.com/roadwarriorpro" target="_blank" rel="noopener" class="social-link facebook" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://www.linkedin.com/company/roadwarriorpro" target="_blank" rel="noopener" class="social-link linkedin" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <div class="footer-social" style="display: flex; gap: 1.5rem;">
+                <a href="https://twitter.com/roadwarriorpro" target="_blank" rel="noopener" class="social-link twitter" title="Twitter / X" style="color: #000000; font-size: 1.4rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.youtube.com/@roadwarriorpro" target="_blank" rel="noopener" class="social-link youtube" title="YouTube" style="color: #FF0000; font-size: 1.4rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.instagram.com/roadwarriorpro" target="_blank" rel="noopener" class="social-link instagram" title="Instagram" style="color: #E1306C; font-size: 1.4rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.facebook.com/roadwarriorpro" target="_blank" rel="noopener" class="social-link facebook" title="Facebook" style="color: #1877F2; font-size: 1.4rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.linkedin.com/company/roadwarriorpro" target="_blank" rel="noopener" class="social-link linkedin" title="LinkedIn" style="color: #0A66C2; font-size: 1.4rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-linkedin-in"></i></a>
             </div>
-
-
         </div>
     </footer>
 
