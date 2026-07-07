@@ -940,7 +940,7 @@ async function openDataDrilldown(type) {
         qrContainer.innerHTML = '';
         if (typeof QRCode !== 'undefined') {
             new QRCode(qrContainer, {
-                text: "https://roadwarrior.pro/?ref=" + currentUser.referralCode,
+                text: window.location.origin + "/?ref=" + currentUser.referralCode,
                 width: 200,
                 height: 200,
                 colorDark: "#000000",
@@ -1026,7 +1026,7 @@ async function openDataDrilldown(type) {
                 }
                 
                 const text = "Join Road Warrior and earn rewards! My referral code is " + currentUser.referralCode;
-                const url = "https://roadwarrior.pro/?ref=" + currentUser.referralCode;
+                const url = window.location.origin + "/?ref=" + currentUser.referralCode;
                 const fallbackUrl = `whatsapp://send?text=${encodeURIComponent(text + " " + url)}`;
                 const webFallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + " " + url)}`;
                 
@@ -3342,7 +3342,7 @@ async function openDataDrilldown(type) {
             if (typeof QRCode !== 'undefined') {
                 try {
                     new QRCode(tempDiv, {
-                        text: "https://roadwarrior.pro/?ref=" + code,
+                        text: window.location.origin + "/?ref=" + code,
                         width: 200,
                         height: 200,
                         colorDark: "#000000",
