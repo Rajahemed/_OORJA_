@@ -826,6 +826,12 @@ async function openDataDrilldown(type) {
             waImgEl.style.opacity = '0';
             setTimeout(() => { waImgEl.src = '/og-image-' + imgMap[lang] + '.png'; waImgEl.style.opacity = '1'; }, 300);
         }
+
+        const qrModalImgEl = document.getElementById('qrModalPosterImg');
+        if (qrModalImgEl && imgMap[lang]) {
+            qrModalImgEl.style.opacity = '0';
+            setTimeout(() => { qrModalImgEl.src = '/og-image-' + imgMap[lang] + '.png'; qrModalImgEl.style.opacity = '1'; }, 300);
+        }
         
         // Update grid buttons
         document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -3299,6 +3305,8 @@ async function openDataDrilldown(type) {
         const fallbackUrl = `whatsapp://send?text=${encodeURIComponent(text)}`;
         const webFallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
 
+        let generatedFile = null;
+
         try {
             const langMap = {
                 'en': 'og-image-English.png',
@@ -3323,7 +3331,7 @@ async function openDataDrilldown(type) {
             const img = new Image();
             const imgUrl = URL.createObjectURL(imageBlob);
             
-            const file = await new Promise((resolve, reject) => {
+            generatedFile = await new Promise((resolve, reject) => {
                 img.onload = () => {
                     URL.revokeObjectURL(imgUrl);
                     const canvas = document.createElement('canvas');
@@ -3370,9 +3378,9 @@ async function openDataDrilldown(type) {
             });
 
             // Try Web Share API first
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            if (navigator.canShare && navigator.canShare({ files: [generatedFile] })) {
                 await navigator.share({
-                    files: [file],
+                    files: [generatedFile],
                     title: 'Join Road Warrior EV',
                     text: text
                 });
@@ -3386,9 +3394,9 @@ async function openDataDrilldown(type) {
             if (err.name !== 'AbortError') {
                 showToast('Downloading poster... Attach it in WhatsApp!', 'info');
                 // Force download the image
-                if (typeof file !== 'undefined' && file) {
+                if (generatedFile) {
                     const a = document.createElement('a');
-                    a.href = URL.createObjectURL(file);
+                    a.href = URL.createObjectURL(generatedFile);
                     a.download = 'roadwarrior-referral-poster.png';
                     document.body.appendChild(a);
                     a.click();
