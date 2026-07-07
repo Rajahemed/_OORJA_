@@ -960,38 +960,39 @@ async function openDataDrilldown(type) {
         if (!currentUser) return;
         
         const qrContainer = document.getElementById('qrcode');
-        const canvas = qrContainer.querySelector('canvas');
-        const img = qrContainer.querySelector('img');
-        
-        let dataUrl = '';
-        if (canvas) {
-            // Draw onto a new canvas with a white background to avoid transparency issues (black bg in some apps)
-            const newCanvas = document.createElement('canvas');
-            // Add padding so it looks like a nice square card
-            const padding = 20;
-            newCanvas.width = canvas.width + (padding * 2);
-            newCanvas.height = canvas.height + (padding * 2);
-            const ctx = newCanvas.getContext('2d');
-            
-            // Fill white background
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
-            
-            // Draw original QR code centered
-            ctx.drawImage(canvas, padding, padding);
-            
-            // Convert to JPEG to drop any potential alpha channel issues entirely
-            dataUrl = newCanvas.toDataURL('image/jpeg', 1.0);
-        } else if (img && img.src) {
-            dataUrl = img.src;
-        }
-        
-        if (!dataUrl) {
+        const qrCanvas = qrContainer.querySelector('canvas');
+        if (!qrCanvas) {
             showToast('QR Code not ready yet.', 'error');
             return;
         }
 
+        let generatedFile = null;
+        let dataUrl = '';
+
         try {
+            let img = document.getElementById('qrModalPosterImg') || document.getElementById('welcomeImage');
+            
+            if (!img || !img.complete || img.naturalWidth === 0) {
+                throw new Error("Image not loaded synchronously");
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth || img.width;
+            canvas.height = img.naturalHeight || img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            const qrWidth = canvas.width * 0.125;
+            const qrHeight = qrWidth;
+            const x = canvas.width - (canvas.width * 0.23) - qrWidth;
+            const y = canvas.height - (canvas.height * 0.018) - qrHeight;
+            
+            const padding = canvas.width * 0.01; 
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(x - padding, y - padding, qrWidth + (padding*2), qrHeight + (padding*2));
+            ctx.drawImage(qrCanvas, x, y, qrWidth, qrHeight);
+            
+            dataUrl = canvas.toDataURL('image/png', 1.0);
             const arr = dataUrl.split(',');
             const mime = arr[0].match(/:(.*?);/)[1];
             const bstr = atob(arr[1]);
@@ -1001,29 +1002,42 @@ async function openDataDrilldown(type) {
                 u8arr[n] = bstr.charCodeAt(n);
             }
             const blob = new Blob([u8arr], {type: mime});
-            const file = new File([blob], 'referral-qr.png', { type: 'image/png' });
+            generatedFile = new File([blob], 'roadwarrior-referral-poster.png', { type: 'image/png' });
 
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                // Share ONLY the file, without text or url, as requested by user
+            if (navigator.canShare && navigator.canShare({ files: [generatedFile] })) {
                 await navigator.share({
-                    files: [file]
+                    files: [generatedFile]
                 });
             } else {
-                // Fallback if sharing files is not supported
-                const a = document.createElement('a');
-                a.href = dataUrl;
-                a.download = 'roadwarrior-qr.jpg';
-                a.click();
-                showToast('Image downloaded! You can now send it on WhatsApp.', 'info');
+                throw new Error('File sharing not supported by OS/Browser');
             }
         } catch (err) {
             console.error('Error sharing:', err);
             if (err.name !== 'AbortError') {
-                showToast('Sharing failed, downloading image instead...', 'info');
-                const a = document.createElement('a');
-                a.href = dataUrl;
-                a.download = 'roadwarrior-qr.jpg';
-                a.click();
+                showToast('Downloading poster... Attach it in WhatsApp!', 'info');
+                if (generatedFile || dataUrl) {
+                    const a = document.createElement('a');
+                    a.href = generatedFile ? URL.createObjectURL(generatedFile) : dataUrl;
+                    a.download = 'roadwarrior-referral-poster.png';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    if (generatedFile) URL.revokeObjectURL(a.href);
+                }
+                
+                const text = "Join Road Warrior and earn rewards! My referral code is " + currentUser.referralCode;
+                const url = "https://roadwarrior.pro/?ref=" + currentUser.referralCode;
+                const fallbackUrl = `whatsapp://send?text=${encodeURIComponent(text + " " + url)}`;
+                const webFallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + " " + url)}`;
+                
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                setTimeout(() => {
+                    if (isMobile) {
+                        window.location.href = fallbackUrl;
+                    } else {
+                        window.open(webFallbackUrl, '_blank');
+                    }
+                }, 500);
             }
         }
     };
@@ -3308,74 +3322,61 @@ async function openDataDrilldown(type) {
         let generatedFile = null;
 
         try {
-            const langMap = {
-                'en': 'og-image-English.png',
-                'hi': 'og-image-Hindi.png',
-                'kn': 'og-image-Kannada.png',
-                'ta': 'og-image-Tamil.png',
-                'te': 'og-image-Telugu.png',
-                'mr': 'og-image-Marathi.png',
-                'gu': 'og-image-Gujarati.png',
-                'bn': 'og-image-Bengali.png'
-            };
-            const currentLng = (window.i18next && window.i18next.language) || localStorage.getItem('i18nextLng') || 'en';
-            const baseLng = currentLng.split('-')[0];
-            const imageToShare = langMap[baseLng] || 'og-image.png';
-
-            // Use relative path for fetch to support Github Pages subpaths
-            const response = await fetch(imageToShare);
-            if (!response.ok) throw new Error('Image fetch failed');
-            const imageBlob = await response.blob();
+            // Find an already loaded poster image from the DOM to avoid async fetch/onload
+            let img = document.getElementById('welcomeImage') || document.getElementById('qrModalPosterImg');
             
-            // Draw the QR code on the image using canvas
-            const img = new Image();
-            const imgUrl = URL.createObjectURL(imageBlob);
+            if (!img || !img.complete || img.naturalWidth === 0) {
+                // If not loaded, fallback to basic share
+                throw new Error("Image not loaded synchronously");
+            }
             
-            generatedFile = await new Promise((resolve, reject) => {
-                img.onload = () => {
-                    URL.revokeObjectURL(imgUrl);
-                    const canvas = document.createElement('canvas');
-                    canvas.width = img.naturalWidth || img.width;
-                    canvas.height = img.naturalHeight || img.height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0);
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth || img.width;
+            canvas.height = img.naturalHeight || img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
 
-                    // Generate QR code
-                    const tempDiv = document.createElement('div');
-                    let qrCanvas = null;
-                    if (typeof QRCode !== 'undefined') {
-                        try {
-                            new QRCode(tempDiv, {
-                                text: "https://roadwarrior.pro/?ref=" + code,
-                                width: 200,
-                                height: 200,
-                                colorDark: "#000000",
-                                colorLight: "#ffffff",
-                                correctLevel: QRCode.CorrectLevel.H
-                            });
-                            qrCanvas = tempDiv.querySelector('canvas');
-                        } catch(e) { console.error('QR Gen error:', e); }
-                    }
+            // Generate QR code synchronously
+            const tempDiv = document.createElement('div');
+            let qrCanvas = null;
+            if (typeof QRCode !== 'undefined') {
+                try {
+                    new QRCode(tempDiv, {
+                        text: "https://roadwarrior.pro/?ref=" + code,
+                        width: 200,
+                        height: 200,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    qrCanvas = tempDiv.querySelector('canvas');
+                } catch(err) { console.error('QR Gen error:', err); }
+            }
 
-                    if (qrCanvas) {
-                        const qrWidth = canvas.width * 0.125;
-                        const qrHeight = qrWidth;
-                        const x = canvas.width - (canvas.width * 0.23) - qrWidth;
-                        const y = canvas.height - (canvas.height * 0.018) - qrHeight;
-                        
-                        const padding = canvas.width * 0.01; 
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillRect(x - padding, y - padding, qrWidth + (padding*2), qrHeight + (padding*2));
-                        ctx.drawImage(qrCanvas, x, y, qrWidth, qrHeight);
-                    }
-                    
-                    canvas.toBlob(blob => {
-                        resolve(new File([blob], imageToShare, { type: 'image/png' }));
-                    }, 'image/png');
-                };
-                img.onerror = () => reject(new Error('Failed to load image for canvas'));
-                img.src = imgUrl;
-            });
+            if (qrCanvas) {
+                const qrWidth = canvas.width * 0.125;
+                const qrHeight = qrWidth;
+                const x = canvas.width - (canvas.width * 0.23) - qrWidth;
+                const y = canvas.height - (canvas.height * 0.018) - qrHeight;
+                
+                const padding = canvas.width * 0.01; 
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(x - padding, y - padding, qrWidth + (padding*2), qrHeight + (padding*2));
+                ctx.drawImage(qrCanvas, x, y, qrWidth, qrHeight);
+            }
+            
+            // Synchronously convert to Blob
+            const dataUrl = canvas.toDataURL('image/png', 1.0);
+            const arr = dataUrl.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while(n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            const blob = new Blob([u8arr], {type: mime});
+            generatedFile = new File([blob], 'roadwarrior-referral.png', { type: 'image/png' });
 
             // Try Web Share API first
             if (navigator.canShare && navigator.canShare({ files: [generatedFile] })) {
@@ -3386,7 +3387,7 @@ async function openDataDrilldown(type) {
                 });
                 if (typeof trackEvent === 'function') trackEvent('share_with_image', { success: true });
             } else {
-                throw new Error('File sharing not supported');
+                throw new Error('File sharing not supported by OS/Browser');
             }
         } catch (err) {
             console.error('Sharing failed or not supported:', err);
