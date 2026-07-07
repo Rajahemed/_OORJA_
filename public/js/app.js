@@ -4774,3 +4774,76 @@ function togglePinVisibility(groupId, iconId) {
         }
     }
 }
+
+// --- NEW FUNCTIONS FOR UI ENHANCEMENTS ---
+
+function syncSafetyQuestions() {
+    const grp1 = document.querySelector('input[name="grpSafety1"]:checked')?.value;
+    const grp2 = document.querySelector('input[name="grpSafety2"]:checked')?.value;
+    
+    if (grp1) {
+        const isYes = (grp1 === 'Yes');
+        if(document.getElementById('rentServiceHistoryYes')) document.getElementById('rentServiceHistoryYes').checked = isYes;
+        if(document.getElementById('rentServiceHistoryNo')) document.getElementById('rentServiceHistoryNo').checked = !isYes;
+        if(document.getElementById('rentTyreInspectYes')) document.getElementById('rentTyreInspectYes').checked = isYes;
+        if(document.getElementById('rentTyreInspectNo')) document.getElementById('rentTyreInspectNo').checked = !isYes;
+        if(document.getElementById('rentBrakeInspectYes')) document.getElementById('rentBrakeInspectYes').checked = isYes;
+        if(document.getElementById('rentBrakeInspectNo')) document.getElementById('rentBrakeInspectNo').checked = !isYes;
+        
+        if(document.getElementById('rentCheckServiceHistory')) document.getElementById('rentCheckServiceHistory').checked = isYes;
+        if(document.getElementById('rentCheckTyreCondition')) document.getElementById('rentCheckTyreCondition').checked = isYes;
+        if(document.getElementById('rentCheckBrakes')) document.getElementById('rentCheckBrakes').checked = isYes;
+    }
+    
+    if (grp2) {
+        const isYes = (grp2 === 'Yes');
+        if(document.getElementById('rentLightsInspectYes')) document.getElementById('rentLightsInspectYes').checked = isYes;
+        if(document.getElementById('rentLightsInspectNo')) document.getElementById('rentLightsInspectNo').checked = !isYes;
+        
+        if(document.getElementById('rentCheckLights')) document.getElementById('rentCheckLights').checked = isYes;
+        if(document.getElementById('rentCheckInsurance')) document.getElementById('rentCheckInsurance').checked = isYes;
+    }
+}
+window.syncSafetyQuestions = syncSafetyQuestions;
+
+function generateSecurePin() {
+    const pin = Math.floor(1000 + Math.random() * 9000).toString();
+    const display = document.getElementById('regPasswordDisplay');
+    if (display) {
+        display.value = pin;
+    }
+    const hiddenPass = document.getElementById('regPassword');
+    if (hiddenPass) {
+        hiddenPass.value = pin;
+    }
+    const errMsg = document.getElementById('passErrMsg');
+    if (errMsg) {
+        errMsg.style.display = 'none';
+    }
+}
+window.generateSecurePin = generateSecurePin;
+
+function generateWelcomeQrCode() {
+    const qrContainer = document.getElementById('welcomePosterQr');
+    if (!qrContainer) return;
+    qrContainer.innerHTML = ''; // clear fallback
+    
+    let link = window.location.origin;
+    if (typeof currentUser !== 'undefined' && currentUser && currentUser.referralCode) {
+        link = window.location.origin + '?ref=' + currentUser.referralCode;
+    }
+    
+    try {
+        new QRCode(qrContainer, { text: link, width: 200, height: 200, colorDark: '#0a0f1e', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+        const canvas = qrContainer.querySelector('canvas');
+        if (canvas) { canvas.style.width = '100%'; canvas.style.height = '100%'; canvas.style.objectFit = 'contain'; }
+        const img = qrContainer.querySelector('img');
+        if (img) { img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'contain'; }
+    } catch(e) {
+        qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(link)}&color=0a0f1e&bgcolor=ffffff" alt="QR Code" style="width:100%; height:100%; object-fit:contain;">`;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(generateWelcomeQrCode, 500);
+});

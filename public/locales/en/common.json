@@ -48,7 +48,7 @@
     "vt_diesel": "Diesel Two-Wheeler",
     "vt_electric": "Electric Two-Wheeler",
     "vt_other": "Other",
-    "label_vehicle_model": "Vehicle Brand & Model (optional)",
+    "label_vehicle_model": "Vehicle Brand & Model",
     "label_fuel_method": "How do you fuel/charge?",
     "fm_petrol": "Petrol Pump",
     "fm_home": "Home Charging",

@@ -26,7 +26,7 @@
            sec_e_title:"Section E � Safety", sec_f_title:"Section F — Referral & Consent",
            label_vehicle_type:"Vehicle Type", vt_petrol:"Petrol Two-Wheeler", vt_diesel:"Diesel Two-Wheeler",
            vt_electric:"Electric Two-Wheeler", vt_other:"Other",
-           label_vehicle_model:"Vehicle Brand & Model (optional)", label_fuel_method:"How do you fuel/charge?",
+           label_vehicle_model:"Vehicle Brand & Model", label_fuel_method:"How do you fuel/charge?",
            fm_petrol:"Petrol Pump", fm_home:"Home Charging", fm_swap:"Battery Swap", fm_other:"Other",
            label_fuel_expense:"Weekly Fuel/Charge Expense (Γé╣)", label_maint_expense:"Monthly Maintenance Expense (Γé╣)",
            label_top_challenges:"Top Challenges (select up to 3)",

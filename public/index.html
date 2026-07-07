@@ -646,7 +646,7 @@
                                     <small id="otpSentMsg" style="color:var(--primary-color); display:none; margin-top:4px;">OTP sent! (mock: use 123456)</small>
                                 </div>
 
-                                <button type="submit" id="loginBtn" class="btn btn-primary w-100" style="margin-top:0.5rem;"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login</span></button>
+                                <button type="submit" id="loginBtn" class="btn w-100" style="margin-top:0.5rem; background-color: #2563eb; color: #ffffff; font-weight: bold;"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login</span></button>
 
                             </form>
                             <p style="text-align:center; margin-top:1.5rem; color:var(--text-secondary);" id="loginRegisterText">
@@ -715,31 +715,31 @@
                             
                             <div class="form-progress" id="regProgress">
                                 <div class="progress-step active" id="stepIndicator1" onclick="window.goToStep(1)" style="cursor:pointer;">
-                                    <div class="step-circle">1</div>
+                                    <div class="step-circle"></div>
                                     <div class="step-label">Welcome</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator2" onclick="window.goToStep(2)" style="cursor:pointer;">
-                                    <div class="step-circle">2</div>
+                                    <div class="step-circle"></div>
                                     <div class="step-label">Profile</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator3" onclick="window.goToStep(3)" style="cursor:pointer;">
-                                    <div class="step-circle">3</div>
+                                    <div class="step-circle"></div>
                                     <div class="step-label">Vehicle Info</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator4" onclick="window.goToStep(4)" style="cursor:pointer;">
-                                    <div class="step-circle">4</div>
+                                    <div class="step-circle"></div>
                                     <div class="step-label">Fuel Info</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator5" onclick="window.goToStep(5)" style="cursor:pointer;">
-                                    <div class="step-circle">5</div>
+                                    <div class="step-circle"></div>
                                     <div class="step-label">Challenges</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator6" onclick="window.goToStep(6)" style="cursor:pointer;">
-                                    <div class="step-circle">6</div>
+                                    <div class="step-circle"></div>
                                     <div class="step-label">Safety</div>
                                 </div>
                                 <div class="progress-step" id="stepIndicator7" onclick="window.goToStep(7)" style="cursor:pointer;">
-                                    <div class="step-circle">7</div>
+                                    <div class="step-circle"></div>
                                     <div class="step-label">Consent</div>
                                 </div>
                             </div>
@@ -747,11 +747,14 @@
                             
 <!-- SECTION 1: Welcome & Language -->
 <div class="form-section active" id="regSection1" style="margin-bottom:1rem; text-align:center;">
-    <div style="margin: 0.5rem auto; max-width: 500px;">
+    <div style="margin: 0.5rem auto; max-width: 500px; position: relative;">
         <img id="welcomeImage" src="/og-image-English.png" alt="Welcome" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.3s ease;">
+        <div id="welcomePosterQr" style="position: absolute; bottom: 2.5%; right: 24%; width: 11.5%; height: auto; background: white; padding: 2px; border-radius: 4px; display: flex; align-items: center; justify-content: center; aspect-ratio: 1/1;">
+            <img src="/img/dummy-qr.png" style="width:100%; height:auto; opacity:0;" onerror="this.style.display='none'" alt="">
+        </div>
     </div>
     
-    <div class="section-title-badge"><i class="fas fa-globe"></i> <span data-i18n="sec_welcome_title">Choose Language</span></div>
+    <div class="section-title-badge" style="align-items: center;"><i class="fas fa-globe"></i> <span data-i18n="sec_welcome_title">Choose Language</span></div>
     
     <div id="languageSwitcherContainer" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem; margin-top:0.5rem; margin-bottom:0.5rem;">
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap:0.25rem; width: 100%; max-width: 500px;">
@@ -773,7 +776,7 @@
 
                             <!-- SECTION A: Basic Profile -->
                             <div class="form-section" id="regSection2" style="margin-bottom:2rem;">
-                                <div class="section-title-badge"><i class="fas fa-user"></i> <span data-i18n="sec_a_title">Section A — Basic Profile</span></div>
+                                <div class="section-title-badge" style="align-items: center;"><i class="fas fa-user-circle"></i> <span data-i18n="sec_a_title">Section A — Basic Profile</span></div>
                                 <div class="form-group">
                                     <label for="regFullName" data-i18n="label_fullname">Full Name</label>
                                     <input type="text" id="regFullName" class="form-control" required oninput="validateRegName(this)" onblur="window.savePartialProgress && window.savePartialProgress()">
@@ -798,16 +801,10 @@
                                 
                                 
                                 <div class="form-group">
-                                    <label for="regPassword" data-i18n="label_password">4-Digit PIN <span style="color:var(--danger-color, #ef4444);">*</span></label>
-                                    <div class="pin-input-group" id="regPinGroup" style="display: flex; gap: 10px; position: relative;">
-                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 0, 'regPassword')" onkeydown="handlePinKeydown(event, this, 0, 'regPassword')" onpaste="handlePinPaste(event, this, 'regPassword')">
-                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 1, 'regPassword')" onkeydown="handlePinKeydown(event, this, 1, 'regPassword')" onpaste="handlePinPaste(event, this, 'regPassword')">
-                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 2, 'regPassword')" onkeydown="handlePinKeydown(event, this, 2, 'regPassword')" onpaste="handlePinPaste(event, this, 'regPassword')">
-                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 3, 'regPassword')" onkeydown="handlePinKeydown(event, this, 3, 'regPassword')" onpaste="handlePinPaste(event, this, 'regPassword')">
-                                        <i class="fas fa-eye" onclick="togglePinVisibility('regPinGroup')" style="position: absolute; right: 10px; top: 12px; cursor: pointer; color: var(--text-secondary);"></i>
-                                    </div>
+                                    <label for="regPasswordDisplay">Generate PIN <span style="color:var(--danger-color, #ef4444);">*</span></label>
+                                    <input type="text" id="regPasswordDisplay" class="form-control" style="font-weight:bold; letter-spacing:4px; font-size:1.2rem;" placeholder="----" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, ''); document.getElementById('regPassword').value = this.value; document.getElementById('passErrMsg').style.display = 'none';">
                                     <input type="hidden" id="regPassword" required>
-                                    <span id="passErrMsg" class="error-message hidden" style="color:#f97316; margin-top:0.5rem; display:block;"><i class="fas fa-exclamation-circle"></i> Password must be a 4-digit PIN</span>
+                                    <span id="passErrMsg" class="error-message hidden" style="color:#f97316; margin-top:0.5rem; display:block;"><i class="fas fa-exclamation-circle"></i> Please enter a 4-digit PIN</span>
                                 </div>
                                 <div style="display:flex; gap:1rem; flex-wrap:wrap;">
                                     <div class="form-group" style="flex:1; min-width:200px;">
@@ -910,7 +907,7 @@
                             </div> <!-- End of regSection1 -->
                             <!-- SECTION B: Vehicle & Work Info -->
                             <div class="form-section" id="regSection3" style="margin-bottom:2rem;">
-                                <div class="section-title-badge"><i class="fas fa-motorcycle"></i> <span data-i18n="sec_b_title">Section B — Vehicle & Work Info</span></div>
+                                <div class="section-title-badge" style="align-items: center;"><i class="fas fa-motorcycle"></i> <span data-i18n="sec_b_title">Section B — Vehicle & Work Info</span></div>
                                 
                                 <div class="form-group">
                                     <div class="radio-group inline" id="vehicleTypeGroup">
@@ -936,15 +933,34 @@
                                         <label class="radio-item"><input type="radio" name="vehicleOwnership" required value="Rental Vehicle" onchange="toggleOwnershipFields(this.value)"> 🔄 <span data-i18n="own_rented">Rental Vehicle</span></label>
                                     </div>
                                 </div>
-                                
                                 <div id="rentFields" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
                                     <div class="form-group">
                                         <label data-i18n="lbl_weekly_rent">Weekly Rent (₹)</label>
-                                        <input type="number" id="regWeeklyRent" class="form-control" min="0">
+                                        <select id="regWeeklyRent" class="form-control">
+                                            <option value="">Select Weekly Rent</option>
+                                            <option value="500-1000">500 - 1000</option>
+                                            <option value="1001-1500">1001 - 1500</option>
+                                            <option value="1501-2000">1501 - 2000</option>
+                                            <option value="2001-2500">2001 - 2500</option>
+                                            <option value="2501-3000">2501 - 3000</option>
+                                            <option value="3001-3500">3001 - 3500</option>
+                                            <option value="3501-4000">3501 - 4000</option>
+                                            <option value="4000+">4000+</option>
+                                        </select>
                                     </div>
                                     <div class="form-group" style="margin-bottom:0;">
                                         <label data-i18n="lbl_monthly_rent">Monthly Rent (₹)</label>
-                                        <input type="number" id="regMonthlyRent" class="form-control" min="0">
+                                        <select id="regMonthlyRent" class="form-control">
+                                            <option value="">Select Monthly Rent</option>
+                                            <option value="3000-4000">3000 - 4000</option>
+                                            <option value="4001-5000">4001 - 5000</option>
+                                            <option value="5001-6000">5001 - 6000</option>
+                                            <option value="6001-7000">6001 - 7000</option>
+                                            <option value="7001-8000">7001 - 8000</option>
+                                            <option value="8001-9000">8001 - 9000</option>
+                                            <option value="9001-10000">9001 - 10000</option>
+                                            <option value="10000+">10000+</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -959,14 +975,48 @@
                                     </select>
                                 </div>
 
+                                <div class="form-group">
+                                    <label>Rider Type <span style="color:var(--danger-color);">*</span></label>
+                                    <select id="regRiderType" class="form-control" required>
+                                        <option value="">Select Rider Type</option>
+                                        <option value="Full Time">Full Time</option>
+                                        <option value="Part Time">Part Time</option>
+                                    </select>
+                                </div>
+
                                 <div style="display:flex; gap:1rem; flex-wrap:wrap;">
                                     <div class="form-group" style="flex:1; min-width:150px;">
-                                        <label data-i18n="lbl_km_day">Km driven per day</label>
-                                        <input type="number" id="regKmPerDay" class="form-control" required min="0">
+                                        <label data-i18n="lbl_weekly_dist">Weekly Distance</label>
+                                        <select id="regKmPerDay" class="form-control" required>
+                                            <option value="">Select Range</option>
+                                            <option value="50–100 km">50–100 km</option>
+                                            <option value="101–150 km">101–150 km</option>
+                                            <option value="151–200 km">151–200 km</option>
+                                            <option value="201–250 km">201–250 km</option>
+                                            <option value="251–300 km">251–300 km</option>
+                                            <option value="301–350 km">301–350 km</option>
+                                            <option value="351–400 km">351–400 km</option>
+                                            <option value="401–450 km">401–450 km</option>
+                                            <option value="451–500 km">451–500 km</option>
+                                            <option value="500+ km">500+ km</option>
+                                        </select>
                                     </div>
                                     <div class="form-group" style="flex:1; min-width:150px;">
-                                        <label data-i18n="lbl_km_month">Km driven per month</label>
-                                        <input type="number" id="regKmPerMonth" class="form-control" required min="0">
+                                        <label data-i18n="lbl_monthly_dist">Monthly Distance</label>
+                                        <select id="regKmPerMonth" class="form-control" required>
+                                            <option value="">Select Range</option>
+                                            <option value="200–1000 km">200–1000 km</option>
+                                            <option value="1001–2000 km">1001–2000 km</option>
+                                            <option value="2001–3000 km">2001–3000 km</option>
+                                            <option value="3001–4000 km">3001–4000 km</option>
+                                            <option value="4001–5000 km">4001–5000 km</option>
+                                            <option value="5001–6000 km">5001–6000 km</option>
+                                            <option value="6001–7000 km">6001–7000 km</option>
+                                            <option value="7001–8000 km">7001–8000 km</option>
+                                            <option value="8001–9000 km">8001–9000 km</option>
+                                            <option value="9001–10000 km">9001–10000 km</option>
+                                            <option value="10000+ km">10000+ km</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -975,7 +1025,7 @@
 
                             <!-- SECTION C: Fuel & Maintenance Info -->
                             <div class="form-section" id="regSection4" style="margin-bottom:2rem;">
-                                <div class="section-title-badge"><i class="fas fa-gas-pump"></i> <span data-i18n="sec_c_title">Section C — Fuel & Maintenance</span></div>
+                                <div class="section-title-badge" style="align-items: center;"><i class="fas fa-gas-pump"></i> <span data-i18n="sec_c_title">Section C — Fuel & Maintenance</span></div>
                                 
                                 <div class="form-group" id="fuelTypeSection" style="display:none;">
                                     <label data-i18n="lbl_fuel_type">Fuel Type <span style="color:var(--danger-color);">*</span></label>
@@ -1006,12 +1056,35 @@
                                 
                                 <div id="fuelExpenseSection" class="conditional-section">
                                     <div class="form-group">
-                                        <label for="regMaintExp" data-i18n="lbl_maint_cost">Average monthly maintenance cost (₹)</label>
-                                        <input required type="number" id="regMaintExp" class="form-control" min="0">
+                                        <label for="regFuelExp" data-i18n="label_fuel_expense">Weekly Fuel/Charge Expense (₹)</label>
+                                        <select required id="regFuelExp" class="form-control">
+                                            <option value="">Select Range</option>
+                                            <option value="₹500–₹1000">₹500–₹1000</option>
+                                            <option value="₹1001–₹1500">₹1001–₹1500</option>
+                                            <option value="₹1501–₹2000">₹1501–₹2000</option>
+                                            <option value="₹2001–₹2500">₹2001–₹2500</option>
+                                            <option value="₹2501–₹3000">₹2501–₹3000</option>
+                                            <option value="₹3001–₹3500">₹3001–₹3500</option>
+                                            <option value="₹3501–₹4000">₹3501–₹4000</option>
+                                            <option value="₹4001–₹4500">₹4001–₹4500</option>
+                                            <option value="₹4501–₹5000">₹4501–₹5000</option>
+                                            <option value="₹5000+">₹5000+</option>
+                                        </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="regFuelExp" data-i18n="label_fuel_expense">Average monthly fuel/charging cost (₹)</label>
-                                        <input type="number" id="regFuelExp" class="form-control" min="0" required>
+                                        <label for="regMaintExp" data-i18n="lbl_maint_cost">Monthly Maintenance Cost (₹)</label>
+                                        <select required id="regMaintExp" class="form-control">
+                                            <option value="">Select Range</option>
+                                            <option value="₹2000–₹3000">₹2000–₹3000</option>
+                                            <option value="₹3001–₹4000">₹3001–₹4000</option>
+                                            <option value="₹4001–₹5000">₹4001–₹5000</option>
+                                            <option value="₹5001–₹6000">₹5001–₹6000</option>
+                                            <option value="₹6001–₹7000">₹6001–₹7000</option>
+                                            <option value="₹7001–₹8000">₹7001–₹8000</option>
+                                            <option value="₹8001–₹9000">₹8001–₹9000</option>
+                                            <option value="₹9001–₹10000">₹9001–₹10000</option>
+                                            <option value="₹10000+">₹10000+</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -1032,7 +1105,17 @@
                                         </div>
                                         <div class="form-group" id="majorRepairCostGroup" style="display:none; margin-top: 0.5rem;">
                                             <label>Approximate repair cost (₹)</label>
-                                            <input type="number" id="regMajorRepairCost" class="form-control" min="0">
+                                            <select id="regMajorRepairCost" class="form-control">
+                                                <option value="">Select Repair Cost</option>
+                                                <option value="500-1000">500 - 1000</option>
+                                                <option value="1001-1500">1001 - 1500</option>
+                                                <option value="1501-2000">1501 - 2000</option>
+                                                <option value="2001-2500">2001 - 2500</option>
+                                                <option value="2501-3000">2501 - 3000</option>
+                                                <option value="3001-3500">3001 - 3500</option>
+                                                <option value="3501-4000">3501 - 4000</option>
+                                                <option value="4000+">4000+</option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -1059,14 +1142,32 @@
                                             <div class="radio-group inline"><label class="radio-item"><input type="radio" name="rentInsuranceIncluded" required value="Yes"> Yes</label><label class="radio-item"><input type="radio" name="rentInsuranceIncluded" required value="No"> No</label><label class="radio-item"><input type="radio" name="rentInsuranceIncluded" required value="Don't Know"> Don't Know</label></div>
                                         </div>
                                         <div class="form-group">
-                                            <label>6. Before taking the vehicle, did you check:</label>
-                                            <div class="checkbox-group" style="margin-top:0.5rem;">
-                                                <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" name="rentChecks" value="Service History"> <span style="margin-left:0.5rem;">Service History</span></label>
-                                                <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" name="rentChecks" value="Tyre Condition"> <span style="margin-left:0.5rem;">Tyre Condition</span></label>
-                                                <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" name="rentChecks" value="Brakes"> <span style="margin-left:0.5rem;">Brakes</span></label>
-                                                <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" name="rentChecks" value="Lights"> <span style="margin-left:0.5rem;">Lights</span></label>
-                                                <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" name="rentChecks" value="Insurance"> <span style="margin-left:0.5rem;">Insurance</span></label>
+                                            <label>6. Have you inspected the Service History, Tyres, and Brakes?</label>
+                                            <div class="radio-group inline">
+                                                <label class="radio-item"><input type="radio" required name="grpSafety1" value="Yes" onchange="syncSafetyQuestions()"> Yes</label>
+                                                <label class="radio-item"><input type="radio" required name="grpSafety1" value="No" onchange="syncSafetyQuestions()"> No</label>
                                             </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>7. Have you inspected the Lights, Indicators, Mirrors, and Insurance?</label>
+                                            <div class="radio-group inline">
+                                                <label class="radio-item"><input type="radio" required name="grpSafety2" value="Yes" onchange="syncSafetyQuestions()"> Yes</label>
+                                                <label class="radio-item"><input type="radio" required name="grpSafety2" value="No" onchange="syncSafetyQuestions()"> No</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Hidden original inputs for backend compatibility -->
+                                        <div style="display:none;">
+                                            <input type="radio" name="rentServiceHistory" id="rentServiceHistoryYes" value="Yes"><input type="radio" name="rentServiceHistory" id="rentServiceHistoryNo" value="No">
+                                            <input type="radio" name="rentTyreInspect" id="rentTyreInspectYes" value="Yes"><input type="radio" name="rentTyreInspect" id="rentTyreInspectNo" value="No">
+                                            <input type="radio" name="rentBrakeInspect" id="rentBrakeInspectYes" value="Yes"><input type="radio" name="rentBrakeInspect" id="rentBrakeInspectNo" value="No">
+                                            <input type="radio" name="rentLightsInspect" id="rentLightsInspectYes" value="Yes"><input type="radio" name="rentLightsInspect" id="rentLightsInspectNo" value="No">
+                                            
+                                            <input type="checkbox" name="rentChecks" id="rentCheckServiceHistory" value="Service History">
+                                            <input type="checkbox" name="rentChecks" id="rentCheckTyreCondition" value="Tyre Condition">
+                                            <input type="checkbox" name="rentChecks" id="rentCheckBrakes" value="Brakes">
+                                            <input type="checkbox" name="rentChecks" id="rentCheckLights" value="Lights">
+                                            <input type="checkbox" name="rentChecks" id="rentCheckInsurance" value="Insurance">
                                         </div>
                                     </div>
 
@@ -1102,7 +1203,7 @@
 
                             <!-- SECTION D: Challenges -->
                             <div class="form-section" id="regSection5" style="margin-bottom:2rem;">
-                                <div class="section-title-badge"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="sec_d_title">Section D — Challenges & Pain Points</span></div>
+                                <div class="section-title-badge" style="align-items: center;"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="sec_d_title">Section D — Challenges & Pain Points</span></div>
 
                                 <!-- EV-specific challenges (conditional) -->
                                 <div class="form-group conditional-section hidden-section" id="evChallengesSection">
@@ -1152,7 +1253,7 @@
 
                             <!-- SECTION E: Safety & Facilities -->
                             <div class="form-section" id="regSection6" style="margin-bottom:2rem;">
-                                <div class="section-title-badge"><i class="fas fa-hard-hat"></i> <span data-i18n="sec_e_title">Section E — Safety</span></div>
+                                <div class="section-title-badge" style="align-items: center;"><i class="fas fa-shield-alt"></i> <span data-i18n="sec_e_title">Section E — Safety</span></div>
                                 
                                 <div class="form-group conditional-section hidden-section" id="helmetSection" style="display:none;">
                                     <label data-i18n="lbl_helmet">Do you wear a helmet while delivering?</label>
@@ -1198,7 +1299,7 @@
 
                             <!-- SECTION F: Referral & Consent -->
                             <div class="form-section" id="regSection7" style="margin-bottom:2rem;">
-                                <div class="section-title-badge"><i class="fas fa-shield-alt"></i> <span data-i18n="sec_f_title">Section F — Referral & Consent</span></div>
+                                <div class="section-title-badge" style="align-items: center;"><i class="fas fa-check-circle"></i> <span data-i18n="sec_f_title">Section F — Referral & Consent</span></div>
 
                                 <h4 style="margin: 1rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Referral</h4>
                                 
