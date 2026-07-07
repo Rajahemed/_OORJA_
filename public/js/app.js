@@ -940,6 +940,10 @@ async function openDataDrilldown(type) {
                 colorDark: "#000000",
                 colorLight: "#ffffff"
             });
+            const canvas = qrContainer.querySelector('canvas');
+            if (canvas) { canvas.style.width = '100%'; canvas.style.height = '100%'; canvas.style.objectFit = 'contain'; }
+            const img = qrContainer.querySelector('img');
+            if (img) { img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'contain'; }
         } else {
             qrContainer.innerText = "Please include qrcode.js in your index.html head to use this feature.";
         }
@@ -3313,8 +3317,58 @@ async function openDataDrilldown(type) {
             // Use relative path for fetch to support Github Pages subpaths
             const response = await fetch(imageToShare);
             if (!response.ok) throw new Error('Image fetch failed');
-            const blob = await response.blob();
-            const file = new File([blob], imageToShare, { type: blob.type });
+            const imageBlob = await response.blob();
+            
+            // Draw the QR code on the image using canvas
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            const imgUrl = URL.createObjectURL(imageBlob);
+            
+            const file = await new Promise((resolve, reject) => {
+                img.onload = () => {
+                    URL.revokeObjectURL(imgUrl);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.naturalWidth || img.width;
+                    canvas.height = img.naturalHeight || img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+
+                    // Generate QR code
+                    const tempDiv = document.createElement('div');
+                    let qrCanvas = null;
+                    if (typeof QRCode !== 'undefined') {
+                        try {
+                            new QRCode(tempDiv, {
+                                text: "https://roadwarrior.pro/?ref=" + code,
+                                width: 200,
+                                height: 200,
+                                colorDark: "#000000",
+                                colorLight: "#ffffff",
+                                correctLevel: QRCode.CorrectLevel.H
+                            });
+                            qrCanvas = tempDiv.querySelector('canvas');
+                        } catch(e) {}
+                    }
+
+                    if (qrCanvas) {
+                        const qrWidth = canvas.width * 0.125;
+                        const qrHeight = qrWidth;
+                        const x = canvas.width - (canvas.width * 0.23) - qrWidth;
+                        const y = canvas.height - (canvas.height * 0.018) - qrHeight;
+                        
+                        const padding = canvas.width * 0.01; 
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(x - padding, y - padding, qrWidth + (padding*2), qrHeight + (padding*2));
+                        ctx.drawImage(qrCanvas, x, y, qrWidth, qrHeight);
+                    }
+                    
+                    canvas.toBlob(blob => {
+                        resolve(new File([blob], imageToShare, { type: 'image/jpeg' }));
+                    }, 'image/jpeg', 0.95);
+                };
+                img.onerror = () => reject(new Error('Failed to load image for canvas'));
+                img.src = imgUrl;
+            });
 
             // We must use navigator.share to attach an actual image file.
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
