@@ -74,8 +74,8 @@ app.use(helmet({
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200, // limit each IP to 200 requests per windowMs
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 300, // limit each IP to 300 requests per windowMs
   message: 'Too many requests, please try again later.'
 });
 app.use(limiter);
@@ -112,13 +112,11 @@ app.use((req, res, next) => {
 const apiRoutes       = require('./routes/api');
 const authRoutes      = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
-const auditorRoutes   = require('./routes/auditor');
 const analyticsRoutes = require('./routes/analytics'); // NEW — Intelligence System
 
 app.use('/api',       csrfProtection, apiRoutes);
 app.use('/auth',      csrfProtection, authRoutes);
 app.use('/dashboard', csrfProtection, dashboardRoutes);
-app.use('/auditor',   csrfProtection, auditorRoutes);
 app.use('/api',       csrfProtection, analyticsRoutes); // visitor tracking, leads, analytics
 
 // Unsubscribe page — no CSRF needed (GET, accessed via email link)

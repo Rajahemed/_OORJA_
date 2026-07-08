@@ -512,7 +512,9 @@
                     border-left: none;
                     border-right: none;
                     box-shadow: none;
-                    min-height: 100vh;
+                }
+                #login-view {
+                    min-height: auto !important;
                 }
             }
             body.home-page-active .navbar {
@@ -1796,7 +1798,6 @@
                 <div class="stat-box" onclick="clickAdminStat('insLeads')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">🛡️</span><div class="stat-value" id="adminInsLeads">0</div><div class="stat-label" data-i18n="adm_ins_leads">Insurance Leads</div></div>
                 <div class="stat-box" onclick="clickAdminStat('topReferrers')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🏆</span><div class="stat-label" data-i18n="tab_top_referrers">Top Referrers</div></div>
                 <div class="stat-box" onclick="clickAdminStat('cityStats')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🏙️</span><div class="stat-label" data-i18n="tab_city_stats">City Stats</div></div>
-                <div class="stat-box" onclick="clickAdminStat('auditor')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🔍</span><div class="stat-label" data-i18n="adm_box_auditor">Website Auditor</div></div>
                 <div class="stat-box" onclick="clickAdminStat('visitorAnalytics')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">📊</span><div class="stat-label" data-i18n="adm_box_analytics">Visitor Analytics</div></div>
                 <div class="stat-box" onclick="clickAdminStat('emailLeads')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">✉️</span><div class="stat-label" data-i18n="adm_box_email">Email Leads</div></div>
                 <div class="stat-box" onclick="clickAdminStat('botIntelligence')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🤖</span><div class="stat-label" data-i18n="adm_box_bot">Bot Intelligence</div></div>
@@ -1810,7 +1811,6 @@
                 <button class="admin-tab" onclick="switchAdminTab('insLeads')" data-i18n="tab_ins_leads">🛡️ Insurance Leads</button>
                 <button class="admin-tab" onclick="switchAdminTab('topReferrers')" data-i18n="tab_top_referrers">🏆 Top Referrers</button>
                 <button class="admin-tab" onclick="switchAdminTab('cityStats')" data-i18n="tab_city_stats">🏙️ City Stats</button>
-                <button class="admin-tab" onclick="switchAdminTab('auditor')"><i class="fas fa-search-dollar"></i> <span data-i18n="adm_box_auditor">Website Auditor</span></button>
                 <button class="admin-tab" onclick="switchAdminTab('visitorAnalytics')"><i class="fas fa-chart-bar"></i> <span data-i18n="adm_box_analytics">Visitor Analytics</span></button>
                 <button class="admin-tab" onclick="switchAdminTab('botIntelligence')"><i class="fas fa-robot"></i> <span data-i18n="adm_box_bot">Bot Intelligence</span></button>
                 <button class="admin-tab" onclick="switchAdminTab('emailLeads')"><i class="fas fa-envelope"></i> <span data-i18n="adm_box_email">Email Leads</span></button>
@@ -1969,50 +1969,6 @@
                     <div class="card">
                         <div class="card-header"><h3 class="card-title"><i class="fas fa-motorcycle text-primary-color"></i> Vehicle Type Distribution</h3></div>
                         <div class="card-body"><canvas id="adminVehicleChart" style="max-height:300px;"></canvas></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab: Website Auditor -->
-            <div class="admin-panel" id="panel-auditor">
-                <div class="card mb-4" style="border: 2px solid #6366f1;">
-                    <div class="card-header"><h3 class="card-title" style="color: #6366f1;"><i class="fas fa-magic"></i> Run New Audit</h3></div>
-                    <div class="card-body">
-                        <form id="auditorForm" onsubmit="runWebsiteAudit(event)">
-                            <div class="form-group">
-                                <label for="auditUrl">Website URL to Audit</label>
-                                <div style="display:flex; gap:1rem;">
-                                    <input type="url" id="auditUrl" class="form-control" placeholder="https://example.com" required style="flex:1;">
-                                    <button type="submit" class="btn btn-primary" style="background:#6366f1; border-color:#6366f1;" id="auditBtn"><i class="fas fa-play"></i> Run 25 Checks</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div id="auditorResults" style="display:none;">
-                    <div style="display:flex; justify-content:flex-end; align-items:center; margin-bottom: 1.5rem;">
-                        <button class="btn btn-primary" onclick="downloadAuditPDF()" style="background:#6366f1; border-color:#6366f1;"><i class="fas fa-download"></i> Download PDF Report</button>
-                    </div>
-                    <div id="auditorPrintableArea">
-                        <h3 style="margin:0 0 1.5rem 0;"><i class="fas fa-file-contract text-primary-color"></i> Audit Results for <span id="auditResultUrl" style="color:#6366f1;"></span></h3>
-                        <div class="row cols-4" id="auditorScoresGrid"></div>
-                    <div class="row cols-2 mt-4">
-                        <div class="card">
-                            <div class="card-header"><h3 class="card-title"><i class="fas fa-list-check"></i> Audit Checklist</h3></div>
-                            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
-                                <table class="table">
-                                    <thead><tr><th>Category</th><th>Check</th><th>Status</th></tr></thead>
-                                    <tbody id="auditorChecklistBody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header"><h3 class="card-title"><i class="fas fa-lightbulb text-warning-color"></i> Recommendations</h3></div>
-                            <div class="card-body">
-                                <ul id="auditorRecommendations" style="padding-left:1.5rem; line-height:1.6;"></ul>
-                            </div>
-                        </div>
-                    </div>
                     </div>
                 </div>
             </div>
@@ -2299,28 +2255,28 @@
                     <span class="footer-logo-icon" style="color: #059669;">⚡</span>
                     <span class="footer-logo-text" style="color: #0f172a; margin-left: 0.5rem;">Road Warrior <span style="color: #059669;">Pro</span></span>
                 </div>
-                <p style="color: #000000; font-size: 1.05rem; line-height: 1.6; margin-top: 1rem; font-weight: bold; max-width: 90%; text-align: justify;">
+                <p style="color: #000000; font-size: 1.05rem; line-height: 1.6; margin-top: 1rem; max-width: 90%; text-align: justify;">
                     Join India's fastest growing community of EV delivery riders. Maximize your earnings, unlock exclusive rewards, and ride towards a greener future today!
                 </p>
             </div>
 
             <div style="flex: 1; min-width: 250px;">
                 <h4 style="color: #059669; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 1.5rem; letter-spacing: 1px;">CONTACT</h4>
-                <p style="margin-bottom: 1rem; font-size: 1.05rem; font-weight: bold;"><a href="https://wa.me/919886650133" style="color: #000000; text-decoration: none;">WhatsApp: +91 98866 50133</a></p>
-                <p style="margin-bottom: 1rem; font-size: 1.05rem; color: #000000; font-weight: bold;">Phone: +91 98866 50133</p>
-                <p style="margin-bottom: 1rem; font-size: 1.05rem; color: #000000; font-weight: bold;">Find us on Google Maps</p>
+                <p style="margin-bottom: 1rem; font-size: 1.05rem;"><a href="https://wa.me/919886650133" style="color: #000000; text-decoration: none;">WhatsApp: +91 98866 50133</a></p>
+                <p style="margin-bottom: 1rem; font-size: 1.05rem;"><a href="tel:+919886650133" style="color: #000000; text-decoration: none;">Phone: +91 98866 50133</a></p>
+                <p style="margin-bottom: 1rem; font-size: 1.05rem; color: #000000;">Find us on Google Maps</p>
             </div>
 
             <div style="flex: 1; min-width: 250px;">
                 <h4 style="color: #059669; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 1.5rem; letter-spacing: 1px;">LEGAL</h4>
-                <p style="margin-bottom: 1rem; font-size: 1.05rem; font-weight: bold;"><a href="/privacy.html" target="_blank" rel="noopener" style="color: #000000; text-decoration: none;">Privacy Policy</a></p>
-                <p style="margin-bottom: 1rem; font-size: 1.05rem; font-weight: bold;"><a href="/terms.html" target="_blank" rel="noopener" style="color: #000000; text-decoration: none;">Terms of Service</a></p>
-                <p style="margin-bottom: 1rem; font-size: 1.05rem; font-weight: bold;"><a href="https://wa.me/919886650133" style="color: #000000; text-decoration: none;">WhatsApp Us</a></p>
+                <p style="margin-bottom: 1rem; font-size: 1.05rem;"><a href="/privacy.html" target="_blank" rel="noopener" style="color: #000000; text-decoration: none;">Privacy Policy</a></p>
+                <p style="margin-bottom: 1rem; font-size: 1.05rem;"><a href="/terms.html" target="_blank" rel="noopener" style="color: #000000; text-decoration: none;">Terms of Service</a></p>
+                <p style="margin-bottom: 1rem; font-size: 1.05rem;"><a href="https://wa.me/919886650133" style="color: #000000; text-decoration: none;">WhatsApp Us</a></p>
             </div>
 
         </div>
         <!-- Footer Bottom Bar -->
-        <div class="footer-bottom" style="background-color: rgba(0,0,0,0.05); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 1px solid rgba(0,0,0,0.1);">
+        <div class="footer-bottom" style="background-color: rgba(0,0,0,0.05); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div class="footer-bottom-left" style="color: #000000; display: flex; align-items: center; font-weight: bold;">
                 <span>2026 © Road Warrior Pro</span>
                 <span style="margin: 0 0.5rem;">|</span>
