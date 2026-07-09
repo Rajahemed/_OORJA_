@@ -876,8 +876,7 @@ async function openDataDrilldown(type) {
         }
     }
 
-    // ===== THEME TOGGLE (BACKGROUND) =====
-        // ==================== NEW FEATURES ====================
+    // ==================== NEW FEATURES ====================
     window.simulateWhatsAppLogin = async function() {
         const phone = prompt("Enter your WhatsApp phone number to login:");
         if (!phone) return; // User cancelled
@@ -1324,8 +1323,11 @@ async function openDataDrilldown(type) {
         const navAdmin = document.getElementById('navAdmin');
 
         if (isLoggedIn) {
-            btn.innerHTML = `<i class="fas fa-sign-out-alt"></i> <span>Logout</span>`;
-            btn.classList.replace('btn-primary', 'btn-secondary');
+            if (btn) {
+                btn.innerHTML = `<i class="fas fa-sign-out-alt"></i> <span>Logout</span>`;
+                btn.classList.replace('btn-primary', 'btn-secondary');
+                btn.style.display = 'inline-flex';
+            }
             
             if (navScore) navScore.parentElement.style.display = '';
             if (navDashboard) navDashboard.parentElement.style.display = '';
@@ -1333,8 +1335,9 @@ async function openDataDrilldown(type) {
             if (navHome) navHome.parentElement.style.display = '';
             if (navAdmin) navAdmin.parentElement.style.display = '';
         } else {
-            btn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`;
-            btn.classList.replace('btn-secondary', 'btn-primary');
+            if (btn) {
+                btn.style.display = 'none';
+            }
             
             if (navScore) navScore.parentElement.style.display = 'none';
             if (navDashboard) navDashboard.parentElement.style.display = 'none';

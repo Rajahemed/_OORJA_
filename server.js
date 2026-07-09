@@ -6,6 +6,8 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 const compression = require('compression');
+const https = require('https');
+const fs = require('fs');
 
 const app = express();
 
@@ -175,6 +177,91 @@ app.use((err, req, res, next) => {
     });
   }
   next(err);
+});
+// Auto-Translate Route
+// fs and https are assumed to be declared elsewhere or we use them as needed
+
+async function translateText(text, targetLang) {
+    if (targetLang === 'en') return text;
+    return new Promise((resolve) => {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+        https.get(url, (res) => {
+            let data = '';
+            res.on('data', (chunk) => data += chunk);
+            res.on('end', () => {
+                try {
+                    const parsed = JSON.parse(data);
+                    const translated = parsed[0].map(item => item[0]).join('');
+                    resolve(translated);
+                } catch (e) {
+                    resolve(text);
+                }
+            });
+        }).on('error', () => resolve(text));
+    });
+}
+
+app.post('/api/auto-translate', async (req, res) => {
+    try {
+        const { targetLang, keys } = req.body;
+        if (!targetLang || !keys || !Array.isArray(keys)) {
+            return res.status(400).json({ error: 'Invalid payload' });
+        }
+        
+        const dirPath = path.join(__dirname, `public/locales/${targetLang}`);
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+        
+        const filePath = path.join(dirPath, 'common.json');
+        let targetData = {};
+        if (fs.existsSync(filePath)) {
+            targetData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        }
+        
+        let enData = {};
+        const enDirPath = path.join(__dirname, `public/locales/en`);
+        if (!fs.existsSync(enDirPath)) {
+            fs.mkdirSync(enDirPath, { recursive: true });
+        }
+        const enFilePath = path.join(enDirPath, 'common.json');
+        if (fs.existsSync(enFilePath)) {
+            enData = JSON.parse(fs.readFileSync(enFilePath, 'utf8'));
+        }
+
+        const newTranslations = {};
+        let enUpdated = false;
+        
+        for (const item of keys) {
+            const { key, text } = item;
+            
+            // Auto register to EN if it's new
+            if (!enData[key] && text) {
+                enData[key] = text;
+                enUpdated = true;
+            }
+            
+            if (!targetData[key]) {
+                const translated = await translateText(text, targetLang);
+                targetData[key] = translated;
+                newTranslations[key] = translated;
+            } else {
+                newTranslations[key] = targetData[key];
+            }
+        }
+        
+        if (enUpdated) {
+            fs.writeFileSync(enFilePath, JSON.stringify(enData, null, 4), 'utf8');
+        }
+        if (Object.keys(newTranslations).length > 0) {
+            fs.writeFileSync(filePath, JSON.stringify(targetData, null, 4), 'utf8');
+        }
+        
+        res.json({ success: true, translations: newTranslations });
+    } catch (err) {
+        console.error('Translation error:', err);
+        res.status(500).json({ error: 'Failed to translate' });
+    }
 });
 
 // Error handling

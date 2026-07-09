@@ -53,20 +53,25 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', sans-serif;
-  background-color: #ffffff !important;
-  background-image: url('/img/home-bg.jpg') !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-attachment: fixed !important;
-  color: #111827 !important;
+  background-color: var(--bg-color, var(--bg-color)) !important;
+  color: var(--text-primary) !important;
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-theme {
+  --bg-color: #0f172a;
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --card-border: rgba(255, 255, 255, 0.1);
 }
 
 /* ==================== FIXED NAV BAR (GLASS) ==================== */
 .navbar {
-  background: #ffffff;
+  background: var(--bg-color);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -122,7 +127,7 @@ body {
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #000000, #2563eb);
+  background: linear-gradient(135deg, var(--text-primary), #2563eb);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -150,7 +155,7 @@ body {
 }
 
 .nav-link:hover {
-  color: #000000;
+  color: var(--text-primary);
   background-color: rgba(0, 0, 0, 0.05);
 }
 
@@ -170,7 +175,7 @@ body {
 .lang-select {
   background: rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.1);
-  color: #333333;
+  color: var(--text-secondary);
   padding: 0.5rem 0.75rem;
   border-radius: var(--border-radius-sm);
   outline: none;
@@ -187,7 +192,7 @@ body {
 
 .lang-select option {
   background-color: #ffffff;
-  color: #000000;
+  color: var(--text-primary);
 }
 
 /* ==================== BUTTONS (PREMIUM GLOW) ==================== */
@@ -219,7 +224,7 @@ body {
 
 .btn-secondary {
   background-color: #ffffff;
-  color: #000000;
+  color: var(--text-primary);
   border: 1px solid var(--card-border);
   -webkit-tap-highlight-color: transparent;
 }
@@ -228,18 +233,18 @@ body {
 .btn-secondary:active,
 .btn-secondary:focus {
   background-color: #ffffff !important;
-  color: #000000 !important;
+  color: var(--text-primary) !important;
   border-color: var(--text-secondary);
   -webkit-tap-highlight-color: transparent;
 }
 
 .navbar .btn-secondary {
-  color: #000000;
+  color: var(--text-primary);
   border-color: rgba(0, 0, 0, 0.2);
 }
 
 .navbar .btn-secondary:hover {
-  color: #000000;
+  color: var(--text-primary);
   background-color: rgba(0, 0, 0, 0.05);
   border-color: rgba(0, 0, 0, 0.3);
 }
@@ -367,19 +372,19 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active {
-  -webkit-text-fill-color: #111827 !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
   -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
   background-color: #ffffff !important;
 }
 
 .custom-options li.dropdown-item:hover {
   background-color: #f3f4f6;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .custom-options {
   background-color: #ffffff !important;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 select.form-control {
@@ -391,13 +396,13 @@ select.form-control {
   background-position: right 1rem center !important;
   background-size: 1.25rem !important;
   background-color: #ffffff;
-  color: #111827;
+  color: var(--text-primary);
   color-scheme: light !important;
 }
 
 select.form-control option {
   background-color: #ffffff !important;
-  color: #111827 !important;
+  color: var(--text-primary) !important;
 }
 
 .error-message {
@@ -747,7 +752,7 @@ select.form-control option {
 
 .modal-content {
   background-color: #ffffff;
-  color: #000000;
+  color: var(--text-primary);
   border-radius: var(--border-radius-lg);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
   max-width: 580px;
@@ -1360,7 +1365,6 @@ select.form-control option {
   justify-content: space-between;
   gap: 2rem;
   padding-bottom: 3rem;
-  border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
 /* Brand col */
@@ -1381,7 +1385,7 @@ select.form-control option {
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
   font-size: 1.3rem;
-  color: #111827;
+  color: var(--text-primary);
 }
 .footer-logo-text span { color: #4ade80; }
 
@@ -1406,7 +1410,7 @@ select.form-control option {
   font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: 1.25rem;
 }
 
@@ -1418,7 +1422,7 @@ select.form-control option {
   font-size: 0.9rem;
   transition: color 0.2s;
 }
-.footer-links-list li a:hover { color: #111827; text-decoration: underline; }
+.footer-links-list li a:hover { color: var(--text-primary); text-decoration: underline; }
 
 /* Bottom bar */
 .footer-bottom {
@@ -1434,7 +1438,7 @@ select.form-control option {
 
 .footer-bottom-left { display: flex; align-items: center; gap: 1.5rem; color: #4b5563; font-size: 0.85rem; flex-wrap: wrap; }
 .footer-bottom-left a { color: #4b5563; text-decoration: none; }
-.footer-bottom-left a:hover { text-decoration: underline; color: #111827; }
+.footer-bottom-left a:hover { text-decoration: underline; color: var(--text-primary); }
 
 .footer-social { display: flex; gap: 1rem; align-items: center; }
 .social-link {
@@ -1939,7 +1943,7 @@ body.login-route-active:not(.register-page-active) #leadCaptureFAB {
 .full-page-height .rider-name {
   font-size: 3.5rem;
   font-weight: 800;
-  color: #000 !important;
+  color: var(--text-primary) !important;
   margin-bottom: 2rem;
   word-break: break-word;
 }
@@ -1950,7 +1954,7 @@ body.login-route-active:not(.register-page-active) #leadCaptureFAB {
   justify-content: center;
   gap: 2rem;
   font-size: 1.6rem;
-  color: #333 !important;
+  color: var(--text-secondary) !important;
   font-weight: 500;
   flex-wrap: wrap;
 }
