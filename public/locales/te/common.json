@@ -413,5 +413,16 @@
     "train_safety": "డెలివరీ సమయంలో వ్యక్తిగత భద్రత",
     "train_none": "నేను ఎలాంటి శిక్షణ పొందలేదు",
     "train_payment": "డిజిటల్ చెల్లింపు & నగదు నిర్వహణ",
-    "train_platform": "డెలివరీ ప్లాట్‌ఫారమ్ నియమాలు & మార్గదర్శకాలు"
+    "train_platform": "డెలివరీ ప్లాట్‌ఫారమ్ నియమాలు & మార్గదర్శకాలు",
+    "hero_btn_prizes": "హీరో_బిటిఎన్_బహుమతులు",
+    "sec_welcome_title": "సెకను_స్వాగతం_శీర్షిక",
+    "btn_continue": "btn_continue",
+    "warning_no_numbers": "హెచ్చరిక_నో_సంఖ్యలు",
+    "own_company": "స్వంత_సంస్థ",
+    "lbl_weekly_dist": "lbl_weekly_dist",
+    "lbl_monthly_dist": "lbl_monthly_dist",
+    "fuel_cng_lpg": "ఇంధనం_cng_lpg",
+    "lbl_maint_resp": "lbl_maint_resp",
+    "ch_traffic_rto": "ch_ట్రాఫిక్_rto",
+    "btn_download_csv": "btn_download_csv"
 }

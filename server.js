@@ -24,8 +24,24 @@ const csrf = require('csurf');
 // Enable gzip compression for all responses
 app.use(compression());
 
+// Canonical www to non-www redirect
+app.use((req, res, next) => {
+  if (req.headers.host && req.headers.host.startsWith('www.')) {
+    const newHost = req.headers.host.slice(4);
+    return res.redirect(301, req.protocol + '://' + newHost + req.originalUrl);
+  }
+  next();
+});
+
 // Security HTTP headers
 app.use(helmet({
+  permissionsPolicy: {
+    features: {
+      camera: [],
+      microphone: [],
+      geolocation: []
+    }
+  },
   contentSecurityPolicy: {
     directives: {
       defaultSrc:    ["'self'"],
@@ -39,7 +55,9 @@ app.use(helmet({
                       "https://cdn.jsdelivr.net",
                       "https://unpkg.com",
                       "https://www.google.com/recaptcha/",
-                      "https://www.gstatic.com/recaptcha/"],
+                      "https://www.gstatic.com/recaptcha/",
+                      "https://analytics.tiktok.com",
+                      "https://static.ads-twitter.com"],
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc:      ["'self'", "'unsafe-inline'",
                       "https://cdnjs.cloudflare.com",
@@ -52,8 +70,11 @@ app.use(helmet({
                       "https://logo.clearbit.com",
                       "https://via.placeholder.com",
                       "https://unpkg.com",
-                      "https://roadwarriorev.com",
-                      "https://www.google-analytics.com"],
+                      "https://roadwarrior.pro",
+                      "https://www.google-analytics.com",
+                      "https://analytics.twitter.com",
+                      "https://t.co",
+                      "https://analytics.tiktok.com"],
       connectSrc:    ["'self'",
                       "https://zjqlkaewliccvgxqlnao.supabase.co",
                       "https://www.clarity.ms",
@@ -65,7 +86,10 @@ app.use(helmet({
                       "https://cdnjs.cloudflare.com",
                       "https://www.googletagmanager.com",
                       "https://fonts.googleapis.com",
-                      "https://unpkg.com"],
+                      "https://unpkg.com",
+                      "https://analytics.tiktok.com",
+                      "https://analytics.twitter.com",
+                      "https://t.co"],
       frameSrc:      ["'self'",
                       "https://www.google.com/recaptcha/",
                       "https://recaptcha.google.com/recaptcha/"]
@@ -141,9 +165,14 @@ spaRoutes.forEach(route => {
       html = html.replace(/WAITING_FOR_GTM_ID/g, process.env.GTM_CONTAINER_ID || 'WAITING_FOR_GTM_ID');
       html = html.replace(/WAITING_FOR_CLARITY_ID/g, process.env.CLARITY_PROJECT_ID || 'WAITING_FOR_CLARITY_ID');
       html = html.replace(/WAITING_FOR_ADS_CONVERSION_ID/g, process.env.GOOGLE_ADS_CONVERSION_ID || 'WAITING_FOR_ADS_CONVERSION_ID');
+      html = html.replace(/WAITING_FOR_AW_REMARKETING_ID/g, process.env.GOOGLE_ADS_REMARKETING_ID || 'WAITING_FOR_AW_REMARKETING_ID');
       html = html.replace(/WAITING_FOR_PIXEL_ID/g, process.env.META_PIXEL_ID || 'WAITING_FOR_PIXEL_ID');
       html = html.replace(/WAITING_FOR_LINKEDIN_ID/g, process.env.LINKEDIN_INSIGHT_ID || 'WAITING_FOR_LINKEDIN_ID');
       html = html.replace(/WAITING_FOR_TAWK_ID/g, process.env.TAWKTO_PROPERTY_ID || 'WAITING_FOR_TAWK_ID');
+      html = html.replace(/WAITING_FOR_TIKTOK_PIXEL_ID/g, process.env.TIKTOK_PIXEL_ID || 'WAITING_FOR_TIKTOK_PIXEL_ID');
+      html = html.replace(/WAITING_FOR_X_PIXEL_ID/g, process.env.X_PIXEL_ID || 'WAITING_FOR_X_PIXEL_ID');
+      html = html.replace(/WAITING_FOR_GOOGLE_SC_ID/g, process.env.GOOGLE_SITE_VERIFICATION || 'WAITING_FOR_GOOGLE_SC_ID');
+      html = html.replace(/WAITING_FOR_BING_SC_ID/g, process.env.BING_SITE_VERIFICATION || 'WAITING_FOR_BING_SC_ID');
       
       const whatsapp = process.env.WHATSAPP_NUMBER || '916360483386';
       html = html.replace(/https:\/\/wa\.me\/916360483386/g, `https://wa.me/${whatsapp}`);
@@ -161,8 +190,11 @@ app.get('/api/client-config', (req, res) => {
     CLARITY_PROJECT_ID:       process.env.CLARITY_PROJECT_ID || '',
     META_PIXEL_ID:            process.env.META_PIXEL_ID || '',
     GOOGLE_ADS_CONVERSION_ID: process.env.GOOGLE_ADS_CONVERSION_ID || '',
+    GOOGLE_ADS_REMARKETING_ID:process.env.GOOGLE_ADS_REMARKETING_ID || '',
     LINKEDIN_INSIGHT_ID:      process.env.LINKEDIN_INSIGHT_ID || '',
     TAWKTO_PROPERTY_ID:       process.env.TAWKTO_PROPERTY_ID || '',
+    TIKTOK_PIXEL_ID:          process.env.TIKTOK_PIXEL_ID || '',
+    X_PIXEL_ID:               process.env.X_PIXEL_ID || '',
     WHATSAPP_NUMBER:          process.env.WHATSAPP_NUMBER || ''
   });
 });

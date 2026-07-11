@@ -413,5 +413,16 @@
     "train_safety": "डिलीवरी के दौरान व्यक्तिगत सुरक्षा",
     "train_payment": "डिजिटल भुगतान और नकदी प्रबंधन",
     "train_inspection": "काम शुरू करने से पहले वाहन निरीक्षण",
-    "train_platform": "डिलिवरी प्लेटफ़ॉर्म नियम और दिशानिर्देश"
+    "train_platform": "डिलिवरी प्लेटफ़ॉर्म नियम और दिशानिर्देश",
+    "hero_btn_prizes": "हीरो_बीटीएन_पुरस्कार",
+    "sec_welcome_title": "सेकंड_स्वागत_शीर्षक",
+    "btn_continue": "btn_जारी रखें",
+    "warning_no_numbers": "चेतावनी_नहीं_नंबर",
+    "own_company": "स्वामी कंपनी",
+    "lbl_weekly_dist": "एलबीएल_साप्ताहिक_जिला",
+    "lbl_monthly_dist": "एलबीएल_मासिक_जिला",
+    "fuel_cng_lpg": "ईंधन_सीएनजी_एलपीजी",
+    "lbl_maint_resp": "lbl_maint_resp",
+    "ch_traffic_rto": "ch_traffic_rto",
+    "btn_download_csv": "btn_download_csv"
 }

@@ -413,5 +413,16 @@
     "train_platform": "ಡೆಲಿವರಿ ಪ್ಲಾಟ್‌ಫಾರ್ಮ್ ನಿಯಮಗಳು ಮತ್ತು ಮಾರ್ಗಸೂಚಿಗಳು",
     "train_safety": "ವಿತರಣೆಯ ಸಮಯದಲ್ಲಿ ವೈಯಕ್ತಿಕ ಸುರಕ್ಷತೆ",
     "train_inspection": "ಕೆಲಸವನ್ನು ಪ್ರಾರಂಭಿಸುವ ಮೊದಲು ವಾಹನ ತಪಾಸಣೆ",
-    "train_payment": "ಡಿಜಿಟಲ್ ಪಾವತಿ ಮತ್ತು ನಗದು ನಿರ್ವಹಣೆ"
+    "train_payment": "ಡಿಜಿಟಲ್ ಪಾವತಿ ಮತ್ತು ನಗದು ನಿರ್ವಹಣೆ",
+    "hero_btn_prizes": "ಹೀರೋ_ಬಿಟಿಎನ್_ಬಹುಮಾನಗಳು",
+    "sec_welcome_title": "ಸೆಕೆ_ಸ್ವಾಗತ_ಶೀರ್ಷಿಕೆ",
+    "btn_continue": "btn_continue",
+    "warning_no_numbers": "ಎಚ್ಚರಿಕೆ_ಇಲ್ಲ_ಸಂಖ್ಯೆಗಳು",
+    "own_company": "ಸ್ವಂತ_ಕಂಪನಿ",
+    "lbl_weekly_dist": "lbl_weekly_dist",
+    "lbl_monthly_dist": "lbl_monthly_dist",
+    "fuel_cng_lpg": "ಇಂಧನ_ಸಿಎನ್ಜಿ_ಎಲ್ಪಿಜಿ",
+    "lbl_maint_resp": "lbl_maint_resp",
+    "ch_traffic_rto": "ch_traffic_rto",
+    "btn_download_csv": "btn_download_csv"
 }

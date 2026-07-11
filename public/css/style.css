@@ -1794,7 +1794,7 @@ height: 40px;
 }
 
 body.login-route-active:not(.register-page-active) #leadCaptureFAB {
-  display: flex !important;
+  display: none !important;
 }
 
 /* About Section */
