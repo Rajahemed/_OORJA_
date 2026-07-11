@@ -131,7 +131,6 @@ app.get('/sitemap.xml', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'sitemap.xml'));
 });
 
-const fs = require('fs');
 const spaRoutes = ['/', '/home', '/login', '/register', '/vehicles', '/dashboard', '/score', '/profile', '/questionnaire', '/privacy', '/admin'];
 spaRoutes.forEach(route => {
   app.get(route, (req, res) => {
