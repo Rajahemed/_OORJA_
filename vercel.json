@@ -17,5 +17,29 @@
       "path": "/api/email/process-queue?secret=rw_cron_secret_2026_xK9mPqR7",
       "schedule": "0 6 * * *"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.roadwarrior.pro"
+        }
+      ],
+      "destination": "https://roadwarrior.pro/$1",
+      "permanent": true
+    }
   ]
 }
