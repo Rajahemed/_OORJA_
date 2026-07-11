@@ -838,14 +838,14 @@
                                 <div class="section-title-badge" style="align-items: center;"><i class="fas fa-user-circle"></i> <span data-i18n="sec_a_title">Section A — Basic Profile</span></div>
                                 <div class="form-group">
                                     <label for="regFullName" data-i18n="label_fullname">Full Name</label>
-                                    <input type="text" id="regFullName" class="form-control" required="" oninput="validateRegName(this)" onblur="window.savePartialProgress &amp;&amp; window.savePartialProgress()">
+                                    <input type="text" id="regFullName" class="form-control" required="" oninput="validateRegName(this)" onblur="window.savePartialProgress && window.savePartialProgress()">
                                     <small id="nameWarning" class="text-danger-color" style="display:none; font-weight:600; margin-top:0.25rem; display:none;" data-i18n="warning_no_numbers">Numbers are not allowed in names</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="regPhone"><span data-i18n="label_whatsapp">WhatsApp Number</span> (10 digits)</label>
                                     <div style="position:relative; display:flex; align-items:center;">
                                         <span style="position:absolute; left:1rem; font-weight:500; color:var(--text-secondary); pointer-events:none;">+91</span>
-                                        <input type="tel" id="regPhone" class="form-control" maxlength="10" required="" style="padding-left:3.2rem; padding-right:2.5rem;" oninput="validateRegPhone(this)" onblur="window.savePartialProgress &amp;&amp; window.savePartialProgress()">
+                                        <input type="tel" id="regPhone" class="form-control" maxlength="10" required="" style="padding-left:3.2rem; padding-right:2.5rem;" oninput="validateRegPhone(this)" onblur="window.savePartialProgress && window.savePartialProgress()">
                                         <span id="phoneValIcon" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); display:none;">
                                             <i class="fas fa-check-circle text-success-color" id="phoneCheckIcon" style="display:none;"></i>
                                             <i class="fas fa-times-circle text-danger-color" id="phoneCrossIcon" style="display:none;"></i>
