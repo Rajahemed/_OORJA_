@@ -425,5 +425,6 @@
     "fuel_cng_lpg": "fuel_cng_lpg",
     "lbl_maint_resp": "lbl_maint_resp",
     "ch_traffic_rto": "ch_traffic_rto",
-    "btn_download_csv": "btn_download_csv"
+    "btn_download_csv": "btn_download_csv",
+    "cancel": "cancel"
 }
