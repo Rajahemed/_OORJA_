@@ -1977,8 +1977,25 @@ body.login-route-active:not(.register-page-active) #leadCaptureFAB {
 
 /* Hide header and footer when registration form is active */
 body.register-page-active .navbar,
-body.register-page-active #site-footer {
+body.register-page-active #site-footer,
+body.login-route-active .navbar,
+body.login-route-active #site-footer {
     display: none !important;
+}
+
+body.login-route-active:not(.register-page-active) #login-view {
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 !important;
+    padding: 1rem;
+}
+
+body.login-route-active:not(.register-page-active) #authLayout {
+    margin-top: 0 !important;
+    width: 100%;
 }
 
 body.register-page-active {

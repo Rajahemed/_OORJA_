@@ -1351,6 +1351,7 @@ async function openDataDrilldown(type) {
         if (isLoggedIn) {
             logoutUser();
         } else {
+            window.lastScrollPosition = window.scrollY;
             routeSPA('/login');
             const login = document.getElementById('loginCard');
             const reg = document.getElementById('registerCard');
@@ -1358,9 +1359,18 @@ async function openDataDrilldown(type) {
                 login.style.display = 'block';
                 reg.style.display = 'none';
             }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'auto' });
         }
     }
+
+    window.cancelLogin = function() {
+        routeSPA('/home');
+        if (typeof window.lastScrollPosition !== 'undefined') {
+            setTimeout(() => {
+                window.scrollTo({ top: window.lastScrollPosition, behavior: 'auto' });
+            }, 50);
+        }
+    };
 
     window.showRegisterForm = function() {
         const login = document.getElementById('loginCard');
