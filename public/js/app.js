@@ -1234,7 +1234,7 @@ async function openDataDrilldown(type) {
             checkAdminExists();
         } else if (activeTab !== 'score' && activeTab !== 'admin-login' && activeTab !== 'admin' && activeTab !== 'privacy' && activeTab !== 'login' && activeTab !== 'register' && !isLoggedIn) {
             showToast((window.t ? window.t('msg_0_please_login_or') : 'Please login or register first.'), 'warning');
-            navigateTo('/login'); return;
+            routeSPA('/login'); return;
         }
 
         document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
@@ -1302,7 +1302,7 @@ async function openDataDrilldown(type) {
             if (result.success) {
                 currentUser = result.data; isLoggedIn = true;
                 updateAuthNavbarState();
-                if (['/', '/login', '/register', '/index.html'].some(p => window.location.pathname.endsWith(p))) navigateTo('/dashboard');
+                if (['/', '/login', '/register', '/index.html'].some(p => window.location.pathname.endsWith(p))) routeSPA('/dashboard');
             } else {
                 if (result.error === 'Rider not found') logoutUser();
                 else showToast(`Session verification error: ${result.error}`, 'warning');
@@ -1351,7 +1351,7 @@ async function openDataDrilldown(type) {
         if (isLoggedIn) {
             logoutUser();
         } else {
-            navigateTo('/login');
+            routeSPA('/login');
             const login = document.getElementById('loginCard');
             const reg = document.getElementById('registerCard');
             if (login && reg) {
@@ -1391,7 +1391,7 @@ async function openDataDrilldown(type) {
         .finally(() => {
             localStorage.removeItem('riderId'); localStorage.removeItem('sessionId');
             currentUser = null; isLoggedIn = false;
-            updateAuthNavbarState(); navigateTo('/login');
+            updateAuthNavbarState(); routeSPA('/login');
         });
     }
 
@@ -1712,7 +1712,7 @@ async function openDataDrilldown(type) {
                 trackEvent('login', { method: payload.loginMethod });
                 btn.innerHTML = origText;
                 btn.disabled = false;
-                navigateTo('/dashboard');
+                routeSPA('/dashboard');
             } else {
                 document.getElementById('loginErrorText').textContent = 'Login failed: ' + (result.message || result.error || 'Invalid credentials');
                 document.getElementById('loginErrorMsg').style.display = 'block';
@@ -3543,7 +3543,7 @@ async function openDataDrilldown(type) {
                 sessionStorage.setItem('adminToken', result.token);
                 sessionStorage.setItem('adminRole', result.role || 'admin');
                 showToast((window.t ? window.t('msg_27_admin_login_suc') : 'Admin login successful!'), 'success');
-                navigateTo('/admin');
+                routeSPA('/admin');
             } else {
                 errText.textContent = result.message || result.error || 'Invalid admin credentials';
                 errBox.style.display = 'block';
