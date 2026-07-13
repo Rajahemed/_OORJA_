@@ -1,0 +1,33 @@
+{
+  // ── Python type checking ─────────────────────────────────────────────────
+  // Disable Pyrefly (it generates false positives for optional packages
+  // that can't be installed on Python 3.14, e.g. google-generativeai).
+  // Use Pylance instead for a better experience.
+  "pyrefly.enable": false,
+
+  // Pylance / Pylint settings
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingModuleSource": "none",
+    "reportMissingImports": "none",
+    "reportOptionalMemberAccess": "none"
+  },
+
+  // Exclude virtual/generated paths from analysis
+  "python.analysis.exclude": [
+    "**/__pyrefly_virtual__/**",
+    "**/node_modules/**",
+    "**/__pycache__/**"
+  ],
+
+  // ── File associations ────────────────────────────────────────────────────
+  "files.associations": {
+    ".env": "dotenv",
+    "*.toml": "toml"
+  },
+
+  // ── Editor quality of life ───────────────────────────────────────────────
+  "editor.formatOnSave": true,
+  "editor.rulers": [100],
+  "files.trimTrailingWhitespace": true
+}

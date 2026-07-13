@@ -413,5 +413,16 @@
     "train_none": "मला कोणतेही प्रशिक्षण मिळालेले नाही",
     "train_payment": "डिजिटल पेमेंट आणि रोख हाताळणी",
     "train_inspection": "काम सुरू करण्यापूर्वी वाहन तपासणी",
-    "train_safety": "डिलिव्हरी दरम्यान वैयक्तिक सुरक्षा"
+    "train_safety": "डिलिव्हरी दरम्यान वैयक्तिक सुरक्षा",
+    "hero_btn_prizes": "hero_btn_पुरस्कार",
+    "sec_welcome_title": "sec_welcome_title",
+    "btn_continue": "btn_continue",
+    "warning_no_numbers": "चेतावणी_नाही_संख्या",
+    "own_company": "स्वतःची_कंपनी",
+    "lbl_weekly_dist": "lbl_weekly_dist",
+    "lbl_monthly_dist": "lbl_monthly_dist",
+    "fuel_cng_lpg": "fuel_cng_lpg",
+    "lbl_maint_resp": "lbl_maint_resp",
+    "ch_traffic_rto": "ch_traffic_rto",
+    "btn_download_csv": "btn_download_csv"
 }

@@ -1,0 +1,5 @@
+[project]
+include = ["**/*.py"]
+
+[errors]
+ignore = ["missing-import", "parse-error", "unknown-name"]

@@ -1641,13 +1641,9 @@ select.form-control option {
 
 .rider-rank {
   font-family: 'Outfit', sans-serif;
-height: 40px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.3);
-  color: #fff;
-  font-size: 1.1rem;
-  text-decoration: none;
-  transition: all 0.3s ease;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary-color);
 }
 .social-link.twitter { color: #1DA1F2; border-color: rgba(29, 161, 242, 0.5); }
 .social-link.twitter:hover { background: #1DA1F2; color: #fff; border-color: #1DA1F2; }
@@ -1981,9 +1977,7 @@ body.register-page-active #site-footer {
     display: none !important;
 }
 
-body.login-route-active:not(.register-page-active) .floating-wa {
-    display: none !important;
-}
+
 
 body.login-route-active:not(.register-page-active) #login-view {
     display: flex !important;
