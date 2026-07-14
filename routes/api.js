@@ -248,7 +248,7 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       email, password,
       // Section B & C
       vehicleType, vehicleModel, vehicleOwnership, weeklyRent, monthlyRent,
-      workingHours, kmPerDay, kmPerMonth, fuelType, fuelMethod, fuelExpenseWeekly,
+      workingHours, kmPerDay, kmPerMonth, fuelType, fuelMethod, fuelExpenseWeekly, netSalary, variablePay,
       maintenanceTyre, maintenanceOil, maintenanceService, maintenanceExpenseMonthly,
       maintPayServicing, maintPayPuncture, maintPayWear, maintPayAccident, maintInsured, maintServiceFreq,
       rentServiceHistory, rentTyreInspect, rentBrakeInspect, rentLightsInspect, rentDamagePay, rentAccidentPay, rentInsuranceIncluded,
@@ -365,6 +365,8 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       "workingHours": workingHours || '',
       "kmPerDay": parseFloat(kmPerDay) || 0,
       "kmPerMonth": parseFloat(kmPerMonth) || 0,
+      "netSalary": netSalary || '',
+      "variablePay": variablePay || '',
       "fuelType": fuelType || '',
       "fuelMethod": fuelMethod || '',
       "fuelExpenseWeekly": parseFloat(fuelExpenseWeekly) || 0,

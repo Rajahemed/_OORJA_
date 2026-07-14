@@ -420,12 +420,15 @@
     "btn_continue": "btn_continue",
     "warning_no_numbers": "warning_no_numbers",
     "own_company": "own_company",
-    "lbl_weekly_dist": "lbl_weekly_dist",
-    "lbl_monthly_dist": "lbl_monthly_dist",
+    "lbl_weekly_dist": "Weekly Distance",
+    "lbl_monthly_dist": "Monthly Distance",
     "fuel_cng_lpg": "fuel_cng_lpg",
     "lbl_maint_resp": "lbl_maint_resp",
     "ch_traffic_rto": "ch_traffic_rto",
     "btn_download_csv": "btn_download_csv",
     "cancel": "cancel",
-    "login_whatsapp": "login_whatsapp"
+    "login_whatsapp": "login_whatsapp",
+    "lbl_net_salary": "Net Salary",
+    "lbl_variable_pay": "Variable Pay",
+    "lbl_salary_details": "Salary Details"
 }

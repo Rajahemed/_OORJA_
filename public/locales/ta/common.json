@@ -419,10 +419,16 @@
     "btn_continue": "btn_continue",
     "warning_no_numbers": "எச்சரிக்கை_இல்லை_எண்கள்",
     "own_company": "சொந்த_நிறுவனம்",
-    "lbl_weekly_dist": "lbl_weekly_dist",
-    "lbl_monthly_dist": "lbl_monthly_dist",
     "fuel_cng_lpg": "எரிபொருள்_சிஎன்ஜி_எல்பிஜி",
     "lbl_maint_resp": "lbl_main_resp",
     "ch_traffic_rto": "ch_traffic_rto",
-    "btn_download_csv": "btn_download_csv"
+    "btn_download_csv": "btn_download_csv",
+    "ch_rto_issue": "ஆர்டிஓ பிரச்சினை",
+    "lbl_monthly_dist": "மாதாந்திர தூரம்",
+    "lbl_weekly_dist": "வாராந்திர தூரம்",
+    "lbl_net_salary": "நிகர சம்பளம்",
+    "login_whatsapp": "உள்நுழைவு_வாட்ஸ்அப்",
+    "cancel": "ரத்து செய்",
+    "lbl_salary_details": "சம்பள விவரங்கள்",
+    "lbl_variable_pay": "மாறி ஊதியம்"
 }

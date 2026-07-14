@@ -419,10 +419,16 @@
     "btn_continue": "btn_continue",
     "warning_no_numbers": "चेतावणी_नाही_संख्या",
     "own_company": "स्वतःची_कंपनी",
-    "lbl_weekly_dist": "lbl_weekly_dist",
-    "lbl_monthly_dist": "lbl_monthly_dist",
     "fuel_cng_lpg": "fuel_cng_lpg",
     "lbl_maint_resp": "lbl_maint_resp",
     "ch_traffic_rto": "ch_traffic_rto",
-    "btn_download_csv": "btn_download_csv"
+    "btn_download_csv": "btn_download_csv",
+    "ch_rto_issue": "RTO समस्या",
+    "lbl_weekly_dist": "साप्ताहिक अंतर",
+    "lbl_monthly_dist": "मासिक अंतर",
+    "cancel": "रद्द करा",
+    "lbl_net_salary": "निव्वळ पगार",
+    "login_whatsapp": "login_whatsapp",
+    "lbl_variable_pay": "व्हेरिएबल पे",
+    "lbl_salary_details": "पगार तपशील"
 }

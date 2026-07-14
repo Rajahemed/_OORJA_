@@ -2575,6 +2575,8 @@ async function openDataDrilldown(type) {
             workingHours: document.getElementById('regWorkingHours')?.value || '',
             kmPerDay: document.getElementById('regKmPerDay')?.value || '',
             kmPerMonth: document.getElementById('regKmPerMonth')?.value || '',
+            netSalary: document.getElementById('regNetSalary')?.value || '',
+            variablePay: document.getElementById('regVariablePay')?.value || '',
             fuelType: getRadioValue('fuelType'),
             fuelExpenseWeekly: document.getElementById('regFuelExp')?.value || '',
             fuelMethod: getRadioValue('fuelMethod') === 'Other' ? document.getElementById('regFuelMethodOther')?.value.trim() : getRadioValue('fuelMethod'),
@@ -4145,6 +4147,8 @@ window.savePartialProgress = async function() {
         workingHours: document.getElementById('regWorkingHours')?.value || '',
         kmPerDay: document.getElementById('regKmPerDay')?.value || '',
         kmPerMonth: document.getElementById('regKmPerMonth')?.value || '',
+        netSalary: document.getElementById('regNetSalary')?.value || '',
+        variablePay: document.getElementById('regVariablePay')?.value || '',
         fuelType: getRadioValue('fuelType'),
         fuelExpenseWeekly: document.getElementById('regFuelExp')?.value || '',
         fuelMethod: getRadioValue('fuelMethod') === 'Other' ? document.getElementById('regFuelMethodOther')?.value.trim() : getRadioValue('fuelMethod'),
@@ -4330,6 +4334,8 @@ window.nextStep = async function() {
                     fillInput('regWorkingHours', pd.workingHours);
                     fillInput('regKmPerDay', pd.kmPerDay);
                     fillInput('regKmPerMonth', pd.kmPerMonth);
+                    fillInput('regNetSalary', pd.netSalary);
+                    fillInput('regVariablePay', pd.variablePay);
                     fillRadio('fuelType', pd.fuelType);
                     fillInput('regFuelExp', pd.fuelExpenseWeekly);
                     fillRadio('fuelMethod', pd.fuelMethod);

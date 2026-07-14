@@ -419,10 +419,16 @@
     "btn_continue": "btn_continue",
     "warning_no_numbers": "హెచ్చరిక_నో_సంఖ్యలు",
     "own_company": "స్వంత_సంస్థ",
-    "lbl_weekly_dist": "lbl_weekly_dist",
-    "lbl_monthly_dist": "lbl_monthly_dist",
     "fuel_cng_lpg": "ఇంధనం_cng_lpg",
     "lbl_maint_resp": "lbl_maint_resp",
     "ch_traffic_rto": "ch_ట్రాఫిక్_rto",
-    "btn_download_csv": "btn_download_csv"
+    "btn_download_csv": "btn_download_csv",
+    "ch_rto_issue": "RTO సమస్య",
+    "lbl_monthly_dist": "నెలవారీ దూరం",
+    "lbl_weekly_dist": "వారపు దూరం",
+    "cancel": "రద్దు",
+    "login_whatsapp": "లాగిన్_వాట్సాప్",
+    "lbl_net_salary": "నికర జీతం",
+    "lbl_variable_pay": "వేరియబుల్ పే",
+    "lbl_salary_details": "జీతం వివరాలు"
 }
