@@ -110,7 +110,7 @@
     }
     </script>
     <link rel="stylesheet" href="/css/style.css?v=4">
-    <link rel="stylesheet" href="/css/responsive-patch.css?v=1">
+    <link rel="stylesheet" href="/css/responsive-patch.css?v=2">
     <link rel="stylesheet" href="/css/cookie-consent.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer=""></script>
@@ -570,12 +570,74 @@
                 <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
                 <option value="te">🇮🇳 తెలుగు (Telugu)</option>
                 <option value="mr">🇮🇳 मराठी (Marathi)</option>
-                <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
+                <option value="gu">🇮🇳 ગુજરાతી (Gujarati)</option>
                 <option value="bn">🇮🇳 বাংলা (Bengali)</option>
             </select>
             <button id="loginLogoutBtn" class="btn btn-secondary btn-small" onclick="toggleAuth()" style="display: none;"></button>
         </div>
+        <!-- Hamburger Button: mobile only (<1024px) -->
+        <button id="mobileMenuToggle" class="mobile-hamburger-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNavDrawer" onclick="toggleMobileDrawer()">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+        </button>
     </nav>
+
+    <!-- Mobile Side Drawer -->
+    <div id="mobileNavOverlay" class="mobile-nav-overlay" onclick="closeMobileDrawer()"></div>
+    <div id="mobileNavDrawer" class="mobile-nav-drawer" role="navigation" aria-label="Mobile navigation">
+        <div class="mobile-drawer-header">
+            <span class="mobile-drawer-brand">Road Warrior EV</span>
+            <button class="mobile-drawer-close" aria-label="Close menu" onclick="closeMobileDrawer()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="mobile-drawer-nav" id="mobileDrawerNav">
+            <li class="mobile-drawer-item" id="mobileNavHomeItem" style="display:none;">
+                <a href="/home" class="mobile-drawer-link" id="mobileNavHome" onclick="handleNavLinkClick(event, '/home'); closeMobileDrawer();">
+                    <span class="mobile-drawer-icon">🏠</span>
+                    <span data-i18n="nav_home">Home</span>
+                </a>
+            </li>
+            <li class="mobile-drawer-item" id="mobileNavScoreItem" style="display:none;">
+                <a href="/score" class="mobile-drawer-link" id="mobileNavScore" onclick="handleNavLinkClick(event, '/score'); closeMobileDrawer();">
+                    <span class="mobile-drawer-icon">🏆</span>
+                    <span data-i18n="nav_score">Score</span>
+                </a>
+            </li>
+            <li class="mobile-drawer-item" id="mobileNavDashboardItem" style="display:none;">
+                <a href="/dashboard" class="mobile-drawer-link" id="mobileNavDashboard" onclick="handleNavLinkClick(event, '/dashboard'); closeMobileDrawer();">
+                    <span class="mobile-drawer-icon">📊</span>
+                    <span data-i18n="nav_dashboard">Dashboard</span>
+                </a>
+            </li>
+            <li class="mobile-drawer-item" id="mobileNavProfileItem" style="display:none;">
+                <a href="/profile" class="mobile-drawer-link" id="mobileNavProfile" onclick="handleNavLinkClick(event, '/profile'); closeMobileDrawer();">
+                    <span class="mobile-drawer-icon">👤</span>
+                    <span data-i18n="nav_profile">Profile</span>
+                </a>
+            </li>
+            <li class="mobile-drawer-item mobile-drawer-lang-item">
+                <span class="mobile-drawer-icon">🌐</span>
+                <select class="lang-select mobile-drawer-lang-select" onchange="changeLanguage(this.value); closeMobileDrawer();" id="mobileLangSelector">
+                    <option value="en">🇺🇸 English</option>
+                    <option value="hi">🇮🇳 हिंदी (Hindi)</option>
+                    <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
+                    <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+                    <option value="te">🇮🇳 తెలుగు (Telugu)</option>
+                    <option value="mr">🇮🇳 मराठी (Marathi)</option>
+                    <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
+                    <option value="bn">🇮🇳 বাংলা (Bengali)</option>
+                </select>
+            </li>
+            <li class="mobile-drawer-item mobile-drawer-logout-item" id="mobileNavLogoutItem" style="display:none;">
+                <button class="mobile-drawer-link mobile-drawer-logout-btn" onclick="toggleAuth(); closeMobileDrawer();">
+                    <span class="mobile-drawer-icon">🚪</span>
+                    <span>Logout</span>
+                </button>
+            </li>
+        </ul>
+    </div>
 
     <main class="container">
 
@@ -2693,4 +2755,131 @@ s0.parentNode.insertBefore(s1,s0);
     }
     </style>
     
+    <!-- Mobile Drawer: Open/Close Logic + Auth State Sync -->
+    <script>
+    (function() {
+        'use strict';
+
+        /* ── Drawer toggle ─────────────────────────────────────── */
+        window.toggleMobileDrawer = function() {
+            var drawer  = document.getElementById('mobileNavDrawer');
+            var overlay = document.getElementById('mobileNavOverlay');
+            var toggle  = document.getElementById('mobileMenuToggle');
+            if (!drawer) return;
+            var isOpen = drawer.classList.contains('is-open');
+            if (isOpen) { closeMobileDrawer(); } else { openMobileDrawer(); }
+        };
+
+        window.openMobileDrawer = function() {
+            var drawer  = document.getElementById('mobileNavDrawer');
+            var overlay = document.getElementById('mobileNavOverlay');
+            var toggle  = document.getElementById('mobileMenuToggle');
+            if (!drawer) return;
+            drawer.classList.add('is-open');
+            overlay.classList.add('is-visible');
+            toggle && toggle.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+            /* Sync mobile lang selector with desktop one */
+            syncMobileLangSelector();
+        };
+
+        window.closeMobileDrawer = function() {
+            var drawer  = document.getElementById('mobileNavDrawer');
+            var overlay = document.getElementById('mobileNavOverlay');
+            var toggle  = document.getElementById('mobileMenuToggle');
+            if (!drawer) return;
+            drawer.classList.remove('is-open');
+            overlay.classList.remove('is-visible');
+            toggle && toggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        };
+
+        /* ── ESC key closes drawer ─────────────────────────────── */
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { closeMobileDrawer(); }
+        });
+
+        /* ── Sync mobile lang select value with desktop ─────────── */
+        function syncMobileLangSelector() {
+            var desktop = document.getElementById('langSelector');
+            var mobile  = document.getElementById('mobileLangSelector');
+            if (desktop && mobile) { mobile.value = desktop.value; }
+        }
+
+        /* ── Patch updateAuthNavbarState to also update drawer items ─ */
+        /* We hook into the existing function via MutationObserver on the
+           desktop nav items since we cannot safely override the closed
+           IIFE without touching app.js. When a desktop li changes its
+           display, we mirror that to the corresponding mobile drawer li. */
+        function mirrorAuthState() {
+            var map = [
+                { desktopId: 'navHome',      mobileItemId: 'mobileNavHomeItem',      mobileLogout: false },
+                { desktopId: 'navScore',     mobileItemId: 'mobileNavScoreItem',     mobileLogout: false },
+                { desktopId: 'navDashboard', mobileItemId: 'mobileNavDashboardItem', mobileLogout: false },
+                { desktopId: 'navProfile',   mobileItemId: 'mobileNavProfileItem',   mobileLogout: false },
+            ];
+            map.forEach(function(entry) {
+                var desktopLink = document.getElementById(entry.desktopId);
+                var mobileItem  = document.getElementById(entry.mobileItemId);
+                if (!desktopLink || !mobileItem) return;
+                var desktopLi = desktopLink.parentElement;
+                var isVisible = desktopLi && desktopLi.style.display !== 'none';
+                mobileItem.style.display = isVisible ? '' : 'none';
+            });
+
+            /* Logout item mirrors loginLogoutBtn */
+            var loginBtn   = document.getElementById('loginLogoutBtn');
+            var logoutItem = document.getElementById('mobileNavLogoutItem');
+            if (loginBtn && logoutItem) {
+                logoutItem.style.display = (loginBtn.style.display !== 'none' && loginBtn.innerHTML.includes('sign-out')) ? '' : 'none';
+            }
+        }
+
+        /* Poll lightly until the app is ready, then observe */
+        var pollInterval = setInterval(function() {
+            var navHome = document.getElementById('navHome');
+            if (navHome) {
+                clearInterval(pollInterval);
+                mirrorAuthState();
+                /* MutationObserver on the desktop ul to detect show/hide */
+                var ul = document.querySelector('.navbar-nav');
+                if (ul && window.MutationObserver) {
+                    var observer = new MutationObserver(function(mutations) {
+                        mutations.forEach(function(m) {
+                            if (m.type === 'attributes' && m.attributeName === 'style') {
+                                mirrorAuthState();
+                            }
+                        });
+                    });
+                    observer.observe(ul, { attributes: true, subtree: true, attributeFilter: ['style'] });
+                }
+                /* Also observe loginLogoutBtn for logout icon */
+                var btn = document.getElementById('loginLogoutBtn');
+                if (btn && window.MutationObserver) {
+                    var btnObserver = new MutationObserver(function() { mirrorAuthState(); });
+                    btnObserver.observe(btn, { attributes: true, childList: true, subtree: true, attributeFilter: ['style'] });
+                }
+            }
+        }, 200);
+
+        /* Sync lang selector whenever drawer opens */
+        document.addEventListener('click', function(e) {
+            var toggle = document.getElementById('mobileMenuToggle');
+            if (toggle && toggle.contains(e.target)) { syncMobileLangSelector(); }
+        });
+
+        /* Keep desktop lang selector in sync when mobile one changes */
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.id === 'mobileLangSelector') {
+                var desktop = document.getElementById('langSelector');
+                if (desktop) { desktop.value = e.target.value; }
+            }
+            if (e.target && e.target.id === 'langSelector') {
+                var mobile = document.getElementById('mobileLangSelector');
+                if (mobile) { mobile.value = e.target.value; }
+            }
+        });
+    })();
+    </script>
+
         </body></html>

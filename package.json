@@ -32,5 +32,8 @@
     "socket.io": "^4.7.2",
     "twilio": "^6.0.2",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "pg": "^8.22.0"
   }
 }

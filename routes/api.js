@@ -413,21 +413,43 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
     };
 
     let riderId;
-    if (isUpdate) {
-      const { data: updated, error: updateErr } = await supabase.from('riders').update(rider).eq('id', existingId).select('id').single();
-      if (updateErr) {
-        console.error('[Register] Update error:', updateErr);
-        return res.status(500).json({ success: false, error: 'Registration failed: ' + updateErr.message });
+
+    // Smart retry: if Supabase returns a schema-cache "column not found" error,
+    // strip the unknown column and retry up to 15 times (covers all possible missing columns).
+    async function upsertRider(payload, maxRetries = 15) {
+      let current = Object.assign({}, payload);
+      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        let result;
+        if (isUpdate) {
+          result = await supabase.from('riders').update(current).eq('id', existingId).select('id').single();
+        } else {
+          result = await supabase.from('riders').insert(current).select('id').single();
+        }
+        if (!result.error) return result;
+        const msg = result.error.message || '';
+        // Detect "Could not find the 'XYZ' column of 'riders'" or "column riders.XYZ does not exist"
+        const colMatch = msg.match(/find the '(\w+)' column/i)
+                      || msg.match(/column (?:riders\.)?(\w+) does not exist/i);
+        if (colMatch && colMatch[1]) {
+          const badCol = colMatch[1];
+          console.warn(`[Register] Column "${badCol}" missing from DB schema, stripping and retrying (attempt ${attempt + 1})`);
+          delete current[badCol];
+          continue;
+        }
+        // Non-schema error — don't retry
+        return result;
       }
-      riderId = updated.id;
-    } else {
-      const { data: inserted, error: insertErr } = await supabase.from('riders').insert(rider).select('id').single();
-      if (insertErr) {
-        console.error('[Register] Insert error:', insertErr);
-        return res.status(500).json({ success: false, error: 'Registration failed: ' + insertErr.message });
-      }
-      riderId = inserted.id;
+      return await (isUpdate
+        ? supabase.from('riders').update(current).eq('id', existingId).select('id').single()
+        : supabase.from('riders').insert(current).select('id').single());
     }
+
+    const { data: upserted, error: upsertErr } = await upsertRider(rider);
+    if (upsertErr) {
+      console.error('[Register] Upsert error:', upsertErr);
+      return res.status(500).json({ success: false, error: 'Registration failed: ' + upsertErr.message });
+    }
+    riderId = upserted.id;
 
     // Use the actual request origin or the configured API_BASE_URL
     // Fallback to a production domain if missing. If origin is localhost, whatsapp won't linkify it but that's expected in dev.
