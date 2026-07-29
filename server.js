@@ -139,17 +139,23 @@ const apiRoutes       = require('./routes/api');
 const authRoutes      = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const analyticsRoutes = require('./routes/analytics'); // NEW — Intelligence System
+const auditRoutes     = require('./routes/audit');     // NEW — Website Auditor
 
 app.use('/api',       csrfProtection, apiRoutes);
 app.use('/auth',      csrfProtection, authRoutes);
 app.use('/dashboard', csrfProtection, dashboardRoutes);
 app.use('/api',       csrfProtection, analyticsRoutes); // visitor tracking, leads, analytics
+app.use('/api',       csrfProtection, auditRoutes);     // dns lookups
 
 // Unsubscribe page — no CSRF needed (GET, accessed via email link)
 app.get('/unsubscribe', (req, res) => {
   // Handled by analytics router; this ensures SPA fallback doesn't intercept
   res.redirect(`/api/unsubscribe?email=${encodeURIComponent(req.query.email || '')}`);
 });
+
+app.get('/about', (req, res) => res.sendFile(path.join(__dirname, 'public', 'about.html')));
+app.get('/auditor', (req, res) => res.sendFile(path.join(__dirname, 'public', 'auditor.html')));
+app.get('/thank-you', (req, res) => res.sendFile(path.join(__dirname, 'public', 'thank-you.html')));
 
 app.get('/sitemap.xml', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'sitemap.xml'));
@@ -174,6 +180,16 @@ spaRoutes.forEach(route => {
       html = html.replace(/WAITING_FOR_GOOGLE_SC_ID/g, process.env.GOOGLE_SITE_VERIFICATION || 'WAITING_FOR_GOOGLE_SC_ID');
       html = html.replace(/WAITING_FOR_BING_SC_ID/g, process.env.BING_SITE_VERIFICATION || 'WAITING_FOR_BING_SC_ID');
       
+      // Retargeting & Tracking IDs
+      html = html.replace(/WAITING_FOR_HOTJAR_ID/g, process.env.VITE_HOTJAR_ID || 'WAITING_FOR_HOTJAR_ID');
+      html = html.replace(/WAITING_FOR_SNAPCHAT_PIXEL/g, process.env.VITE_SNAPCHAT_PIXEL || 'WAITING_FOR_SNAPCHAT_PIXEL');
+      html = html.replace(/WAITING_FOR_PINTEREST_TAG/g, process.env.VITE_PINTEREST_TAG || 'WAITING_FOR_PINTEREST_TAG');
+      html = html.replace(/WAITING_FOR_MICROSOFT_UET/g, process.env.VITE_MICROSOFT_UET || 'WAITING_FOR_MICROSOFT_UET');
+      html = html.replace(/WAITING_FOR_CALL_TRACKING/g, process.env.VITE_CALL_TRACKING_NUMBER || 'WAITING_FOR_CALL_TRACKING');
+      html = html.replace(/WAITING_FOR_CALENDLY_URL/g, process.env.VITE_CALENDLY_URL || 'WAITING_FOR_CALENDLY_URL');
+      html = html.replace(/WAITING_FOR_TELEGRAM_LINK/g, process.env.VITE_TELEGRAM_LINK || 'WAITING_FOR_TELEGRAM_LINK');
+
+      
       const whatsapp = process.env.WHATSAPP_NUMBER || '916360483386';
       html = html.replace(/https:\/\/wa\.me\/916360483386/g, `https://wa.me/${whatsapp}`);
       
@@ -195,7 +211,14 @@ app.get('/api/client-config', (req, res) => {
     TAWKTO_PROPERTY_ID:       process.env.TAWKTO_PROPERTY_ID || '',
     TIKTOK_PIXEL_ID:          process.env.TIKTOK_PIXEL_ID || '',
     X_PIXEL_ID:               process.env.X_PIXEL_ID || '',
-    WHATSAPP_NUMBER:          process.env.WHATSAPP_NUMBER || ''
+    WHATSAPP_NUMBER:          process.env.WHATSAPP_NUMBER || '',
+    VITE_HOTJAR_ID:           process.env.VITE_HOTJAR_ID || '',
+    VITE_SNAPCHAT_PIXEL:      process.env.VITE_SNAPCHAT_PIXEL || '',
+    VITE_PINTEREST_TAG:       process.env.VITE_PINTEREST_TAG || '',
+    VITE_MICROSOFT_UET:       process.env.VITE_MICROSOFT_UET || '',
+    VITE_CALL_TRACKING_NUMBER:process.env.VITE_CALL_TRACKING_NUMBER || '',
+    VITE_CALENDLY_URL:        process.env.VITE_CALENDLY_URL || '',
+    VITE_TELEGRAM_LINK:       process.env.VITE_TELEGRAM_LINK || ''
   });
 });
 
@@ -341,8 +364,16 @@ function startServer(port) {
   });
 }
 
+// 404 handler
+app.use((req, res, next) => {
+  res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
+});
+
+// Start server
 if (require.main === module) {
-  startServer(Number(PORT));
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 }
 
 module.exports = app;

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Website Audit - Road Warrior</title>
+    <meta name="description" content="Get a free enterprise-grade website audit to check your SPF, DKIM, and DMARC security records.">
+    <link rel="stylesheet" href="/css/style.css?v=4">
+    <link rel="stylesheet" href="/css/responsive-patch.css?v=2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .badge-grid { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap; }
+        .trust-badge { display: flex; align-items: center; gap: 0.5rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-secondary); }
+        .result-box { margin-top: 2rem; display: none; text-align: left; background: var(--card-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color); }
+        .status-pass { color: #10b981; font-weight: bold; }
+        .status-missing { color: #ef4444; font-weight: bold; }
+    </style>
+</head>
+<body class="light-mode">
+    <nav class="navbar" style="padding: 1rem 2rem; background: var(--bg-color); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color);">
+        <div class="logo" style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);">ROAD WARRIOR</div>
+        <div>
+            <a href="/" style="text-decoration: none; color: var(--text-primary); margin-right: 1rem;">Home</a>
+            <a href="/about" style="text-decoration: none; color: var(--text-primary);">About</a>
+        </div>
+    </nav>
+
+    <main class="container" style="padding: 4rem 1rem; max-width: 600px; margin: auto; text-align: center;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Free Enterprise Website Audit</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Discover critical security vulnerabilities in seconds. Check your SPF, DKIM, and DMARC records now.</p>
+
+        <!-- Guarantee Card -->
+        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; color: #10b981; font-weight: bold;">
+            <i class="fas fa-check-circle"></i> 100% Satisfaction Guarantee or Free Re-Audit within 30 Days
+        </div>
+
+        <form id="auditForm" style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
+            <div>
+                <label for="name" style="display: block; margin-bottom: 0.5rem; color: var(--text-primary);">Name (Optional)</label>
+                <input type="text" id="name" placeholder="John Doe" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--input-bg); color: var(--text-primary);">
+            </div>
+            <div>
+                <label for="email" style="display: block; margin-bottom: 0.5rem; color: var(--text-primary);">Email (Optional)</label>
+                <input type="email" id="email" placeholder="john@example.com" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--input-bg); color: var(--text-primary);">
+            </div>
+            <div>
+                <label for="domain" style="display: block; margin-bottom: 0.5rem; color: var(--text-primary);">Website URL <span style="color:#ef4444">*</span></label>
+                <input type="text" id="domain" required placeholder="example.com" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--input-bg); color: var(--text-primary);">
+            </div>
+            <button type="submit" class="btn btn-primary" style="padding: 1rem; font-size: 1.1rem; border-radius: 8px; margin-top: 1rem; width: 100%; border: none; cursor: pointer;">
+                Run Audit Now
+            </button>
+        </form>
+
+        <div id="loader" style="display: none; margin-top: 2rem; color: var(--primary-color);">
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
+            <p>Analyzing Domain...</p>
+        </div>
+
+        <div id="results" class="result-box">
+            <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Audit Results for <span id="resDomain" class="text-primary"></span></h3>
+            
+            <div style="margin-bottom: 1rem;">
+                <strong>SPF Record:</strong> <span id="resSpf"></span>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">Sender Policy Framework prevents spoofing. <a href="#" style="color: var(--primary-color);">Setup Guide</a></p>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <strong>DKIM Record:</strong> <span id="resDkim"></span>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">DomainKeys Identified Mail ensures emails aren't tampered with.</p>
+            </div>
+            
+            <div>
+                <strong>DMARC Record:</strong> <span id="resDmarc"></span>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">Domain-based Message Authentication validates SPF and DKIM.</p>
+            </div>
+        </div>
+
+        <!-- Trust Badges -->
+        <div class="badge-grid">
+            <div class="trust-badge"><i class="fas fa-lock text-primary"></i> SSL Secure</div>
+            <div class="trust-badge"><i class="fas fa-shield-alt text-primary"></i> GDPR Compliant</div>
+            <div class="trust-badge"><i class="fas fa-user-shield text-primary"></i> Privacy Protected</div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('auditForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const loader = document.getElementById('loader');
+            const resultsBox = document.getElementById('results');
+            
+            btn.disabled = true;
+            loader.style.display = 'block';
+            resultsBox.style.display = 'none';
+
+            const payload = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                domain: document.getElementById('domain').value
+            };
+
+            try {
+                // Fetch CSRF token first (since API expects it)
+                const csrfRes = await fetch('/api/csrf-token');
+                const csrfData = await csrfRes.json();
+                
+                const res = await fetch('/api/audit-domain', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'CSRF-Token': csrfData.csrfToken
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await res.json();
+                if (data.error) throw new Error(data.error);
+
+                document.getElementById('resDomain').textContent = data.domain;
+                
+                const formatStatus = (status) => status === 'pass' 
+                    ? '<span class="status-pass"><i class="fas fa-check-circle"></i> Pass</span>' 
+                    : '<span class="status-missing"><i class="fas fa-times-circle"></i> Missing/Warning</span>';
+
+                document.getElementById('resSpf').innerHTML = formatStatus(data.spf.status);
+                document.getElementById('resDkim').innerHTML = formatStatus(data.dkim.status);
+                document.getElementById('resDmarc').innerHTML = formatStatus(data.dmarc.status);
+
+                loader.style.display = 'none';
+                resultsBox.style.display = 'block';
+
+                // Redirect to thank you page after 5 seconds if email was provided
+                if (payload.email) {
+                    setTimeout(() => {
+                        window.location.href = '/thank-you';
+                    }, 5000);
+                }
+
+            } catch (err) {
+                alert('Audit failed: ' + err.message);
+                loader.style.display = 'none';
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

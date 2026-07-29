@@ -3242,6 +3242,11 @@ async function openDataDrilldown(type) {
         document.getElementById('profileEmail').value = currentUser.email || '';
         document.getElementById('profilePhone').value = currentUser.phone || '';
         
+        // Load Premium Membership data
+        if (typeof window.loadMembershipData === 'function') {
+            window.loadMembershipData();
+        }
+
         // Populate display fields
         if (document.getElementById('displayProfileName')) {
             document.getElementById('displayProfileName').textContent = currentUser.fullName || '-';
@@ -3453,6 +3458,11 @@ async function openDataDrilldown(type) {
         else if (tab === 'botIntelligence') loadBotIntelligence();
         else if (tab === 'emailLeads') loadEmailLeads();
         else if (tab === 'leadFunnel') loadLeadFunnel();
+        else if (tab === 'premiumMembers') {
+            if (typeof window.renderAdminPremiumMembers === 'function') {
+                window.renderAdminPremiumMembers();
+            }
+        }
     }
 
     // Helper to include admin JWT token in Authorization header
@@ -4811,3 +4821,118 @@ function generateWelcomeQrCode() {
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(generateWelcomeQrCode, 500);
 });
+
+// ==========================================
+// PREMIUM MEMBERSHIP MODULE
+// ==========================================
+
+async function loadMembershipData() {
+    if (!currentUser || !currentUser.id) return;
+    try {
+        const res = await fetch(`/api/membership/${currentUser.id}`);
+        const data = await res.json();
+        if (data.success) {
+            updateMembershipUI(data);
+        }
+    } catch (e) {
+        console.error('Failed to load membership', e);
+    }
+}
+window.loadMembershipData = loadMembershipData;
+
+function updateMembershipUI(data) {
+    const freeState = document.getElementById('premiumStateFree');
+    const activeState = document.getElementById('premiumStateActive');
+    
+    if (data.isPremium && data.membership && data.membership.status === 'Active') {
+        if (freeState) freeState.style.display = 'none';
+        if (activeState) activeState.style.display = 'block';
+        
+        const expiry = new Date(data.membership.expiry_date);
+        const daysRemaining = Math.max(0, Math.ceil((expiry - new Date()) / (1000 * 60 * 60 * 24)));
+        
+        if (document.getElementById('premiumDaysRemaining')) {
+            document.getElementById('premiumDaysRemaining').textContent = `${daysRemaining} Days Remaining`;
+        }
+        if (document.getElementById('premiumMembershipId')) {
+            document.getElementById('premiumMembershipId').textContent = 'PREM-' + data.membership.id.split('-')[0].toUpperCase();
+        }
+        if (document.getElementById('premiumExpiryDate')) {
+            document.getElementById('premiumExpiryDate').textContent = expiry.toLocaleDateString();
+        }
+    } else {
+        if (freeState) freeState.style.display = 'block';
+        if (activeState) activeState.style.display = 'none';
+    }
+}
+window.updateMembershipUI = updateMembershipUI;
+
+function openPaymentModal() {
+    const modal = document.getElementById('paymentModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        // Add a small timeout to allow display:flex to apply before adding class for transition
+        setTimeout(() => modal.classList.add('show'), 10);
+    }
+}
+window.openPaymentModal = openPaymentModal;
+
+function closePaymentModal() {
+    const modal = document.getElementById('paymentModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => modal.style.display = 'none', 300);
+    }
+}
+window.closePaymentModal = closePaymentModal;
+
+async function simulatePaymentProcessing() {
+    if (!currentUser || !currentUser.id) return;
+    const btn = document.getElementById('simulatePaymentBtn');
+    const loader = document.getElementById('paymentLoader');
+    
+    if (btn) btn.style.display = 'none';
+    if (loader) loader.style.display = 'block';
+    
+    // Simulate network delay for payment gateway
+    setTimeout(async () => {
+        try {
+            const res = await fetch('/api/membership/purchase', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: currentUser.id,
+                    plan_name: 'Road Warrior Premium',
+                    price: 499.00,
+                    duration: '1 Year',
+                    payment_id: 'pay_' + Math.random().toString(36).substring(2, 10),
+                    transaction_id: 'txn_' + Math.random().toString(36).substring(2, 10)
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                closePaymentModal();
+                if (typeof showToast === 'function') showToast('Payment Successful! Welcome to Premium!', 'success');
+                loadMembershipData();
+            } else {
+                if (typeof showToast === 'function') showToast('Payment Failed. Please try again.', 'error');
+            }
+        } catch (e) {
+            console.error('Payment Error:', e);
+            if (typeof showToast === 'function') showToast('Payment Error.', 'error');
+        } finally {
+            if (btn) btn.style.display = 'block';
+            if (loader) loader.style.display = 'none';
+        }
+    }, 1500);
+}
+window.simulatePaymentProcessing = simulatePaymentProcessing;
+
+// Override default profile show to include membership check
+const originalShowProfile = window.showProfile;
+if (originalShowProfile) {
+    window.showProfile = function() {
+        originalShowProfile();
+        loadMembershipData();
+    };
+}

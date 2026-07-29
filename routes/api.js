@@ -943,6 +943,128 @@ router.get('/health', async (req, res) => {
   res.json({ success: true, status: 'API is running', timestamp: new Date() });
 });
 
+// ----------------------------------------------------------------------
+// PREMIUM MEMBERSHIP ENDPOINTS
+// ----------------------------------------------------------------------
+
+router.get('/membership/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { data, error } = await supabase
+      .from('membership')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('status', 'Active')
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      // Check if expired
+      const membership = data[0];
+      if (membership.expiry_date && new Date(membership.expiry_date) < new Date()) {
+        // Expired
+        await supabase.from('membership').update({ status: 'Expired' }).eq('id', membership.id);
+        membership.status = 'Expired';
+        return res.json({ success: true, isPremium: false, membership });
+      }
+      return res.json({ success: true, isPremium: true, membership });
+    }
+    return res.json({ success: true, isPremium: false, membership: null });
+  } catch (error) {
+    console.error('Error fetching membership:', error);
+    res.status(500).json({ success: false, error: 'Server error fetching membership' });
+  }
+});
+
+router.post('/membership/purchase', async (req, res) => {
+  try {
+    const { userId, plan_name, price, duration, payment_id, transaction_id } = req.body;
+    
+    // Deactivate any existing active memberships
+    await supabase.from('membership').update({ status: 'Expired' }).eq('user_id', userId).eq('status', 'Active');
+    
+    // Calculate expiry date (1 year)
+    const startDate = new Date();
+    const expiryDate = new Date();
+    expiryDate.setFullYear(startDate.getFullYear() + 1);
+
+    const { data, error } = await supabase
+      .from('membership')
+      .insert({
+        user_id: userId,
+        plan_name,
+        price,
+        duration,
+        status: 'Active',
+        start_date: startDate.toISOString(),
+        expiry_date: expiryDate.toISOString(),
+        payment_id,
+        transaction_id
+      })
+      .select();
+
+    if (error) throw error;
+    res.json({ success: true, membership: data[0] });
+  } catch (error) {
+    console.error('Error purchasing membership:', error);
+    res.status(500).json({ success: false, error: 'Server error processing purchase' });
+  }
+});
+
+router.get('/admin/memberships', adminAuth, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('membership')
+      .select(`*, users!inner(fullName, phone, email)`)
+      .order('created_at', { ascending: false });
+      
+    if (error) throw error;
+    res.json({ success: true, memberships: data });
+  } catch (error) {
+    console.error('Error fetching admin memberships:', error);
+    res.status(500).json({ success: false, error: 'Server error fetching memberships' });
+  }
+});
+
+router.post('/admin/membership/renew', adminAuth, async (req, res) => {
+  try {
+    const { id } = req.body;
+    const { data: memData } = await supabase.from('membership').select('*').eq('id', id).single();
+    if (!memData) return res.status(404).json({ success: false, error: 'Not found' });
+    
+    const newExpiry = new Date(memData.expiry_date || new Date());
+    newExpiry.setFullYear(newExpiry.getFullYear() + 1);
+    
+    const { data, error } = await supabase
+      .from('membership')
+      .update({ expiry_date: newExpiry.toISOString(), status: 'Active' })
+      .eq('id', id)
+      .select();
+      
+    if (error) throw error;
+    res.json({ success: true, membership: data[0] });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Server error renewing membership' });
+  }
+});
+
+router.post('/admin/membership/deactivate', adminAuth, async (req, res) => {
+  try {
+    const { id } = req.body;
+    const { data, error } = await supabase
+      .from('membership')
+      .update({ status: 'Deactivated' })
+      .eq('id', id)
+      .select();
+      
+    if (error) throw error;
+    res.json({ success: true, membership: data[0] });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Server error deactivating membership' });
+  }
+});
 module.exports = router;
 
 // ----------------------------------------------------------------------
