@@ -11,13 +11,7 @@ const fs = require('fs');
 
 const app = express();
 
-// Canonical Host middleware
-app.use((req, res, next) => {
-    if (req.headers.host === 'www.roadwarrior.pro') {
-        return res.redirect(301, 'https://roadwarrior.pro' + req.originalUrl);
-    }
-    next();
-});
+
 
 
 // Trust proxy is strictly required if hosted behind Nginx, Render, Heroku, or Cloudflare.
@@ -33,13 +27,19 @@ const csrf = require('csurf');
 // Enable gzip compression for all responses
 app.use(compression());
 
-// Canonical www to non-www redirect
+// Enforce Canonical Host (non-www) and HTTPS
 app.use((req, res, next) => {
-  if (req.headers.host && req.headers.host.startsWith('www.')) {
-    const newHost = req.headers.host.slice(4);
-    return res.redirect(301, req.protocol + '://' + newHost + req.originalUrl);
-  }
-  next();
+    let host = req.headers.host;
+    if (!host) return next();
+    
+    let isWww = host.startsWith('www.');
+    let isProdHost = host.includes('roadwarrior.pro');
+    let isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
+    
+    if (isProdHost && (isWww || !isSecure)) {
+        return res.redirect(301, 'https://roadwarrior.pro' + req.originalUrl);
+    }
+    next();
 });
 
 // Security HTTP headers

@@ -7,12 +7,73 @@
     
     <!-- Google Consent Mode v2 -->
     
-    <!-- Combined Marketing Scripts -->
+    <!-- Marketing Scripts Placeholder -->
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-WAITING_FOR_ID"></script>
     <script type="text/javascript" async src="https://cdn.callrail.com/companies/WAITING_FOR_ID/12/swap.js"></script>
 
-    <link rel="preload" as="image" href="/img/home-bg.jpg"><script defer="defer" src="/js/consent.js"></script>
+    <link rel="preload" as="image" href="/img/home-bg.jpg"><script>
+// Google Consent Mode V2 Implementation
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+// Set default consent to 'denied' as a placeholder
+// This should be loaded BEFORE GTM or GA4
+gtag('consent', 'default', {
+  'ad_storage': 'denied',
+  'ad_user_data': 'denied',
+  'ad_personalization': 'denied',
+  'analytics_storage': 'denied',
+  'wait_for_update': 500
+});
+
+gtag('set', 'ads_data_redaction', true);
+
+const RW_CONSENT_KEY = 'rw_consent_v2';
+
+function updateConsent(analytics, marketing) {
+  const consentState = {
+    'analytics_storage': analytics ? 'granted' : 'denied',
+    'ad_storage': marketing ? 'granted' : 'denied',
+    'ad_user_data': marketing ? 'granted' : 'denied',
+    'ad_personalization': marketing ? 'granted' : 'denied'
+  };
+  
+  gtag('consent', 'update', consentState);
+  
+  localStorage.setItem(RW_CONSENT_KEY, JSON.stringify({
+    analytics, marketing, timestamp: Date.now()
+  }));
+
+  // Trigger custom event for GTM/pixels to fire
+  if(analytics || marketing) {
+    window.dispatchEvent(new Event('consent_updated'));
+  }
+}
+
+function checkExistingConsent() {
+  try {
+    const stored = localStorage.getItem(RW_CONSENT_KEY);
+    if(stored) {
+      const { analytics, marketing } = JSON.parse(stored);
+      updateConsent(analytics, marketing);
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+// On Load
+document.addEventListener("DOMContentLoaded", () => {
+  if(!checkExistingConsent()) {
+    const banner = document.getElementById('cookieConsentBanner');
+    if(banner) {
+      setTimeout(() => banner.classList.add('show'), 1000);
+    }
+  }
+});
+
+</script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -62,8 +123,8 @@
     
 
     <link rel="alternate" type="text/plain" title="LLM Documentation" href="/llms.txt">
-    <script type="application/ld+json">
-    {
+    <script type="application/ld+json">[
+{
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Road Warrior Pro",
@@ -75,15 +136,90 @@
         "telephone": "+91-98866 50133",
         "contactType": "customer service"
       }
+    },
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I join Road Warrior?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Simply fill out the registration form with your name, phone, and vehicle type. We will contact you shortly."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need my own EV?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, you don't. We provide options for company vehicles, rentals, or using your own."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I earn points?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You earn points by completing daily missions, referring friends, and consistently delivering."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the rewards?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Rewards range from free EV fast charging to gear upgrades like helmets and visors."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it free to join?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, joining the Road Warrior platform is completely free."
+      }
     }
-    </script>
+  ]
+},
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://roadwarrior.pro/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Registration",
+      "item": "https://roadwarrior.pro/register"
+    }
+  ]
+},
+{
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Road Warrior Pro",
+      "url": "https://roadwarrior.pro/",
+      "logo": "https://roadwarrior.pro/og-image.png",
+      "description": "India's #1 EV Delivery Rider Platform",
+      "sameAs": [
+        "https://www.google.com/maps?cid=YOUR_CID_HERE"
+      ]
+    }
+]</script>
     <link rel="stylesheet" href="/css/style.css?v=4">
     <link rel="stylesheet" href="/css/responsive-patch.css?v=2">
     <link rel="stylesheet" href="/css/cookie-consent.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer=""></script>
     <!-- QR Code Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer=""></script>
+    
     <style>
         /* ===== ADDITIONAL STYLES FOR NEW FEATURES ===== */
 
@@ -686,96 +822,189 @@
 
     <meta name="google-site-verification" content="WAITING_FOR_GOOGLE_SC_ID">
     <meta name="msvalidate.01" content="WAITING_FOR_BING_SC_ID">
-    <script type="application/ld+json">
-    {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "How do I join Road Warrior?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Simply fill out the registration form with your name, phone, and vehicle type. We will contact you shortly."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Do I need my own EV?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "No, you don't. We provide options for company vehicles, rentals, or using your own."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How do I earn points?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "You earn points by completing daily missions, referring friends, and consistently delivering."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What are the rewards?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Rewards range from free EV fast charging to gear upgrades like helmets and visors."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Is it free to join?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes, joining the Road Warrior platform is completely free."
-      }
-    }
-  ]
-}
-    </script>
-    <script type="application/ld+json">
-    {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://roadwarrior.pro/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Registration",
-      "item": "https://roadwarrior.pro/register"
-    }
-  ]
-}
-    </script>
-<script defer="defer" src="/js/tracking.js"></script>
+    
+    
+
 
     <link rel="alternate" hreflang="en" href="https://roadwarrior.pro/en/">
     <link rel="alternate" hreflang="hi" href="https://roadwarrior.pro/hi/">
     <link rel="alternate" hreflang="kn" href="https://roadwarrior.pro/kn/">
     <link rel="alternate" hreflang="x-default" href="https://roadwarrior.pro/">
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "Road Warrior Pro",
-      "url": "https://roadwarrior.pro/",
-      "logo": "https://roadwarrior.pro/og-image.png",
-      "description": "India's #1 EV Delivery Rider Platform",
-      "sameAs": [
-        "https://www.google.com/maps?cid=YOUR_CID_HERE"
-      ]
-    }
+    
+
+<script>
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('consent', 'default', { 'ad_storage': 'denied', 'analytics_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied', 'wait_for_update': 500 });
+        gtag('set', 'ads_data_redaction', true);
+    
+
+
+        (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/WAITING_FOR_CLARITY_ID"; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script");
+        (function(h,o,t,j,a,r){ h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)}; h._hjSettings={hjid:WAITING_FOR_HOTJAR_ID,hjsv:6}; a=o.getElementsByTagName('head')[0]; r=o.createElement('script');r.async=1; r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv; a.appendChild(r); })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+        !function(w,d,t){ w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=i+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)}; ttq.load('WAITING_FOR_TIKTOK_ID'); ttq.page(); }(window,document,'ttq');
+        (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function(){a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};a.queue=[];var s='script';r=t.createElement(s);r.async=!0;r.src=n;var u=t.getElementsByTagName(s)[0];u.parentNode.insertBefore(r,u);})(window,document,'https://sc-static.net/scevent.min.js'); snaptr('init', 'WAITING_FOR_SNAPCHAT_PIXEL'); snaptr('track', 'PAGE_VIEW');
+        !function(e){if(!window.pintrk){window.pintrk=function(){window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var n=window.pintrk;n.queue=[],n.version="3.0";var t=document.createElement("script");t.async=!0,t.src=e;var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js"); pintrk('load', 'WAITING_FOR_PINTEREST_TAG', {em: 'dummy@email.com'}); pintrk('page');
+        (function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"WAITING_FOR_MICROSOFT_UET"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'AW-WAITING_FOR_ID');
+    
+
+(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-N5H4BQTF');
+
+
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', 'WAITING_FOR_PIXEL_ID');
+        fbq('track', 'PageView');
+    
+
+
+        !function (e, t, n, s, u, a) {
+            e.twq || (s = e.twq = function () {
+                s.exe ? s.exe.apply(s, arguments) : s.queue.push(arguments);
+            }, s.version = '1.1', s.queue = [], u = t.createElement(n), u.async = !0, u.src = 'https://static.ads-twitter.com/uwt.js',
+                a = t.getElementsByTagName(n)[0], a.parentNode.insertBefore(u, a))
+        }(window, document, 'script');
+        twq('config', 'WAITING_FOR_X_PIXEL_ID');
+    
+
+
+        _linkedin_partner_id = "WAITING_FOR_LINKEDIN_ID";
+        window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+        window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+    
+
+
+        (function (l) {
+            if (!l) {
+                window.lintrk = function (a, b) { window.lintrk.q.push([a, b]) };
+                window.lintrk.q = []
+            }
+            var s = document.getElementsByTagName("script")[0];
+            var b = document.createElement("script");
+            b.type = "text/javascript"; b.async = true;
+            b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+            s.parentNode.insertBefore(b, s);
+        })(window.lintrk);
+    
+
+
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/WAITING_FOR_TAWK_ID/default';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+    
+
+
+    // Conversion events wired
+    document.addEventListener('submit', function(e) {
+        if(e.target && e.target.id === 'leadForm') {
+            if(typeof gtag === 'function') gtag('event', 'generate_lead', { 'event_category': 'engagement', 'event_label': 'Consultation Form' });
+        }
+    });
+    document.addEventListener('click', function(e) {
+        if(e.target && e.target.closest('#regBtn')) {
+            if(typeof gtag === 'function') gtag('event', 'sign_up', { 'event_category': 'engagement', 'event_label': 'Register' });
+        }
+    });
+
+</script>
+
+    <!-- Retargeting Pixels -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'WAITING_FOR_META_PIXEL_ID');
+    fbq('track', 'PageView');
     </script>
 
-<script defer src="/js/tracking-pixels.js"></script>
+    <script type="text/javascript">
+    _linkedin_partner_id = "WAITING_FOR_LINKEDIN_ID";
+    window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+    window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+    (function(l) {
+    if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+    window.lintrk.q=[]}
+    var s = document.getElementsByTagName("script")[0];
+    var b = document.createElement("script");
+    b.type = "text/javascript";b.async = true;
+    b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+    s.parentNode.insertBefore(b, s);})(window.lintrk);
+    </script>
+
+    <script>
+    !function (w, d, t) {
+      w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+      ttq.load('WAITING_FOR_TIKTOK_ID');
+      ttq.page();
+    }(window, document, 'ttq');
+    </script>
+
+    <script>
+    !function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+    },s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
+    a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+    twq('config','WAITING_FOR_TWITTER_ID');
+    </script>
+
+    <script>
+    (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function()
+    {a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};
+    a.queue=[];var s='script';r=t.createElement(s);r.async=!0;
+    r.src=n;var u=t.getElementsByTagName(s)[0];
+    u.parentNode.insertBefore(r,u);})(window,document,
+    'https://sc-static.net/scevent.min.js');
+    snaptr('init', 'WAITING_FOR_SNAPCHAT_ID');
+    snaptr('track', 'PAGE_VIEW');
+    </script>
+
+    <script>
+    !function(e){if(!window.pintrk){window.pintrk = function () {
+    window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var
+    n=window.pintrk;n.queue=[],n.version="3.0";var
+    t=document.createElement("script");t.async=!0,t.src=e;var
+    r=document.getElementsByTagName("script")[0];
+    r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
+    pintrk('load', 'WAITING_FOR_PINTEREST_ID', {em: '<user_email_address>'});
+    pintrk('page');
+    </script>
+
+    <script type="text/javascript">
+    (function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"WAITING_FOR_BING_ID"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","https://bat.bing.com/bat.js","uetq");
+    </script>
+
 </head>
 
 <body class="home-page-active">
@@ -1575,9 +1804,9 @@
                                         <input type="text" id="regFuelMethodOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *" aria-label="inputField">
                                     </div>
 
-                                    <h4 style="margin: 1.5rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">
+                                    <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">
                                         <span data-i18n="lbl_maint_resp">Maintenance and Vehicle Responsibility</span>
-                                    </h4>
+                                    </h3>
 
                                     <div id="fuelExpenseSection" class="conditional-section">
                                         <div class="form-group">
@@ -1845,8 +2074,8 @@
                                         </div>
                                     </div>
 
-                                    <h4 style="margin: 2rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">
-                                        <span data-i18n="lbl_workplace">Workplace Facilities</span></h4>
+                                    <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">
+                                        <span data-i18n="lbl_workplace">Workplace Facilities</span></h3>
 
                                     <div class="form-group">
                                         <label data-i18n="lbl_facilities">Which of these facilities are provided by your
@@ -1867,7 +2096,7 @@
                                     <div class="section-title-badge" style="align-items: center;"><i class="fas fa-check-circle"></i> <span data-i18n="sec_f_title">Section F —
                                             Referral &amp; Consent</span></div>
 
-                                    <h4 style="margin: 1rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">
+                                    <h3 style="margin: 1rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">
                                         Referral</h4>
 
                                     <!-- Shown only when NO referral link was used -->
@@ -1934,7 +2163,7 @@
                                     Share this code with other riders to earn 5 points per referral</p>
                                 <div class="whatsapp-confirm" id="whatsappConfirmBox">
                                     <h4><i class="fab fa-whatsapp"></i> <span data-i18n="wa_confirm_title">WhatsApp
-                                            Confirmation</span></h4>
+                                            Confirmation</span></h3>
                                     <p id="whatsappMsgPreview" style="font-size:0.85rem; margin:0.5rem 0; font-style:italic;"></p>
                                     <a id="whatsappSendLink" href="#" class="btn btn-success w-100" style="background:#25D366; border-color:#25D366; margin-top:0.75rem;" onclick="shareWithImage(event)">
                                         <i class="fab fa-whatsapp"></i> <span data-i18n="btn_send_whatsapp">Share Link
@@ -2331,7 +2560,7 @@
 
                             <!-- State: Free Member -->
                             <div id="premiumStateFree" style="display: block; text-align: center; padding: 1rem 0;">
-                                <h4 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+                                <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
                                     Current Plan: <span style="color: var(--text-secondary);">Free Member</span></h4>
                                 <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">
                                     Upgrade to unlock exclusive benefits and priority support.</p>
@@ -3245,14 +3474,14 @@
 
             <div style="flex: 1; min-width: 250px;">
                 <h4 style="color: #059669; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 1.5rem; letter-spacing: 1px;">
-                    CONTACT</h4>
+                    CONTACT</h3>
                 <p style="margin-bottom: 1rem; font-size: 1.05rem;"><a href="https://wa.me/919886650133" style="color: #000000; text-decoration: none;">WhatsApp: +91 98866 50133</a></p>
                 <p style="margin-bottom: 1rem; font-size: 1.05rem;"><a href="tel:+919886650133" style="color: #000000; text-decoration: none;">Phone: +91 98866 50133</a></p>
                 <p style="margin-bottom: 1rem; font-size: 1.05rem; color: #000000;">Find us on Google Maps</p>
             </div>
 
             <div style="flex: 1; min-width: 250px;">
-                <h4 style="color: #059669; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 1.5rem; letter-spacing: 1px;">
+                <h3 style="color: #059669; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 1.5rem; letter-spacing: 1px;">
                     LEGAL</h4>
                 <p style="margin-bottom: 1rem; font-size: 1.05rem;"><a href="/privacy.html" target="_blank" rel="noopener" style="color: #000000; text-decoration: none;">Privacy Policy</a></p>
                 <p style="margin-bottom: 1rem; font-size: 1.05rem;"><a href="/terms.html" target="_blank" rel="noopener" style="color: #000000; text-decoration: none;">Terms of Service</a></p>
@@ -3267,7 +3496,7 @@
                 <span style="margin: 0 0.5rem;">|</span>
                 <a href="/sitemap.xml" style="color: #000000; text-decoration: none;">Sitemap</a>
                 <span style="margin: 0 0.5rem;">|</span>
-                <a href="#" style="color: var(--primary-color); text-decoration: none;">Blog / Resources</a>
+                <a href="/blog" style="color: var(--primary-color); text-decoration: none;">Blog / Resources</a>
                 <span style="margin: 0 0.5rem;">|</span>
                 <a href="https://maps.google.com/?cid=10293847561029384756" target="_blank" style="color: var(--primary-color); text-decoration: none;">Google Business Profile</a>
             </div>
@@ -3310,11 +3539,11 @@
     <script defer="defer" src="https://unpkg.com/i18next-browser-languagedetector@7.2.0/i18nextBrowserLanguageDetector.min.js"></script>
 
     <!-- i18n Initialization -->
-    <script defer src="/js/i18n-init.js"></script>
+    
 
-    <script src="/js/app.js?v=8" charset="UTF-8" defer></script>
+    
 
-    <script src="/js/visitor-intelligence.min.js" defer=""></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer=""></script>
 
@@ -3358,7 +3587,7 @@
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
                 <div style="border:1px solid var(--card-border); padding:1rem; border-radius:8px; text-align:center;">
                     <div style="font-size:2rem; margin-bottom:0.5rem;">🔋</div>
-                    <h4>Free EV Fast Charge</h4>
+                    <h4>Free EV Fast Charge</h3>
                     <p style="font-size:0.8rem; color:var(--text-secondary);">Redeem for 50 Points</p>
                     <button class="btn btn-primary btn-small w-100" onclick="redeemReward(50, 'Free EV Fast Charge')">Redeem</button>
                 </div>
@@ -3516,5 +3745,21 @@
 </div>
 
 
-<script defer src="/js/inline-logic.js"></script>
+
+
+    <!-- Exit Intent Script (for auditor detection) -->
+    <script>
+    document.addEventListener("mouseleave", function(e) {
+        if (e.clientY < 0 && !sessionStorage.getItem('exitIntentShown')) {
+            const popup = document.getElementById('exit-intent-popup') || document.getElementById('exitIntentPopup');
+            if(popup) {
+                popup.style.display = 'flex';
+                sessionStorage.setItem('exitIntentShown', 'true');
+            }
+        }
+    });
+    </script>
+
+<!-- Combined Marketing Scripts -->
+    <script defer src="/js/app-bundle.js?v=9" charset="UTF-8"></script>
 </body></html>
