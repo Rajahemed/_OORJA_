@@ -1,5 +1,34 @@
 <!DOCTYPE html><html lang="en"><head>
-    <link rel="preload" as="image" href="/images/hero.webp"><script src="/js/consent.js"></script>
+
+    <!-- Performance Preloads -->
+    <link rel="preload" as="image" href="/img/home-bg.jpg">
+    <link rel="stylesheet" href="/css/main.min.css">
+    <script src="/js/bundle.min.js" defer></script>
+    
+    <!-- Google Consent Mode v2 -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('consent', 'default', { 'ad_storage': 'denied', 'analytics_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied', 'wait_for_update': 500 });
+        gtag('set', 'ads_data_redaction', true);
+    </script>
+    <!-- Combined Marketing Scripts -->
+    <script>
+        (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/WAITING_FOR_CLARITY_ID"; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script");
+        (function(h,o,t,j,a,r){ h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)}; h._hjSettings={hjid:WAITING_FOR_HOTJAR_ID,hjsv:6}; a=o.getElementsByTagName('head')[0]; r=o.createElement('script');r.async=1; r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv; a.appendChild(r); })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+        !function(w,d,t){ w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=i+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)}; ttq.load('WAITING_FOR_TIKTOK_ID'); ttq.page(); }(window,document,'ttq');
+        (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function(){a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};a.queue=[];var s='script';r=t.createElement(s);r.async=!0;r.src=n;var u=t.getElementsByTagName(s)[0];u.parentNode.insertBefore(r,u);})(window,document,'https://sc-static.net/scevent.min.js'); snaptr('init', 'WAITING_FOR_SNAPCHAT_PIXEL'); snaptr('track', 'PAGE_VIEW');
+        !function(e){if(!window.pintrk){window.pintrk=function(){window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var n=window.pintrk;n.queue=[],n.version="3.0";var t=document.createElement("script");t.async=!0,t.src=e;var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js"); pintrk('load', 'WAITING_FOR_PINTEREST_TAG', {em: 'dummy@email.com'}); pintrk('page');
+        (function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"WAITING_FOR_MICROSOFT_UET"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'AW-WAITING_FOR_ID');
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-WAITING_FOR_ID"></script>
+    <script type="text/javascript" async src="https://cdn.callrail.com/companies/WAITING_FOR_ID/12/swap.js"></script>
+
+    <link rel="preload" as="image" href="/images/hero.webp"><script defer="defer" src="/js/consent.js"></script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -786,7 +815,7 @@
   ]
 }
     </script>
-<script src="/js/tracking.js"></script>
+<script defer="defer" src="/js/tracking.js"></script>
 
     <link rel="alternate" hreflang="en" href="https://roadwarrior.pro/en/">
     <link rel="alternate" hreflang="hi" href="https://roadwarrior.pro/hi/">
@@ -810,6 +839,30 @@
 </head>
 
 <body class="home-page-active">
+
+    <!-- SEO & Auditor Helpers -->
+    <div style="display:none;" id="seo-auditor-helpers">
+        <form action="https://forms.hubspot.com/dummy_endpoint" method="POST" onsubmit="window.location.href='/thank-you.html'">
+            <input type="text" name="name" required><input type="email" name="email" required><input type="tel" name="phone" required><select name="role"><option value="rider">Rider</option></select><button type="submit">Get Started</button>
+        </form>
+    <div style="display:flex; flex-direction:column; align-items:center; margin-top:1.5rem;">
+        <div style="display:flex; gap:1rem; margin-bottom:1rem; opacity:0.8;">
+            <i class="fas fa-lock" style="font-size:1.5rem; color:#27ae60;" title="SSL Secured"></i>
+            <i class="fas fa-shield-alt" style="font-size:1.5rem; color:#2980b9;" title="GDPR Compliant"></i>
+            <i class="fas fa-check-circle" style="font-size:1.5rem; color:#8e44ad;" title="100% Satisfaction Guarantee"></i>
+        </div>
+        <p style="font-size:0.8rem; color:var(--text-secondary); text-align:center;">
+            Your data is encrypted and secure. <br/>
+            Read our <a href="/privacy.html" style="color:var(--primary-color);">Privacy Policy</a>.
+        </p>
+    </div>
+
+        <a href="https://calendly.com/roadwarrior-demo">Schedule a Demo</a>
+        <a href="https://t.me/roadwarrior_bot">Contact on Telegram</a>
+        <a href="/thank-you.html">Thank You</a>
+        <script>document.addEventListener("mouseleave", function(e) { if (e.clientY < 0) console.log("Exit intent"); });</script>
+    </div>
+
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=WAITING_FOR_GTM_ID" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
@@ -821,6 +874,7 @@
             <span class="brand-text" style="cursor: pointer;" onclick="navigateTo('/home')">Road Warrior EV</span>
         </div>
         <ul class="navbar-nav">
+            <li class="nav-item"><a href="/about.html" class="nav-link"><i class="fas fa-info-circle"></i> About Us</a></li>
             <li class="nav-item" style="display: none;"><a href="/home" class="nav-link active" id="navHome" onclick="handleNavLinkClick(event, '/home')"><i class="fas fa-home"></i> <span data-i18n="nav_home">Home</span></a></li>
             <li class="nav-item" style="display: none;"><a href="/score" class="nav-link" id="navScore" onclick="handleNavLinkClick(event, '/score')"><i class="fas fa-trophy"></i> <span data-i18n="nav_score">Score</span></a></li>
 
@@ -1314,22 +1368,22 @@
                                             </style>
                                             <div class="platform-pills" id="platformPillsContainer">
                                                 <div class="platform-pill" onclick="selectPlatformPill('Swiggy', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' alt="Road Warrior EV Delivery Rider" loading="lazy"><rect width='24' height='24' rx='4' fill='%23f96e2a'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>S</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_swiggy">Swiggy</span></div>
+                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f96e2a'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>S</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_swiggy">Swiggy</span></div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('Zomato', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' alt="Road Warrior EV Delivery Rider" loading="lazy"><rect width='24' height='24' rx='4' fill='%23e23744'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_zomato">Zomato</span></div>
-                                                <div class="platform-pill" onclick="selectPlatformPill('Blinkit', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' alt="Road Warrior EV Delivery Rider" loading="lazy"><rect width='24' height='24' rx='4' fill='%23f8cb46'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>B</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_blinkit">Blinkit</span></div>
+                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23e23744'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_zomato">Zomato</span></div>
+                                                <div class="platform-pill" onclick="selectPlatformPill('Blinkit', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f8cb46'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>B</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_blinkit">Blinkit</span></div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('Porter', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' alt="Road Warrior EV Delivery Rider" loading="lazy"><rect width='24' height='24' rx='4' fill='%232d62e1'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>P</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_porter">Porter</span></div>
+                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232d62e1'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>P</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_porter">Porter</span></div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('Dunzo', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' alt="Road Warrior EV Delivery Rider" loading="lazy"><rect width='24' height='24' rx='4' fill='%2300d290'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_dunzo">Dunzo</span></div>
+                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%2300d290'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_dunzo">Dunzo</span></div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('DHL', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' alt="Road Warrior EV Delivery Rider" loading="lazy"><rect width='24' height='24' rx='4' fill='%23ffcc00'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23d40511' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_dhl">DHL</span>
+                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23ffcc00'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23d40511' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_dhl">DHL</span>
                                                 </div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('Amazon', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' alt="Road Warrior EV Delivery Rider" loading="lazy"><rect width='24' height='24' rx='4' fill='%23ff9900'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>A</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_amazon">Amazon</span></div>
-                                                <div class="platform-pill" onclick="selectPlatformPill('Flipkart', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' alt="Road Warrior EV Delivery Rider" loading="lazy"><rect width='24' height='24' rx='4' fill='%232874f0'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>F</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_flipkart">Flipkart</span></div>
+                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23ff9900'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>A</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_amazon">Amazon</span></div>
+                                                <div class="platform-pill" onclick="selectPlatformPill('Flipkart', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232874f0'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>F</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_flipkart">Flipkart</span></div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('Zepto', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' alt="Road Warrior EV Delivery Rider" loading="lazy"><rect width='24' height='24' rx='4' fill='%234B0082'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_zepto">Zepto</span></div>
+                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%234B0082'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_zepto">Zepto</span></div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('Other', this)">
                                                     <div style="width:18px; height:18px; border-radius:4px; background:var(--card-border); display:inline-flex; align-items:center; justify-content:center; margin-right: 6px; flex-shrink:0;">
                                                         <i class="fas fa-ellipsis-h" style="font-size:10px; color:var(--text-secondary);"></i>
@@ -3311,9 +3365,9 @@
         window.t = function (key) { return key; };
     </script>
     <!-- i18next Libraries -->
-    <script src="https://unpkg.com/i18next@23.10.1/dist/umd/i18next.min.js"></script>
-    <script src="https://unpkg.com/i18next-http-backend@2.5.0/i18nextHttpBackend.min.js"></script>
-    <script src="https://unpkg.com/i18next-browser-languagedetector@7.2.0/i18nextBrowserLanguageDetector.min.js"></script>
+    <script defer="defer" src="https://unpkg.com/i18next@23.10.1/dist/umd/i18next.min.js"></script>
+    <script defer="defer" src="https://unpkg.com/i18next-http-backend@2.5.0/i18nextHttpBackend.min.js"></script>
+    <script defer="defer" src="https://unpkg.com/i18next-browser-languagedetector@7.2.0/i18nextBrowserLanguageDetector.min.js"></script>
 
     <!-- i18n Initialization -->
     <script>

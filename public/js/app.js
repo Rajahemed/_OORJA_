@@ -4464,7 +4464,27 @@ window.selectPlatformPill = function(value, element) {
                     groupEl.className = 'form-group';
                     groupEl.style.marginBottom = '0.5rem';
                     groupEl.innerHTML = `
-                        <label style="font-size: 0.85rem; margin-bottom: 0.2rem;">${window.i18next ? window.i18next.t("plat_" + platform.toLowerCase()) : platform} ${window.i18next ? window.i18next.t("lbl_id") : "ID"}</label>
+                        <label style="font-size: 0.85rem; margin-bottom: 0.2rem;">${
+    (function(){
+        let plat = platform;
+        let lbl = 'ID';
+        if (window.i18next && typeof window.i18next.t === 'function') {
+            let tPlat = window.i18next.t('plat_' + platform.toLowerCase());
+            let tLbl = window.i18next.t('lbl_id');
+            if (tPlat && tPlat !== 'undefined' && tPlat !== 'plat_' + platform.toLowerCase()) plat = tPlat;
+            if (tLbl && tLbl !== 'undefined' && tLbl !== 'lbl_id') lbl = tLbl;
+        }
+        if (plat === platform && window.t) {
+            let tPlat = window.t('plat_' + platform.toLowerCase());
+            if (tPlat && tPlat !== 'undefined' && tPlat !== 'plat_' + platform.toLowerCase()) plat = tPlat;
+        }
+        if (lbl === 'ID' && window.t) {
+            let tLbl = window.t('lbl_id');
+            if (tLbl && tLbl !== 'undefined' && tLbl !== 'lbl_id') lbl = tLbl;
+        }
+        return plat + ' ' + lbl;
+    })()
+}</label>
                         <input type="text" class="form-control" name="platformId_${platform}" id="platformId_${platform}" required>
                     `;
                     idsContainer.appendChild(groupEl);
