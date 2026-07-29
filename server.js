@@ -11,6 +11,15 @@ const fs = require('fs');
 
 const app = express();
 
+// Canonical Host middleware
+app.use((req, res, next) => {
+    if (req.headers.host === 'www.roadwarrior.pro') {
+        return res.redirect(301, 'https://roadwarrior.pro' + req.originalUrl);
+    }
+    next();
+});
+
+
 // Trust proxy is strictly required if hosted behind Nginx, Render, Heroku, or Cloudflare.
 // Without this, express-rate-limit sees all users as having the exact same proxy IP.
 app.set('trust proxy', 1);
