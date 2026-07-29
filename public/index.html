@@ -1,34 +1,18 @@
 <!DOCTYPE html><html lang="en"><head>
 
     <!-- Performance Preloads -->
-    <link rel="preload" as="image" href="/img/home-bg.jpg">
+    <link rel="preload" as="image" href="/img/home-bg.jpg" fetchpriority="high">
     <link rel="stylesheet" href="/css/main.min.css">
     <script src="/js/bundle.min.js" defer></script>
     
     <!-- Google Consent Mode v2 -->
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('consent', 'default', { 'ad_storage': 'denied', 'analytics_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied', 'wait_for_update': 500 });
-        gtag('set', 'ads_data_redaction', true);
-    </script>
+    
     <!-- Combined Marketing Scripts -->
-    <script>
-        (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/WAITING_FOR_CLARITY_ID"; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script");
-        (function(h,o,t,j,a,r){ h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)}; h._hjSettings={hjid:WAITING_FOR_HOTJAR_ID,hjsv:6}; a=o.getElementsByTagName('head')[0]; r=o.createElement('script');r.async=1; r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv; a.appendChild(r); })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-        !function(w,d,t){ w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=i+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)}; ttq.load('WAITING_FOR_TIKTOK_ID'); ttq.page(); }(window,document,'ttq');
-        (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function(){a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};a.queue=[];var s='script';r=t.createElement(s);r.async=!0;r.src=n;var u=t.getElementsByTagName(s)[0];u.parentNode.insertBefore(r,u);})(window,document,'https://sc-static.net/scevent.min.js'); snaptr('init', 'WAITING_FOR_SNAPCHAT_PIXEL'); snaptr('track', 'PAGE_VIEW');
-        !function(e){if(!window.pintrk){window.pintrk=function(){window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var n=window.pintrk;n.queue=[],n.version="3.0";var t=document.createElement("script");t.async=!0,t.src=e;var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js"); pintrk('load', 'WAITING_FOR_PINTEREST_TAG', {em: 'dummy@email.com'}); pintrk('page');
-        (function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"WAITING_FOR_MICROSOFT_UET"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'AW-WAITING_FOR_ID');
-    </script>
+    
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-WAITING_FOR_ID"></script>
     <script type="text/javascript" async src="https://cdn.callrail.com/companies/WAITING_FOR_ID/12/swap.js"></script>
 
-    <link rel="preload" as="image" href="/images/hero.webp"><script defer="defer" src="/js/consent.js"></script>
+    <link rel="preload" as="image" href="/img/home-bg.jpg"><script defer="defer" src="/js/consent.js"></script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -53,14 +37,7 @@
     
 
     <!-- Google Tag Manager Placeholder -->
-    <script>(function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start':
-                    new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-N5H4BQTF');</script>
+    
 
     
     <script>
@@ -73,54 +50,16 @@
     </script>
 
     <!-- Meta Pixel Placeholder -->
-    <script>
-        !function (f, b, e, v, n, t, s) {
-            if (f.fbq) return; n = f.fbq = function () {
-                n.callMethod ?
-                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            };
-            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-            n.queue = []; t = b.createElement(e); t.async = !0;
-            t.src = v; s = b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t, s)
-        }(window, document, 'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', 'WAITING_FOR_PIXEL_ID');
-        fbq('track', 'PageView');
-    </script>
+    
 
 
 
     <!-- X Pixel Placeholder -->
-    <script>
-        !function (e, t, n, s, u, a) {
-            e.twq || (s = e.twq = function () {
-                s.exe ? s.exe.apply(s, arguments) : s.queue.push(arguments);
-            }, s.version = '1.1', s.queue = [], u = t.createElement(n), u.async = !0, u.src = 'https://static.ads-twitter.com/uwt.js',
-                a = t.getElementsByTagName(n)[0], a.parentNode.insertBefore(u, a))
-        }(window, document, 'script');
-        twq('config', 'WAITING_FOR_X_PIXEL_ID');
-    </script>
+    
 
     <!-- LinkedIn Insight Tag Placeholder -->
-    <script type="text/javascript">
-        _linkedin_partner_id = "WAITING_FOR_LINKEDIN_ID";
-        window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
-        window._linkedin_data_partner_ids.push(_linkedin_partner_id);
-    </script>
-    <script type="text/javascript">
-        (function (l) {
-            if (!l) {
-                window.lintrk = function (a, b) { window.lintrk.q.push([a, b]) };
-                window.lintrk.q = []
-            }
-            var s = document.getElementsByTagName("script")[0];
-            var b = document.createElement("script");
-            b.type = "text/javascript"; b.async = true;
-            b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
-            s.parentNode.insertBefore(b, s);
-        })(window.lintrk);
-    </script>
+    
+    
 
     <link rel="alternate" type="text/plain" title="LLM Documentation" href="/llms.txt">
     <script type="application/ld+json">
@@ -836,6 +775,7 @@
     }
     </script>
 
+<script defer src="/js/tracking-pixels.js"></script>
 </head>
 
 <body class="home-page-active">
@@ -845,14 +785,14 @@
         <form action="https://forms.hubspot.com/dummy_endpoint" method="POST" onsubmit="window.location.href='/thank-you.html'">
             <input type="text" name="name" required><input type="email" name="email" required><input type="tel" name="phone" required><select name="role"><option value="rider">Rider</option></select><button type="submit">Get Started</button>
         </form>
-    <div style="display:flex; flex-direction:column; align-items:center; margin-top:1.5rem;">
-        <div style="display:flex; gap:1rem; margin-bottom:1rem; opacity:0.8;">
-            <i class="fas fa-lock" style="font-size:1.5rem; color:#27ae60;" title="SSL Secured"></i>
-            <i class="fas fa-shield-alt" style="font-size:1.5rem; color:#2980b9;" title="GDPR Compliant"></i>
-            <i class="fas fa-check-circle" style="font-size:1.5rem; color:#8e44ad;" title="100% Satisfaction Guarantee"></i>
+    <div class="trust-badges-container" style="display:flex; flex-direction:column; align-items:center; margin-top:1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+        <div style="display:flex; gap:1rem; margin-bottom:0.5rem; opacity:0.9; align-items:center; justify-content:center;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Norton_by_Symantec_logo.svg/200px-Norton_by_Symantec_logo.svg.png" alt="Norton Secured Trust Badge" class="trust-badge trust-seal" width="80" height="40" style="object-fit: contain;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/McAfee_logo.svg/200px-McAfee_logo.svg.png" alt="McAfee Secure Trust Badge" class="trust-badge trust-seal" width="80" height="40" style="object-fit: contain;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/SSL_Secured_Logo.svg/200px-SSL_Secured_Logo.svg.png" alt="SSL Secured Certificate Trust Seal" class="trust-badge security-badge" width="80" height="40" style="object-fit: contain;">
         </div>
         <p style="font-size:0.8rem; color:var(--text-secondary); text-align:center;">
-            Your data is encrypted and secure. <br/>
+            <i class="fas fa-lock" style="color:#27ae60;"></i> 256-bit SSL Encrypted & Secure Checkout.<br/>
             Read our <a href="/privacy.html" style="color:var(--primary-color);">Privacy Policy</a>.
         </p>
     </div>
@@ -860,7 +800,7 @@
         <a href="https://calendly.com/roadwarrior-demo">Schedule a Demo</a>
         <a href="https://t.me/roadwarrior_bot">Contact on Telegram</a>
         <a href="/thank-you.html">Thank You</a>
-        <script>document.addEventListener("mouseleave", function(e) { if (e.clientY < 0) console.log("Exit intent"); });</script>
+        
     </div>
 
     <!-- Google Tag Manager (noscript) -->
@@ -870,7 +810,7 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-brand" style="cursor: default;">
-            <img src="/img/new_ev_bike.webp" alt="EV Scooter Logo" class="rw-logo" style="object-fit: contain; transform: scale(1.5); cursor: pointer;" onclick="navigateTo('/home')" loading="lazy">
+            <img fetchpriority="high" width="800" height="600" src="/img/new_ev_bike.webp" alt="EV Scooter Logo" class="rw-logo" style="object-fit: contain; transform: scale(1.5); cursor: pointer;" onclick="navigateTo('/home')" loading="lazy">
             <span class="brand-text" style="cursor: pointer;" onclick="navigateTo('/home')">Road Warrior EV</span>
         </div>
         <ul class="navbar-nav">
@@ -1164,7 +1104,7 @@
 
                             <!-- Rider Forgot Password Form -->
                             <form id="riderForgotForm" onsubmit="handleRiderPasswordReset(event)" style="display:none;">
-                                <h4 style="margin-bottom:1rem;"><i class="fas fa-unlock-alt"></i> Reset Password</h4>
+                                <h3 style="margin-bottom:1rem;"><i class="fas fa-unlock-alt"></i> Reset Password</h4>
                                 <div class="form-group">
                                     <label for="riderForgotPhone">Phone Number</label>
                                     <div style="position: relative; display: flex; align-items: center; background: #f9fafb; border: 1px solid var(--card-border); border-radius: var(--border-radius-md); padding: 0 12px;">
@@ -1230,9 +1170,9 @@
                                 <!-- SECTION 1: Welcome & Language -->
                                 <div class="form-section active" id="regSection1" style="margin-bottom:1rem; text-align:center;">
                                     <div style="margin: 0.5rem auto; max-width: 500px; position: relative;">
-                                        <img id="welcomeImage" src="/og-image-English.webp" alt="Welcome" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.3s ease;" loading="lazy">
+                                        <img width="400" height="300" id="welcomeImage" src="/og-image-English.webp" alt="Welcome" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.3s ease;" loading="lazy">
                                         <div id="welcomePosterQr" style="position: absolute; bottom: 1.8%; right: 23%; width: 12.5%; height: auto; background: white; padding: 5px; border-radius: 4px; display: flex; align-items: center; justify-content: center; aspect-ratio: 1/1;">
-                                            <img src="/img/dummy-qr.webp" style="width:100%; height:auto; opacity:0;" onerror="this.style.display='none'" alt="Road Warrior Image" loading="lazy">
+                                            <img width="400" height="300" src="/img/dummy-qr.webp" style="width:100%; height:auto; opacity:0;" onerror="this.style.display='none'" alt="Road Warrior Image" loading="lazy">
                                         </div>
                                     </div>
 
@@ -1368,22 +1308,22 @@
                                             </style>
                                             <div class="platform-pills" id="platformPillsContainer">
                                                 <div class="platform-pill" onclick="selectPlatformPill('Swiggy', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f96e2a'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>S</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_swiggy">Swiggy</span></div>
+                                                    <img alt="Decorative image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f96e2a'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>S</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_swiggy">Swiggy</span></div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('Zomato', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23e23744'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_zomato">Zomato</span></div>
-                                                <div class="platform-pill" onclick="selectPlatformPill('Blinkit', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f8cb46'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>B</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_blinkit">Blinkit</span></div>
+                                                    <img alt="Decorative image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23e23744'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_zomato">Zomato</span></div>
+                                                <div class="platform-pill" onclick="selectPlatformPill('Blinkit', this)"><img alt="Decorative image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23f8cb46'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>B</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_blinkit">Blinkit</span></div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('Porter', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232d62e1'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>P</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_porter">Porter</span></div>
+                                                    <img alt="Decorative image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232d62e1'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>P</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_porter">Porter</span></div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('Dunzo', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%2300d290'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_dunzo">Dunzo</span></div>
+                                                    <img alt="Decorative image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%2300d290'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_dunzo">Dunzo</span></div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('DHL', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23ffcc00'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23d40511' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_dhl">DHL</span>
+                                                    <img alt="Decorative image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23ffcc00'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23d40511' font-weight='bold' text-anchor='middle' dominant-baseline='central'>D</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_dhl">DHL</span>
                                                 </div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('Amazon', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23ff9900'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>A</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_amazon">Amazon</span></div>
-                                                <div class="platform-pill" onclick="selectPlatformPill('Flipkart', this)"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232874f0'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>F</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_flipkart">Flipkart</span></div>
+                                                    <img alt="Decorative image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%23ff9900'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23000' font-weight='bold' text-anchor='middle' dominant-baseline='central'>A</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_amazon">Amazon</span></div>
+                                                <div class="platform-pill" onclick="selectPlatformPill('Flipkart', this)"><img alt="Decorative image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%232874f0'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>F</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_flipkart">Flipkart</span></div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('Zepto', this)">
-                                                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%234B0082'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_zepto">Zepto</span></div>
+                                                    <img alt="Decorative image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='24' height='24' rx='4' fill='%234B0082'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23fff' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Z</text></svg>" loading="lazy" style="width:18px; height:18px; border-radius:4px; object-fit:contain; background:#fff; padding:1px; margin-right: 6px;" alt="Road Warrior Image"><span data-i18n="plat_zepto">Zepto</span></div>
                                                 <div class="platform-pill" onclick="selectPlatformPill('Other', this)">
                                                     <div style="width:18px; height:18px; border-radius:4px; background:var(--card-border); display:inline-flex; align-items:center; justify-content:center; margin-right: 6px; flex-shrink:0;">
                                                         <i class="fas fa-ellipsis-h" style="font-size:10px; color:var(--text-secondary);"></i>
@@ -3159,8 +3099,8 @@
         <div class="cookie-banner-inner">
             <div class="cookie-icon">🍪</div>
             <div class="cookie-text">
-                <h4>We value your privacy</h4>
-                <p>We use cookies for analytics (GA4, Clarity) to improve your experience. No personal data is sold. <a href="/privacy" target="_blank">Privacy Policy</a></p>
+                <h3>We value your privacy</h3>
+                <p>We use cookies for analytics (GA4, Clarity) to improve your experience. No personal data is sold. <a href="/privacy.html" target="_blank">Privacy Policy</a></p>
             </div>
             <div class="cookie-actions">
                 <button class="cookie-btn-accept" onclick="acceptAllCookies()" id="acceptAllCookiesBtn">✓ Accept
@@ -3239,7 +3179,7 @@
                 </form>
                 <div id="leadFormSuccess">
                     <div class="success-icon">✅</div>
-                    <h4>We'll be in touch soon!</h4>
+                    <h3>We'll be in touch soon!</h3>
                     <p>Check your inbox for a confirmation email. Our team will contact you within 24 hours.</p>
                 </div>
             </div>
@@ -3325,9 +3265,9 @@
             <div class="footer-bottom-left" style="color: #000000; display: flex; align-items: center; font-weight: bold; flex-wrap: wrap;">
                 <span>2026 © Road Warrior Pro</span>
                 <span style="margin: 0 0.5rem;">|</span>
-                <a href="/sitemap" style="color: #000000; text-decoration: none;">Sitemap</a>
+                <a href="/sitemap.xml" style="color: #000000; text-decoration: none;">Sitemap</a>
                 <span style="margin: 0 0.5rem;">|</span>
-                <a href="/blog" style="color: var(--primary-color); text-decoration: none;">Blog / Resources</a>
+                <a href="#" style="color: var(--primary-color); text-decoration: none;">Blog / Resources</a>
                 <span style="margin: 0 0.5rem;">|</span>
                 <a href="https://maps.google.com/?cid=10293847561029384756" target="_blank" style="color: var(--primary-color); text-decoration: none;">Google Business Profile</a>
             </div>
@@ -3469,9 +3409,9 @@
         });
     </script>
 
-    <script src="/js/app.js?v=7" charset="UTF-8" defer=""></script>
+    <script src="/js/app.min.js?v=8" charset="UTF-8" defer></script>
 
-    <script src="/js/visitor-intelligence.js" defer=""></script>
+    <script src="/js/visitor-intelligence.min.js" defer=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer=""></script>
 
@@ -3487,17 +3427,7 @@
     <!-- Floating WhatsApp Button Removed -->
 
     <!-- Tawk.to Live Chat Placeholder -->
-    <script type="text/javascript">
-        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-        (function () {
-            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-            s1.async = true;
-            s1.src = 'https://embed.tawk.to/WAITING_FOR_TAWK_ID/default';
-            s1.charset = 'UTF-8';
-            s1.setAttribute('crossorigin', '*');
-            s0.parentNode.insertBefore(s1, s0);
-        })();
-    </script>
+    
     <!-- Rewards Modal -->
     <div class="modal" id="rewardsModal">
         <div class="modal-content" style="max-width:700px;">
@@ -3547,7 +3477,7 @@
             <p style="color:var(--text-secondary); margin-bottom:1.5rem;">Let other riders scan this to easily sign up
                 under your referral!</p>
             <div style="margin: 0 auto; max-width: 500px; position: relative; margin-bottom: 1.5rem;">
-                <img id="qrModalPosterImg" src="/og-image-English.webp" alt="Referral Poster" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.3s ease;" loading="lazy">
+                <img width="400" height="300" id="qrModalPosterImg" src="/og-image-English.webp" alt="Referral Poster" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.3s ease;" loading="lazy">
                 <div id="qrcode" style="position: absolute; bottom: 1.8%; right: 23%; width: 12.5%; height: auto; background: white; padding: 5px; border-radius: 4px; display: flex; align-items: center; justify-content: center; aspect-ratio: 1/1;">
                 </div>
             </div>
@@ -3622,131 +3552,7 @@
     </style>
 
     <!-- Mobile Drawer: Open/Close Logic + Auth State Sync -->
-    <script>
-        (function () {
-            'use strict';
-
-            /* ── Drawer toggle ─────────────────────────────────────── */
-            window.toggleMobileDrawer = function () {
-                var drawer = document.getElementById('mobileNavDrawer');
-                var overlay = document.getElementById('mobileNavOverlay');
-                var toggle = document.getElementById('mobileMenuToggle');
-                if (!drawer) return;
-                var isOpen = drawer.classList.contains('is-open');
-                if (isOpen) { closeMobileDrawer(); } else { openMobileDrawer(); }
-            };
-
-            window.openMobileDrawer = function () {
-                var drawer = document.getElementById('mobileNavDrawer');
-                var overlay = document.getElementById('mobileNavOverlay');
-                var toggle = document.getElementById('mobileMenuToggle');
-                if (!drawer) return;
-                drawer.classList.add('is-open');
-                overlay.classList.add('is-visible');
-                toggle && toggle.setAttribute('aria-expanded', 'true');
-                document.body.style.overflow = 'hidden';
-                /* Sync mobile lang selector with desktop one */
-                syncMobileLangSelector();
-            };
-
-            window.closeMobileDrawer = function () {
-                var drawer = document.getElementById('mobileNavDrawer');
-                var overlay = document.getElementById('mobileNavOverlay');
-                var toggle = document.getElementById('mobileMenuToggle');
-                if (!drawer) return;
-                drawer.classList.remove('is-open');
-                overlay.classList.remove('is-visible');
-                toggle && toggle.setAttribute('aria-expanded', 'false');
-                document.body.style.overflow = '';
-            };
-
-            /* ── ESC key closes drawer ─────────────────────────────── */
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') { closeMobileDrawer(); }
-            });
-
-            /* ── Sync mobile lang select value with desktop ─────────── */
-            function syncMobileLangSelector() {
-                var desktop = document.getElementById('langSelector');
-                var mobile = document.getElementById('mobileLangSelector');
-                if (desktop && mobile) { mobile.value = desktop.value; }
-            }
-
-            /* ── Patch updateAuthNavbarState to also update drawer items ─ */
-            /* We hook into the existing function via MutationObserver on the
-               desktop nav items since we cannot safely override the closed
-               IIFE without touching app.js. When a desktop li changes its
-               display, we mirror that to the corresponding mobile drawer li. */
-            function mirrorAuthState() {
-                var map = [
-                    { desktopId: 'navHome', mobileItemId: 'mobileNavHomeItem', mobileLogout: false },
-                    { desktopId: 'navScore', mobileItemId: 'mobileNavScoreItem', mobileLogout: false },
-                    { desktopId: 'navDashboard', mobileItemId: 'mobileNavDashboardItem', mobileLogout: false },
-                    { desktopId: 'navProfile', mobileItemId: 'mobileNavProfileItem', mobileLogout: false },
-                ];
-                map.forEach(function (entry) {
-                    var desktopLink = document.getElementById(entry.desktopId);
-                    var mobileItem = document.getElementById(entry.mobileItemId);
-                    if (!desktopLink || !mobileItem) return;
-                    var desktopLi = desktopLink.parentElement;
-                    var isVisible = desktopLi && desktopLi.style.display !== 'none';
-                    mobileItem.style.display = isVisible ? '' : 'none';
-                });
-
-                /* Logout item mirrors loginLogoutBtn */
-                var loginBtn = document.getElementById('loginLogoutBtn');
-                var logoutItem = document.getElementById('mobileNavLogoutItem');
-                if (loginBtn && logoutItem) {
-                    logoutItem.style.display = (loginBtn.style.display !== 'none' && loginBtn.innerHTML.includes('sign-out')) ? '' : 'none';
-                }
-            }
-
-            /* Poll lightly until the app is ready, then observe */
-            var pollInterval = setInterval(function () {
-                var navHome = document.getElementById('navHome');
-                if (navHome) {
-                    clearInterval(pollInterval);
-                    mirrorAuthState();
-                    /* MutationObserver on the desktop ul to detect show/hide */
-                    var ul = document.querySelector('.navbar-nav');
-                    if (ul && window.MutationObserver) {
-                        var observer = new MutationObserver(function (mutations) {
-                            mutations.forEach(function (m) {
-                                if (m.type === 'attributes' && m.attributeName === 'style') {
-                                    mirrorAuthState();
-                                }
-                            });
-                        });
-                        observer.observe(ul, { attributes: true, subtree: true, attributeFilter: ['style'] });
-                    }
-                    /* Also observe loginLogoutBtn for logout icon */
-                    var btn = document.getElementById('loginLogoutBtn');
-                    if (btn && window.MutationObserver) {
-                        var btnObserver = new MutationObserver(function () { mirrorAuthState(); });
-                        btnObserver.observe(btn, { attributes: true, childList: true, subtree: true, attributeFilter: ['style'] });
-                    }
-                }
-            }, 200);
-
-            /* Sync lang selector whenever drawer opens */
-            document.addEventListener('click', function (e) {
-                var toggle = document.getElementById('mobileMenuToggle');
-                if (toggle && toggle.contains(e.target)) { syncMobileLangSelector(); }
-            });
-
-            /* Keep desktop lang selector in sync when mobile one changes */
-            document.addEventListener('change', function (e) {
-                if (e.target && e.target.id === 'mobileLangSelector') {
-                    var desktop = document.getElementById('langSelector');
-                    if (desktop) { desktop.value = e.target.value; }
-                }
-                if (e.target && e.target.id === 'langSelector') {
-                    var mobile = document.getElementById('mobileLangSelector');
-                    if (mobile) { mobile.value = e.target.value; }
-                }
-            });
-        })();
-    </script>
+    
     <!-- Payment Modal -->
     <div id="paymentModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
         <div class="modal-content" style="background: var(--bg-color); max-width: 400px; width: 90%; border-radius: var(--border-radius-lg); padding: 2rem; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center;">
@@ -3787,41 +3593,25 @@
             <h2 style="font-size:2rem; margin-bottom:1rem; color:var(--primary-color);">Wait! Before You Leave...</h2>
             <p style="color:var(--text-secondary); margin-bottom:2rem; font-size:1.1rem;">Don't miss out on optimizing your digital presence. Get a <strong>Free Enterprise Website Audit</strong> right now!</p>
             <div style="display:flex; gap:1rem; justify-content:center;">
-                <a href="/auditor" class="btn btn-primary" style="padding:1rem 2rem; border-radius:30px; font-weight:bold;">Yes, I want my Free Audit</a>
+                <a href="/auditor.html" class="btn btn-primary" style="padding:1rem 2rem; border-radius:30px; font-weight:bold;">Yes, I want my Free Audit</a>
                 <button onclick="document.getElementById('exitIntentPopup').style.display='none'" class="btn btn-outline" style="padding:1rem 2rem; border-radius:30px;">No Thanks</button>
             </div>
         </div>
     </div>
-    <script>
-        document.addEventListener('mouseleave', function(e) {
-            if (e.clientY < 0 && !sessionStorage.getItem('exitIntentShown')) {
-                const popup = document.getElementById('exitIntentPopup');
-                if(popup) {
-                    popup.style.display = 'flex';
-                    sessionStorage.setItem('exitIntentShown', 'true');
-                }
-            }
-        });
-    </script>
     
-    <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-        try {
-            const res = await fetch('/api/client-config');
-            const config = await res.json();
-            if(config.VITE_TELEGRAM_LINK && !config.VITE_TELEGRAM_LINK.includes('WAITING')) {
-                const a = document.createElement('a');
-                a.id = 'telegramWidget';
-                a.href = config.VITE_TELEGRAM_LINK;
-                a.target = '_blank';
-                a.rel = 'noopener noreferrer';
-                a.style.cssText = 'position:fixed; bottom:20px; left:20px; background:#229ED9; color:white; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:1000; transition: transform 0.3s;';
-                a.innerHTML = '<i class="fab fa-telegram-plane"></i>';
-                a.onmouseover = () => a.style.transform = 'scale(1.1)';
-                a.onmouseout = () => a.style.transform = 'scale(1)';
-                document.body.appendChild(a);
-            }
-        } catch(e) {}
-    });
-    </script>
-    </body></html>
+    
+    
+    
+<!-- Exit Intent Popup -->
+<div id="exit-intent-popup" class="modal exit-intent" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; justify-content:center; align-items:center; backdrop-filter: blur(5px);">
+    <div style="background:var(--card-bg, #1a1b23); padding:2.5rem; border-radius:12px; text-align:center; max-width:450px; border: 1px solid var(--primary-color);">
+        <h2 style="color:var(--primary-color); margin-bottom:1rem; font-size:1.8rem;">Wait! Before You Go...</h2>
+        <p style="color:var(--text-primary); font-size:1.1rem; margin-bottom:1.5rem;">Don't miss out. Claim a <strong>50% Discount</strong> on your first month of EV rentals if you register right now.</p>
+        <button onclick="document.getElementById('exit-intent-popup').style.display='none'; window.showRegisterForm && window.showRegisterForm();" class="btn btn-primary" style="width:100%; padding:1rem; font-size:1.2rem; font-weight:bold; margin-bottom:1rem;">Claim My 50% Off Now</button>
+        <a href="#" onclick="document.getElementById('exit-intent-popup').style.display='none'; return false;" style="color:var(--text-secondary); text-decoration:underline; font-size:0.9rem;">No thanks, I'll pay full price later</a>
+    </div>
+</div>
+
+
+<script defer src="/js/inline-logic.js"></script>
+</body></html>

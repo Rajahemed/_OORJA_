@@ -337,6 +337,12 @@ app.use((err, req, res, next) => {
   });
 });
 
+
+// SPA fallback for frontend routes
+app.get(['/home', '/score', '/dashboard', '/profile', '/login', '/register'], (req, res) => {
+    res.sendFile(require('path').join(__dirname, 'public', 'index.html'));
+});
+
 // 404 handler
 
 
