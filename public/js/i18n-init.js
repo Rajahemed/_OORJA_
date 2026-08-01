@@ -32,6 +32,16 @@
                 if (err) return console.log('something went wrong loading', err);
                 applyTranslations();
                 localStorage.setItem('selectedLang', lang);
+                
+                const langNames = {
+                    'en': 'English', 'hi': 'Hindi', 'kn': 'Kannada', 'ta': 'Tamil',
+                    'te': 'Telugu', 'mr': 'Marathi', 'gu': 'Gujarati', 'bn': 'Bengali'
+                };
+                const langName = langNames[lang] || 'English';
+                const welcomeImg = document.getElementById('welcomeImage');
+                if (welcomeImg) {
+                    welcomeImg.src = '/og-image-' + langName + '.webp';
+                }
             });
         };
 
@@ -44,8 +54,17 @@
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
 
-                let enText = i18next.getResource('en', 'translation', key);
-                if (!enText) enText = key;
+                if (!el.hasAttribute('data-original-text')) {
+                    if (el.tagName === 'INPUT' && (el.type === 'submit' || el.type === 'button')) {
+                        el.setAttribute('data-original-text', el.value || key);
+                    } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.setAttribute('data-original-text', el.placeholder || key);
+                    } else {
+                        el.setAttribute('data-original-text', el.innerText || key);
+                    }
+                }
+
+                let enText = el.getAttribute('data-original-text');
 
                 const translation = i18next.t(key);
                 const hasTranslation = i18next.getResource(currentLang, 'translation', key) !== undefined;
