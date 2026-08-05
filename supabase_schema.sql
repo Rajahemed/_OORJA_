@@ -5,6 +5,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS riders (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "fullName" TEXT,
+    gender TEXT,
     email TEXT UNIQUE,
     password TEXT,
     phone TEXT UNIQUE,

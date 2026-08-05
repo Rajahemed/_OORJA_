@@ -1444,6 +1444,21 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <small id="nameWarning" class="text-danger-color" style="display:none; font-weight:600; margin-top:0.25rem; display:none;" data-i18n="warning_no_numbers">Numbers are not allowed in names</small>
                                     </div>
                                     <div class="form-group">
+                                        <label>Gender <span style="color: var(--danger-color, #ef4444);">*</span></label>
+                                        <div style="display: flex; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                                            <label style="display:flex; align-items:center; gap:0.75rem; cursor:pointer; font-weight:500; font-size: 1.1rem;">
+                                                <input type="radio" name="regGender" value="Male" onchange="toggleGenderOther()" onblur="window.savePartialProgress &amp;&amp; window.savePartialProgress()" style="transform: scale(1.5);"> Male
+                                            </label>
+                                            <label style="display:flex; align-items:center; gap:0.75rem; cursor:pointer; font-weight:500; font-size: 1.1rem;">
+                                                <input type="radio" name="regGender" value="Female" onchange="toggleGenderOther()" onblur="window.savePartialProgress &amp;&amp; window.savePartialProgress()" style="transform: scale(1.5);"> Female
+                                            </label>
+                                            <label style="display:flex; align-items:center; gap:0.75rem; cursor:pointer; font-weight:500; font-size: 1.1rem;">
+                                                <input type="radio" name="regGender" value="Other" onchange="toggleGenderOther()" onblur="window.savePartialProgress &amp;&amp; window.savePartialProgress()" style="transform: scale(1.5);"> Other
+                                            </label>
+                                        </div>
+                                        <input type="text" id="regGenderOther" class="form-control" placeholder="Please specify gender" style="display:none; margin-top:0.5rem;" onblur="window.savePartialProgress &amp;&amp; window.savePartialProgress()">
+                                    </div>
+                                    <div class="form-group">
                                         <label for="regPhone"><span data-i18n="label_whatsapp">WhatsApp Number</span>
                                             (10 digits)</label>
                                         <div style="position:relative; display:flex; align-items:center;">
@@ -1640,20 +1655,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                         </div>
                                     </div>
                                     <div id="rentFields" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
-                                        <div class="form-group">
-                                            <label data-i18n="lbl_weekly_rent">Weekly Rent (₹)</label>
-                                            <select id="regWeeklyRent" class="form-control" aria-label="inputField">
-                                                <option value="">Select Weekly Rent</option>
-                                                <option value="500-1000">500 - 1000</option>
-                                                <option value="1001-1500">1001 - 1500</option>
-                                                <option value="1501-2000">1501 - 2000</option>
-                                                <option value="2001-2500">2001 - 2500</option>
-                                                <option value="2501-3000">2501 - 3000</option>
-                                                <option value="3001-3500">3001 - 3500</option>
-                                                <option value="3501-4000">3501 - 4000</option>
-                                                <option value="4000+">4000+</option>
-                                            </select>
-                                        </div>
                                         <div class="form-group" style="margin-bottom:0;">
                                             <label data-i18n="lbl_monthly_rent">Monthly Rent (₹)</label>
                                             <select id="regMonthlyRent" class="form-control" aria-label="inputField">
@@ -1683,74 +1684,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                         </select>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label>Rider Type</label>
-                                        <select id="regRiderType" class="form-control" required="" aria-label="inputField">
-                                            <option value="">Select Rider Type</option>
-                                            <option value="Full Time">Full Time</option>
-                                            <option value="Part Time">Part Time</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label data-i18n="lbl_salary_details">Salary Details</label>
-                                        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
-                                            <div style="flex:1; min-width:150px;">
-                                                <label data-i18n="lbl_net_salary" style="font-size:0.9em; color:var(--text-secondary);">Net
-                                                    Salary</label>
-                                                <select id="regNetSalary" class="form-control" required="" aria-label="inputField">
-                                                    <option value="">Select Range</option>
-                                                    <option value="10000-15000">10000 - 15000</option>
-                                                    <option value="15001-20000">15001 - 20000</option>
-                                                    <option value="20001-25000">20001 - 25000</option>
-                                                    <option value="25001-30000">25001 - 30000</option>
-                                                    <option value="30001-35000">30001 - 35000</option>
-                                                    <option value="35001-40000">35001 - 40000</option>
-                                                    <option value="40001-45000">40001 - 45000</option>
-                                                    <option value="45001-50000">45001 - 50000</option>
-                                                    <option value="50001-55000">50001 - 55000</option>
-                                                    <option value="55001-60000">55001 - 60000</option>
-                                                    <option value="60000+">60000+</option>
-                                                </select>
-                                            </div>
-                                            <div style="flex:1; min-width:150px;">
-                                                <label data-i18n="lbl_variable_pay" style="font-size:0.9em; color:var(--text-secondary);">Variable
-                                                    Pay</label>
-                                                <select id="regVariablePay" class="form-control" required="" aria-label="inputField">
-                                                    <option value="">Select Range</option>
-                                                    <option value="0-2000">0 - 2000</option>
-                                                    <option value="2001-4000">2001 - 4000</option>
-                                                    <option value="4001-6000">4001 - 6000</option>
-                                                    <option value="6001-8000">6001 - 8000</option>
-                                                    <option value="8001-10000">8001 - 10000</option>
-                                                    <option value="10001-12000">10001 - 12000</option>
-                                                    <option value="12001-14000">12001 - 14000</option>
-                                                    <option value="14001-16000">14001 - 16000</option>
-                                                    <option value="16001-18000">16001 - 18000</option>
-                                                    <option value="18001-20000">18001 - 20000</option>
-                                                    <option value="20000+">20000+</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <div style="display:flex; gap:1rem; flex-wrap:wrap;">
-                                        <div class="form-group" style="flex:1; min-width:150px;">
-                                            <label data-i18n="lbl_weekly_dist">Weekly Distance</label>
-                                            <select id="regKmPerDay" class="form-control" required="" aria-label="inputField">
-                                                <option value="">Select Range</option>
-                                                <option value="50–100 km">50–100 km</option>
-                                                <option value="101–150 km">101–150 km</option>
-                                                <option value="151–200 km">151–200 km</option>
-                                                <option value="201–250 km">201–250 km</option>
-                                                <option value="251–300 km">251–300 km</option>
-                                                <option value="301–350 km">301–350 km</option>
-                                                <option value="351–400 km">351–400 km</option>
-                                                <option value="401–450 km">401–450 km</option>
-                                                <option value="451–500 km">451–500 km</option>
-                                                <option value="500+ km">500+ km</option>
-                                            </select>
-                                        </div>
                                         <div class="form-group" style="flex:1; min-width:150px;">
                                             <label data-i18n="lbl_monthly_dist">Monthly Distance</label>
                                             <select id="regKmPerMonth" class="form-control" required="" aria-label="inputField">
@@ -1799,33 +1734,14 @@ document.addEventListener("DOMContentLoaded", () => {
                                             <label class="radio-item"><input type="radio" name="fuelMethod" value="Home charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🏠 <span data-i18n="fm_home">Home Charging</span></label>
                                             <label class="radio-item"><input type="radio" name="fuelMethod" value="Battery swapping station" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🔋 <span data-i18n="fm_swap">Battery Swap</span></label>
                                             <label class="radio-item"><input type="radio" name="fuelMethod" value="Public charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🔌 <span data-i18n="fm_public">Public Charging</span></label>
-                                            <label class="radio-item"><input type="radio" name="fuelMethod" value="Other" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> ⚡ <span data-i18n="fm_other">Other</span></label>
                                         </div>
-                                        <input type="text" id="regFuelMethodOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *" aria-label="inputField">
                                     </div>
 
                                     <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">
-                                        <span data-i18n="lbl_maint_resp">Maintenance and Vehicle Responsibility</span>
+                                        <span id="maintRespHeading" data-i18n="lbl_maint_resp">Maintenance and Vehicle Responsibility</span>
                                     </h3>
 
                                     <div id="fuelExpenseSection" class="conditional-section">
-                                        <div class="form-group">
-                                            <label for="regFuelExp" data-i18n="label_fuel_expense">Weekly Fuel/Charge
-                                                Expense (₹)</label>
-                                            <select required="" id="regFuelExp" class="form-control">
-                                                <option value="">Select Range</option>
-                                                <option value="₹500–₹1000">₹500–₹1000</option>
-                                                <option value="₹1001–₹1500">₹1001–₹1500</option>
-                                                <option value="₹1501–₹2000">₹1501–₹2000</option>
-                                                <option value="₹2001–₹2500">₹2001–₹2500</option>
-                                                <option value="₹2501–₹3000">₹2501–₹3000</option>
-                                                <option value="₹3001–₹3500">₹3001–₹3500</option>
-                                                <option value="₹3501–₹4000">₹3501–₹4000</option>
-                                                <option value="₹4001–₹4500">₹4001–₹4500</option>
-                                                <option value="₹4501–₹5000">₹4501–₹5000</option>
-                                                <option value="₹5000+">₹5000+</option>
-                                            </select>
-                                        </div>
                                         <div class="form-group">
                                             <label for="regMaintExp" data-i18n="lbl_maint_cost">Monthly Maintenance Cost
                                                 (₹)</label>
@@ -1848,18 +1764,13 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <!-- My Own Vehicle Section -->
                                         <div id="ownVehicleQuestions" class="conditional-section hidden-section" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
                                             <div class="form-group">
-                                                <label data-i18n="lbl_maint_own_5">1. Is your vehicle insured?</label>
-                                                <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintInsured" required="" value="Yes" aria-label="maintInsured">
-                                                        Yes</label><label class="radio-item"><input type="radio" name="maintInsured" required="" value="No" aria-label="maintInsured"> No</label></div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label data-i18n="lbl_maint_own_6">2. How often do you service your
+                                                <label data-i18n="lbl_maint_own_6">1. How often do you service your
                                                     vehicle?</label>
                                                 <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintServiceFreq" required="" value="Every 3 Months" aria-label="maintServiceFreq"> 3 Months</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required="" value="Every 6 Months" aria-label="maintServiceFreq"> 6 Months</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required="" value="Every Year" aria-label="maintServiceFreq"> 1 Year</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required="" value="Only When Needed" aria-label="maintServiceFreq"> Only When
                                                         Needed</label></div>
                                             </div>
                                             <div class="form-group">
-                                                <label>3. Have you had any major repairs in the last 12 months?</label>
+                                                <label>2. Have you had any major repairs in the last 12 months?</label>
                                                 <div class="radio-group inline"><label class="radio-item"><input type="radio" name="majorRepairs" required="" value="Yes" onchange="document.getElementById('majorRepairCostGroup').style.display='block'" aria-label="majorRepairs">
                                                         Yes</label><label class="radio-item"><input type="radio" name="majorRepairs" required="" value="No" onchange="document.getElementById('majorRepairCostGroup').style.display='none'; document.getElementById('regMajorRepairCost').value='';" aria-label="majorRepairs">
                                                         No</label></div>
@@ -1883,51 +1794,20 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <!-- Rental Vehicle Section -->
                                         <div id="rentalVehicleQuestions" class="conditional-section hidden-section" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
                                             <div class="form-group">
-                                                <label data-i18n="lbl_maint_rent_1">1. Who pays for regular
-                                                    servicing?</label>
-                                                <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayServicing" required="" value="Rental Company" aria-label="maintPayServicing"> Rental Company</label><label class="radio-item"><input type="radio" name="maintPayServicing" required="" value="Rider" aria-label="maintPayServicing"> Rider</label><label class="radio-item"><input type="radio" name="maintPayServicing" required="" value="Shared" aria-label="maintPayServicing"> Shared</label></div>
+                                                <label data-i18n="lbl_maint_rent_2">1. Before taking the vehicle, did you inspect the condition of the tyres?</label>
+                                                <div class="radio-group inline"><label class="radio-item"><input type="radio" name="rentTyreInspect" id="rentTyreInspectYes" required="" value="Yes" aria-label="rentTyreInspect"> Yes</label><label class="radio-item"><input type="radio" name="rentTyreInspect" id="rentTyreInspectNo" required="" value="No" aria-label="rentTyreInspect"> No</label></div>
                                             </div>
                                             <div class="form-group">
-                                                <label data-i18n="lbl_maint_rent_2">2. Who pays for puncture
-                                                    repairs?</label>
-                                                <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayPuncture" required="" value="Rental Company" aria-label="maintPayPuncture"> Rental Company</label><label class="radio-item"><input type="radio" name="maintPayPuncture" required="" value="Rider" aria-label="maintPayPuncture"> Rider</label><label class="radio-item"><input type="radio" name="maintPayPuncture" required="" value="Shared" aria-label="maintPayPuncture"> Shared</label></div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label data-i18n="lbl_maint_rent_3">3. Who pays for wear and
-                                                    tear?</label>
-                                                <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayWear" required="" value="Rental Company" aria-label="maintPayWear"> Rental Company</label><label class="radio-item"><input type="radio" name="maintPayWear" required="" value="Rider" aria-label="maintPayWear"> Rider</label><label class="radio-item"><input type="radio" name="maintPayWear" required="" value="Shared" aria-label="maintPayWear"> Shared</label></div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label data-i18n="lbl_maint_rent_4">4. In case of an accident, who pays
+                                                <label data-i18n="lbl_maint_rent_4">2. In case of an accident, who pays
                                                     for repairs?</label>
                                                 <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayAccident" required="" value="Rental Company" aria-label="maintPayAccident"> Rental Company</label><label class="radio-item"><input type="radio" name="maintPayAccident" required="" value="Insurance" aria-label="maintPayAccident"> Insurance</label><label class="radio-item"><input type="radio" name="maintPayAccident" required="" value="Rider" aria-label="maintPayAccident"> Rider</label><label class="radio-item"><input type="radio" name="maintPayAccident" required="" value="Shared" aria-label="maintPayAccident"> Shared</label></div>
                                             </div>
-                                            <div class="form-group">
-                                                <label data-i18n="lbl_maint_rent_7">5. Is insurance included with the
-                                                    rental vehicle?</label>
-                                                <div class="radio-group inline"><label class="radio-item"><input type="radio" name="rentInsuranceIncluded" required="" value="Yes" aria-label="rentInsuranceIncluded"> Yes</label><label class="radio-item"><input type="radio" name="rentInsuranceIncluded" required="" value="No" aria-label="rentInsuranceIncluded"> No</label><label class="radio-item"><input type="radio" name="rentInsuranceIncluded" required="" value="Don't Know" aria-label="rentInsuranceIncluded"> Don't Know</label></div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>6. Have you inspected the Service History, Tyres, and
-                                                    Brakes?</label>
-                                                <div class="radio-group inline">
-                                                    <label class="radio-item"><input type="radio" required="" name="grpSafety1" value="Yes" onchange="syncSafetyQuestions()" aria-label="grpSafety1"> Yes</label>
-                                                    <label class="radio-item"><input type="radio" required="" name="grpSafety1" value="No" onchange="syncSafetyQuestions()" aria-label="grpSafety1"> No</label>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>7. Have you inspected the Lights, Indicators, Mirrors, and
-                                                    Insurance?</label>
-                                                <div class="radio-group inline">
-                                                    <label class="radio-item"><input type="radio" required="" name="grpSafety2" value="Yes" onchange="syncSafetyQuestions()" aria-label="grpSafety2"> Yes</label>
-                                                    <label class="radio-item"><input type="radio" required="" name="grpSafety2" value="No" onchange="syncSafetyQuestions()" aria-label="grpSafety2"> No</label>
-                                                </div>
-                                            </div>
+
 
                                             <!-- Hidden original inputs for backend compatibility -->
                                             <div style="display:none;">
                                                 <input type="radio" name="rentServiceHistory" id="rentServiceHistoryYes" value="Yes" aria-label="rentServiceHistory"><input type="radio" name="rentServiceHistory" id="rentServiceHistoryNo" value="No" aria-label="rentServiceHistory">
-                                                <input type="radio" name="rentTyreInspect" id="rentTyreInspectYes" value="Yes" aria-label="rentTyreInspect"><input type="radio" name="rentTyreInspect" id="rentTyreInspectNo" value="No" aria-label="rentTyreInspect">
+
                                                 <input type="radio" name="rentBrakeInspect" id="rentBrakeInspectYes" value="Yes" aria-label="rentBrakeInspect"><input type="radio" name="rentBrakeInspect" id="rentBrakeInspectNo" value="No" aria-label="rentBrakeInspect">
                                                 <input type="radio" name="rentLightsInspect" id="rentLightsInspectYes" value="Yes" aria-label="rentLightsInspect"><input type="radio" name="rentLightsInspect" id="rentLightsInspectNo" value="No" aria-label="rentLightsInspect">
 
@@ -1942,29 +1822,13 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <!-- Company Vehicle Section -->
                                         <div id="companyVehicleQuestions" class="conditional-section hidden-section" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
                                             <div class="form-group">
-                                                <label data-i18n="lbl_maint_comp_1">1. Who pays for regular
-                                                    servicing?</label>
-                                                <div class="radio-group inline"><label class="radio-item"><input type="radio" name="companyMaintPay" required="" value="Company" aria-label="companyMaintPay"> Company</label><label class="radio-item"><input type="radio" name="companyMaintPay" required="" value="Rider" aria-label="companyMaintPay"> Rider</label><label class="radio-item"><input type="radio" name="companyMaintPay" required="" value="Shared" aria-label="companyMaintPay"> Shared</label></div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>2. Who pays for puncture repairs?</label>
-                                                <div class="radio-group inline"><label class="radio-item"><input type="radio" name="companyPuncturePay" required="" value="Company" aria-label="companyPuncturePay"> Company</label><label class="radio-item"><input type="radio" name="companyPuncturePay" required="" value="Rider" aria-label="companyPuncturePay"> Rider</label><label class="radio-item"><input type="radio" name="companyPuncturePay" required="" value="Shared" aria-label="companyPuncturePay"> Shared</label></div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>3. Who pays for wear and tear?</label>
+                                                <label>1. Who pays for wear and tear?</label>
                                                 <div class="radio-group inline"><label class="radio-item"><input type="radio" name="companyWearPay" required="" value="Company" aria-label="companyWearPay"> Company</label><label class="radio-item"><input type="radio" name="companyWearPay" required="" value="Rider" aria-label="companyWearPay"> Rider</label><label class="radio-item"><input type="radio" name="companyWearPay" required="" value="Shared" aria-label="companyWearPay"> Shared</label></div>
                                             </div>
                                             <div class="form-group">
-                                                <label data-i18n="lbl_maint_comp_4">4. In case of an accident, who
+                                                <label data-i18n="lbl_maint_comp_4">2. In case of an accident, who
                                                     pays?</label>
                                                 <div class="radio-group inline"><label class="radio-item"><input type="radio" name="companyAccidentPay" required="" value="Company" aria-label="companyAccidentPay"> Company</label><label class="radio-item"><input type="radio" name="companyAccidentPay" required="" value="Insurance" aria-label="companyAccidentPay"> Insurance</label><label class="radio-item"><input type="radio" name="companyAccidentPay" required="" value="Shared" aria-label="companyAccidentPay"> Shared</label><label class="radio-item"><input type="radio" name="companyAccidentPay" required="" value="Rider" aria-label="companyAccidentPay"> Rider</label></div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label data-i18n="lbl_maint_comp_2">5. Is the vehicle insured by the
-                                                    company?</label>
-                                                <div class="radio-group inline"><label class="radio-item"><input type="radio" name="companyInsurance" required="" value="Yes" aria-label="companyInsurance"> Yes</label><label class="radio-item"><input type="radio" name="companyInsurance" required="" value="No" aria-label="companyInsurance">
-                                                        No</label><label class="radio-item"><input type="radio" name="companyInsurance" required="" value="Don't Know" aria-label="companyInsurance">
-                                                        Don't Know</label></div>
                                             </div>
                                         </div>
                                     </div>
@@ -1986,10 +1850,13 @@ document.addEventListener("DOMContentLoaded", () => {
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="No nearby charging station" aria-label="challenges"> 🔌 <span data-i18n="ch_charging">No nearby charging station</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Battery range anxiety" aria-label="challenges"> 📉 <span data-i18n="ch_range">Battery range anxiety</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Battery drains too fast" aria-label="challenges"> ⚡ <span data-i18n="evc_drain">Battery drains too fast</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Swapping station too far" aria-label="challenges"> 📍 <span data-i18n="evc_swap">Swapping station too far</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="RTO and Police issue" aria-label="challenges"> 👮 <span data-i18n="evc_rto">RTO and Police issue</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Long charging time at home" aria-label="challenges"> 🏠 <span data-i18n="evc_charge">Long charging time at home</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Vehicle not powerful enough" aria-label="challenges"> 💪 <span data-i18n="evc_power">Vehicle not powerful enough</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Service centre not nearby" aria-label="challenges"> 🔧 <span data-i18n="evc_service">Service centre not nearby</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Parking issue" aria-label="challenges"> 🅿️ <span data-i18n="evc_parking">Parking issue</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="24/7 assistant" aria-label="challenges"> 🕒 <span data-i18n="evc_assistant">24/7 assistant</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="High repair cost" aria-label="challenges"> 💸 <span data-i18n="evc_repair">High repair cost</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regEvChallengesOther')" aria-label="challenges"> 📝
                                                 <span data-i18n="ch_other">Other</span></label>
                                         </div>
@@ -2003,43 +1870,36 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <div class="checkbox-group">
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="High fuel cost" aria-label="challenges"> ⛽ <span data-i18n="ch_fuel">High fuel cost</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Frequent breakdown" aria-label="challenges"> 🔧 <span data-i18n="ch_breakdown">Frequent breakdown</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Repair costs" aria-label="challenges"> 💸 <span data-i18n="ch_repair">Repair costs</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Long refuelling time" aria-label="challenges"> ⏱️ <span data-i18n="ch_refuel">Long refuelling time</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Frequent engine issues" aria-label="challenges"> 🔧 <span data-i18n="pc_engine">Frequent engine issues</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Traffic Police / RTO Issue" aria-label="challenges"> 👮 <span data-i18n="ch_traffic_rto">Traffic Police / RTO Issue</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Parking Issues" aria-label="challenges"> 🅿️ <span data-i18n="ch_parking">Parking Issues</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Vehicle Documents" aria-label="challenges"> 📄 <span data-i18n="ch_documents">Vehicle Documents</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Parking issue" aria-label="challenges"> 🅿️ <span data-i18n="ch_parking">Parking issue</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="High servicing cost" aria-label="challenges"> 💸 <span data-i18n="pc_service">High servicing cost</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="24/7 assistant" aria-label="challenges"> 🕒 <span data-i18n="evc_assistant">24/7 assistant</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regPetrolChallengesOther')" aria-label="challenges"> 📝
                                                 <span data-i18n="ch_other">Other</span></label>
                                         </div>
                                         <input type="text" id="regPetrolChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *" aria-label="inputField">
 
-                                        <div class="form-group" style="margin-top:1.5rem; background:rgba(255,153,0,0.05); padding:1rem; border-radius:8px; border:1px solid rgba(255,153,0,0.2);">
-                                            <label data-i18n="q_fuel_cost">Is fuel cost a major challenge for
-                                                you?</label>
-                                            <div class="radio-group inline">
-                                                <label class="radio-item"><input type="radio" name="fuelCostChallenge" value="Yes" aria-label="fuelCostChallenge"> ✅ <span data-i18n="opt_yes">Yes</span></label>
-                                                <label class="radio-item"><input type="radio" name="fuelCostChallenge" value="No" aria-label="fuelCostChallenge"> ❌ <span data-i18n="opt_no">No</span></label>
-                                            </div>
-                                        </div>
+
                                     </div>
 
                                     <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
                                 </div> <!-- End of regSection5 -->
 
-                                <!-- SECTION E: Safety & Facilities -->
-                                <div class="form-section" id="regSection6" style="margin-bottom:2rem;">
-                                    <div class="section-title-badge" style="align-items: center;"><i class="fas fa-shield-alt"></i> <span data-i18n="sec_e_title">Section E —
+                                <!-- SECTION E: Insurance Coverage -->
+                                <div class="form-section" id="regSection6" style="margin-bottom:2rem; display:none;">
+                                    <div class="section-title-badge" style="align-items: center;"><i class="fas fa-file-contract"></i> <span data-i18n="sec_insurance_title">Section E — Insurance</span></div>
+                                    <div id="insuranceOptionsContainer"></div>
+                                    <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
+                                </div> <!-- End of regSection6 -->
+
+                                <!-- SECTION F: Safety & Facilities -->
+                                <div class="form-section" id="regSection7" style="margin-bottom:2rem; display:none;">
+                                    <div class="section-title-badge" style="align-items: center;"><i class="fas fa-shield-alt"></i> <span data-i18n="sec_f_title">Section F —
                                             Safety</span></div>
 
-                                    <div class="form-group conditional-section hidden-section" id="helmetSection" style="display:none;">
-                                        <label data-i18n="lbl_helmet">Do you wear a helmet while delivering?</label>
-                                        <div class="radio-group inline">
-                                            <label class="radio-item"><input type="radio" required="" name="helmetUsage" value="Yes" aria-label="helmetUsage"> ✅ <span data-i18n="opt_yes">Yes</span></label>
-                                            <label class="radio-item"><input type="radio" required="" name="helmetUsage" value="No" aria-label="helmetUsage"> ❌ <span data-i18n="opt_no">No</span></label>
-                                        </div>
-                                    </div>
+
 
                                     <div class="form-group">
                                         <label data-i18n="lbl_training">Have you received training on the following
@@ -2081,19 +1941,20 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <label data-i18n="lbl_facilities">Which of these facilities are provided by your
                                             company/platform?</label>
                                         <div class="checkbox-group" style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">
-                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilitySeating" aria-label="inputField"> <span style="margin-left:0.5rem;" data-i18n="fac_seating">Seating Area</span></label>
-                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilityWater" aria-label="inputField"> <span style="margin-left:0.5rem;" data-i18n="fac_water">Drinking Water</span></label>
-                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilityToilet" aria-label="inputField"> <span style="margin-left:0.5rem;" data-i18n="fac_toilets">Clean Toilets</span></label>
-                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilityRest" aria-label="inputField"> <span style="margin-left:0.5rem;" data-i18n="fac_rest">Rest Zones</span></label>
+                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilitySeating" aria-label="inputField" onchange="handleFacilityChange(this)"> <span style="margin-left:0.5rem;" data-i18n="fac_seating">Seating Area</span></label>
+                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilityWater" aria-label="inputField" onchange="handleFacilityChange(this)"> <span style="margin-left:0.5rem;" data-i18n="fac_water">Drinking Water</span></label>
+                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilityToilet" aria-label="inputField" onchange="handleFacilityChange(this)"> <span style="margin-left:0.5rem;" data-i18n="fac_toilets">Clean Toilets</span></label>
+                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilityRest" aria-label="inputField" onchange="handleFacilityChange(this)"> <span style="margin-left:0.5rem;" data-i18n="fac_rest">Rest Zones</span></label>
+                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" id="facilityNone" aria-label="inputField" onchange="handleFacilityChange(this)"> <span style="margin-left:0.5rem;" data-i18n="fac_none">None of the Above</span></label>
                                         </div>
                                     </div>
 
                                     <div style="display:flex; justify-content:space-between; margin-top:1.5rem;"><button type="button" class="btn btn-secondary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button><button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="fas fa-arrow-right"></i></button></div>
-                                </div> <!-- End of regSection6 -->
+                                </div> <!-- End of regSection7 -->
 
-                                <!-- SECTION F: Referral & Consent -->
-                                <div class="form-section" id="regSection7" style="margin-bottom:2rem;">
-                                    <div class="section-title-badge" style="align-items: center;"><i class="fas fa-check-circle"></i> <span data-i18n="sec_f_title">Section F —
+                                <!-- SECTION G: Referral & Consent -->
+                                <div class="form-section" id="regSection8" style="margin-bottom:2rem; display:none;">
+                                    <div class="section-title-badge" style="align-items: center;"><i class="fas fa-check-circle"></i> <span data-i18n="sec_g_title">Section G —
                                             Referral &amp; Consent</span></div>
 
                                     <h3 style="margin: 1rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">
@@ -2145,7 +2006,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                             <i class="fas fa-check-circle"></i> <span data-i18n="btn_submit_reg">Complete Registration</span>
                                         </button>
                                     </div>
-                                </div> <!-- End of regSection7 -->
+                                </div> <!-- End of regSection8 -->
                             </div>
                         </div>
 
@@ -3734,5 +3595,6 @@ document.addEventListener("DOMContentLoaded", () => {
     </script>
 
 <!-- Combined Marketing Scripts -->
+    <script src="/js/insurance-config.js" charset="UTF-8"></script>
     <script defer src="/js/app-bundle.js?v=9" charset="UTF-8"></script>
 </body></html>

@@ -1,9 +1,0 @@
-[en] Valid JSON, all keys present.
-[hi] FIXED 3 missing keys.
-[kn] FIXED 3 missing keys.
-[ta] Valid JSON, all keys present.
-[te] Valid JSON, all keys present.
-[mr] Valid JSON, all keys present.
-[gu] Valid JSON, all keys present.
-[bn] Valid JSON, all keys present.
-[ml] Valid JSON, all keys present.

@@ -1658,6 +1658,34 @@ async function openDataDrilldown(type) {
                 firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
+        
+          // Insurance validation
+          const insContainer = document.getElementById('insuranceOptionsContainer');
+          if (insContainer && insContainer.closest('.form-section') && insContainer.closest('.form-section').style.display !== 'none') {
+              const allChecked = insContainer.querySelectorAll('input[type="checkbox"]:checked');
+              if (allChecked.length === 0) {
+                  const groups = insContainer.querySelectorAll('[id^="ins_grp_"]');
+                  groups.forEach(group => {
+                      if (group.style.display === 'none' || group.offsetParent === null) return;
+                      const cbGroup = group.querySelector('.checkbox-group');
+                      if (cbGroup) {
+                          cbGroup.style.border = '2px solid var(--danger-color)';
+                          cbGroup.style.padding = '0.5rem';
+                          cbGroup.style.borderRadius = 'var(--border-radius-md)';
+                          
+                          const cbs = cbGroup.querySelectorAll('input[type="checkbox"]');
+                          cbs.forEach(cb => cb.addEventListener('change', () => { 
+                              insContainer.querySelectorAll('.checkbox-group').forEach(g => {
+                                  g.style.border = ''; g.style.padding = '';
+                              });
+                          }));
+                      }
+                  });
+                  isValid = false;
+                  if (typeof firstErrorMessage !== 'undefined' && !firstErrorMessage) firstErrorMessage = 'Please select at least one insurance option or None of the Above.';
+                  if (typeof firstInvalidField !== 'undefined' && !firstInvalidField) firstInvalidField = insContainer;
+              }
+          }
         return isValid;
     }
 
@@ -2520,7 +2548,61 @@ async function openDataDrilldown(type) {
         }
     };
 
-    function submitRegistration() {
+    
+// --- INSURANCE OPTIONS RENDERING ---
+function renderInsuranceOptions() {
+    const container = document.getElementById('insuranceOptionsContainer');
+    if (!container) return;
+    
+    if (typeof INSURANCE_CONFIG === 'undefined') {
+        console.error('INSURANCE_CONFIG is not defined');
+        return;
+    }
+
+    let html = '<div style="margin-bottom: 1rem;"><p style="font-weight: 500; margin-bottom: 0.5rem;" data-i18n="' + INSURANCE_CONFIG.question_i18n + '">' + INSURANCE_CONFIG.question + '</p>';
+    
+    if (INSURANCE_CONFIG.groups) {
+        INSURANCE_CONFIG.groups.forEach((group, index) => {
+            html += '<div style="margin-bottom: 1rem;" id="ins_grp_' + index + '">';
+            html += '<h4 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-color);" data-i18n="' + group.title_i18n + '">' + group.title + ' <span style="color:var(--danger-color);">*</span></h4>';
+            html += '<div class="checkbox-group" style="display:flex; flex-direction:column; gap:0.5rem;">';
+            const groupKey = 'group_' + index;
+            group.options.forEach(opt => {
+                html += '<label class="checkbox-item" style="justify-content:flex-start; margin:0;">';
+                const isNone = (opt.id === 'none_personal' || opt.id === 'none_vehicle' || opt.id === 'none');
+                const extraClass = isNone ? 'ins_none_opt' : 'ins_reg_opt';
+                html += '<input type="checkbox" name="insuranceOptions" value="' + opt.id + '" data-group="' + groupKey + '" class="' + extraClass + '" onchange="handleInsuranceChange(this)">';
+                html += '<span style="margin-left:0.5rem;" data-i18n="' + opt.label_i18n + '">' + opt.label + '</span>';
+                html += '</label>';
+            });
+            html += '</div></div>';
+        });
+    }
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+window.handleInsuranceChange = function(cb) {
+    const groupKey = cb.getAttribute('data-group');
+    if (!groupKey) return;
+    
+    const groupCbs = document.querySelectorAll('input[name="insuranceOptions"][data-group="' + groupKey + '"]');
+    const isNoneCb = cb.classList.contains('ins_none_opt');
+    
+    if (isNoneCb && cb.checked) {
+        groupCbs.forEach(c => { if (!c.classList.contains('ins_none_opt')) c.checked = false; });
+    } else if (cb.checked) {
+        groupCbs.forEach(c => { if (c.classList.contains('ins_none_opt')) c.checked = false; });
+    }
+};
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof renderInsuranceOptions === 'function') renderInsuranceOptions();
+});
+
+function submitRegistration() {
         const name = document.getElementById('regFullName').value.trim();
         const phone = document.getElementById('regPhone').value.trim();
         let state = document.getElementById('regState').value;
@@ -4079,7 +4161,7 @@ function downloadLeadsCSV() {
 
 /* ==================== MULTI-STEP FORM LOGIC ==================== */
 let currentStep = 1;
-const totalSteps = 7;
+const totalSteps = 8;
 
 function showStep(step) {
     document.querySelectorAll('.form-section').forEach(el => {
@@ -4276,7 +4358,34 @@ window.nextStep = async function() {
         }
     });
     
-    if(!isValid) {
+    
+      // Insurance validation in nextStep
+      if (currentStep === 6) {
+          const insContainer = document.getElementById('insuranceOptionsContainer');
+          if (insContainer) {
+              const groups = insContainer.querySelectorAll('[id^="ins_grp_"]');
+              groups.forEach(group => {
+                  if (group.style.display === 'none' || group.offsetParent === null) return;
+                  const groupChecked = group.querySelectorAll('input[type="checkbox"]:checked');
+                  if (groupChecked.length === 0) {
+                      const cbGroup = group.querySelector('.checkbox-group');
+                      if (cbGroup) {
+                          cbGroup.style.border = '2px solid var(--danger-color)';
+                          cbGroup.style.padding = '0.5rem';
+                          cbGroup.style.borderRadius = 'var(--border-radius-md)';
+                          isValid = false;
+                          if (typeof firstInvalid !== 'undefined' && !firstInvalid) firstInvalid = cbGroup;
+                          const cbs = cbGroup.querySelectorAll('input[type="checkbox"]');
+                          cbs.forEach(cb => cb.addEventListener('change', () => { 
+                              cbGroup.style.border = ''; cbGroup.style.padding = '';
+                          }));
+                      }
+                  }
+              });
+          }
+      }
+
+      if(!isValid) {
         showToast((window.t ? window.t('msg_38_please_fill_all') : 'Please fill all highlighted required fields before proceeding.'), 'error');
         if (firstInvalid) {
             firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });

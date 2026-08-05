@@ -1,1 +1,0 @@
-const fs = require('fs'); const langs = ['hi', 'kn', 'ta', 'te', 'mr', 'gu', 'bn', 'ml']; langs.forEach(l => { const f = 'public/locales/' + l + '/common.json'; if (fs.existsSync(f)) { let d = JSON.parse(fs.readFileSync(f, 'utf8')); delete d.sec_d_title; delete d.sec_e_title; fs.writeFileSync(f, JSON.stringify(d, null, 4)); } });

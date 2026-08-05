@@ -1,11 +1,7 @@
 const fs = require('fs');
 let content = fs.readFileSync('public/js/app.js', 'utf8');
 
-const bad = `// Download CSV helper
-function downloadLeadsCSV() {
-    });
-    
-    const currentSection = document.getElementById('regSection' + step);`;
+const regex = /\/\/ Download CSV helper\s*function downloadLeadsCSV\(\) \{\s*\}\)\;\s*const currentSection = document\.getElementById\('regSection' \+ step\)\;/;
 
 const good = `// Download CSV helper
 function downloadLeadsCSV() {
@@ -25,10 +21,10 @@ function showStep(step) {
     
     const currentSection = document.getElementById('regSection' + step);`;
 
-if (content.includes(bad)) {
-    content = content.replace(bad, good);
+if (regex.test(content)) {
+    content = content.replace(regex, good);
     fs.writeFileSync('public/js/app.js', content, 'utf8');
-    console.log('Fixed app.js');
+    console.log('Fixed app.js successfully!');
 } else {
-    console.log('Bad block not found in app.js');
+    console.log('Regex did not match.');
 }
