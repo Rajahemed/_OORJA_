@@ -341,7 +341,6 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
 
     const rider = {
       "fullName": fullName,
-      "gender": gender || '',
       email: email || `${normalizedPhone}@roadwarrior.local`,
       password: hashedPassword,
       phone: normalizedPhone,

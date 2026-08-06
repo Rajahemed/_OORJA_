@@ -154,13 +154,11 @@ const apiRoutes       = require('./routes/api');
 const authRoutes      = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const analyticsRoutes = require('./routes/analytics'); // NEW — Intelligence System
-const auditRoutes     = require('./routes/audit');     // NEW — Website Auditor
 
 app.use('/api',       csrfProtection, apiRoutes);
 app.use('/auth',      csrfProtection, authRoutes);
 app.use('/dashboard', csrfProtection, dashboardRoutes);
 app.use('/api',       csrfProtection, analyticsRoutes); // visitor tracking, leads, analytics
-app.use('/api',       csrfProtection, auditRoutes);     // dns lookups
 
 // Unsubscribe page — no CSRF needed (GET, accessed via email link)
 app.get('/unsubscribe', (req, res) => {
@@ -169,8 +167,8 @@ app.get('/unsubscribe', (req, res) => {
 });
 
 app.get('/about', (req, res) => res.sendFile(path.join(__dirname, 'public', 'about.html')));
-app.get('/auditor', (req, res) => res.sendFile(path.join(__dirname, 'public', 'auditor.html')));
-app.get('/thank-you', (req, res) => res.sendFile(path.join(__dirname, 'public', 'thank-you.html')));
+app.get('/privacy', (req, res) => res.sendFile(path.join(__dirname, 'public', 'privacy.html')));
+app.get('/terms', (req, res) => res.sendFile(path.join(__dirname, 'public', 'terms.html')));
 
 app.get('/sitemap.xml', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'sitemap.xml'));

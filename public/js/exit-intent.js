@@ -1,4 +1,4 @@
-// Exit Intent Logic for Auditor Detection and Conversion Recovery
+// Exit Intent Logic for Conversion Recovery
 document.addEventListener("mouseout", function(e) {
     // Trigger when mouse leaves the window (relatedTarget is null) and towards the top (clientY < 50)
     if (!e.relatedTarget && e.clientY < 50 && !sessionStorage.getItem('exitIntentShown')) {

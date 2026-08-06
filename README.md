@@ -59,17 +59,11 @@ A complete, production-ready delivery rider management and analytics platform wi
 - **GDPR-compliant Unsubscribe System**
 - **Admin Email Log Tracking**
 
-### 🔍 Website Auditor Engine
-- **Automated Score Calculation** (SEO, Performance, Security, AI Readiness, Trust)
-- **AI-Readiness Checks** (llms.txt detection)
-- **Real-time HTML parsing** for optimization recommendations
-- **Comprehensive Audit Reports** with actionable insights
-
+- **Real-Time Data Extraction** from Android APIs
+- **WhatsApp Integration** for secure authentication and notifications
 ### 🎨 Professional UI/UX
 - **Modern Dark Theme** with gradients
 - **Responsive Design** (Mobile, Tablet, Desktop)
-- **Smooth Animations** and transitions
-- **Professional Typography**
 - **Accessible Interface** (WCAG compliant)
 - **Real-time Notifications**
 
@@ -274,14 +268,9 @@ During the recent security audit, several vulnerabilities and weaknesses were id
 - `POST /api/leads/capture` - Save lead & trigger email drip
 - `GET /api/admin/analytics/bot-intelligence` - Bot & Datacenter traffic data
 - `GET /api/admin/analytics/leads` - Lead pipeline & email status
-- `GET /dashboard/analytics/:riderId` - Get rider analytics
-- `GET /dashboard/city-analytics` - Get city statistics
-- `GET /dashboard/revenue/:riderId` - Get revenue data
-- `GET /dashboard/system-stats` - Get system statistics
-
-### Auditor
-- `POST /api/auditor/run` - Run website audit
-- `GET /api/auditor/reports` - List recent audits
+- `GET /api/analytics/dashboard` - Dashboard stats
+- `GET /api/analytics/leads` - Lead export
+- `GET /api/analytics/referrals` - Top referrers
 
 ### Admin
 - `GET /api/admin/riders` - Get all riders

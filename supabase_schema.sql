@@ -84,17 +84,6 @@ CREATE TABLE IF NOT EXISTS deliveries (
     rating NUMERIC
 );
 
--- Audit Reports Table
-CREATE TABLE IF NOT EXISTS "auditReports" (
-    id UUID PRIMARY KEY,
-    url TEXT,
-    "overallScore" INTEGER,
-    scores JSONB,
-    checks JSONB,
-    recommendations JSONB,
-    timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
 -- WhatsApp Logs Table
 CREATE TABLE IF NOT EXISTS "whatsappLogs" (
     id UUID PRIMARY KEY,
