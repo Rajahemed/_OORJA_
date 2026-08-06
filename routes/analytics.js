@@ -337,13 +337,13 @@ router.post('/leads/capture', leadCaptureRateLimit, async (req, res) => {
       return res.status(500).json({ success: false, error: 'Failed to save lead. Please try again.' });
     }
 
-    // Trigger email drip sequence (non-blocking)
-    triggerDripSequence({ 
-      ...lead, 
-      id: inserted.id 
-
-    }).catch(e =>
-      console.error('[analytics] drip trigger error:', e.message)
+    const crmService = require('../utils/crmService');
+    // Trigger email drip sequence and CRM sync (non-blocking)
+    Promise.allSettled([
+      triggerDripSequence({ ...lead, id: inserted.id }),
+      crmService.sendLead({ name: cleanName, email: cleanEmail, phone: cleanPhone, website: source })
+    ]).catch(e =>
+      console.error('[analytics] post-insert trigger error:', e)
     );
 
     res.json({

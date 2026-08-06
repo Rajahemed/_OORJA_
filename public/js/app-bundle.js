@@ -709,10 +709,8 @@ async function submitLeadForm(event) {
         const data = await response.json();
 
         if (data.success) {
-            if (form)       form.style.display       = 'none';
-            if (successDiv) successDiv.style.display = 'block';
             trackEvent('lead_captured', { source: 'website_modal', has_phone: !!phone });
-            setTimeout(closeLeadModal, 4000);
+            window.location.href = '/thank-you.html';
         } else {
             if (errDiv) {
                 errDiv.textContent = data.error || 'Submission failed. Please try again.';

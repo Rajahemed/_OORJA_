@@ -445,5 +445,6 @@
     "ins_od": "ins_od",
     "ins_comp": "ins_comp",
     "fac_none": "इनमे से कोई भी नहीं",
-    "sec_g_title": "sec_g_title"
+    "sec_g_title": "sec_g_title",
+    "lbl_fuel_cost": "एलबीएल_ईंधन_लागत"
 }
