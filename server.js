@@ -27,18 +27,24 @@ const csrf = require('csurf');
 // Enable gzip compression for all responses
 app.use(compression());
 
-// Enforce Canonical Host (non-www) and HTTPS
+// Auto-minify CSS and JS
+const minify = require('express-minify');
+app.use(minify());
+
+// Enforce Canonical Host (non-www)
 app.use((req, res, next) => {
     let host = req.headers.host;
     if (!host) return next();
     
     let isWww = host.startsWith('www.');
-    let isProdHost = host.includes('roadwarrior.pro');
     let isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
     
-    if (isProdHost && (isWww || !isSecure)) {
-        return res.redirect(301, 'https://roadwarrior.pro' + req.originalUrl);
+    if (isWww) {
+        let cleanHost = host.replace(/^www\./, '');
+        let protocol = isSecure ? 'https://' : 'http://';
+        return res.redirect(301, protocol + cleanHost + req.originalUrl);
     }
+    
     next();
 });
 

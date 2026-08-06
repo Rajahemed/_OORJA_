@@ -396,6 +396,16 @@ async function initVisitorTracking() {
 // ============================================================
 // LEAD CAPTURE MODAL
 // ============================================================
+window.closeLeadModal = function closeLeadModal(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const modal = document.getElementById('leadCaptureModal');
+    if (modal) modal.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
 function openLeadModal() {
     const modal = document.getElementById('leadCaptureModal');
     if (modal) {

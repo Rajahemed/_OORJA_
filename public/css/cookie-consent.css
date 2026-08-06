@@ -276,7 +276,7 @@
 
 #leadCaptureModal.show {
   opacity: 1;
-  pointer-events: all;
+  pointer-events: auto;
 }
 
 #leadCaptureModal.show .lead-modal-box {
@@ -297,7 +297,7 @@
 
 .lead-modal-header {
   background: linear-gradient(135deg, #6c47ff 0%, #00d4ff 100%);
-  padding: 24px 28px 20px;
+  padding: 24px 48px 20px 28px;
   position: relative;
 }
 
