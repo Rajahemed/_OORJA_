@@ -5431,16 +5431,6 @@ if (originalShowProfile) {
     
 
 
-        document.addEventListener('mouseleave', function(e) {
-            if (e.clientY < 0 && !sessionStorage.getItem('exitIntentShown')) {
-                const popup = document.getElementById('exitIntentPopup');
-                if(popup) {
-                    popup.style.display = 'flex';
-                    sessionStorage.setItem('exitIntentShown', 'true');
-                }
-            }
-        });
-    
 
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -5463,15 +5453,5 @@ if (originalShowProfile) {
     });
     
 
-
-    document.addEventListener("mouseleave", function(e) {
-        if (e.clientY < 0 && !sessionStorage.getItem('exitIntentShown')) {
-            const popup = document.getElementById('exit-intent-popup');
-            if(popup) {
-                popup.style.display = 'flex';
-                sessionStorage.setItem('exitIntentShown', 'true');
-            }
-        }
-    });
 
 

@@ -3576,13 +3576,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-    <!-- Exit Intent Script (for auditor detection) -->
+    <!-- Exit Intent Script -->
     <script>
-    document.addEventListener("mouseleave", function(e) {
-        if (e.clientY < 0 && !sessionStorage.getItem('exitIntentShown')) {
-            const popup = document.getElementById('exit-intent-popup') || document.getElementById('exitIntentPopup');
+    document.addEventListener("mouseout", function(e) {
+        // Trigger if mouse leaves window at the top (clientY < 50) and no related target (left the browser)
+        if (!e.relatedTarget && e.clientY < 50 && !sessionStorage.getItem('exitIntentShown')) {
+            const popup = document.getElementById('exit-intent-popup');
             if(popup) {
                 popup.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; // prevent background scrolling
                 sessionStorage.setItem('exitIntentShown', 'true');
             }
         }
