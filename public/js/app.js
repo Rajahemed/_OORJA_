@@ -2413,6 +2413,29 @@ async function openDataDrilldown(type) {
                document.getElementById('regMonthlyRent').value = '';
             }
         }
+        
+        if (typeof window.updateBikeSpeedVisibility === 'function') {
+            window.updateBikeSpeedVisibility();
+        }
+    };
+
+    window.updateBikeSpeedVisibility = function() {
+        const bikeSpeedFields = document.getElementById('bikeSpeedFields');
+        if (!bikeSpeedFields) return;
+        
+        const vtRadio = document.querySelector('input[name="vehicleType"]:checked');
+        const ownRadio = document.querySelector('input[name="vehicleOwnership"]:checked');
+        
+        const vt = vtRadio ? vtRadio.value : '';
+        const own = ownRadio ? ownRadio.value : '';
+        
+        if (vt === '2 Wheeler' && (own === 'Company Vehicle' || own === 'Rental Vehicle')) {
+            bikeSpeedFields.style.display = 'block';
+        } else {
+            bikeSpeedFields.style.display = 'none';
+            const inputs = bikeSpeedFields.querySelectorAll('input');
+            inputs.forEach(i => i.checked = false);
+        }
     };
 
     window.toggleMaintCard = function(id, headerEl) {
@@ -2510,6 +2533,10 @@ async function openDataDrilldown(type) {
                 const helmetRadios = helmetSection.querySelectorAll('input[type="radio"]');
                 helmetRadios.forEach(r => r.checked = false);
             }
+        }
+        
+        if (typeof window.updateBikeSpeedVisibility === 'function') {
+            window.updateBikeSpeedVisibility();
         }
     };
 

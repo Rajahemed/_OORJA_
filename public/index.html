@@ -1421,16 +1421,16 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <small id="nameWarning" class="text-danger-color" style="display:none; font-weight:600; margin-top:0.25rem; display:none;" data-i18n="warning_no_numbers">Numbers are not allowed in names</small>
                                     </div>
                                     <div class="form-group">
-                                        <label>Gender <span style="color: var(--danger-color, #ef4444);">*</span></label>
-                                        <div style="display: flex; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap;">
-                                            <label style="display:flex; align-items:center; gap:0.75rem; cursor:pointer; font-weight:500; font-size: 1.1rem;">
-                                                <input type="radio" name="regGender" value="Male" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);"> Male
+                                        <label data-i18n="label_gender">Gender <span style="color: var(--danger-color, #ef4444);">*</span></label>
+                                        <div style="display:flex; gap:1rem; margin-top:0.5rem; align-items:center;">
+                                            <label style="display:flex; align-items:center; gap:0.5rem; font-weight:normal; font-size:1rem;">
+                                                <input type="radio" name="regGender" value="Male" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);"> <span data-i18n="opt_male">Male</span>
                                             </label>
-                                            <label style="display:flex; align-items:center; gap:0.75rem; cursor:pointer; font-weight:500; font-size: 1.1rem;">
-                                                <input type="radio" name="regGender" value="Female" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);"> Female
+                                            <label style="display:flex; align-items:center; gap:0.5rem; font-weight:normal; font-size:1rem;">
+                                                <input type="radio" name="regGender" value="Female" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);"> <span data-i18n="opt_female">Female</span>
                                             </label>
-                                            <label style="display:flex; align-items:center; gap:0.75rem; cursor:pointer; font-weight:500; font-size: 1.1rem;">
-                                                <input type="radio" name="regGender" value="Other" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);"> Other
+                                            <label style="display:flex; align-items:center; gap:0.5rem; font-weight:normal; font-size:1rem;">
+                                                <input type="radio" name="regGender" value="Other" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);"> <span data-i18n="opt_other">Other</span>
                                             </label>
                                         </div>
                                         <input type="text" id="regGenderOther" class="form-control" placeholder="Please specify gender" style="display:none; margin-top:0.5rem;" onblur="window.savePartialProgress && window.savePartialProgress()">
@@ -1457,7 +1457,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                                     <div class="form-group">
-                                        <label for="regPasswordDisplay">Generate PIN</label>
+                                        <label for="regPasswordDisplay" data-i18n="label_generate_pin">Generate PIN</label>
                                         <input type="text" id="regPasswordDisplay" class="form-control" style="font-weight:bold; letter-spacing:4px; font-size:1.2rem;" placeholder="----" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, ''); document.getElementById('regPassword').value = this.value; document.getElementById('passErrMsg').style.display = 'none';">
                                         <input type="hidden" id="regPassword" required="" aria-label="inputField">
                                         <span id="passErrMsg" class="error-message hidden" style="color:#f97316; margin-top:0.5rem; display:block;"><i class="fas fa-exclamation-circle"></i> Please enter a 4-digit PIN</span>
@@ -1648,6 +1648,16 @@ document.addEventListener("DOMContentLoaded", () => {
                                         </div>
                                     </div>
 
+                                    <div id="bikeSpeedFields" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <label>Vehicle Speed Classification</label>
+                                            <div class="radio-group inline" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                                                <label class="radio-item"><input type="radio" name="bikeSpeed" value="Slow (up to 25km/h)"> 🐢 Slow (up to 25km/h)</label>
+                                                <label class="radio-item"><input type="radio" name="bikeSpeed" value="High Speed (above 25km/h)"> 🚀 High Speed (above 25km/h)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="form-group">
                                         <label data-i18n="lbl_hours">How many hours do you work daily?</label>
                                         <select id="regWorkingHours" class="form-control" required="" aria-label="inputField">
@@ -1712,6 +1722,34 @@ document.addEventListener("DOMContentLoaded", () => {
                                             <label class="radio-item"><input type="radio" name="fuelMethod" value="Battery swapping station" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🔋 <span data-i18n="fm_swap">Battery Swap</span></label>
                                             <label class="radio-item"><input type="radio" name="fuelMethod" value="Public charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🔌 <span data-i18n="fm_public">Public Charging</span></label>
                                         </div>
+                                        <div class="form-group" style="margin-top: 1rem;">
+                                            <label data-i18n="lbl_ev_batt_cost">Monthly Battery Charging Cost (₹)</label>
+                                            <select id="regEvBatteryCost" name="evBatteryCost" class="form-control" onchange="document.getElementById('evBatteryCostOther').style.display = this.value === 'Other' ? 'block' : 'none'; document.getElementById('evBatteryCostOther').required = this.value === 'Other';">
+                                                <option value="">Select Range</option>
+                                                <option value="0 to 1000">0 to 1000</option>
+                                                <option value="1000 to 2000">1000 to 2000</option>
+                                                <option value="2000 to 3000">2000 to 3000</option>
+                                                <option value="3000 to 4000">3000 to 4000</option>
+                                                <option value="4000 to 5000">4000 to 5000</option>
+                                                <option value="Above 5000">Above 5000</option>
+                                                <option value="Other">Other (Specific Amount)</option>
+                                            </select>
+                                            <input type="number" id="evBatteryCostOther" name="evBatteryCostOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Enter specific amount (₹)">
+                                        </div>
+                                        <div class="form-group">
+                                            <label data-i18n="lbl_ev_maint_cost">Monthly Maintenance Cost (₹)</label>
+                                            <select id="regEvMaintCost" name="evMaintCost" class="form-control" onchange="document.getElementById('evMaintCostOther').style.display = this.value === 'Other' ? 'block' : 'none'; document.getElementById('evMaintCostOther').required = this.value === 'Other';">
+                                                <option value="">Select Range</option>
+                                                <option value="0 to 1000">0 to 1000</option>
+                                                <option value="1000 to 2000">1000 to 2000</option>
+                                                <option value="2000 to 3000">2000 to 3000</option>
+                                                <option value="3000 to 4000">3000 to 4000</option>
+                                                <option value="4000 to 5000">4000 to 5000</option>
+                                                <option value="Above 5000">Above 5000</option>
+                                                <option value="Other">Other (Specific Amount)</option>
+                                            </select>
+                                            <input type="number" id="evMaintCostOther" name="evMaintCostOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Enter specific amount (₹)">
+                                        </div>
                                     </div>
 
                                     <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">
@@ -1720,9 +1758,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                     <div id="fuelExpenseSection" class="conditional-section">
                                         <div class="form-group">
-                                            <label for="regMaintExp" data-i18n="lbl_maint_cost">Monthly Maintenance Cost
-                                                (₹)</label>
-                                            <select required="" id="regMaintExp" class="form-control">
+                                            <label for="regMaintExp" data-i18n="lbl_maint_cost">Monthly Maintenance Cost (₹)</label>
+                                            <select required="" id="regMaintExp" name="maintExp" class="form-control" onchange="document.getElementById('regMaintExpOther').style.display = this.value === 'Other' ? 'block' : 'none'; document.getElementById('regMaintExpOther').required = this.value === 'Other';">
                                                 <option value="">Select Range</option>
                                                 <option value="₹2000–₹3000">₹2000–₹3000</option>
                                                 <option value="₹3001–₹4000">₹3001–₹4000</option>
@@ -1733,11 +1770,13 @@ document.addEventListener("DOMContentLoaded", () => {
                                                 <option value="₹8001–₹9000">₹8001–₹9000</option>
                                                 <option value="₹9001–₹10000">₹9001–₹10000</option>
                                                 <option value="₹10000+">₹10000+</option>
+                                                <option value="Other">Other (Specific Amount)</option>
                                             </select>
+                                            <input type="number" id="regMaintExpOther" name="maintExpOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Enter specific amount (₹)">
                                         </div>
                                         <div class="form-group">
-                                            <label for="regFuelExp" data-i18n="lbl_fuel_cost">Overall Monthly Fuel Cost (₹)</label>
-                                            <select required="" id="regFuelExp" class="form-control">
+                                            <label for="regFuelExp" data-i18n="lbl_fuel_cost">Monthly Fuel Cost (₹)</label>
+                                            <select required="" id="regFuelExp" name="fuelExp" class="form-control" onchange="document.getElementById('regFuelExpOther').style.display = this.value === 'Other' ? 'block' : 'none'; document.getElementById('regFuelExpOther').required = this.value === 'Other';">
                                                 <option value="">Select Range</option>
                                                 <option value="₹1000–₹2000">₹1000–₹2000</option>
                                                 <option value="₹2001–₹3000">₹2001–₹3000</option>
@@ -1747,7 +1786,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                                 <option value="₹6001–₹8000">₹6001–₹8000</option>
                                                 <option value="₹8001–₹10000">₹8001–₹10000</option>
                                                 <option value="₹10000+">₹10000+</option>
+                                                <option value="Other">Other (Specific Amount)</option>
                                             </select>
+                                            <input type="number" id="regFuelExpOther" name="fuelExpOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Enter specific amount (₹)">
                                         </div>
                                     </div>
 
@@ -1757,28 +1798,27 @@ document.addEventListener("DOMContentLoaded", () => {
                                             <div class="form-group">
                                                 <label data-i18n="lbl_maint_own_6">1. How often do you service your
                                                     vehicle?</label>
-                                                <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintServiceFreq" required="" value="Every 3 Months" aria-label="maintServiceFreq"> 3 Months</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required="" value="Every 6 Months" aria-label="maintServiceFreq"> 6 Months</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required="" value="Every Year" aria-label="maintServiceFreq"> 1 Year</label><label class="radio-item"><input type="radio" name="maintServiceFreq" required="" value="Only When Needed" aria-label="maintServiceFreq"> Only When
-                                                        Needed</label></div>
+                                                <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintServiceFreq" required="" value="Every 3 Months" aria-label="maintServiceFreq"> <span data-i18n="lbl_3_months">3 Months</span></label><label class="radio-item"><input type="radio" name="maintServiceFreq" required="" value="Every 6 Months" aria-label="maintServiceFreq"> <span data-i18n="lbl_6_months">6 Months</span></label><label class="radio-item"><input type="radio" name="maintServiceFreq" required="" value="Every Year" aria-label="maintServiceFreq"> <span data-i18n="lbl_1_year">1 Year</span></label><label class="radio-item"><input type="radio" name="maintServiceFreq" required="" value="Only When Needed" aria-label="maintServiceFreq"> <span data-i18n="lbl_only_needed">Only When Needed</span></label></div>
                                             </div>
                                             <div class="form-group">
-                                                <label>2. Have you had any major repairs in the last 12 months?</label>
+                                                <label data-i18n="lbl_major_repairs">2. Have you had any major repairs in the last 12 months?</label>
                                                 <div class="radio-group inline"><label class="radio-item"><input type="radio" name="majorRepairs" required="" value="Yes" onchange="document.getElementById('majorRepairCostGroup').style.display='block'" aria-label="majorRepairs">
-                                                        Yes</label><label class="radio-item"><input type="radio" name="majorRepairs" required="" value="No" onchange="document.getElementById('majorRepairCostGroup').style.display='none'; document.getElementById('regMajorRepairCost').value='';" aria-label="majorRepairs">
-                                                        No</label></div>
+                                                        <span data-i18n="opt_yes">Yes</span></label><label class="radio-item"><input type="radio" name="majorRepairs" required="" value="No" onchange="document.getElementById('majorRepairCostGroup').style.display='none'; document.getElementById('regMajorRepairCost').value='';" aria-label="majorRepairs">
+                                                        <span data-i18n="opt_no">No</span></label></div>
                                             </div>
                                             <div class="form-group" id="majorRepairCostGroup" style="display:none; margin-top: 0.5rem;">
-                                                <label>Approximate repair cost (₹)</label>
-                                                <select id="regMajorRepairCost" class="form-control" aria-label="inputField">
-                                                    <option value="">Select Repair Cost</option>
-                                                    <option value="500-1000">500 - 1000</option>
-                                                    <option value="1001-1500">1001 - 1500</option>
-                                                    <option value="1501-2000">1501 - 2000</option>
-                                                    <option value="2001-2500">2001 - 2500</option>
-                                                    <option value="2501-3000">2501 - 3000</option>
-                                                    <option value="3001-3500">3001 - 3500</option>
-                                                    <option value="3501-4000">3501 - 4000</option>
-                                                    <option value="4000+">4000+</option>
+                                                <label data-i18n="lbl_repair_cost">Approximate repair cost (₹)</label>
+                                                <select id="regMajorRepairCost" name="majorRepairCost" class="form-control" aria-label="inputField" onchange="document.getElementById('regMajorRepairCostOther').style.display = this.value === 'Other' ? 'block' : 'none'; document.getElementById('regMajorRepairCostOther').required = this.value === 'Other';">
+                                                    <option value="" data-i18n="opt_select_repair">Select Repair Cost</option>
+                                                    <option value="0 to 1000">0 to 1000</option>
+                                                    <option value="1000 to 5000">1000 to 5000</option>
+                                                    <option value="5000 to 10000">5000 to 10000</option>
+                                                    <option value="10000 to 15000">10000 to 15000</option>
+                                                    <option value="15000 to 20000">15000 to 20000</option>
+                                                    <option value="20000+">20000+</option>
+                                                    <option value="Other">Other (Specific Amount)</option>
                                                 </select>
+                                                <input type="number" id="regMajorRepairCostOther" name="majorRepairCostOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Enter specific amount (₹)">
                                             </div>
                                         </div>
 
@@ -1908,20 +1948,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                                     Traffic Regulations</span></label>
                                             <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required="" name="trainingReceived" value="Roadside Assistance / Vehicle Breakdown Procedure" onchange="handleTrainingChange(this)" aria-label="trainingReceived"> <span style="margin-left:0.5rem;" data-i18n="train_roadside">Roadside
                                                     Assistance / Vehicle Breakdown Procedure</span></label>
-                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required="" name="trainingReceived" value="Handling Delivery Delays" onchange="handleTrainingChange(this)" aria-label="trainingReceived"> <span style="margin-left:0.5rem;" data-i18n="train_delays">Handling
-                                                    Delivery Delays</span></label>
-                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required="" name="trainingReceived" value="Safe Driving Practices" onchange="handleTrainingChange(this)" aria-label="trainingReceived"> <span style="margin-left:0.5rem;" data-i18n="train_driving">Safe Driving
-                                                    Practices</span></label>
-                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required="" name="trainingReceived" value="Emergency Contact &amp; SOS Procedure" onchange="handleTrainingChange(this)" aria-label="trainingReceived"> <span style="margin-left:0.5rem;" data-i18n="train_sos">Emergency Contact
-                                                    &amp; SOS Procedure</span></label>
                                             <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required="" name="trainingReceived" value="Vehicle Inspection Before Starting Work" onchange="handleTrainingChange(this)" aria-label="trainingReceived"> <span style="margin-left:0.5rem;" data-i18n="train_inspection">Vehicle
                                                     Inspection Before Starting Work</span></label>
-                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required="" name="trainingReceived" value="Delivery Platform Rules &amp; Guidelines" onchange="handleTrainingChange(this)" aria-label="trainingReceived"> <span style="margin-left:0.5rem;" data-i18n="train_platform">Delivery
-                                                    Platform Rules &amp; Guidelines</span></label>
-                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required="" name="trainingReceived" value="Digital Payment &amp; Cash Handling" onchange="handleTrainingChange(this)" aria-label="trainingReceived"> <span style="margin-left:0.5rem;" data-i18n="train_payment">Digital
-                                                    Payment &amp; Cash Handling</span></label>
-                                            <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required="" name="trainingReceived" value="Personal Safety During Deliveries" onchange="handleTrainingChange(this)" aria-label="trainingReceived"> <span style="margin-left:0.5rem;" data-i18n="train_safety">Personal Safety
-                                                    During Deliveries</span></label>
                                             <label class="checkbox-item" style="justify-content:flex-start; margin:0;"><input type="checkbox" required="" name="trainingReceived" value="I Have Not Received Any Training" onchange="handleTrainingChange(this)" aria-label="trainingReceived"> <span style="margin-left:0.5rem;" data-i18n="train_none">I Have Not
                                                     Received Any Training</span></label>
                                         </div>
@@ -3578,9 +3606,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <!-- Exit Intent Script -->
     <script>
-    document.addEventListener("mouseout", function(e) {
-        // Trigger if mouse leaves window at the top (clientY < 50) and no related target (left the browser)
-        if (!e.relatedTarget && e.clientY < 50 && !sessionStorage.getItem('exitIntentShown')) {
+    document.addEventListener("mouseleave", function(e) {
+        // Trigger if mouse leaves window at the top (clientY < 50)
+        if (e.clientY < 50 && !sessionStorage.getItem('exitIntentShown')) {
             const popup = document.getElementById('exit-intent-popup');
             if(popup) {
                 popup.style.display = 'flex';
@@ -3593,5 +3621,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <!-- Combined Marketing Scripts -->
     <script src="/js/insurance-config.js" charset="UTF-8"></script>
-    <script defer src="/js/app-bundle.js?v=9" charset="UTF-8"></script>
+    <script defer src="/js/app-bundle.js?v=10" charset="UTF-8"></script>
 </body></html>
