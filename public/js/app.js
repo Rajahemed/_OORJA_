@@ -2701,6 +2701,7 @@ function submitRegistration() {
 
         const payload = {
             fullName: name,
+            gender: getRadioValue('regGender') === 'Other' ? document.getElementById('regGenderOther')?.value.trim() : getRadioValue('regGender'),
             phone: phone,
             state: state,
             city: city,
@@ -4285,6 +4286,7 @@ window.savePartialProgress = async function() {
         phone: phone,
         current_step: currentStep,
         fullName: name,
+        gender: getRadioValue('regGender') === 'Other' ? document.getElementById('regGenderOther')?.value.trim() : getRadioValue('regGender'),
         state: state,
         city: city,
         pincode: pincode,
