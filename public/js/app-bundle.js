@@ -1712,6 +1712,30 @@ async function openDataDrilldown(type) {
                 sec.querySelectorAll('input[type="text"][id$="Other"]').forEach(el => {
                     if (el.style.display !== 'none' && !el.value.trim()) setInvalid(el);
                 });
+
+                // Check gender
+                const genderChecked = sec.querySelector('input[name="regGender"]:checked');
+                if (!genderChecked) {
+                    isValid = false;
+                    const group = sec.querySelector('input[name="regGender"]')?.closest('.form-group');
+                    if (!firstErrorMessage) {
+                        firstErrorMessage = 'Please select a gender.';
+                    }
+                    if (group) {
+                        group.style.border = '2px solid var(--danger-color)';
+                        group.style.padding = '0.5rem';
+                        group.style.borderRadius = 'var(--border-radius-md)';
+                        if (!firstInvalidField) firstInvalidField = group;
+                        
+                        const clearGenderBorder = () => {
+                            group.style.border = '';
+                            group.style.padding = '';
+                        };
+                        sec.querySelectorAll('input[name="regGender"]').forEach(r => {
+                            r.addEventListener('change', clearGenderBorder, { once: true });
+                        });
+                    }
+                }
             }
             else if (step === 3) {
                 const vt = sec.querySelector('input[name="vehicleType"]:checked');

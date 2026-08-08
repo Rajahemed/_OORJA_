@@ -1424,13 +1424,13 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <label data-i18n="label_gender">Gender <span style="color: var(--danger-color, #ef4444);">*</span></label>
                                         <div style="display:flex; gap:1rem; margin-top:0.5rem; align-items:center;">
                                             <label style="display:flex; align-items:center; gap:0.5rem; font-weight:normal; font-size:1rem;">
-                                                <input type="radio" name="regGender" value="Male" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);"> <span data-i18n="opt_male">Male</span>
+                                                <input type="radio" name="regGender" value="Male" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);" required> <span data-i18n="opt_male">Male</span>
                                             </label>
                                             <label style="display:flex; align-items:center; gap:0.5rem; font-weight:normal; font-size:1rem;">
-                                                <input type="radio" name="regGender" value="Female" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);"> <span data-i18n="opt_female">Female</span>
+                                                <input type="radio" name="regGender" value="Female" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);" required> <span data-i18n="opt_female">Female</span>
                                             </label>
                                             <label style="display:flex; align-items:center; gap:0.5rem; font-weight:normal; font-size:1rem;">
-                                                <input type="radio" name="regGender" value="Other" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);"> <span data-i18n="opt_other">Other</span>
+                                                <input type="radio" name="regGender" value="Other" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);" required> <span data-i18n="opt_other">Other</span>
                                             </label>
                                         </div>
                                         <input type="text" id="regGenderOther" class="form-control" placeholder="Please specify gender" style="display:none; margin-top:0.5rem;" onblur="window.savePartialProgress && window.savePartialProgress()">

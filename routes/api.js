@@ -267,8 +267,8 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       latitude, longitude, locationAccuracy
     } = req.body;
 
-    if (!fullName || !phone || !state || !city || !pincode) {
-      return res.status(400).json({ success: false, error: 'Full name, phone, state, city, and pincode are required' });
+    if (!fullName || !gender || !phone || !state || !city || !pincode) {
+      return res.status(400).json({ success: false, error: 'Full name, gender, phone, state, city, and pincode are required' });
     }
 
     if (!validatePhone(phone)) {
