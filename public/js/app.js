@@ -2415,8 +2415,10 @@ async function openDataDrilldown(type) {
             clearInputs(rentalSec);
             clearInputs(companySec);
             if (rentFields) {
-               document.getElementById('regWeeklyRent').value = '';
-               document.getElementById('regMonthlyRent').value = '';
+               const weeklyRentEl = document.getElementById('regWeeklyRent');
+               if (weeklyRentEl) weeklyRentEl.value = '';
+               const monthlyRentEl = document.getElementById('regMonthlyRent');
+               if (monthlyRentEl) monthlyRentEl.value = '';
             }
         } else if (val === 'Rental Vehicle') {
             if(rentalSec) {
@@ -2433,8 +2435,10 @@ async function openDataDrilldown(type) {
             clearInputs(ownSec);
             clearInputs(rentalSec);
             if (rentFields) {
-               document.getElementById('regWeeklyRent').value = '';
-               document.getElementById('regMonthlyRent').value = '';
+               const weeklyRentEl = document.getElementById('regWeeklyRent');
+               if (weeklyRentEl) weeklyRentEl.value = '';
+               const monthlyRentEl = document.getElementById('regMonthlyRent');
+               if (monthlyRentEl) monthlyRentEl.value = '';
             }
         }
         
@@ -2504,8 +2508,7 @@ async function openDataDrilldown(type) {
                     modelSelect.appendChild(opt);
                 });
             }
-            document.getElementById('regVehicleModelOther').style.display = 'none';
-            document.getElementById('regVehicleModelOther').value = '';
+            var otherEl=document.getElementById('regVehicleModelOther');if(otherEl){otherEl.style.display='none';otherEl.value='';}
         }
 
         const fuelTypeSection = document.getElementById('fuelTypeSection');
@@ -4614,9 +4617,7 @@ window.selectPlatformPill = function(value, element) {
         document.getElementById('regPlatformOther').style.display = 'block';
         document.getElementById('regPlatformOther').required = true;
     } else {
-        document.getElementById('regPlatformOther').style.display = 'none';
-        document.getElementById('regPlatformOther').required = false;
-        document.getElementById('regPlatformOther').value = '';
+        var otherEl=document.getElementById('regPlatformOther');if(otherEl){otherEl.style.display='none';otherEl.required=false;otherEl.value='';}
     }    
 
     // Update platform IDs container
@@ -4655,18 +4656,19 @@ window.selectPlatformPill = function(value, element) {
         return plat + ' ' + lbl;
     })()
 }</label>
-                        <input type="text" class="form-control" name="platformId_${platform}" id="platformId_${platform}" required>
+                        <input type="text" class="form-control" name="platformId_${platform}" id="platformId_${platform}">
                     `;
                     idsContainer.appendChild(groupEl);
                 } else {
                     groupEl.style.display = 'block';
-                    groupEl.querySelector('input').required = true;
                 }
             } else {
                 if (groupEl) {
                     groupEl.style.display = 'none';
-                    groupEl.querySelector('input').required = false;
-                    groupEl.querySelector('input').value = '';
+                    const inputEl = groupEl.querySelector('input');
+                    if(inputEl) {
+                        inputEl.value = '';
+                    }
                 }
             }
         });

@@ -458,5 +458,7 @@
     "lbl_only_needed": "केवल जब आवश्यकता हो",
     "lbl_major_repairs": "2. क्या आपने पिछले 12 महीनों में कोई बड़ी मरम्मत कराई है?",
     "lbl_repair_cost": "अनुमानित मरम्मत लागत (₹)",
-    "opt_select_repair": "मरम्मत लागत चुनें"
+    "opt_select_repair": "मरम्मत लागत चुनें",
+    "lbl_ev_batt_cost": "lbl_ev_batt_cost",
+    "lbl_ev_maint_cost": "lbl_ev_maint_cost"
 }
