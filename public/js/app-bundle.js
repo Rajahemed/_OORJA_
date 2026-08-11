@@ -3093,44 +3093,9 @@ function submitRegistration() {
         doRegister(payload);
     }; // End processRegistrationData
 
-    // Attempt GPS capture immediately to preserve user gesture
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                processRegistrationData(position.coords.latitude, position.coords.longitude, position.coords.accuracy);
-            },
-            (error) => {
-                console.warn('Geolocation failed or denied:', error.message);
-                btn.removeAttribute('data-processing');
-                let errorMsg = 'Failed to get location.';
-                if (error.code === error.PERMISSION_DENIED) {
-                    errorMsg = 'Location permission is required to register. Please enable Location permission in your browser/device settings and try again.';
-                } else if (error.code === error.POSITION_UNAVAILABLE) {
-                    errorMsg = 'Location information is unavailable. Please check your device GPS and try again.';
-                } else if (error.code === error.TIMEOUT) {
-                    errorMsg = 'Location request timed out. Please try again.';
-                }
-                if (typeof showToast === 'function') {
-                    showToast(errorMsg, 'error');
-                } else {
-                    alert(errorMsg);
-                }
-            },
-            { timeout: 30000, maximumAge: 0, enableHighAccuracy: false }
-        );
-    } else {
-        console.warn('Browser completely disabled geolocation on this connection.');
-        btn.removeAttribute('data-processing');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
-        const msg = 'Geolocation is not supported by your browser or device. Cannot complete registration.';
-        if (typeof showToast === 'function') {
-            showToast(msg, 'error');
-        } else {
-            alert(msg);
-        }
-    }
-    }
+    // Temporarily disabled location requirement
+    processRegistrationData(null, null, null);
+}
 
     function loginAfterRegister() {
         if (registeredRiderId) {
