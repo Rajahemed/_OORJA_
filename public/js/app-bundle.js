@@ -2921,9 +2921,14 @@ function submitRegistration() {
         }
 
         const btn = document.getElementById('submitRegBtn');
-        btn.disabled = true;
+        if (btn.getAttribute('data-processing') === 'true') {
+            return;
+        }
+        btn.setAttribute('data-processing', 'true');
+        // Do NOT disable the button yet to preserve mobile user gesture for geolocation
 
         const processRegistrationData = (latitude, longitude, locationAccuracy) => {
+            btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
 
         // Always pick up the referral code — either from hidden input (auto-filled via link)
@@ -3097,6 +3102,7 @@ function submitRegistration() {
             },
             (error) => {
                 console.warn('Geolocation failed or denied:', error.message);
+                btn.removeAttribute('data-processing');
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
                 let errorMsg = 'Failed to get location.';
@@ -3117,6 +3123,7 @@ function submitRegistration() {
         );
     } else {
         console.warn('Browser completely disabled geolocation on this connection.');
+        btn.removeAttribute('data-processing');
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
         const msg = 'Geolocation is not supported by your browser or device. Cannot complete registration.';
