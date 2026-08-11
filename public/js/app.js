@@ -2872,7 +2872,6 @@ function submitRegistration() {
 
     // Attempt GPS capture immediately to preserve user gesture
     if (navigator.geolocation) {
-        btn.innerHTML = '<i class="fas fa-map-marker-alt fa-bounce"></i> Getting Location...';
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 processRegistrationData(position.coords.latitude, position.coords.longitude, position.coords.accuracy);
@@ -2880,8 +2879,6 @@ function submitRegistration() {
             (error) => {
                 console.warn('Geolocation failed or denied:', error.message);
                 btn.removeAttribute('data-processing');
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
                 let errorMsg = 'Failed to get location.';
                     if (error.code === error.PERMISSION_DENIED) {
                         errorMsg = 'Location permission is required to register. Please enable Location permission in your browser/device settings and try again.';
