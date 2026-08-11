@@ -2697,9 +2697,11 @@ function submitRegistration() {
             return;
         }
 
-
         const btn = document.getElementById('submitRegBtn');
-        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+        btn.disabled = true;
+
+        const processRegistrationData = (latitude, longitude, locationAccuracy) => {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
 
         // Always pick up the referral code — either from hidden input (auto-filled via link)
         // or from the manual "Yes" radio selection, or from localStorage
@@ -2857,18 +2859,21 @@ function submitRegistration() {
         });
         }; // End doRegister
 
-        // Attempt GPS capture
-        if (navigator.geolocation) {
-            btn.innerHTML = '<i class="fas fa-map-marker-alt fa-bounce"></i> Getting Location...';
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    payload.latitude = position.coords.latitude;
-                    payload.longitude = position.coords.longitude;
-                    payload.locationAccuracy = position.coords.accuracy;
-                    doRegister(payload);
-                },
-                (error) => {
-                    console.warn('Geolocation failed or denied:', error.message);
+        payload.latitude = latitude;
+        payload.longitude = longitude;
+        payload.locationAccuracy = locationAccuracy;
+        doRegister(payload);
+    }; // End processRegistrationData
+
+    // Attempt GPS capture immediately to preserve user gesture
+    if (navigator.geolocation) {
+        btn.innerHTML = '<i class="fas fa-map-marker-alt fa-bounce"></i> Getting Location...';
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                processRegistrationData(position.coords.latitude, position.coords.longitude, position.coords.accuracy);
+            },
+            (error) => {
+                console.warn('Geolocation failed or denied:', error.message);
                     btn.disabled = false;
                     btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
                     let errorMsg = 'Failed to get location.';

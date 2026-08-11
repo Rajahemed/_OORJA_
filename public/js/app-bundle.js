@@ -2920,9 +2920,11 @@ function submitRegistration() {
             return;
         }
 
-
         const btn = document.getElementById('submitRegBtn');
-        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+        btn.disabled = true;
+
+        const processRegistrationData = (latitude, longitude, locationAccuracy) => {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
 
         // Always pick up the referral code — either from hidden input (auto-filled via link)
         // or from the manual "Yes" radio selection, or from localStorage
@@ -3080,26 +3082,50 @@ function submitRegistration() {
         });
         }; // End doRegister
 
-        // Attempt GPS capture
-        if (navigator.geolocation) {
-            btn.innerHTML = '<i class="fas fa-map-marker-alt fa-bounce"></i> Getting Location...';
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    payload.latitude = position.coords.latitude;
-                    payload.longitude = position.coords.longitude;
-                    payload.locationAccuracy = position.coords.accuracy;
-                    doRegister(payload);
-                },
-                (error) => {
-                    console.warn('Geolocation failed or denied:', error.message);
-                    doRegister(payload); // Proceed without GPS
-                },
-                { timeout: 30000, maximumAge: 0, enableHighAccuracy: false }
-            );
+        payload.latitude = latitude;
+        payload.longitude = longitude;
+        payload.locationAccuracy = locationAccuracy;
+        doRegister(payload);
+    }; // End processRegistrationData
+
+    // Attempt GPS capture immediately to preserve user gesture
+    if (navigator.geolocation) {
+        btn.innerHTML = '<i class="fas fa-map-marker-alt fa-bounce"></i> Getting Location...';
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                processRegistrationData(position.coords.latitude, position.coords.longitude, position.coords.accuracy);
+            },
+            (error) => {
+                console.warn('Geolocation failed or denied:', error.message);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
+                let errorMsg = 'Failed to get location.';
+                if (error.code === error.PERMISSION_DENIED) {
+                    errorMsg = 'Location permission is required to register. Please enable Location permission in your browser/device settings and try again.';
+                } else if (error.code === error.POSITION_UNAVAILABLE) {
+                    errorMsg = 'Location information is unavailable. Please check your device GPS and try again.';
+                } else if (error.code === error.TIMEOUT) {
+                    errorMsg = 'Location request timed out. Please try again.';
+                }
+                if (typeof showToast === 'function') {
+                    showToast(errorMsg, 'error');
+                } else {
+                    alert(errorMsg);
+                }
+            },
+            { timeout: 30000, maximumAge: 0, enableHighAccuracy: false }
+        );
+    } else {
+        console.warn('Browser completely disabled geolocation on this connection.');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
+        const msg = 'Geolocation is not supported by your browser or device. Cannot complete registration.';
+        if (typeof showToast === 'function') {
+            showToast(msg, 'error');
         } else {
-            console.warn('Browser completely disabled geolocation on this connection.');
-            doRegister(payload);
+            alert(msg);
         }
+    }
     }
 
     function loginAfterRegister() {
