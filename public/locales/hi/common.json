@@ -460,5 +460,11 @@
     "lbl_repair_cost": "अनुमानित मरम्मत लागत (₹)",
     "opt_select_repair": "मरम्मत लागत चुनें",
     "lbl_ev_batt_cost": "lbl_ev_batt_cost",
-    "lbl_ev_maint_cost": "lbl_ev_maint_cost"
+    "lbl_ev_maint_cost": "lbl_ev_maint_cost",
+    "btn_next_generic": "Next",
+    "val_err_ins": "Please select at least one insurance option or None of the Above.",
+    "val_err_challenges": "Please select at least one Challenge you face on the road.",
+    "val_err_safety": "Please answer all questions in the Insurance & Safety section.",
+    "val_err_switch": "Please select at least one reason to switch.",
+    "val_err_interests": "Please select what you would be interested in."
 }

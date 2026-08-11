@@ -2375,6 +2375,21 @@ async function openDataDrilldown(type) {
         }
     };
 
+    window.handleFacilityChange = function(checkbox) {
+        const facilityIds = ['facilitySeating', 'facilityWater', 'facilityToilet', 'facilityRest'];
+        const noneCheckbox = document.getElementById('facilityNone');
+        if (!noneCheckbox) return;
+
+        if (checkbox.id === 'facilityNone' && checkbox.checked) {
+            facilityIds.forEach(id => {
+                const cb = document.getElementById(id);
+                if (cb) cb.checked = false;
+            });
+        } else if (checkbox.checked) {
+            noneCheckbox.checked = false;
+        }
+    };
+
     window.toggleOwnershipFields = function(val) {
         const rentFields = document.getElementById('rentFields');
         if (rentFields) {
@@ -2854,13 +2869,34 @@ function submitRegistration() {
                 },
                 (error) => {
                     console.warn('Geolocation failed or denied:', error.message);
-                    doRegister(payload); // Proceed without GPS
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
+                    let errorMsg = 'Failed to get location.';
+                    if (error.code === error.PERMISSION_DENIED) {
+                        errorMsg = 'Location permission is required to register. Please enable Location permission in your browser/device settings and try again.';
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        errorMsg = 'Location information is unavailable. Please check your device GPS and try again.';
+                    } else if (error.code === error.TIMEOUT) {
+                        errorMsg = 'Location request timed out. Please try again.';
+                    }
+                    if (typeof showToast === 'function') {
+                        showToast(errorMsg, 'error');
+                    } else {
+                        alert(errorMsg);
+                    }
                 },
                 { timeout: 30000, maximumAge: 0, enableHighAccuracy: false }
             );
         } else {
             console.warn('Browser completely disabled geolocation on this connection.');
-            doRegister(payload);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
+            const msg = 'Geolocation is not supported by your browser or device. Cannot complete registration.';
+            if (typeof showToast === 'function') {
+                showToast(msg, 'error');
+            } else {
+                alert(msg);
+            }
         }
     }
 

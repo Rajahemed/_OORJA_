@@ -1798,7 +1798,7 @@ async function openDataDrilldown(type) {
                                 group.style.padding = '0.5rem';
                                 group.style.borderRadius = 'var(--border-radius-md)';
                                 isValid = false;
-                                if (!firstErrorMessage) firstErrorMessage = 'Please select at least one Challenge you face on the road.';
+                                if (!firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_challenges') : 'Please select at least one Challenge you face on the road.';
                                 if (!firstInvalidField) firstInvalidField = group;
                                 checkboxes.forEach(cb => cb.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                             }
@@ -1821,7 +1821,7 @@ async function openDataDrilldown(type) {
                                 group.style.padding = '0.5rem';
                                 group.style.borderRadius = 'var(--border-radius-md)';
                                 isValid = false;
-                                if (!firstErrorMessage) firstErrorMessage = `Please answer all questions in the Insurance & Safety section.`;
+                                if (!firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_safety') : `Please answer all questions in the Insurance & Safety section.`;
                                 if (!firstInvalidField) firstInvalidField = group;
                                 radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                             }
@@ -1856,7 +1856,7 @@ async function openDataDrilldown(type) {
                                 group.style.padding = '0.5rem';
                                 group.style.borderRadius = 'var(--border-radius-md)';
                                 isValid = false;
-                                if (!firstErrorMessage) firstErrorMessage = 'Please select at least one reason to switch.';
+                                if (!firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_switch') : 'Please select at least one reason to switch.';
                                 if (!firstInvalidField) firstInvalidField = group;
                                 sec.querySelectorAll(`input[name="switchTriggers"]`).forEach(c => c.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                             }
@@ -1873,7 +1873,7 @@ async function openDataDrilldown(type) {
                                 group.style.padding = '0.5rem';
                                 group.style.borderRadius = 'var(--border-radius-md)';
                                 isValid = false;
-                                if (!firstErrorMessage) firstErrorMessage = 'Please select what you would be interested in.';
+                                if (!firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_interests') : 'Please select what you would be interested in.';
                                 if (!firstInvalidField) firstInvalidField = group;
                                 sec.querySelectorAll(`input[name="interests"]`).forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                             }
@@ -1937,7 +1937,7 @@ async function openDataDrilldown(type) {
                       }
                   });
                   isValid = false;
-                  if (typeof firstErrorMessage !== 'undefined' && !firstErrorMessage) firstErrorMessage = 'Please select at least one insurance option or None of the Above.';
+                  if (typeof firstErrorMessage !== 'undefined' && !firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_ins') : 'Please select at least one insurance option or None of the Above.';
                   if (typeof firstInvalidField !== 'undefined' && !firstInvalidField) firstInvalidField = insContainer;
               }
           }
@@ -2592,6 +2592,21 @@ async function openDataDrilldown(type) {
         if (checkbox.value === 'I Have Not Received Any Training' && checkbox.checked) {
             allCheckboxes.forEach(cb => {
                 if (cb !== noneCheckbox) cb.checked = false;
+            });
+        } else if (checkbox.checked) {
+            noneCheckbox.checked = false;
+        }
+    };
+
+    window.handleFacilityChange = function(checkbox) {
+        const facilityIds = ['facilitySeating', 'facilityWater', 'facilityToilet', 'facilityRest'];
+        const noneCheckbox = document.getElementById('facilityNone');
+        if (!noneCheckbox) return;
+
+        if (checkbox.id === 'facilityNone' && checkbox.checked) {
+            facilityIds.forEach(id => {
+                const cb = document.getElementById(id);
+                if (cb) cb.checked = false;
             });
         } else if (checkbox.checked) {
             noneCheckbox.checked = false;

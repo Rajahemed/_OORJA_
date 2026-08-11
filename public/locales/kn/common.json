@@ -460,5 +460,11 @@
     "lbl_only_needed": "ಅಗತ್ಯವಿದ್ದಾಗ ಮಾತ್ರ",
     "lbl_major_repairs": "2. ಕಳೆದ 12 ತಿಂಗಳುಗಳಲ್ಲಿ ನೀವು ಯಾವುದೇ ಪ್ರಮುಖ ರಿಪೇರಿಗಳನ್ನು ಹೊಂದಿದ್ದೀರಾ?",
     "lbl_repair_cost": "ಅಂದಾಜು ದುರಸ್ತಿ ವೆಚ್ಚ (₹)",
-    "opt_select_repair": "ದುರಸ್ತಿ ವೆಚ್ಚವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+    "opt_select_repair": "ದುರಸ್ತಿ ವೆಚ್ಚವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "btn_next_generic": "Next",
+    "val_err_ins": "Please select at least one insurance option or None of the Above.",
+    "val_err_challenges": "Please select at least one Challenge you face on the road.",
+    "val_err_safety": "Please answer all questions in the Insurance & Safety section.",
+    "val_err_switch": "Please select at least one reason to switch.",
+    "val_err_interests": "Please select what you would be interested in."
 }
