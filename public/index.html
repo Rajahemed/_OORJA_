@@ -4,15 +4,16 @@
     <link rel="preload" as="image" href="/img/home-bg.jpg" fetchpriority="high">
     <link rel="stylesheet" href="/css/main.min.css">
     <script src="/js/bundle.min.js" defer></script>
-    
+
     <!-- Google Consent Mode v2 -->
-    
+
     <!-- Marketing Scripts Placeholder -->
-    
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-WAITING_FOR_ID"></script>
     <script type="text/javascript" async src="https://cdn.callrail.com/companies/WAITING_FOR_ID/12/swap.js"></script>
 
     <link rel="preload" as="image" href="/img/home-bg.jpg"><script>
+        
 // Google Consent Mode V2 Implementation
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
@@ -38,9 +39,9 @@ function updateConsent(analytics, marketing) {
     'ad_user_data': marketing ? 'granted' : 'denied',
     'ad_personalization': marketing ? 'granted' : 'denied'
   };
-  
+
   gtag('consent', 'update', consentState);
-  
+
   localStorage.setItem(RW_CONSENT_KEY, JSON.stringify({
     analytics, marketing, timestamp: Date.now()
   }));
@@ -95,12 +96,12 @@ document.addEventListener("DOMContentLoaded", () => {
     <meta property="og:url" content="https://roadwarrior.pro/">
     <meta property="og:type" content="website">
 
-    
+
 
     <!-- Google Tag Manager Placeholder -->
-    
 
-    
+
+
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
@@ -111,16 +112,16 @@ document.addEventListener("DOMContentLoaded", () => {
     </script>
 
     <!-- Meta Pixel Placeholder -->
-    
+
 
 
 
     <!-- X Pixel Placeholder -->
-    
+
 
     <!-- LinkedIn Insight Tag Placeholder -->
-    
-    
+
+
 
     <link rel="alternate" type="text/plain" title="LLM Documentation" href="/llms.txt">
     <script type="application/ld+json">[
@@ -219,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer=""></script>
     <!-- QR Code Library -->
-    
+
     <style>
         /* ===== ADDITIONAL STYLES FOR NEW FEATURES ===== */
 
@@ -822,8 +823,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <meta name="google-site-verification" content="WAITING_FOR_GOOGLE_SC_ID">
     <meta name="msvalidate.01" content="WAITING_FOR_BING_SC_ID">
-    
-    
+
+
 
 
     <link rel="alternate" hreflang="en" href="https://roadwarrior.pro/en/">
@@ -831,7 +832,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <link rel="alternate" hreflang="kn" href="https://roadwarrior.pro/kn/">
     <link rel="alternate" hreflang="x-default" href="https://roadwarrior.pro/">
 
-    
+
 
 <script>
 
@@ -839,7 +840,7 @@ document.addEventListener("DOMContentLoaded", () => {
         function gtag(){dataLayer.push(arguments);}
         gtag('consent', 'default', { 'ad_storage': 'denied', 'analytics_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied', 'wait_for_update': 500 });
         gtag('set', 'ads_data_redaction', true);
-    
+
 
 
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/WAITING_FOR_CLARITY_ID"; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script");
@@ -852,7 +853,7 @@ document.addEventListener("DOMContentLoaded", () => {
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'AW-WAITING_FOR_ID');
-    
+
 
 (function (w, d, s, l, i) {
             w[l] = w[l] || []; w[l].push({
@@ -877,7 +878,7 @@ document.addEventListener("DOMContentLoaded", () => {
             'https://connect.facebook.net/en_US/fbevents.js');
         fbq('init', 'WAITING_FOR_PIXEL_ID');
         fbq('track', 'PageView');
-    
+
 
 
         !function (e, t, n, s, u, a) {
@@ -887,13 +888,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 a = t.getElementsByTagName(n)[0], a.parentNode.insertBefore(u, a))
         }(window, document, 'script');
         twq('config', 'WAITING_FOR_X_PIXEL_ID');
-    
+
 
 
         _linkedin_partner_id = "WAITING_FOR_LINKEDIN_ID";
         window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
         window._linkedin_data_partner_ids.push(_linkedin_partner_id);
-    
+
 
 
         (function (l) {
@@ -907,7 +908,7 @@ document.addEventListener("DOMContentLoaded", () => {
             b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
             s.parentNode.insertBefore(b, s);
         })(window.lintrk);
-    
+
 
 
         var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
@@ -919,7 +920,7 @@ document.addEventListener("DOMContentLoaded", () => {
             s1.setAttribute('crossorigin', '*');
             s0.parentNode.insertBefore(s1, s0);
         })();
-    
+
 
 
     // Conversion events wired
@@ -1263,15 +1264,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                         <div class="card-body" style="margin-top:1rem;">
                             <form id="loginForm" onsubmit="handleLogin(event)">
-                                <div style="display:none; gap:1rem; margin-bottom:1rem; border-bottom:1px solid var(--card-border); padding-bottom:0.5rem;">
-                                    <label><input type="radio" name="loginMethod" value="password" checked="" onchange="toggleLoginMethod()" aria-label="loginMethod"> <span data-i18n="radio_password">Password</span></label>
-                                    <label><input type="radio" name="loginMethod" value="otp" onchange="toggleLoginMethod()" aria-label="loginMethod"> <span data-i18n="radio_otp">OTP</span></label>
-                                </div>
+                                <input type="hidden" name="loginMethod" value="phone_only">
                                 <div class="form-group">
                                     <label for="loginPhone" data-i18n="label_phone">Phone Number</label>
                                     <div style="position: relative; display: flex; align-items: center; background: #f9fafb; border: 1px solid var(--card-border); border-radius: var(--border-radius-md); padding: 0 12px;">
                                         <span style="color: var(--text-secondary); font-weight: 500; margin-right: 8px;">+91</span>
-                                        <input type="tel" id="loginPhone" style="border: none; background: transparent; outline: none; flex: 1; padding: 0.875rem 0; font-size: 0.975rem; color: var(--text-primary);" maxlength="10" required="" oninput="validateLoginPhone(this)">
+                                        <input type="tel" id="loginPhone" name="phone" autocomplete="tel" style="border: none; background: transparent; outline: none; flex: 1; padding: 0.875rem 0; font-size: 0.975rem; color: var(--text-primary);" maxlength="10" required="" oninput="validateLoginPhone(this)">
                                         <i id="loginPhoneErrorIcon" class="fas fa-times-circle" style="color: var(--danger-color); display: none; font-size: 1.1rem; margin-left: 8px;"></i>
                                     </div>
                                     <small id="loginPhoneWarning" style="color:var(--warning-color); display:none; margin-top:4px;"><i class="fas fa-exclamation-circle"></i> Only numbers are allowed</small>
@@ -1279,18 +1277,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <i class="fas fa-exclamation-triangle"></i> <span id="loginErrorText"></span>
                                     </div>
                                 </div>
-                                <div class="form-group" id="loginPasswordGroup">
-                                    <label for="loginPassword" data-i18n="label_password">4-Digit PIN</label>
-                                    <div class="pin-input-group" id="loginPinGroup" style="display: flex; gap: 10px; position: relative; margin-bottom: 5px;">
-                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 0, 'loginPassword')" onkeydown="handlePinKeydown(event, this, 0, 'loginPassword')" onpaste="handlePinPaste(event, this, 'loginPassword')" aria-label="inputField">
-                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 1, 'loginPassword')" onkeydown="handlePinKeydown(event, this, 1, 'loginPassword')" onpaste="handlePinPaste(event, this, 'loginPassword')" aria-label="inputField">
-                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 2, 'loginPassword')" onkeydown="handlePinKeydown(event, this, 2, 'loginPassword')" onpaste="handlePinPaste(event, this, 'loginPassword')" aria-label="inputField">
-                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 3, 'loginPassword')" onkeydown="handlePinKeydown(event, this, 3, 'loginPassword')" onpaste="handlePinPaste(event, this, 'loginPassword')" aria-label="inputField">
-                                        <i class="fas fa-eye" onclick="togglePinVisibility('loginPinGroup')" style="position: absolute; right: 10px; top: 12px; cursor: pointer; color: var(--text-secondary);"></i>
-                                    </div>
-                                    <input type="hidden" id="loginPassword" required="">
-                                    <a href="#" onclick="showRiderForgotForm()" style="font-size: 0.8rem; color: #12b5cb; display: block; margin-top: 5px;" data-i18n="forgot_password">Forgot Password?</a>
-                                </div>
+
                                 <div class="form-group" id="loginOtpGroup" style="display:none;">
                                     <div style="display:flex; gap:0.5rem;">
                                         <input type="text" id="loginOtp" class="form-control" aria-label="inputField">
@@ -1307,45 +1294,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <span data-i18n="no_account">Don't have an account?</span> <a href="#" style="color:#12b5cb; font-weight:600; text-decoration:none;" onclick="toggleAuthCards(event)" data-i18n="register_link">Register here</a>
                             </p>
 
-                            <!-- Rider Forgot Password Form -->
-                            <form id="riderForgotForm" onsubmit="handleRiderPasswordReset(event)" style="display:none;">
-                                <h3 style="margin-bottom:1rem;"><i class="fas fa-unlock-alt"></i> Reset Password</h4>
-                                <div class="form-group">
-                                    <label for="riderForgotPhone">Phone Number</label>
-                                    <div style="position: relative; display: flex; align-items: center; background: #f9fafb; border: 1px solid var(--card-border); border-radius: var(--border-radius-md); padding: 0 12px;">
-                                        <span style="color: var(--text-secondary); font-weight: 500; margin-right: 8px;">+91</span>
-                                        <input type="tel" id="riderForgotPhone" style="border: none; background: transparent; outline: none; flex: 1; padding: 0.875rem 0; font-size: 0.975rem; color: var(--text-primary);" maxlength="10" required="" oninput="validateLoginPhone(this)">
-                                    </div>
-                                    <small id="riderForgotPhoneWarning" style="color:var(--warning-color); display:none; margin-top:4px;"><i class="fas fa-exclamation-circle"></i> Only numbers are allowed</small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="riderForgotOtp">Enter OTP</label>
-                                    <div style="display:flex; gap:0.5rem;">
-                                        <input type="text" id="riderForgotOtp" class="form-control" pattern="[0-9]{6}" required="">
-                                        <button type="button" class="btn btn-secondary" onclick="sendMockOtp('riderForgotPhone', 'forgotOtpSentMsg')" id="sendForgotOtpBtn">Send OTP</button>
-                                    </div>
-                                    <small id="forgotOtpSentMsg" style="color:var(--primary-color); display:none; margin-top:4px;">OTP
-                                        sent!</small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="riderForgotNewPassword">New 4-Digit PIN</label>
-                                    <div class="pin-input-group" id="forgotPinGroup" style="display: flex; gap: 10px; position: relative;">
-                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 0, 'riderForgotNewPassword')" onkeydown="handlePinKeydown(event, this, 0, 'riderForgotNewPassword')" onpaste="handlePinPaste(event, this, 'riderForgotNewPassword')" aria-label="inputField">
-                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 1, 'riderForgotNewPassword')" onkeydown="handlePinKeydown(event, this, 1, 'riderForgotNewPassword')" onpaste="handlePinPaste(event, this, 'riderForgotNewPassword')" aria-label="inputField">
-                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 2, 'riderForgotNewPassword')" onkeydown="handlePinKeydown(event, this, 2, 'riderForgotNewPassword')" onpaste="handlePinPaste(event, this, 'riderForgotNewPassword')" aria-label="inputField">
-                                        <input type="password" class="form-control pin-box" maxlength="1" inputmode="numeric" oninput="handlePinInput(this, 3, 'riderForgotNewPassword')" onkeydown="handlePinKeydown(event, this, 3, 'riderForgotNewPassword')" onpaste="handlePinPaste(event, this, 'riderForgotNewPassword')" aria-label="inputField">
-                                        <i class="fas fa-eye" onclick="togglePinVisibility('forgotPinGroup')" style="position: absolute; right: 10px; top: 12px; cursor: pointer; color: var(--text-secondary);"></i>
-                                    </div>
-                                    <input type="hidden" id="riderForgotNewPassword" required="">
-                                </div>
-                                <div id="riderForgotErrorMsg" style="display:none; color:var(--danger-color); background:rgba(239, 68, 68, 0.1); padding:0.75rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;">
-                                    <i class="fas fa-exclamation-triangle"></i> <span id="riderForgotErrorText"></span>
-                                </div>
-                                <button type="submit" id="riderResetBtn" class="btn btn-primary w-100"><i class="fas fa-key"></i> Reset Password</button>
-                                <div class="text-center" style="margin-top: 1rem;">
-                                    <a href="#" onclick="showRiderLoginForm()" style="color: var(--text-secondary); font-size: 0.9rem;">Back to Login</a>
-                                </div>
-                            </form>
+                            <!-- Rider Forgot Password Form removed -->
                         </div>
                     </div>
 
@@ -1455,12 +1404,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     </div>
 
 
-                                    <div class="form-group">
-                                        <label for="regPasswordDisplay" data-i18n="label_generate_pin">Generate PIN</label>
-                                        <input type="text" id="regPasswordDisplay" class="form-control" style="font-weight:bold; letter-spacing:4px; font-size:1.2rem;" placeholder="----" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, ''); document.getElementById('regPassword').value = this.value; document.getElementById('passErrMsg').style.display = 'none';">
-                                        <input type="hidden" id="regPassword" required="" aria-label="inputField">
-                                        <span id="passErrMsg" class="error-message hidden" style="color:#f97316; margin-top:0.5rem; display:block;"><i class="fas fa-exclamation-circle"></i> Please enter a 4-digit PIN</span>
-                                    </div>
+
                                     <div style="display:flex; gap:1rem; flex-wrap:wrap;">
                                         <div class="form-group" style="flex:1; min-width:200px;">
                                             <label for="regState" data-i18n="label_state">State</label>
@@ -1632,8 +1576,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                     </div>
                                     <div id="rentFields" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
                                         <div class="form-group" style="margin-bottom:0;">
-                                            <label data-i18n="lbl_monthly_rent">Monthly Rent (₹)</label>
-                                            <select id="regMonthlyRent" class="form-control" aria-label="inputField">
+                                            <label data-i18n="lbl_monthly_rent">Monthly Rent (₹) <span style="color: var(--danger-color, #ef4444);">*</span></label>
+                                            <select id="regMonthlyRent" class="form-control" aria-label="inputField" required="">
                                                 <option value="">Select Monthly Rent</option>
                                                 <option value="3000-4000">3000 - 4000</option>
                                                 <option value="4001-5000">4001 - 5000</option>
@@ -1649,10 +1593,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                     <div id="bikeSpeedFields" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
                                         <div class="form-group" style="margin-bottom:0;">
-                                            <label>Vehicle Speed Classification</label>
+                                            <label>Vehicle Speed Classification </label>
                                             <div class="radio-group inline" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
-                                                <label class="radio-item"><input type="radio" name="bikeSpeed" value="Slow (up to 25km/h)"> 🐢 Slow (up to 25km/h)</label>
-                                                <label class="radio-item"><input type="radio" name="bikeSpeed" value="High Speed (above 25km/h)"> 🚀 High Speed (above 25km/h)</label>
+                                                <label class="radio-item"><input type="radio" name="bikeSpeed" required="" value="Slow (up to 25km/h)"> 🐢 Slow (up to 25km/h)</label>
+                                                <label class="radio-item"><input type="radio" name="bikeSpeed" required="" value="High Speed (above 25km/h)"> 🚀 High Speed (above 25km/h)</label>
                                             </div>
                                         </div>
                                     </div>
@@ -1715,15 +1659,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                                     <div class="form-group conditional-section hidden-section" id="evChargingSection">
-                                        <label data-i18n="label_fuel_method">How do you charge?</label>
+                                        <label data-i18n="label_fuel_method">How do you fuel/charge? <span style="color: var(--danger-color, #ef4444);">*</span></label>
                                         <div class="radio-group inline">
-                                            <label class="radio-item"><input type="radio" name="fuelMethod" value="Home charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🏠 <span data-i18n="fm_home">Home Charging</span></label>
-                                            <label class="radio-item"><input type="radio" name="fuelMethod" value="Battery swapping station" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🔋 <span data-i18n="fm_swap">Battery Swap</span></label>
-                                            <label class="radio-item"><input type="radio" name="fuelMethod" value="Public charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🔌 <span data-i18n="fm_public">Public Charging</span></label>
+                                            <label class="radio-item"><input type="radio" name="fuelMethod" required="" value="Home charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🏠 <span data-i18n="fm_home">Home Charging</span></label>
+                                            <label class="radio-item"><input type="radio" name="fuelMethod" required="" value="Battery swapping station" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🔋 <span data-i18n="fm_swap">Battery Swap</span></label>
+                                            <label class="radio-item"><input type="radio" name="fuelMethod" required="" value="Public charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🔌 <span data-i18n="fm_public">Public Charging</span></label>
                                         </div>
                                         <div class="form-group" style="margin-top: 1rem;">
-                                            <label data-i18n="lbl_ev_batt_cost">Monthly Battery Charging Cost (₹)</label>
-                                            <select id="regEvBatteryCost" name="evBatteryCost" class="form-control" onchange="document.getElementById('evBatteryCostOther').style.display = this.value === 'Other' ? 'block' : 'none'; document.getElementById('evBatteryCostOther').required = this.value === 'Other';">
+                                            <label data-i18n="lbl_ev_batt_cost">Monthly Battery Charging Cost (₹) </label>
+                                            <select id="regEvBatteryCost" name="evBatteryCost" class="form-control" required="" onchange="document.getElementById('evBatteryCostOther').style.display = this.value === 'Other' ? 'block' : 'none'; document.getElementById('evBatteryCostOther').required = this.value === 'Other';">
                                                 <option value="">Select Range</option>
                                                 <option value="0 to 1000">0 to 1000</option>
                                                 <option value="1000 to 2000">1000 to 2000</option>
@@ -1736,8 +1680,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                             <input type="number" id="evBatteryCostOther" name="evBatteryCostOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Enter specific amount (₹)">
                                         </div>
                                         <div class="form-group">
-                                            <label data-i18n="lbl_ev_maint_cost">Monthly Maintenance Cost (₹)</label>
-                                            <select id="regEvMaintCost" name="evMaintCost" class="form-control" onchange="document.getElementById('evMaintCostOther').style.display = this.value === 'Other' ? 'block' : 'none'; document.getElementById('evMaintCostOther').required = this.value === 'Other';">
+                                            <label data-i18n="lbl_ev_maint_cost">Monthly Maintenance Cost (₹) </label>
+                                            <select id="regEvMaintCost" name="evMaintCost" class="form-control" required="" onchange="document.getElementById('evMaintCostOther').style.display = this.value === 'Other' ? 'block' : 'none'; document.getElementById('evMaintCostOther').required = this.value === 'Other';">
                                                 <option value="">Select Range</option>
                                                 <option value="0 to 1000">0 to 1000</option>
                                                 <option value="1000 to 2000">1000 to 2000</option>
@@ -2672,13 +2616,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <!-- Platform Stats -->
             <div class="row cols-4" id="adminStatsGrid">
-                <div class="stat-box" onclick="clickAdminStat('registered')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">👥</span>
-                    <div class="stat-value" id="adminTotalRiders">0</div>
-                    <div class="stat-label" data-i18n="adm_riders">Registered Users</div>
-                </div>
                 <div class="stat-box" onclick="clickAdminStat('evRiders')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">⚡</span>
                     <div class="stat-value" id="adminEVRiders">0</div>
                     <div class="stat-label" data-i18n="adm_ev_riders">EV Riders</div>
+                </div>
+                <div class="stat-box" onclick="clickAdminStat('petrolRiders')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">⛽</span>
+                    <div class="stat-value" id="adminPetrolRiders">0</div>
+                    <div class="stat-label">Petrol Riders</div>
+                </div>
+                <div class="stat-box" onclick="clickAdminStat('dieselRiders')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">🛢️</span>
+                    <div class="stat-value" id="adminDieselRiders">0</div>
+                    <div class="stat-label">Diesel Riders</div>
+                </div>
+                <div class="stat-box" onclick="clickAdminStat('cngLpgRiders')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">🔥</span>
+                    <div class="stat-value" id="adminCngLpgRiders">0</div>
+                    <div class="stat-label">CNG / LPG Riders</div>
+                </div>
+                <div class="stat-box" onclick="clickAdminStat('registered')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">👥</span>
+                    <div class="stat-value" id="adminTotalRiders">0</div>
+                    <div class="stat-label" data-i18n="adm_riders">Total Riders</div>
                 </div>
                 <div class="stat-box" onclick="clickAdminStat('hotLeads')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">🔴</span>
                     <div class="stat-value" id="adminHotLeads">0</div>
@@ -2840,6 +2796,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <option value="STATUS_COMPLETED">Completed Forms</option>
                                     <option value="STATUS_ABANDONED">Abandoned Forms</option>
                                     <option value="EV_RIDERS">All EV Riders</option>
+                                    <option value="PETROL_RIDERS">All Petrol Riders</option>
+                                    <option value="DIESEL_RIDERS">All Diesel Riders</option>
+                                    <option value="CNG_LPG_RIDERS">All CNG / LPG Riders</option>
                                     <option value="PERSONAL_INSURANCE_LEAD">PERSONAL_INSURANCE_LEAD</option>
                                     <option value="BIKE_INSURANCE_LEAD">BIKE_INSURANCE_LEAD</option>
                                     <option value="EV_SALE_LEAD">EV_SALE_LEAD</option>
@@ -3261,7 +3220,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <label for="leadName">Full Name *</label>
                         <input type="text" id="leadName" class="form-control" placeholder="Your name" required="" autocomplete="name">
                     </div>
-                    <div class="form-group" style="display: none;">
+                    <div class="form-group">
                         <label for="leadEmail">Email Address *</label>
                         <input type="email" id="leadEmail" class="form-control" placeholder="you@example.com" autocomplete="email">
                     </div>
@@ -3377,7 +3336,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <!-- Footer Bottom Bar -->
         <div class="footer-bottom" style="max-width: 1400px; margin: 0 auto; padding: 2rem 2rem; display: flex; flex-direction: column; align-items: center; gap: 2rem;">
-            
+
             <div class="footer-social" style="display: flex; gap: 1.2rem; justify-content: center;">
                 <a href="https://twitter.com/roadwarriorpro" target="_blank" rel="noopener" class="social-link twitter" title="Twitter / X" style="display: flex; justify-content: center; align-items: center; width: 45px; height: 45px; border-radius: 50%; background: #ffffff; border: 2px solid #000000; color: #000000; font-size: 1.2rem; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
@@ -3401,7 +3360,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <a href="https://maps.google.com/?cid=10293847561029384756" target="_blank" style="color: var(--primary-color); text-decoration: none;">Google Business Profile</a>
             </div>
         </div>
-    
+
     <div id="aiMonitorLinks" style="display:none; margin-top:2rem; padding-top:2rem; border-top:1px solid var(--border-color); flex-wrap:wrap; gap:1rem; justify-content:center; align-items:center;">
         <span style="color:var(--text-secondary); font-size:0.9rem;">Verified by AI:</span>
         <a href="#" style="color:var(--text-secondary); text-decoration:none; display:flex; align-items:center; gap:0.5rem;"><i class="fas fa-robot"></i> ChatGPT</a>
@@ -3431,11 +3390,11 @@ document.addEventListener("DOMContentLoaded", () => {
     <script defer="defer" src="https://unpkg.com/i18next-browser-languagedetector@7.2.0/i18nextBrowserLanguageDetector.min.js"></script>
 
     <!-- i18n Initialization -->
-    
 
-    
 
-    
+
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer=""></script>
 
@@ -3451,7 +3410,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <!-- Floating WhatsApp Button Removed -->
 
     <!-- Tawk.to Live Chat Placeholder -->
-    
+
     <!-- Rewards Modal -->
     <div class="modal" id="rewardsModal">
         <div class="modal-content" style="max-width:700px;">
@@ -3546,10 +3505,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-    
+
 
     <!-- Mobile Drawer: Open/Close Logic + Auth State Sync -->
-    
+
     <!-- Payment Modal -->
     <div id="paymentModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
         <div class="modal-content" style="background: var(--bg-color); max-width: 400px; width: 90%; border-radius: var(--border-radius-lg); padding: 2rem; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center;">
@@ -3585,10 +3544,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-    
-    
-    
-    
+
+
+
+
 <!-- Exit Intent Popup -->
 <div id="exit-intent-popup" class="modal exit-intent" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; justify-content:center; align-items:center; backdrop-filter: blur(5px);">
     <div style="background:var(--card-bg, #1a1b23); padding:2.5rem; border-radius:12px; text-align:center; max-width:450px; border: 1px solid var(--primary-color); position:relative;">

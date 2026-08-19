@@ -1674,7 +1674,7 @@ async function openDataDrilldown(type) {
 
             if (step === 2) {
                 // Check required fields for Profile section
-                const reqs = ['regFullName', 'regPhone', 'regPassword', 'regState', 'regCity', 'regPincode', 'regPlatform', 'regExp'];
+                const reqs = ['regFullName', 'regPhone', 'regState', 'regCity', 'regPincode', 'regPlatform', 'regExp'];
                 reqs.forEach(id => {
                     const el = document.getElementById(id);
                     if (!el) return;
@@ -1694,9 +1694,8 @@ async function openDataDrilldown(type) {
                         isFieldValid = false;
                         errorMsg = 'Please enter a valid 10-digit mobile number.';
                     }
-                    if (id === 'regPassword' && (el.value.length !== 4 || !/^\d{4}$/.test(el.value))) {
-                        isFieldValid = false;
-                        errorMsg = 'Password must be exactly 4 digits.';
+                    if (id === 'regPassword') {
+                        // PIN removed, skipping validation
                     }
                     
                     if (!isFieldValid) {
@@ -1748,7 +1747,7 @@ async function openDataDrilldown(type) {
                         isValid = false;
                         if (!firstErrorMessage) firstErrorMessage = 'Please select your Vehicle Type.';
                         if (!firstInvalidField) firstInvalidField = group;
-                        sec.querySelectorAll('input[name="vehicleType"]').forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                        sec.querySelectorAll('input[name="vehicleType"]').forEach(r => r.onchange = () => { group.style.border = ''; group.style.padding = ''; });
                     }
                 } else if (vt.value === 'Other' && !document.getElementById('regVehicleTypeOther').value.trim()) {
                     setInvalid(document.getElementById('regVehicleTypeOther'));
@@ -1771,7 +1770,7 @@ async function openDataDrilldown(type) {
                         isValid = false;
                         if (!firstErrorMessage) firstErrorMessage = 'Please select your Fuel/Charge Method.';
                         if (!firstInvalidField) firstInvalidField = group;
-                        sec.querySelectorAll('input[name="fuelMethod"]').forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                        sec.querySelectorAll('input[name="fuelMethod"]').forEach(r => r.onchange = () => { group.style.border = ''; group.style.padding = ''; });
                     }
                 } else if (fm.value === 'Other' && !document.getElementById('regFuelMethodOther').value.trim()) {
                     setInvalid(document.getElementById('regFuelMethodOther'));
@@ -1800,7 +1799,7 @@ async function openDataDrilldown(type) {
                                 isValid = false;
                                 if (!firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_challenges') : 'Please select at least one Challenge you face on the road.';
                                 if (!firstInvalidField) firstInvalidField = group;
-                                checkboxes.forEach(cb => cb.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                                checkboxes.forEach(cb => cb.onchange = () => { group.style.border = ''; group.style.padding = ''; });
                             }
                         }
                     }
@@ -1823,7 +1822,7 @@ async function openDataDrilldown(type) {
                                 isValid = false;
                                 if (!firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_safety') : `Please answer all questions in the Insurance & Safety section.`;
                                 if (!firstInvalidField) firstInvalidField = group;
-                                radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                                radios.forEach(r => r.onchange = () => { group.style.border = ''; group.style.padding = ''; });
                             }
                         }
                     }
@@ -1842,7 +1841,7 @@ async function openDataDrilldown(type) {
                             isValid = false;
                             if (!firstErrorMessage) firstErrorMessage = 'Please answer if you are open to using EVs.';
                             if (!firstInvalidField) firstInvalidField = group;
-                            radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                            radios.forEach(r => r.onchange = () => { group.style.border = ''; group.style.padding = ''; });
                         }
                     }
                 } else if (openEVRadio.value === 'Yes') {
@@ -1858,7 +1857,7 @@ async function openDataDrilldown(type) {
                                 isValid = false;
                                 if (!firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_switch') : 'Please select at least one reason to switch.';
                                 if (!firstInvalidField) firstInvalidField = group;
-                                sec.querySelectorAll(`input[name="switchTriggers"]`).forEach(c => c.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                                sec.querySelectorAll(`input[name="switchTriggers"]`).forEach(c => c.onchange = () => { group.style.border = ''; group.style.padding = ''; });
                             }
                         }
                     }
@@ -1875,7 +1874,7 @@ async function openDataDrilldown(type) {
                                 isValid = false;
                                 if (!firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_interests') : 'Please select what you would be interested in.';
                                 if (!firstInvalidField) firstInvalidField = group;
-                                sec.querySelectorAll(`input[name="interests"]`).forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                                sec.querySelectorAll(`input[name="interests"]`).forEach(r => r.onchange = () => { group.style.border = ''; group.style.padding = ''; });
                             }
                         }
                     }
@@ -1897,7 +1896,7 @@ async function openDataDrilldown(type) {
                                 isValid = false;
                                 if (!firstErrorMessage) firstErrorMessage = 'Please specify if you were referred by another rider.';
                                 if (!firstInvalidField) firstInvalidField = group;
-                                radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
+                                radios.forEach(r => r.onchange = () => { group.style.border = ''; group.style.padding = ''; });
                             }
                         }
                     } else if (sec.querySelector(`input[name="referredBy"]:checked`).value === 'yes' && !document.getElementById('regReferralCode').value.trim()) {
@@ -1929,11 +1928,11 @@ async function openDataDrilldown(type) {
                           cbGroup.style.borderRadius = 'var(--border-radius-md)';
                           
                           const cbs = cbGroup.querySelectorAll('input[type="checkbox"]');
-                          cbs.forEach(cb => cb.addEventListener('change', () => { 
+                          cbs.forEach(cb => cb.onchange = () => { 
                               insContainer.querySelectorAll('.checkbox-group').forEach(g => {
                                   g.style.border = ''; g.style.padding = '';
                               });
-                          }));
+                          });
                       }
                   });
                   isValid = false;
@@ -1976,12 +1975,15 @@ async function openDataDrilldown(type) {
             return;
         }
 
-        const loginMethod = document.querySelector('input[name="loginMethod"]:checked').value;
+        const methodInput = document.querySelector('input[name="loginMethod"]');
+        const loginMethod = methodInput ? methodInput.value : 'phone_only';
         let payload = { phone, loginMethod };
         if (loginMethod === 'password') {
-            payload.password = document.getElementById('loginPassword').value;
-        } else {
-            payload.otp = document.getElementById('loginOtp').value;
+            const pwdInput = document.getElementById('loginPassword');
+            payload.password = pwdInput ? pwdInput.value : '';
+        } else if (loginMethod === 'otp') {
+            const otpInput = document.getElementById('loginOtp');
+            payload.otp = otpInput ? otpInput.value : '';
             if (!payload.otp) { 
                 document.getElementById('loginErrorText').textContent = 'Please enter OTP';
                 document.getElementById('loginErrorMsg').style.display = 'block';
@@ -2082,13 +2084,13 @@ async function openDataDrilldown(type) {
             const city = document.getElementById('regCity').value;
             const platform = document.getElementById('regPlatform').value;
             const exp = document.getElementById('regExp').value;
-            const pass = document.getElementById('regPassword').value;
+            // Removed regPassword read
             if (!name) { showToast((window.t ? window.t('msg_5_please_enter_yo') : 'Please enter your full name'), 'error'); return; }
             if (phone.length !== 10) { showToast((window.t ? window.t('msg_6_phone_must_be_1') : 'Phone must be 10 digits'), 'error'); return; }
             if (!city) { showToast((window.t ? window.t('msg_7_please_select_y') : 'Please select your city'), 'error'); return; }
             if (!platform) { showToast((window.t ? window.t('msg_8_please_select_y') : 'Please select your delivery platform'), 'error'); return; }
             if (exp === '') { showToast((window.t ? window.t('msg_9_please_select_y') : 'Please select your experience'), 'error'); return; }
-            if (!pass) { showToast((window.t ? window.t('msg_10_please_set_a_pa') : 'Please set a password'), 'error'); return; }
+            // Removed pass check
         }
 
         document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
@@ -2859,7 +2861,7 @@ function renderInsuranceOptions() {
         return;
     }
 
-    let html = '<div style="margin-bottom: 1rem;"><p style="font-weight: 500; margin-bottom: 0.5rem;" data-i18n="' + INSURANCE_CONFIG.question_i18n + '">' + INSURANCE_CONFIG.question + '</p>';
+    let html = '<div style="margin-bottom: 1rem;"><p style="font-weight: 500; margin-bottom: 0.5rem;"><span data-i18n="' + INSURANCE_CONFIG.question_i18n + '">' + INSURANCE_CONFIG.question + '</span> <span style="color: var(--danger-color, #ef4444);">*</span></p>';
     
     if (INSURANCE_CONFIG.groups) {
         INSURANCE_CONFIG.groups.forEach((group, index) => {
@@ -2913,7 +2915,7 @@ function submitRegistration() {
         let platform = getPlatformString();
         
         const exp = document.getElementById('regExp').value;
-        const pass = document.getElementById('regPassword').value;
+        // Removed regPassword read
 
         
         if (!validateFullRegistrationForm()) {
@@ -2956,7 +2958,7 @@ function submitRegistration() {
             pincode: pincode,
             deliveryPlatform: platform,
             experienceYears: exp,
-            password: pass,
+            password: '',
             vehicleType: getRadioValue('vehicleType'),
             vehicleModel: document.getElementById('regVehicleModel')?.value === 'Other' ? document.getElementById('regVehicleModelOther')?.value.trim() : document.getElementById('regVehicleModel')?.value,
             vehicleOwnership: getRadioValue('vehicleOwnership'),
@@ -4073,7 +4075,13 @@ function submitRegistration() {
                     return r;
                 });
                 document.getElementById('adminTotalRiders').textContent = allAdminRiders.length;
-                document.getElementById('adminEVRiders').textContent = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric')).length;
+                document.getElementById('adminEVRiders').textContent = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric') || (r.fuelType || '').toLowerCase().includes('electric')).length;
+                document.getElementById('adminPetrolRiders').textContent = allAdminRiders.filter(r => (r.fuelType || '').toLowerCase().includes('petrol')).length;
+                document.getElementById('adminDieselRiders').textContent = allAdminRiders.filter(r => (r.fuelType || '').toLowerCase().includes('diesel')).length;
+                document.getElementById('adminCngLpgRiders').textContent = allAdminRiders.filter(r => {
+                    const ft = (r.fuelType || '').toLowerCase();
+                    return ft.includes('cng') || ft.includes('lpg');
+                }).length;
                 document.getElementById('adminHotLeads').textContent = allAdminRiders.filter(r => r.openToEV === 'Yes' || r.openToEV === 'Need more information' || (r.tags || []).includes('Hot EV Lead')).length;
                 document.getElementById('adminInsLeads').textContent = allAdminRiders.filter(r => r.hasAccidentalInsurance === 'No' || r.hasAccidentalInsurance === 'Not sure' || r.hasHealthInsurance === 'No' || r.hasHealthInsurance === 'Not sure' || (r.tags || []).includes('Insurance Lead')).length;
 
@@ -4094,6 +4102,18 @@ function submitRegistration() {
             filterAdminRiders();
         } else if (type === 'evRiders') {
             document.getElementById('adminLeadFilter').value = 'EV_RIDERS';
+            switchAdminTab('allRiders');
+            filterAdminRiders();
+        } else if (type === 'petrolRiders') {
+            document.getElementById('adminLeadFilter').value = 'PETROL_RIDERS';
+            switchAdminTab('allRiders');
+            filterAdminRiders();
+        } else if (type === 'dieselRiders') {
+            document.getElementById('adminLeadFilter').value = 'DIESEL_RIDERS';
+            switchAdminTab('allRiders');
+            filterAdminRiders();
+        } else if (type === 'cngLpgRiders') {
+            document.getElementById('adminLeadFilter').value = 'CNG_LPG_RIDERS';
             switchAdminTab('allRiders');
             filterAdminRiders();
         } else if (type === 'hotLeads') {
@@ -4117,7 +4137,16 @@ function submitRegistration() {
         if (val === 'EV_SALE_LEAD') {
             filtered = allAdminRiders.filter(r => r.openToEV === 'Yes' || r.openToEV === 'Need more information' || (r.tags || []).includes('Hot EV Lead'));
         } else if (val === 'EV_RIDERS') {
-            filtered = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric'));
+            filtered = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric') || (r.fuelType || '').toLowerCase().includes('electric'));
+        } else if (val === 'PETROL_RIDERS') {
+            filtered = allAdminRiders.filter(r => (r.fuelType || '').toLowerCase().includes('petrol'));
+        } else if (val === 'DIESEL_RIDERS') {
+            filtered = allAdminRiders.filter(r => (r.fuelType || '').toLowerCase().includes('diesel'));
+        } else if (val === 'CNG_LPG_RIDERS') {
+            filtered = allAdminRiders.filter(r => {
+                const ft = (r.fuelType || '').toLowerCase();
+                return ft.includes('cng') || ft.includes('lpg');
+            });
         } else if (val === 'PERSONAL_INSURANCE_LEAD' || val === 'BIKE_INSURANCE_LEAD') {
             filtered = allAdminRiders.filter(r => r.hasAccidentalInsurance === 'No' || r.hasAccidentalInsurance === 'Not sure' || r.hasHealthInsurance === 'No' || r.hasHealthInsurance === 'Not sure' || (r.tags || []).includes('Insurance Lead'));
         } else if (val === 'STATUS_LEAD') {
@@ -4673,9 +4702,9 @@ window.nextStep = async function() {
                           isValid = false;
                           if (typeof firstInvalid !== 'undefined' && !firstInvalid) firstInvalid = cbGroup;
                           const cbs = cbGroup.querySelectorAll('input[type="checkbox"]');
-                          cbs.forEach(cb => cb.addEventListener('change', () => { 
+                          cbs.forEach(cb => cb.onchange = () => { 
                               cbGroup.style.border = ''; cbGroup.style.padding = '';
-                          }));
+                          });
                       }
                   }
               });

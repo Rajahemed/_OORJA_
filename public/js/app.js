@@ -1451,7 +1451,7 @@ async function openDataDrilldown(type) {
 
             if (step === 2) {
                 // Check required fields for Profile section
-                const reqs = ['regFullName', 'regPhone', 'regPassword', 'regState', 'regCity', 'regPincode', 'regPlatform', 'regExp'];
+                const reqs = ['regFullName', 'regPhone', 'regState', 'regCity', 'regPincode', 'regPlatform', 'regExp'];
                 reqs.forEach(id => {
                     const el = document.getElementById(id);
                     if (!el) return;
@@ -1471,9 +1471,8 @@ async function openDataDrilldown(type) {
                         isFieldValid = false;
                         errorMsg = 'Please enter a valid 10-digit mobile number.';
                     }
-                    if (id === 'regPassword' && (el.value.length !== 4 || !/^\d{4}$/.test(el.value))) {
-                        isFieldValid = false;
-                        errorMsg = 'Password must be exactly 4 digits.';
+                    if (id === 'regPassword') {
+                        // PIN removed, skipping validation
                     }
                     
                     if (!isFieldValid) {
@@ -1753,12 +1752,15 @@ async function openDataDrilldown(type) {
             return;
         }
 
-        const loginMethod = document.querySelector('input[name="loginMethod"]:checked').value;
+        const methodInput = document.querySelector('input[name="loginMethod"]');
+        const loginMethod = methodInput ? methodInput.value : 'phone_only';
         let payload = { phone, loginMethod };
         if (loginMethod === 'password') {
-            payload.password = document.getElementById('loginPassword').value;
-        } else {
-            payload.otp = document.getElementById('loginOtp').value;
+            const pwdInput = document.getElementById('loginPassword');
+            payload.password = pwdInput ? pwdInput.value : '';
+        } else if (loginMethod === 'otp') {
+            const otpInput = document.getElementById('loginOtp');
+            payload.otp = otpInput ? otpInput.value : '';
             if (!payload.otp) { 
                 document.getElementById('loginErrorText').textContent = 'Please enter OTP';
                 document.getElementById('loginErrorMsg').style.display = 'block';
@@ -1859,13 +1861,13 @@ async function openDataDrilldown(type) {
             const city = document.getElementById('regCity').value;
             const platform = document.getElementById('regPlatform').value;
             const exp = document.getElementById('regExp').value;
-            const pass = document.getElementById('regPassword').value;
+            // Removed regPassword read
             if (!name) { showToast((window.t ? window.t('msg_5_please_enter_yo') : 'Please enter your full name'), 'error'); return; }
             if (phone.length !== 10) { showToast((window.t ? window.t('msg_6_phone_must_be_1') : 'Phone must be 10 digits'), 'error'); return; }
             if (!city) { showToast((window.t ? window.t('msg_7_please_select_y') : 'Please select your city'), 'error'); return; }
             if (!platform) { showToast((window.t ? window.t('msg_8_please_select_y') : 'Please select your delivery platform'), 'error'); return; }
             if (exp === '') { showToast((window.t ? window.t('msg_9_please_select_y') : 'Please select your experience'), 'error'); return; }
-            if (!pass) { showToast((window.t ? window.t('msg_10_please_set_a_pa') : 'Please set a password'), 'error'); return; }
+            // Removed pass check
         }
 
         document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
@@ -2636,7 +2638,7 @@ function renderInsuranceOptions() {
         return;
     }
 
-    let html = '<div style="margin-bottom: 1rem;"><p style="font-weight: 500; margin-bottom: 0.5rem;" data-i18n="' + INSURANCE_CONFIG.question_i18n + '">' + INSURANCE_CONFIG.question + '</p>';
+    let html = '<div style="margin-bottom: 1rem;"><p style="font-weight: 500; margin-bottom: 0.5rem;"><span data-i18n="' + INSURANCE_CONFIG.question_i18n + '">' + INSURANCE_CONFIG.question + '</span> <span style="color: var(--danger-color, #ef4444);">*</span></p>';
     
     if (INSURANCE_CONFIG.groups) {
         INSURANCE_CONFIG.groups.forEach((group, index) => {
@@ -2690,7 +2692,7 @@ function submitRegistration() {
         let platform = getPlatformString();
         
         const exp = document.getElementById('regExp').value;
-        const pass = document.getElementById('regPassword').value;
+        // Removed regPassword read
 
         
         if (!validateFullRegistrationForm()) {
@@ -2733,7 +2735,7 @@ function submitRegistration() {
             pincode: pincode,
             deliveryPlatform: platform,
             experienceYears: exp,
-            password: pass,
+            password: '',
             vehicleType: getRadioValue('vehicleType'),
             vehicleModel: document.getElementById('regVehicleModel')?.value === 'Other' ? document.getElementById('regVehicleModelOther')?.value.trim() : document.getElementById('regVehicleModel')?.value,
             vehicleOwnership: getRadioValue('vehicleOwnership'),

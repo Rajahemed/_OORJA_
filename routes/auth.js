@@ -89,9 +89,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Please enter a valid 10-digit Indian mobile number starting with 6-9' });
     }
 
-    if (loginMethod === 'password' && !password) {
-      return res.status(400).json({ success: false, error: 'Password required' });
-    }
+    // Removed password requirement validation for phone-only login
 
     if (loginMethod === 'otp' && !otp) {
       return res.status(400).json({ success: false, error: 'OTP required' });
@@ -111,19 +109,8 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ success: false, error: 'User not found. Please register first.' });
     }
 
-    // Verify Password or OTP
-    if (loginMethod === 'password') {
-      if (!rider.password) {
-        // Fallback for older mock riders without password
-        if (password !== 'password') {
-          return res.status(401).json({ success: false, error: 'Invalid password' });
-        }
-      } else {
-        const match = await bcrypt.compare(password, rider.password);
-        if (!match) {
-          return res.status(401).json({ success: false, error: 'Invalid password' });
-        }
-      }
+    if (loginMethod === 'password' || loginMethod === 'phone_only') {
+      // PIN validation removed as per requirement - phone number only auth
     } else if (loginMethod === 'otp') {
       const cached = otpCache.get(phone);
       if (!cached || Date.now() > cached.expires) {
