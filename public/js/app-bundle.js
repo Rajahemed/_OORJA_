@@ -1631,6 +1631,7 @@ async function openDataDrilldown(type) {
         fetch('/auth/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: localStorage.getItem('sessionId') }) })
         .finally(() => {
             localStorage.removeItem('riderId'); localStorage.removeItem('sessionId');
+            localStorage.removeItem('rw_pending_reg_phone');
             currentUser = null; isLoggedIn = false;
             updateAuthNavbarState(); routeSPA('/login');
         });
@@ -3032,6 +3033,7 @@ function submitRegistration() {
                     localStorage.setItem('riderId', result.data.riderId);
                 localStorage.setItem('sessionId', result.sessionId);
                 localStorage.removeItem('pendingReferralCode');
+                localStorage.removeItem('rw_pending_reg_phone');
                 currentUser = result.data.rider;
                 registeredRiderId = result.data.riderId;
                 trackEvent('sign_up', { method: 'website', platform: platform });
@@ -4541,6 +4543,7 @@ function showStep(step) {
 window.savePartialProgress = async function() {
     const phone = document.getElementById('regPhone').value.trim();
     if (!phone) return;
+    localStorage.setItem('rw_pending_reg_phone', phone);
     
     const name = document.getElementById('regFullName').value.trim();
     let state = document.getElementById('regState').value;
@@ -4636,6 +4639,92 @@ window.savePartialProgress = async function() {
     } catch (e) {
         console.error('Failed to save partial progress', e);
     }
+};
+
+window.restorePartialData = function(pd) {
+    window.resumedPartialData = pd; // Store globally
+    
+    // Helper to prefill inputs
+    const fillInput = (id, val) => { if(document.getElementById(id) && val) { document.getElementById(id).value = val; document.getElementById(id).dispatchEvent(new Event('change')); } };
+    const fillRadio = (name, val) => { 
+        if(val) {
+            const r = document.querySelector(`input[name="${name}"][value="${val}"]`);
+            if(r) { r.checked = true; r.dispatchEvent(new Event('change')); }
+        }
+    };
+    const fillCheckboxes = (name, vals) => {
+        if(Array.isArray(vals)) {
+            vals.forEach(v => {
+                const c = document.querySelector(`input[name="${name}"][value="${v}"]`);
+                if(c) { c.checked = true; c.dispatchEvent(new Event('change')); }
+            });
+        }
+    };
+
+    fillInput('regFullName', pd.fullName);
+    fillInput('regState', pd.state);
+    if (pd.state && window.onRegStateChange) window.onRegStateChange();
+    fillInput('regCity', pd.city);
+    fillInput('regPincode', pd.pincode);
+    
+    // Pre-select Platform pills if any
+    if(pd.deliveryPlatform) {
+        const plats = pd.deliveryPlatform.split(', ');
+        plats.forEach(p => {
+            const pill = Array.from(document.querySelectorAll('#platformPillsContainer .platform-pill')).find(el => el.textContent.trim() === p);
+            if(pill && !pill.classList.contains('active')) pill.click();
+        });
+    }
+    
+    if(pd.experienceYears) {
+        const pill = Array.from(document.querySelectorAll('#expPillsContainer .platform-pill')).find(el => el.textContent.trim() === pd.experienceYears);
+        if(pill && !pill.classList.contains('active')) pill.click();
+        fillInput('regExp', pd.experienceYears);
+    }
+    
+    fillRadio('vehicleType', pd.vehicleType);
+    fillInput('regVehicleModel', pd.vehicleModel);
+    fillRadio('vehicleOwnership', pd.vehicleOwnership);
+    fillInput('regWeeklyRent', pd.weeklyRent);
+    fillInput('regMonthlyRent', pd.monthlyRent);
+    fillInput('regWorkingHours', pd.workingHours);
+    fillInput('regKmPerDay', pd.kmPerDay);
+    fillInput('regKmPerMonth', pd.kmPerMonth);
+    fillInput('regNetSalary', pd.netSalary);
+    fillInput('regVariablePay', pd.variablePay);
+    fillRadio('fuelType', pd.fuelType);
+    fillInput('regFuelExp', pd.fuelExpenseWeekly);
+    fillRadio('fuelMethod', pd.fuelMethod);
+    fillInput('regMaintTyre', pd.maintenanceTyre);
+    fillInput('regMaintOil', pd.maintenanceOil);
+    fillInput('regMaintService', pd.maintenanceService);
+    fillInput('regMaintExp', pd.maintenanceExpenseMonthly);
+    
+    fillCheckboxes('challenges', pd.challenges);
+    fillCheckboxes('evChallenges', pd.evChallenges);
+    fillCheckboxes('petrolChallenges', pd.petrolChallenges);
+    fillRadio('fuelCostChallenge', pd.fuelCostChallenge);
+    fillRadio('helmetUsage', pd.helmetUsage);
+    
+    if(pd.trainingReceived) {
+        fillCheckboxes('trainingReceived', pd.trainingReceived.split(', '));
+    }
+    if(pd.workplaceFacilities) {
+        const fac = pd.workplaceFacilities;
+        if(fac.includes('Seating Area') && document.getElementById('facilitySeating')) document.getElementById('facilitySeating').checked = true;
+        if(fac.includes('Drinking Water') && document.getElementById('facilityWater')) document.getElementById('facilityWater').checked = true;
+        if(fac.includes('Clean Toilets') && document.getElementById('facilityToilet')) document.getElementById('facilityToilet').checked = true;
+        if(fac.includes('Rest Zones') && document.getElementById('facilityRest')) document.getElementById('facilityRest').checked = true;
+    }
+    
+    window.resumedPartial = true;
+    if (pd.current_step > 2) { 
+         currentStep = pd.current_step;
+         showStep(currentStep);
+         showToast('Resuming your partial application', 'success');
+         return true;
+    }
+    return false;
 };
 
 window.nextStep = async function() {
@@ -4744,88 +4833,8 @@ window.nextStep = async function() {
                     return; // block moving forward
                 } else if (!window.resumedPartial) {
                     const pd = data.data;
-                    window.resumedPartialData = pd; // Store globally
-                    
-                    // Helper to prefill inputs
-                    const fillInput = (id, val) => { if(document.getElementById(id) && val) { document.getElementById(id).value = val; document.getElementById(id).dispatchEvent(new Event('change')); } };
-                    const fillRadio = (name, val) => { 
-                        if(val) {
-                            const r = document.querySelector(`input[name="${name}"][value="${val}"]`);
-                            if(r) { r.checked = true; r.dispatchEvent(new Event('change')); }
-                        }
-                    };
-                    const fillCheckboxes = (name, vals) => {
-                        if(Array.isArray(vals)) {
-                            vals.forEach(v => {
-                                const c = document.querySelector(`input[name="${name}"][value="${v}"]`);
-                                if(c) { c.checked = true; c.dispatchEvent(new Event('change')); }
-                            });
-                        }
-                    };
-
-                    fillInput('regFullName', pd.fullName);
-                    fillInput('regState', pd.state);
-                    if (pd.state && window.onRegStateChange) window.onRegStateChange();
-                    fillInput('regCity', pd.city);
-                    fillInput('regPincode', pd.pincode);
-                    
-                    // Pre-select Platform pills if any
-                    if(pd.deliveryPlatform) {
-                        const plats = pd.deliveryPlatform.split(', ');
-                        plats.forEach(p => {
-                            const pill = Array.from(document.querySelectorAll('#platformPillsContainer .platform-pill')).find(el => el.textContent.trim() === p);
-                            if(pill && !pill.classList.contains('active')) pill.click();
-                        });
-                    }
-                    
-                    if(pd.experienceYears) {
-                        const pill = Array.from(document.querySelectorAll('#expPillsContainer .platform-pill')).find(el => el.textContent.trim() === pd.experienceYears);
-                        if(pill && !pill.classList.contains('active')) pill.click();
-                        fillInput('regExp', pd.experienceYears);
-                    }
-                    
-                    fillRadio('vehicleType', pd.vehicleType);
-                    fillInput('regVehicleModel', pd.vehicleModel);
-                    fillRadio('vehicleOwnership', pd.vehicleOwnership);
-                    fillInput('regWeeklyRent', pd.weeklyRent);
-                    fillInput('regMonthlyRent', pd.monthlyRent);
-                    fillInput('regWorkingHours', pd.workingHours);
-                    fillInput('regKmPerDay', pd.kmPerDay);
-                    fillInput('regKmPerMonth', pd.kmPerMonth);
-                    fillInput('regNetSalary', pd.netSalary);
-                    fillInput('regVariablePay', pd.variablePay);
-                    fillRadio('fuelType', pd.fuelType);
-                    fillInput('regFuelExp', pd.fuelExpenseWeekly);
-                    fillRadio('fuelMethod', pd.fuelMethod);
-                    fillInput('regMaintTyre', pd.maintenanceTyre);
-                    fillInput('regMaintOil', pd.maintenanceOil);
-                    fillInput('regMaintService', pd.maintenanceService);
-                    fillInput('regMaintExp', pd.maintenanceExpenseMonthly);
-                    
-                    fillCheckboxes('challenges', pd.challenges);
-                    fillCheckboxes('evChallenges', pd.evChallenges);
-                    fillCheckboxes('petrolChallenges', pd.petrolChallenges);
-                    fillRadio('fuelCostChallenge', pd.fuelCostChallenge);
-                    fillRadio('helmetUsage', pd.helmetUsage);
-                    
-                    if(pd.trainingReceived) {
-                        fillCheckboxes('trainingReceived', pd.trainingReceived.split(', '));
-                    }
-                    if(pd.workplaceFacilities) {
-                        const fac = pd.workplaceFacilities;
-                        if(fac.includes('Seating Area') && document.getElementById('facilitySeating')) document.getElementById('facilitySeating').checked = true;
-                        if(fac.includes('Drinking Water') && document.getElementById('facilityWater')) document.getElementById('facilityWater').checked = true;
-                        if(fac.includes('Clean Toilets') && document.getElementById('facilityToilet')) document.getElementById('facilityToilet').checked = true;
-                        if(fac.includes('Rest Zones') && document.getElementById('facilityRest')) document.getElementById('facilityRest').checked = true;
-                    }
-                    
-                    window.resumedPartial = true;
-                    if (pd.current_step > 2) { // Changed from 1 to 2
-                         currentStep = pd.current_step;
-                         showStep(currentStep);
-                         showToast('Resuming your partial application', 'success');
-                         return; 
-                    }
+                    const didResume = window.restorePartialData(pd);
+                    if (didResume) return;
                 }
             }
         } catch(e) {
@@ -4857,6 +4866,23 @@ function prevStep() {
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.form-section:not(.active)').forEach(el => el.style.display = 'none');
+    
+    // Auto-resume logic
+    const pendingPhone = localStorage.getItem('rw_pending_reg_phone');
+    if (pendingPhone) {
+        fetch(`/api/riders/partial/${pendingPhone}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.exists && !data.is_completed && !window.resumedPartial) {
+                    // Temporarily fill phone so validateRegPhone doesn't break
+                    if (document.getElementById('regPhone')) {
+                        document.getElementById('regPhone').value = pendingPhone;
+                    }
+                    window.restorePartialData(data.data);
+                }
+            })
+            .catch(err => console.error('Auto-resume failed', err));
+    }
 });
 
 window.goToStep = function(step) {
