@@ -1511,30 +1511,28 @@ document.addEventListener("DOMContentLoaded", () => {
                                             </select>
 
                                             <input type="text" id="regPlatformOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *" aria-label="inputField">
-                                            <div id="platformIdsContainer" style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                                            </div>
+
                                         </div>
                                         <div class="form-group" style="flex:1; min-width:200px;">
                                             <label for="regExp" data-i18n="label_exp">Years of Experience</label>
                                             <div class="platform-pills" id="expPillsContainer">
-                                                <div class="platform-pill" onclick="selectExpPill('0-6 months', this)">
-                                                    <span data-i18n="exp_0_6">0-6 months</span></div>
+                                                <div class="platform-pill" onclick="selectExpPill('Less than 6 months', this)">
+                                                    <span data-i18n="exp_lt_6">Less than 6 months</span></div>
+                                                <div class="platform-pill" onclick="selectExpPill('6 months to 1 year', this)">
+                                                    <span data-i18n="exp_6_12">6 months to 1 year</span></div>
                                                 <div class="platform-pill" onclick="selectExpPill('1-2', this)"><span data-i18n="exp_1_2">1-2 Years</span></div>
                                                 <div class="platform-pill" onclick="selectExpPill('2-3', this)"><span data-i18n="exp_2_3">2-3 Years</span></div>
                                                 <div class="platform-pill" onclick="selectExpPill('3-4', this)"><span data-i18n="exp_3_4">3-4 Years</span></div>
-                                                <div class="platform-pill" onclick="selectExpPill('4-5', this)"><span data-i18n="exp_4_5">4-5 Years</span></div>
-                                                <div class="platform-pill" onclick="selectExpPill('5-6', this)"><span data-i18n="exp_5_6">5-6 Years</span></div>
-                                                <div class="platform-pill" onclick="selectExpPill('6+', this)"><span data-i18n="exp_6_plus">6+ Years</span></div>
+                                                <div class="platform-pill" onclick="selectExpPill('5+', this)"><span data-i18n="exp_5_plus">5+ Years</span></div>
                                             </div>
                                             <select id="regExp" class="form-control" style="display:none;" required="">
                                                 <option value="">Select experience</option>
-                                                <option value="0-6 months" data-i18n="exp_0_6">0-6 months</option>
+                                                <option value="Less than 6 months" data-i18n="exp_lt_6">Less than 6 months</option>
+                                                <option value="6 months to 1 year" data-i18n="exp_6_12">6 months to 1 year</option>
                                                 <option value="1-2" data-i18n="exp_1_2">1-2 Years</option>
                                                 <option value="2-3" data-i18n="exp_2_3">2-3 Years</option>
                                                 <option value="3-4" data-i18n="exp_3_4">3-4 Years</option>
-                                                <option value="4-5" data-i18n="exp_4_5">4-5 Years</option>
-                                                <option value="5-6" data-i18n="exp_5_6">5-6 Years</option>
-                                                <option value="6+" data-i18n="exp_6_plus">6+ Years</option>
+                                                <option value="5+" data-i18n="exp_5_plus">5+ Years</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1591,15 +1589,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                         </div>
                                     </div>
 
-                                    <div id="bikeSpeedFields" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
-                                        <div class="form-group" style="margin-bottom:0;">
-                                            <label>Vehicle Speed Classification </label>
-                                            <div class="radio-group inline" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
-                                                <label class="radio-item"><input type="radio" name="bikeSpeed" required="" value="Slow (up to 25km/h)"> 🐢 Slow (up to 25km/h)</label>
-                                                <label class="radio-item"><input type="radio" name="bikeSpeed" required="" value="High Speed (above 25km/h)"> 🚀 High Speed (above 25km/h)</label>
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <div class="form-group">
                                         <label data-i18n="lbl_hours">How many hours do you work daily?</label>
@@ -1655,6 +1644,16 @@ document.addEventListener("DOMContentLoaded", () => {
                                         </div>
                                         <div id="fuelTypeValMsg" style="color:var(--danger-color); display:none; margin-top:0.5rem; font-size:0.875rem;">
                                             <i class="fas fa-exclamation-triangle"></i> <span data-i18n="val_fuel_req">Please select a valid fuel type.</span></div>
+                                    </div>
+                                    
+                                    <div id="bikeSpeedFields" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <label>Vehicle Speed Classification <span style="color: var(--danger-color, #ef4444);">*</span></label>
+                                            <div class="radio-group inline" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                                                <label class="radio-item"><input type="radio" name="bikeSpeed" required="" value="Slow (up to 25km/h)"> 🐢 Slow (up to 25km/h)</label>
+                                                <label class="radio-item"><input type="radio" name="bikeSpeed" required="" value="High Speed (above 25km/h)"> 🚀 High Speed (above 25km/h)</label>
+                                            </div>
+                                        </div>
                                     </div>
 
 

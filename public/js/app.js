@@ -2463,23 +2463,30 @@ async function openDataDrilldown(type) {
             window.updateBikeSpeedVisibility();
         }
     };
-
+        
     window.updateBikeSpeedVisibility = function() {
         const bikeSpeedFields = document.getElementById('bikeSpeedFields');
         if (!bikeSpeedFields) return;
         
         const vtRadio = document.querySelector('input[name="vehicleType"]:checked');
         const ownRadio = document.querySelector('input[name="vehicleOwnership"]:checked');
+        const fuelRadio = document.querySelector('input[name="fuelType"]:checked');
         
         const vt = vtRadio ? vtRadio.value : '';
         const own = ownRadio ? ownRadio.value : '';
+        const fuel = fuelRadio ? fuelRadio.value : '';
         
-        if (vt === '2 Wheeler' && (own === 'Company Vehicle' || own === 'Rental Vehicle')) {
+        const inputs = bikeSpeedFields.querySelectorAll('input');
+        
+        if (vt === '2 Wheeler' && (own === 'Company Vehicle' || own === 'Rental Vehicle') && fuel === 'Electric') {
             bikeSpeedFields.style.display = 'block';
+            inputs.forEach(i => i.required = true);
         } else {
             bikeSpeedFields.style.display = 'none';
-            const inputs = bikeSpeedFields.querySelectorAll('input');
-            inputs.forEach(i => i.checked = false);
+            inputs.forEach(i => {
+                i.checked = false;
+                i.required = false;
+            });
         }
     };
 
@@ -2621,6 +2628,10 @@ async function openDataDrilldown(type) {
             }
         }
         
+        if (typeof window.updateBikeSpeedVisibility === 'function') {
+            window.updateBikeSpeedVisibility();
+        }
+
         const fuelTypeValMsg = document.getElementById('fuelTypeValMsg');
         if (fuelTypeValMsg && val) {
             fuelTypeValMsg.style.display = 'none';
@@ -2782,6 +2793,8 @@ function submitRegistration() {
             helmetUsage: getRadioValue('helmetUsage'),
             trainingReceived: trainingVal,
             workplaceFacilities: facilityArr.join(', '),
+            personalInsurance: Array.from(document.querySelectorAll('input[name="insuranceOptions"][data-group="group_0"]:checked')).map(cb => cb.value),
+            vehicleInsurance: Array.from(document.querySelectorAll('input[name="insuranceOptions"][data-group="group_1"]:checked')).map(cb => cb.value),
             referredByCode,
             language: localStorage.getItem('selectedLang') || 'en'
         };
@@ -4632,59 +4645,7 @@ window.selectPlatformPill = function(value, element) {
         var otherEl=document.getElementById('regPlatformOther');if(otherEl){otherEl.style.display='none';otherEl.required=false;otherEl.value='';}
     }    
 
-    // Update platform IDs container
-    const idsContainer = document.getElementById('platformIdsContainer');
-    if (idsContainer) {
-        Array.from(nativeSelect.options).filter(opt => opt.value !== 'Other' && opt.value !== '').forEach(opt => {
-            const platform = opt.value;
-            const groupId = `group_platformId_${platform}`;
-            let groupEl = document.getElementById(groupId);
-            
-            if (opt.selected) {
-                if (!groupEl) {
-                    groupEl = document.createElement('div');
-                    groupEl.id = groupId;
-                    groupEl.className = 'form-group';
-                    groupEl.style.marginBottom = '0.5rem';
-                    groupEl.innerHTML = `
-                        <label style="font-size: 0.85rem; margin-bottom: 0.2rem;">${
-    (function(){
-        let plat = platform;
-        let lbl = 'ID';
-        if (window.i18next && typeof window.i18next.t === 'function') {
-            let tPlat = window.i18next.t('plat_' + platform.toLowerCase());
-            let tLbl = window.i18next.t('lbl_id');
-            if (tPlat && tPlat !== 'undefined' && tPlat !== 'plat_' + platform.toLowerCase()) plat = tPlat;
-            if (tLbl && tLbl !== 'undefined' && tLbl !== 'lbl_id') lbl = tLbl;
-        }
-        if (plat === platform && window.t) {
-            let tPlat = window.t('plat_' + platform.toLowerCase());
-            if (tPlat && tPlat !== 'undefined' && tPlat !== 'plat_' + platform.toLowerCase()) plat = tPlat;
-        }
-        if (lbl === 'ID' && window.t) {
-            let tLbl = window.t('lbl_id');
-            if (tLbl && tLbl !== 'undefined' && tLbl !== 'lbl_id') lbl = tLbl;
-        }
-        return plat + ' ' + lbl;
-    })()
-}</label>
-                        <input type="text" class="form-control" name="platformId_${platform}" id="platformId_${platform}">
-                    `;
-                    idsContainer.appendChild(groupEl);
-                } else {
-                    groupEl.style.display = 'block';
-                }
-            } else {
-                if (groupEl) {
-                    groupEl.style.display = 'none';
-                    const inputEl = groupEl.querySelector('input');
-                    if(inputEl) {
-                        inputEl.value = '';
-                    }
-                }
-            }
-        });
-    }
+
     // Clear validation error if any
     if (nativeSelect.value) {
         nativeSelect.classList.remove('is-invalid');

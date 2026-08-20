@@ -2693,16 +2693,23 @@ async function openDataDrilldown(type) {
         
         const vtRadio = document.querySelector('input[name="vehicleType"]:checked');
         const ownRadio = document.querySelector('input[name="vehicleOwnership"]:checked');
+        const fuelRadio = document.querySelector('input[name="fuelType"]:checked');
         
         const vt = vtRadio ? vtRadio.value : '';
         const own = ownRadio ? ownRadio.value : '';
+        const fuel = fuelRadio ? fuelRadio.value : '';
         
-        if (vt === '2 Wheeler' && (own === 'Company Vehicle' || own === 'Rental Vehicle')) {
+        const inputs = bikeSpeedFields.querySelectorAll('input');
+        
+        if (vt === '2 Wheeler' && (own === 'Company Vehicle' || own === 'Rental Vehicle') && fuel === 'Electric') {
             bikeSpeedFields.style.display = 'block';
+            inputs.forEach(i => i.required = true);
         } else {
             bikeSpeedFields.style.display = 'none';
-            const inputs = bikeSpeedFields.querySelectorAll('input');
-            inputs.forEach(i => i.checked = false);
+            inputs.forEach(i => {
+                i.checked = false;
+                i.required = false;
+            });
         }
     };
 
@@ -2844,6 +2851,10 @@ async function openDataDrilldown(type) {
             }
         }
         
+        if (typeof window.updateBikeSpeedVisibility === 'function') {
+            window.updateBikeSpeedVisibility();
+        }
+
         const fuelTypeValMsg = document.getElementById('fuelTypeValMsg');
         if (fuelTypeValMsg && val) {
             fuelTypeValMsg.style.display = 'none';
@@ -3005,6 +3016,8 @@ function submitRegistration() {
             helmetUsage: getRadioValue('helmetUsage'),
             trainingReceived: trainingVal,
             workplaceFacilities: facilityArr.join(', '),
+            personalInsurance: Array.from(document.querySelectorAll('input[name="insuranceOptions"][data-group="group_0"]:checked')).map(cb => cb.value),
+            vehicleInsurance: Array.from(document.querySelectorAll('input[name="insuranceOptions"][data-group="group_1"]:checked')).map(cb => cb.value),
             referredByCode,
             language: localStorage.getItem('selectedLang') || 'en'
         };

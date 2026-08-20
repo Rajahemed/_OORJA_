@@ -30,14 +30,16 @@ function computeSegmentTags(data) {
   const hasHealth = data.hasHealthInsurance || '';
   const interests = data.interests || '';
   const switchTriggers = data.switchTriggers || [];
+  const personalInsurance = Array.isArray(data.personalInsurance) ? data.personalInsurance : (data.personalInsurance ? [data.personalInsurance] : []);
+  const vehicleInsurance = Array.isArray(data.vehicleInsurance) ? data.vehicleInsurance : (data.vehicleInsurance ? [data.vehicleInsurance] : []);
 
   // 1. PERSONAL_INSURANCE_LEAD
-  if (hasHealth === 'No' || hasHealth === 'Not sure') {
+  if (hasHealth === 'No' || hasHealth === 'Not sure' || personalInsurance.includes('None of the Above') || personalInsurance.includes('none_personal')) {
     tags.push('PERSONAL_INSURANCE_LEAD');
   }
 
   // 2. BIKE_INSURANCE_LEAD
-  if (hasAccidental === 'No' || hasAccidental === 'Not sure') {
+  if (hasAccidental === 'No' || hasAccidental === 'Not sure' || vehicleInsurance.includes('None of the Above') || vehicleInsurance.includes('none_vehicle')) {
     tags.push('BIKE_INSURANCE_LEAD');
   }
 
@@ -256,7 +258,7 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       // Section D
       challenges, evChallenges, petrolChallenges, fuelCostChallenge,
       // Section E
-      helmetUsage, trainingReceived, workplaceFacilities,
+      helmetUsage, trainingReceived, workplaceFacilities, personalInsurance, vehicleInsurance,
       // Section F
       referredByCode,
       // Section G
@@ -307,7 +309,7 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
     }
 
     // Compute auto tags (legacy fields removed; passing available data if needed or empty)
-    const tags = computeSegmentTags({ vehicleType });
+    const tags = computeSegmentTags({ vehicleType, personalInsurance, vehicleInsurance });
 
     // Process referral code if provided
     let milestones = [];
@@ -395,6 +397,8 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       "evChallenges": Array.isArray(evChallenges) ? evChallenges : [],
       "petrolChallenges": Array.isArray(petrolChallenges) ? petrolChallenges : [],
       "fuelCostChallenge": fuelCostChallenge || '',
+      "hasHealthInsurance": Array.isArray(personalInsurance) ? personalInsurance.join(', ') : (personalInsurance || ''),
+      "hasAccidentalInsurance": Array.isArray(vehicleInsurance) ? vehicleInsurance.join(', ') : (vehicleInsurance || ''),
       "helmetUsage": helmetUsage || '',
       "trainingReceived": trainingReceived || '',
       "workplaceFacilities": workplaceFacilities || '',
