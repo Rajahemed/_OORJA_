@@ -2231,6 +2231,7 @@ async function openDataDrilldown(type) {
 
     function toggleOtherRadio(input, targetId) {
         const el = document.getElementById(targetId);
+        if (!el) return;
         if(input.value === 'Other' && input.checked) {
             el.style.display = 'block';
             setTimeout(() => el.focus(), 50);
@@ -2241,6 +2242,7 @@ async function openDataDrilldown(type) {
 
     function toggleOtherCheckbox(input, targetId) {
         const el = document.getElementById(targetId);
+        if (!el) return;
         if(input.checked) {
             el.style.display = 'block';
             setTimeout(() => el.focus(), 50);
@@ -2749,6 +2751,7 @@ function submitRegistration() {
             experienceYears: exp,
             password: '',
             vehicleType: getRadioValue('vehicleType'),
+            bikeSpeed: getRadioValue('bikeSpeed'),
             vehicleModel: document.getElementById('regVehicleModel')?.value === 'Other' ? document.getElementById('regVehicleModelOther')?.value.trim() : document.getElementById('regVehicleModel')?.value,
             vehicleOwnership: getRadioValue('vehicleOwnership'),
             weeklyRent: document.getElementById('regWeeklyRent')?.value || '',
@@ -2759,12 +2762,14 @@ function submitRegistration() {
             netSalary: document.getElementById('regNetSalary')?.value || '',
             variablePay: document.getElementById('regVariablePay')?.value || '',
             fuelType: getRadioValue('fuelType'),
-            fuelExpenseWeekly: document.getElementById('regFuelExp')?.value || '',
+            fuelExpenseWeekly: document.getElementById('regFuelExp')?.value === 'Other' ? document.getElementById('regFuelExpOther')?.value.trim() : document.getElementById('regFuelExp')?.value || '',
+            evBatteryCost: document.getElementById('regEvBatteryCost')?.value === 'Other' ? document.getElementById('evBatteryCostOther')?.value.trim() : document.getElementById('regEvBatteryCost')?.value || '',
+            evMaintCost: document.getElementById('regEvMaintCost')?.value === 'Other' ? document.getElementById('evMaintCostOther')?.value.trim() : document.getElementById('regEvMaintCost')?.value || '',
             fuelMethod: getRadioValue('fuelMethod') === 'Other' ? document.getElementById('regFuelMethodOther')?.value.trim() : getRadioValue('fuelMethod'),
             maintenanceTyre: document.getElementById('regMaintTyre')?.value || '',
             maintenanceOil: document.getElementById('regMaintOil')?.value || '',
             maintenanceService: document.getElementById('regMaintService')?.value || '',
-            maintenanceExpenseMonthly: document.getElementById('regMaintExp')?.value || '',
+            maintenanceExpenseMonthly: document.getElementById('regMaintExp')?.value === 'Other' ? document.getElementById('regMaintExpOther')?.value.trim() : document.getElementById('regMaintExp')?.value || '',
             maintPayServicing: getRadioValue('maintPayServicing'),
             maintPayPuncture: getRadioValue('maintPayPuncture'),
             maintPayWear: getRadioValue('maintPayWear'),
@@ -2783,7 +2788,7 @@ function submitRegistration() {
             companyDamagePay: getRadioValue('companyDamagePay'),
             companyAccidentPay: getRadioValue('companyAccidentPay'),
             majorRepairs: getRadioValue('majorRepairs'),
-            majorRepairCost: document.getElementById('regMajorRepairCost')?.value || '',
+            majorRepairCost: document.getElementById('regMajorRepairCost')?.value === 'Other' ? document.getElementById('regMajorRepairCostOther')?.value.trim() : document.getElementById('regMajorRepairCost')?.value || '',
             rentChecks: Array.from(document.querySelectorAll('input[name="rentChecks"]:checked')).map(r => r.value).join(', '),
             companyPuncturePay: getRadioValue('companyPuncturePay'),
             companyWearPay: getRadioValue('companyWearPay'),
@@ -4324,6 +4329,7 @@ window.savePartialProgress = async function() {
         deliveryPlatform: platform,
         experienceYears: exp,
         vehicleType: getRadioValue('vehicleType'),
+        bikeSpeed: getRadioValue('bikeSpeed'),
         vehicleModel: document.getElementById('regVehicleModel')?.value === 'Other' ? document.getElementById('regVehicleModelOther')?.value.trim() : document.getElementById('regVehicleModel')?.value,
         vehicleOwnership: getRadioValue('vehicleOwnership'),
         weeklyRent: document.getElementById('regWeeklyRent')?.value || '',
@@ -4334,12 +4340,14 @@ window.savePartialProgress = async function() {
         netSalary: document.getElementById('regNetSalary')?.value || '',
         variablePay: document.getElementById('regVariablePay')?.value || '',
         fuelType: getRadioValue('fuelType'),
-        fuelExpenseWeekly: document.getElementById('regFuelExp')?.value || '',
+        fuelExpenseWeekly: document.getElementById('regFuelExp')?.value === 'Other' ? document.getElementById('regFuelExpOther')?.value.trim() : document.getElementById('regFuelExp')?.value || '',
+        evBatteryCost: document.getElementById('regEvBatteryCost')?.value === 'Other' ? document.getElementById('evBatteryCostOther')?.value.trim() : document.getElementById('regEvBatteryCost')?.value || '',
+        evMaintCost: document.getElementById('regEvMaintCost')?.value === 'Other' ? document.getElementById('evMaintCostOther')?.value.trim() : document.getElementById('regEvMaintCost')?.value || '',
         fuelMethod: getRadioValue('fuelMethod') === 'Other' ? document.getElementById('regFuelMethodOther')?.value.trim() : getRadioValue('fuelMethod'),
         maintenanceTyre: document.getElementById('regMaintTyre')?.value || '',
         maintenanceOil: document.getElementById('regMaintOil')?.value || '',
         maintenanceService: document.getElementById('regMaintService')?.value || '',
-        maintenanceExpenseMonthly: document.getElementById('regMaintExp')?.value || '',
+        maintenanceExpenseMonthly: document.getElementById('regMaintExp')?.value === 'Other' ? document.getElementById('regMaintExpOther')?.value.trim() : document.getElementById('regMaintExp')?.value || '',
         maintPayServicing: getRadioValue('maintPayServicing'),
         maintPayPuncture: getRadioValue('maintPayPuncture'),
         maintPayWear: getRadioValue('maintPayWear'),
@@ -4356,6 +4364,8 @@ window.savePartialProgress = async function() {
         companyMaintPay: getRadioValue('companyMaintPay'),
         companyInsurance: getRadioValue('companyInsurance'),
         companyDamagePay: getRadioValue('companyDamagePay'),
+        majorRepairs: getRadioValue('majorRepairs'),
+        majorRepairCost: document.getElementById('regMajorRepairCost')?.value === 'Other' ? document.getElementById('regMajorRepairCostOther')?.value.trim() : document.getElementById('regMajorRepairCost')?.value || '',
         companyAccidentPay: getRadioValue('companyAccidentPay'),
         challenges: getCheckedValuesWithOther('challenges', 'regChallengesOther'),
         evChallenges: getCheckedValuesWithOther('evChallenges', 'regEvChallengesOther'),

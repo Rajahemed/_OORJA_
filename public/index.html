@@ -1372,13 +1372,13 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <label data-i18n="label_gender">Gender <span style="color: var(--danger-color, #ef4444);">*</span></label>
                                         <div style="display:flex; gap:1rem; margin-top:0.5rem; align-items:center;">
                                             <label style="display:flex; align-items:center; gap:0.5rem; font-weight:normal; font-size:1rem;">
-                                                <input type="radio" name="regGender" value="Male" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);" required> <span data-i18n="opt_male">Male</span>
+                                                <input type="radio" name="regGender" value="Male" onchange="toggleOtherRadio(this, 'regGenderOther')" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);" required> <span data-i18n="opt_male">Male</span>
                                             </label>
                                             <label style="display:flex; align-items:center; gap:0.5rem; font-weight:normal; font-size:1rem;">
-                                                <input type="radio" name="regGender" value="Female" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);" required> <span data-i18n="opt_female">Female</span>
+                                                <input type="radio" name="regGender" value="Female" onchange="toggleOtherRadio(this, 'regGenderOther')" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);" required> <span data-i18n="opt_female">Female</span>
                                             </label>
                                             <label style="display:flex; align-items:center; gap:0.5rem; font-weight:normal; font-size:1rem;">
-                                                <input type="radio" name="regGender" value="Other" onchange="toggleGenderOther()" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);" required> <span data-i18n="opt_other">Other</span>
+                                                <input type="radio" name="regGender" value="Other" onchange="toggleOtherRadio(this, 'regGenderOther')" onblur="window.savePartialProgress && window.savePartialProgress()" style="transform: scale(1.5);" required> <span data-i18n="opt_other">Other</span>
                                             </label>
                                         </div>
                                         <input type="text" id="regGenderOther" class="form-control" placeholder="Please specify gender" style="display:none; margin-top:0.5rem;" onblur="window.savePartialProgress && window.savePartialProgress()">
@@ -1648,7 +1648,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     
                                     <div id="bikeSpeedFields" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
                                         <div class="form-group" style="margin-bottom:0;">
-                                            <label>Vehicle Speed Classification <span style="color: var(--danger-color, #ef4444);">*</span></label>
+                                            <label>Vehicle Speed Classification</label>
                                             <div class="radio-group inline" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
                                                 <label class="radio-item"><input type="radio" name="bikeSpeed" required="" value="Slow (up to 25km/h)"> 🐢 Slow (up to 25km/h)</label>
                                                 <label class="radio-item"><input type="radio" name="bikeSpeed" required="" value="High Speed (above 25km/h)"> 🚀 High Speed (above 25km/h)</label>
@@ -1771,11 +1771,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                                 <div class="radio-group inline"><label class="radio-item"><input type="radio" name="rentTyreInspect" id="rentTyreInspectYes" required="" value="Yes" aria-label="rentTyreInspect"> Yes</label><label class="radio-item"><input type="radio" name="rentTyreInspect" id="rentTyreInspectNo" required="" value="No" aria-label="rentTyreInspect"> No</label></div>
                                             </div>
                                             <div class="form-group">
-                                                <label data-i18n="lbl_maint_rent_4">2. Did you check the lights and indicators?</label>
-                                                <div class="radio-group inline"><label class="radio-item"><input type="radio" name="rentLightsInspect" id="rentLightsInspectYes" required="" value="Yes" aria-label="rentLightsInspect"> Yes</label><label class="radio-item"><input type="radio" name="rentLightsInspect" id="rentLightsInspectNo" required="" value="No" aria-label="rentLightsInspect"> No</label></div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label data-i18n="lbl_maint_rent_6">3. If the vehicle meets with an accident, who covers the repair expenses?</label>
+                                                <label data-i18n="lbl_maint_rent_6">2. If the vehicle meets with an accident, who covers the repair expenses?</label>
                                                 <div class="radio-group inline"><label class="radio-item"><input type="radio" name="maintPayAccident" required="" value="Rental Company" aria-label="maintPayAccident"> Rental Company</label><label class="radio-item"><input type="radio" name="maintPayAccident" required="" value="Insurance" aria-label="maintPayAccident"> Insurance</label><label class="radio-item"><input type="radio" name="maintPayAccident" required="" value="Rider" aria-label="maintPayAccident"> Rider</label><label class="radio-item"><input type="radio" name="maintPayAccident" required="" value="Shared" aria-label="maintPayAccident"> Shared</label></div>
                                             </div>
 

@@ -1,4 +1,4 @@
-// Reusable tracking loader
+﻿// Reusable tracking loader
 let trackingConfig = null;
 
 async function loadTrackingConfig() {
@@ -377,7 +377,7 @@ function openCookieSettings() {
         const isOpen = panel.style.display === 'block';
         panel.style.display = isOpen ? 'none' : 'block';
         const btn = document.getElementById('cookieSettingsToggle');
-        if (btn) btn.textContent = isOpen ? 'Manage ▾' : 'Manage ▴';
+        if (btn) btn.textContent = isOpen ? 'Manage â–¾' : 'Manage â–´';
     }
 }
 
@@ -454,7 +454,7 @@ function trackPageView(page) {
     }
 }
 
-// Reusable Global event tracker — call this from anywhere in app.js
+// Reusable Global event tracker â€” call this from anywhere in app.js
 function trackEvent(eventName, params) {
     if (!analyticsConsent) return;
     
@@ -618,7 +618,7 @@ async function initVisitorTracking() {
         user_agent:       navigator.userAgent
     };
 
-    // Fire and forget — silent fail so it never blocks the page
+    // Fire and forget â€” silent fail so it never blocks the page
     fetch('/api/visitor/track', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -629,6 +629,16 @@ async function initVisitorTracking() {
 // ============================================================
 // LEAD CAPTURE MODAL
 // ============================================================
+window.closeLeadModal = function closeLeadModal(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const modal = document.getElementById('leadCaptureModal');
+    if (modal) modal.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
 function openLeadModal() {
     const modal = document.getElementById('leadCaptureModal');
     if (modal) {
@@ -866,16 +876,16 @@ async function loadEmailLeads() {
             const getStatus = (dayIndex) => {
                 // campaigns are ordered by delay_days: 0=day0, 1=day7, 2=day15
                 const log = emails[dayIndex];
-                if (!log) return `<span class="lead-status-badge pending">—</span>`;
+                if (!log) return `<span class="lead-status-badge pending">â€”</span>`;
                 const cls = log.status === 'sent' ? 'sent' : log.status === 'failed' ? 'failed' : log.status === 'skipped' ? 'skipped' : 'pending';
-                const icons = { sent: '✓', failed: '✗', pending: '⏳', skipped: '—' };
+                const icons = { sent: 'âœ“', failed: 'âœ—', pending: 'â³', skipped: 'â€”' };
                 return `<span class="lead-status-badge ${cls}">${icons[cls] || '?'} ${log.status}</span>`;
             };
-            const date = lead.created_at ? new Date(lead.created_at).toLocaleDateString('en-IN') : '—';
+            const date = lead.created_at ? new Date(lead.created_at).toLocaleDateString('en-IN') : 'â€”';
             return `<tr>
-                <td>${lead.full_name || '—'}</td>
-                <td style="font-size:0.85rem;">${lead.email || '—'}</td>
-                <td>${lead.phone || '—'}</td>
+                <td>${lead.full_name || 'â€”'}</td>
+                <td style="font-size:0.85rem;">${lead.email || 'â€”'}</td>
+                <td>${lead.phone || 'â€”'}</td>
                 <td><small style="background:rgba(108,71,255,0.1);padding:2px 8px;border-radius:50px;color:#a78bfa;">${lead.source || 'website'}</small></td>
                 <td>${getStatus(0)}</td>
                 <td>${getStatus(1)}</td>
@@ -1315,7 +1325,7 @@ async function openDataDrilldown(type) {
         const map = L.map('evMap').setView([12.9716, 77.5946], 12);
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '┬⌐ OpenStreetMap'
+            attribution: 'â”¬âŒ OpenStreetMap'
         }).addTo(map);
         
         const stations = [
@@ -1459,7 +1469,7 @@ async function openDataDrilldown(type) {
         const ogTitle = document.querySelector('meta[property="og:title"]');
         if (ogTitle) ogTitle.content = titleStr;
 
-        // Score page is public — no login check
+        // Score page is public â€” no login check
         if (activeTab === 'admin' && !(sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt'))) {
             activeTab = 'admin-login';
             checkAdminExists();
@@ -1748,7 +1758,7 @@ async function openDataDrilldown(type) {
                         isValid = false;
                         if (!firstErrorMessage) firstErrorMessage = 'Please select your Vehicle Type.';
                         if (!firstInvalidField) firstInvalidField = group;
-                        sec.querySelectorAll('input[name="vehicleType"]').forEach(r => r.onchange = () => { group.style.border = ''; group.style.padding = ''; });
+                        sec.querySelectorAll('input[name="vehicleType"]').forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                     }
                 } else if (vt.value === 'Other' && !document.getElementById('regVehicleTypeOther').value.trim()) {
                     setInvalid(document.getElementById('regVehicleTypeOther'));
@@ -1771,7 +1781,7 @@ async function openDataDrilldown(type) {
                         isValid = false;
                         if (!firstErrorMessage) firstErrorMessage = 'Please select your Fuel/Charge Method.';
                         if (!firstInvalidField) firstInvalidField = group;
-                        sec.querySelectorAll('input[name="fuelMethod"]').forEach(r => r.onchange = () => { group.style.border = ''; group.style.padding = ''; });
+                        sec.querySelectorAll('input[name="fuelMethod"]').forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                     }
                 } else if (fm.value === 'Other' && !document.getElementById('regFuelMethodOther').value.trim()) {
                     setInvalid(document.getElementById('regFuelMethodOther'));
@@ -1798,9 +1808,9 @@ async function openDataDrilldown(type) {
                                 group.style.padding = '0.5rem';
                                 group.style.borderRadius = 'var(--border-radius-md)';
                                 isValid = false;
-                                if (!firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_challenges') : 'Please select at least one Challenge you face on the road.';
+                                if (!firstErrorMessage) firstErrorMessage = 'Please select at least one Challenge you face on the road.';
                                 if (!firstInvalidField) firstInvalidField = group;
-                                checkboxes.forEach(cb => cb.onchange = () => { group.style.border = ''; group.style.padding = ''; });
+                                checkboxes.forEach(cb => cb.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                             }
                         }
                     }
@@ -1821,9 +1831,9 @@ async function openDataDrilldown(type) {
                                 group.style.padding = '0.5rem';
                                 group.style.borderRadius = 'var(--border-radius-md)';
                                 isValid = false;
-                                if (!firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_safety') : `Please answer all questions in the Insurance & Safety section.`;
+                                if (!firstErrorMessage) firstErrorMessage = `Please answer all questions in the Insurance & Safety section.`;
                                 if (!firstInvalidField) firstInvalidField = group;
-                                radios.forEach(r => r.onchange = () => { group.style.border = ''; group.style.padding = ''; });
+                                radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                             }
                         }
                     }
@@ -1842,7 +1852,7 @@ async function openDataDrilldown(type) {
                             isValid = false;
                             if (!firstErrorMessage) firstErrorMessage = 'Please answer if you are open to using EVs.';
                             if (!firstInvalidField) firstInvalidField = group;
-                            radios.forEach(r => r.onchange = () => { group.style.border = ''; group.style.padding = ''; });
+                            radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                         }
                     }
                 } else if (openEVRadio.value === 'Yes') {
@@ -1856,9 +1866,9 @@ async function openDataDrilldown(type) {
                                 group.style.padding = '0.5rem';
                                 group.style.borderRadius = 'var(--border-radius-md)';
                                 isValid = false;
-                                if (!firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_switch') : 'Please select at least one reason to switch.';
+                                if (!firstErrorMessage) firstErrorMessage = 'Please select at least one reason to switch.';
                                 if (!firstInvalidField) firstInvalidField = group;
-                                sec.querySelectorAll(`input[name="switchTriggers"]`).forEach(c => c.onchange = () => { group.style.border = ''; group.style.padding = ''; });
+                                sec.querySelectorAll(`input[name="switchTriggers"]`).forEach(c => c.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                             }
                         }
                     }
@@ -1873,9 +1883,9 @@ async function openDataDrilldown(type) {
                                 group.style.padding = '0.5rem';
                                 group.style.borderRadius = 'var(--border-radius-md)';
                                 isValid = false;
-                                if (!firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_interests') : 'Please select what you would be interested in.';
+                                if (!firstErrorMessage) firstErrorMessage = 'Please select what you would be interested in.';
                                 if (!firstInvalidField) firstInvalidField = group;
-                                sec.querySelectorAll(`input[name="interests"]`).forEach(r => r.onchange = () => { group.style.border = ''; group.style.padding = ''; });
+                                sec.querySelectorAll(`input[name="interests"]`).forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                             }
                         }
                     }
@@ -1897,7 +1907,7 @@ async function openDataDrilldown(type) {
                                 isValid = false;
                                 if (!firstErrorMessage) firstErrorMessage = 'Please specify if you were referred by another rider.';
                                 if (!firstInvalidField) firstInvalidField = group;
-                                radios.forEach(r => r.onchange = () => { group.style.border = ''; group.style.padding = ''; });
+                                radios.forEach(r => r.addEventListener('change', () => { group.style.border = ''; group.style.padding = ''; }));
                             }
                         }
                     } else if (sec.querySelector(`input[name="referredBy"]:checked`).value === 'yes' && !document.getElementById('regReferralCode').value.trim()) {
@@ -1929,15 +1939,15 @@ async function openDataDrilldown(type) {
                           cbGroup.style.borderRadius = 'var(--border-radius-md)';
                           
                           const cbs = cbGroup.querySelectorAll('input[type="checkbox"]');
-                          cbs.forEach(cb => cb.onchange = () => { 
+                          cbs.forEach(cb => cb.addEventListener('change', () => { 
                               insContainer.querySelectorAll('.checkbox-group').forEach(g => {
                                   g.style.border = ''; g.style.padding = '';
                               });
-                          });
+                          }));
                       }
                   });
                   isValid = false;
-                  if (typeof firstErrorMessage !== 'undefined' && !firstErrorMessage) firstErrorMessage = typeof i18next !== 'undefined' && i18next.t ? i18next.t('val_err_ins') : 'Please select at least one insurance option or None of the Above.';
+                  if (typeof firstErrorMessage !== 'undefined' && !firstErrorMessage) firstErrorMessage = 'Please select at least one insurance option or None of the Above.';
                   if (typeof firstInvalidField !== 'undefined' && !firstInvalidField) firstInvalidField = insContainer;
               }
           }
@@ -2454,6 +2464,7 @@ async function openDataDrilldown(type) {
 
     function toggleOtherRadio(input, targetId) {
         const el = document.getElementById(targetId);
+        if (!el) return;
         if(input.value === 'Other' && input.checked) {
             el.style.display = 'block';
             setTimeout(() => el.focus(), 50);
@@ -2464,6 +2475,7 @@ async function openDataDrilldown(type) {
 
     function toggleOtherCheckbox(input, targetId) {
         const el = document.getElementById(targetId);
+        if (!el) return;
         if(input.checked) {
             el.style.display = 'block';
             setTimeout(() => el.focus(), 50);
@@ -2687,7 +2699,7 @@ async function openDataDrilldown(type) {
             window.updateBikeSpeedVisibility();
         }
     };
-
+        
     window.updateBikeSpeedVisibility = function() {
         const bikeSpeedFields = document.getElementById('bikeSpeedFields');
         if (!bikeSpeedFields) return;
@@ -2945,7 +2957,7 @@ function submitRegistration() {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
 
-        // Always pick up the referral code — either from hidden input (auto-filled via link)
+        // Always pick up the referral code â€” either from hidden input (auto-filled via link)
         // or from the manual "Yes" radio selection, or from localStorage
         const hiddenCodeEl = document.getElementById('regReferralCode');
         const hiddenCode = hiddenCodeEl ? hiddenCodeEl.value.trim().toUpperCase() : '';
@@ -2972,6 +2984,7 @@ function submitRegistration() {
             experienceYears: exp,
             password: '',
             vehicleType: getRadioValue('vehicleType'),
+            bikeSpeed: getRadioValue('bikeSpeed'),
             vehicleModel: document.getElementById('regVehicleModel')?.value === 'Other' ? document.getElementById('regVehicleModelOther')?.value.trim() : document.getElementById('regVehicleModel')?.value,
             vehicleOwnership: getRadioValue('vehicleOwnership'),
             weeklyRent: document.getElementById('regWeeklyRent')?.value || '',
@@ -2982,12 +2995,14 @@ function submitRegistration() {
             netSalary: document.getElementById('regNetSalary')?.value || '',
             variablePay: document.getElementById('regVariablePay')?.value || '',
             fuelType: getRadioValue('fuelType'),
-            fuelExpenseWeekly: document.getElementById('regFuelExp')?.value || '',
+            fuelExpenseWeekly: document.getElementById('regFuelExp')?.value === 'Other' ? document.getElementById('regFuelExpOther')?.value.trim() : document.getElementById('regFuelExp')?.value || '',
+            evBatteryCost: document.getElementById('regEvBatteryCost')?.value === 'Other' ? document.getElementById('evBatteryCostOther')?.value.trim() : document.getElementById('regEvBatteryCost')?.value || '',
+            evMaintCost: document.getElementById('regEvMaintCost')?.value === 'Other' ? document.getElementById('evMaintCostOther')?.value.trim() : document.getElementById('regEvMaintCost')?.value || '',
             fuelMethod: getRadioValue('fuelMethod') === 'Other' ? document.getElementById('regFuelMethodOther')?.value.trim() : getRadioValue('fuelMethod'),
             maintenanceTyre: document.getElementById('regMaintTyre')?.value || '',
             maintenanceOil: document.getElementById('regMaintOil')?.value || '',
             maintenanceService: document.getElementById('regMaintService')?.value || '',
-            maintenanceExpenseMonthly: document.getElementById('regMaintExp')?.value || '',
+            maintenanceExpenseMonthly: document.getElementById('regMaintExp')?.value === 'Other' ? document.getElementById('regMaintExpOther')?.value.trim() : document.getElementById('regMaintExp')?.value || '',
             maintPayServicing: getRadioValue('maintPayServicing'),
             maintPayPuncture: getRadioValue('maintPayPuncture'),
             maintPayWear: getRadioValue('maintPayWear'),
@@ -3006,7 +3021,7 @@ function submitRegistration() {
             companyDamagePay: getRadioValue('companyDamagePay'),
             companyAccidentPay: getRadioValue('companyAccidentPay'),
             majorRepairs: getRadioValue('majorRepairs'),
-            majorRepairCost: document.getElementById('regMajorRepairCost')?.value || '',
+            majorRepairCost: document.getElementById('regMajorRepairCost')?.value === 'Other' ? document.getElementById('regMajorRepairCostOther')?.value.trim() : document.getElementById('regMajorRepairCost')?.value || '',
             rentChecks: Array.from(document.querySelectorAll('input[name="rentChecks"]:checked')).map(r => r.value).join(', '),
             companyPuncturePay: getRadioValue('companyPuncturePay'),
             companyWearPay: getRadioValue('companyWearPay'),
@@ -3094,7 +3109,7 @@ function submitRegistration() {
                     }
                 };
 
-                showToast((window.t ? window.t('msg_16____registration') : '🎉 Registration successful! Welcome to Road Warrior Pro!'), 'success');
+                showToast((window.t ? window.t('msg_16____registration') : 'ðŸŽ‰ Registration successful! Welcome to Road Warrior Pro!'), 'success');
             } else {
                 showToast((window.t ? window.t('msg_16_registration_fa') : 'Registration failed: ') + (result.message || result.error || 'Unknown error'), 'error');
             }
@@ -3153,21 +3168,21 @@ function submitRegistration() {
         
         let msg = '';
         if (lang === 'hi') {
-            msg = `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${code}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${code}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
         } else if (lang === 'kn') {
-            msg = `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${code}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${code}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
         } else if (lang === 'ta') {
-            msg = `Vanakkam ${fullName}! Ungal pathivu mudinthathu. Ungal referral code: ${code}.\n\nIntha link-ai matravargalukku anuppungal, avargal login/register seiyum pothu neengal points peruveergal: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Vanakkam ${fullName}! Ungal pathivu mudinthathu. Ungal referral code: ${code}.\n\nIntha link-ai matravargalukku anuppungal, avargal login/register seiyum pothu neengal points peruveergal: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
         } else if (lang === 'te') {
-            msg = `Namaskaram ${fullName}! Mee registration poorhtayyindi. Mee referral code: ${code}.\n\nEe link nu itarulaku pampandi, varu login/register ayinapudu meeru points pondutaru: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Namaskaram ${fullName}! Mee registration poorhtayyindi. Mee referral code: ${code}.\n\nEe link nu itarulaku pampandi, varu login/register ayinapudu meeru points pondutaru: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
         } else if (lang === 'mr') {
-            msg = `Namaskar ${fullName}! Tumchi nondani zali aahe. Tumcha referral code: ${code}.\n\nHi link itaranna pathwa, ani te jevha login/register kartil tevha tumhala points miltil: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Namaskar ${fullName}! Tumchi nondani zali aahe. Tumcha referral code: ${code}.\n\nHi link itaranna pathwa, ani te jevha login/register kartil tevha tumhala points miltil: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
         } else if (lang === 'gu') {
-            msg = `Namaste ${fullName}! Tamaru registration thai gayu chhe. Tamaro referral code chhe: ${code}.\n\nAa link anya loko ne moklo, ane jyare teo login/register karshe tyare tamne points malshe: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Namaste ${fullName}! Tamaru registration thai gayu chhe. Tamaro referral code chhe: ${code}.\n\nAa link anya loko ne moklo, ane jyare teo login/register karshe tyare tamne points malshe: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
         } else if (lang === 'bn') {
-            msg = `Nomoskar ${fullName}! Apnar registration somponno hoyeche. Apnar referral code holo: ${code}.\n\nEi link ti onnoder pathan, ebong tara jokhon login/register korbe tokhon apni points paben: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Nomoskar ${fullName}! Apnar registration somponno hoyeche. Apnar referral code holo: ${code}.\n\nEi link ti onnoder pathan, ebong tara jokhon login/register korbe tokhon apni points paben: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
         } else {
-            msg = `Welcome ${fullName}! You are now registered. Your referral code is ${code}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Welcome ${fullName}! You are now registered. Your referral code is ${code}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
         }
         return msg;
     }
@@ -3189,14 +3204,14 @@ function submitRegistration() {
                 const tags = (rider.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
                 result.innerHTML = `
                     <div class="score-display">
-                        <div style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:0.5rem;">Welcome back, <strong>${rider.fullName}</strong>! 🎉</div>
+                        <div style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:0.5rem;">Welcome back, <strong>${rider.fullName}</strong>! ðŸŽ‰</div>
                         <div class="score-big">${pts}</div>
                         <div style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:1rem;">Total Points</div>
                         <div style="display:flex; gap:1rem; justify-content:center; margin-bottom:1rem;">
                             <div class="stat-box" style="padding:0.75rem 1.5rem; flex:1; text-align:center;"><div style="font-size:1.5rem; font-weight:800; color:var(--primary-color);">${refs}</div><div style="font-size:0.75rem; color:var(--text-secondary);">Referrals</div></div>
                             <div class="stat-box" style="padding:0.75rem 1.5rem; flex:1; text-align:center;"><div style="font-size:1.5rem; font-weight:800; color:var(--secondary-color);">${rider.city}</div><div style="font-size:0.75rem; color:var(--text-secondary);">City</div></div>
                         </div>
-                        <div class="referral-code-badge" style="margin:0 auto; display:inline-flex;">🎫 ${code}</div>
+                        <div class="referral-code-badge" style="margin:0 auto; display:inline-flex;">ðŸŽ« ${code}</div>
                         <div style="margin-top:0.75rem;">${tags}</div>
                         <a href="#" onclick="window.shareWithImage(event, '${code}', '${rider.fullName}')" class="btn btn-success w-100" style="background:#25D366; border-color:#25D366; margin-top:1rem;">
                             <i class="fab fa-whatsapp"></i> Share my referral code
@@ -3256,11 +3271,11 @@ function submitRegistration() {
         const top10 = riders.slice(0, 10);
         tbody.innerHTML = top10.map((r, idx) => {
             const rn = idx + 1;
-            const medal = rn === 1 ? '🥇' : rn === 2 ? '🥈' : rn === 3 ? '🥉' : rn;
+            const medal = rn === 1 ? 'ðŸ¥‡' : rn === 2 ? 'ðŸ¥ˆ' : rn === 3 ? 'ðŸ¥‰' : rn;
             const isSelf = currentUser && r.id === currentUser.id;
             const rowStyle = isSelf ? `style="background:rgba(59, 130, 246, 0.03); font-weight:bold; border-left:3px solid var(--primary-color);"` : '';
         const tags = (r.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
-            return `<tr ${rowStyle}><td>${medal}</td><td>${r.fullName}${isSelf ? ` <strong>(You)</strong>` : ''}</td><td>${r.city}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td>${tags || '—'}</td></tr>`;
+            return `<tr ${rowStyle}><td>${medal}</td><td>${r.fullName}${isSelf ? ` <strong>(You)</strong>` : ''}</td><td>${r.city}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td>${tags || 'â€”'}</td></tr>`;
         }).join('');
         
         // Also update the Top Riders slider on the home page if it's there
@@ -3289,7 +3304,7 @@ function submitRegistration() {
             const platform = (rider.platform && rider.platform !== 'Other') ? rider.platform : 'Delivery';
             return `
                 <div style="flex: 0 0 100%; width: 100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 0 2rem; box-sizing: border-box;">
-                    <div style="font-size:4rem; margin-bottom:15px; text-shadow: 0 4px 15px rgba(249,115,22,0.4);">🏆</div>
+                    <div style="font-size:4rem; margin-bottom:15px; text-shadow: 0 4px 15px rgba(249,115,22,0.4);">ðŸ†</div>
                     <h3 style="font-family:'Outfit',sans-serif; color:var(--text-primary); font-size:2rem; margin-bottom:10px;">#${rank} Ranked Rider</h3>
                     <div style="font-size:2.5rem; font-weight:900; color:var(--primary-color); margin-bottom:20px; letter-spacing: 1px;">${rider.fullName}</div>
                     <div style="display:flex; justify-content:center; gap:30px; font-size:1.25rem; color:var(--text-secondary); margin-bottom:20px; flex-wrap: wrap;">
@@ -3332,10 +3347,10 @@ function submitRegistration() {
         const del = currentUser ? (currentUser.totalDeliveries || 0) : 0;
         const refs = currentUser ? (currentUser.referrals || 0) : 0;
         const achievements = [
-            { title: 'Referral Starter', icon: '🚀', desc: 'Refer your first rider', unlocked: refs >= 1 },
-            { title: 'Referral Master', icon: '⭐', desc: 'Refer 10 riders', unlocked: refs >= 10 },
-            { title: 'Referral Champion', icon: '💯', desc: 'Refer 25 riders', unlocked: refs >= 25 },
-            { title: 'Referral King', icon: '🌟', desc: 'Refer 50 riders', unlocked: refs >= 50 }
+            { title: 'Referral Starter', icon: 'ðŸš€', desc: 'Refer your first rider', unlocked: refs >= 1 },
+            { title: 'Referral Master', icon: 'â­', desc: 'Refer 10 riders', unlocked: refs >= 10 },
+            { title: 'Referral Champion', icon: 'ðŸ’¯', desc: 'Refer 25 riders', unlocked: refs >= 25 },
+            { title: 'Referral King', icon: 'ðŸŒŸ', desc: 'Refer 50 riders', unlocked: refs >= 50 }
         ];
         grid.innerHTML = achievements.map(a => `
             <div style="text-align:center; padding:1.5rem 1rem; border:1px solid var(--card-border); border-radius:var(--border-radius-md); background:rgba(255,255,255,0.01); ${a.unlocked ? '' : 'filter:grayscale(0.8); opacity:0.5;'}">
@@ -4090,13 +4105,7 @@ function submitRegistration() {
                     return r;
                 });
                 document.getElementById('adminTotalRiders').textContent = allAdminRiders.length;
-                document.getElementById('adminEVRiders').textContent = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric') || (r.fuelType || '').toLowerCase().includes('electric')).length;
-                document.getElementById('adminPetrolRiders').textContent = allAdminRiders.filter(r => (r.fuelType || '').toLowerCase().includes('petrol')).length;
-                document.getElementById('adminDieselRiders').textContent = allAdminRiders.filter(r => (r.fuelType || '').toLowerCase().includes('diesel')).length;
-                document.getElementById('adminCngLpgRiders').textContent = allAdminRiders.filter(r => {
-                    const ft = (r.fuelType || '').toLowerCase();
-                    return ft.includes('cng') || ft.includes('lpg');
-                }).length;
+                document.getElementById('adminEVRiders').textContent = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric')).length;
                 document.getElementById('adminHotLeads').textContent = allAdminRiders.filter(r => r.openToEV === 'Yes' || r.openToEV === 'Need more information' || (r.tags || []).includes('Hot EV Lead')).length;
                 document.getElementById('adminInsLeads').textContent = allAdminRiders.filter(r => r.hasAccidentalInsurance === 'No' || r.hasAccidentalInsurance === 'Not sure' || r.hasHealthInsurance === 'No' || r.hasHealthInsurance === 'Not sure' || (r.tags || []).includes('Insurance Lead')).length;
 
@@ -4117,18 +4126,6 @@ function submitRegistration() {
             filterAdminRiders();
         } else if (type === 'evRiders') {
             document.getElementById('adminLeadFilter').value = 'EV_RIDERS';
-            switchAdminTab('allRiders');
-            filterAdminRiders();
-        } else if (type === 'petrolRiders') {
-            document.getElementById('adminLeadFilter').value = 'PETROL_RIDERS';
-            switchAdminTab('allRiders');
-            filterAdminRiders();
-        } else if (type === 'dieselRiders') {
-            document.getElementById('adminLeadFilter').value = 'DIESEL_RIDERS';
-            switchAdminTab('allRiders');
-            filterAdminRiders();
-        } else if (type === 'cngLpgRiders') {
-            document.getElementById('adminLeadFilter').value = 'CNG_LPG_RIDERS';
             switchAdminTab('allRiders');
             filterAdminRiders();
         } else if (type === 'hotLeads') {
@@ -4152,16 +4149,7 @@ function submitRegistration() {
         if (val === 'EV_SALE_LEAD') {
             filtered = allAdminRiders.filter(r => r.openToEV === 'Yes' || r.openToEV === 'Need more information' || (r.tags || []).includes('Hot EV Lead'));
         } else if (val === 'EV_RIDERS') {
-            filtered = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric') || (r.fuelType || '').toLowerCase().includes('electric'));
-        } else if (val === 'PETROL_RIDERS') {
-            filtered = allAdminRiders.filter(r => (r.fuelType || '').toLowerCase().includes('petrol'));
-        } else if (val === 'DIESEL_RIDERS') {
-            filtered = allAdminRiders.filter(r => (r.fuelType || '').toLowerCase().includes('diesel'));
-        } else if (val === 'CNG_LPG_RIDERS') {
-            filtered = allAdminRiders.filter(r => {
-                const ft = (r.fuelType || '').toLowerCase();
-                return ft.includes('cng') || ft.includes('lpg');
-            });
+            filtered = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric'));
         } else if (val === 'PERSONAL_INSURANCE_LEAD' || val === 'BIKE_INSURANCE_LEAD') {
             filtered = allAdminRiders.filter(r => r.hasAccidentalInsurance === 'No' || r.hasAccidentalInsurance === 'Not sure' || r.hasHealthInsurance === 'No' || r.hasHealthInsurance === 'Not sure' || (r.tags || []).includes('Insurance Lead'));
         } else if (val === 'STATUS_LEAD') {
@@ -4220,7 +4208,7 @@ function submitRegistration() {
         tbody.innerHTML = recentRiders.map(r => {
             const tags = (r.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
             const locationLink = (r.latitude && r.longitude) ? `<a href="https://www.google.com/maps?q=${r.latitude},${r.longitude}" target="_blank" style="color: #10b981; font-weight: 600; text-decoration: none;"><i class="fas fa-map-marker-alt"></i> Map (${Math.round(r.location_accuracy || 0)}m)</a>` : '<span class="text-muted">No GPS</span>';
-            return `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || '—'}</td><td>${r.vehicleType || '—'}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td>${locationLink}</td><td>${tags || '—'}</td></tr>`;
+            return `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || 'â€”'}</td><td>${r.vehicleType || 'â€”'}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td>${locationLink}</td><td>${tags || 'â€”'}</td></tr>`;
         }).join('');
     }
 
@@ -4228,7 +4216,7 @@ function submitRegistration() {
         fetch('/api/admin/leads/ev', { headers: getAdminAuthHeaders() }).then(r => r.json()).then(result => {
             const tbody = document.getElementById('evLeadsTableBody');
             if (result.success && result.data.length) {
-                tbody.innerHTML = result.data.map(r => `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || '—'}</td><td>${r.vehicleType || '—'}</td><td><span class="tag-pill tag-hot-ev">${r.openToEV || '—'}</span></td><td>${(r.switchTriggers || []).join(', ') || '—'}</td></tr>`).join('');
+                tbody.innerHTML = result.data.map(r => `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || 'â€”'}</td><td>${r.vehicleType || 'â€”'}</td><td><span class="tag-pill tag-hot-ev">${r.openToEV || 'â€”'}</span></td><td>${(r.switchTriggers || []).join(', ') || 'â€”'}</td></tr>`).join('');
             } else tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No EV leads found</td></tr>';
         });
     }
@@ -4238,12 +4226,12 @@ function submitRegistration() {
             const tbody = document.getElementById('insLeadsTableBody');
             if (result.success && result.data.length) {
                 tbody.innerHTML = result.data.map(r => {
-                    const ac = r.hasAccidentalInsurance || '—';
-                    const hc = r.hasHealthInsurance || '—';
-                    const pp = r.paidOutofPocketAccident || '—';
+                    const ac = r.hasAccidentalInsurance || 'â€”';
+                    const hc = r.hasHealthInsurance || 'â€”';
+                    const pp = r.paidOutofPocketAccident || 'â€”';
                     const acBadge = ac === 'No' ? `<span class="tag-pill tag-insurance">${ac}</span>` : `<span style="color:var(--text-secondary)">${ac}</span>`;
                     const hcBadge = hc === 'No' ? `<span class="tag-pill tag-insurance">${hc}</span>` : `<span style="color:var(--text-secondary)">${hc}</span>`;
-                    return `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || '—'}</td><td>${acBadge}</td><td>${hcBadge}</td><td>${pp === 'Yes' ? '<span class="tag-pill tag-insurance">Yes</span>' : pp}</td></tr>`;
+                    return `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || 'â€”'}</td><td>${acBadge}</td><td>${hcBadge}</td><td>${pp === 'Yes' ? '<span class="tag-pill tag-insurance">Yes</span>' : pp}</td></tr>`;
                 }).join('');
             } else tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No insurance leads found</td></tr>';
         });
@@ -4256,10 +4244,10 @@ function submitRegistration() {
                 const tbody = document.getElementById('topReferrersTableBody');
                 tbody.innerHTML = sorted.map((r, i) => {
                     const rn = i + 1;
-                    const medal = rn === 1 ? '🥇' : rn === 2 ? '🥈' : rn === 3 ? '🥉' : rn;
+                    const medal = rn === 1 ? 'ðŸ¥‡' : rn === 2 ? 'ðŸ¥ˆ' : rn === 3 ? 'ðŸ¥‰' : rn;
                     const ms = [];
-                    if (r.milestone10) ms.push('🏅 10'); if (r.milestone25) ms.push('🏆 25'); if (r.milestone50) ms.push('🎰 50');
-                    return `<tr><td>${medal}</td><td>${r.fullName}</td><td>${r.city}</td><td style="font-family:monospace; color:var(--primary-color);">${r.referralCode || '—'}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td>${ms.join(' ') || '—'}</td></tr>`;
+                    if (r.milestone10) ms.push('ðŸ… 10'); if (r.milestone25) ms.push('ðŸ† 25'); if (r.milestone50) ms.push('ðŸŽ° 50');
+                    return `<tr><td>${medal}</td><td>${r.fullName}</td><td>${r.city}</td><td style="font-family:monospace; color:var(--primary-color);">${r.referralCode || 'â€”'}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td>${ms.join(' ') || 'â€”'}</td></tr>`;
                 }).join('');
             }
         });
@@ -4372,7 +4360,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Update title to be more urgent for exit intent
                 const title = document.getElementById('leadModalTitle');
                 if (title) {
-                    title.innerHTML = '⚠️ Wait! Don\'t leave without your EV Consultation!';
+                    title.innerHTML = 'âš ï¸ Wait! Don\'t leave without your EV Consultation!';
                 }
                 
                 // Show the modal
@@ -4574,6 +4562,7 @@ window.savePartialProgress = async function() {
         deliveryPlatform: platform,
         experienceYears: exp,
         vehicleType: getRadioValue('vehicleType'),
+        bikeSpeed: getRadioValue('bikeSpeed'),
         vehicleModel: document.getElementById('regVehicleModel')?.value === 'Other' ? document.getElementById('regVehicleModelOther')?.value.trim() : document.getElementById('regVehicleModel')?.value,
         vehicleOwnership: getRadioValue('vehicleOwnership'),
         weeklyRent: document.getElementById('regWeeklyRent')?.value || '',
@@ -4584,12 +4573,14 @@ window.savePartialProgress = async function() {
         netSalary: document.getElementById('regNetSalary')?.value || '',
         variablePay: document.getElementById('regVariablePay')?.value || '',
         fuelType: getRadioValue('fuelType'),
-        fuelExpenseWeekly: document.getElementById('regFuelExp')?.value || '',
+        fuelExpenseWeekly: document.getElementById('regFuelExp')?.value === 'Other' ? document.getElementById('regFuelExpOther')?.value.trim() : document.getElementById('regFuelExp')?.value || '',
+        evBatteryCost: document.getElementById('regEvBatteryCost')?.value === 'Other' ? document.getElementById('evBatteryCostOther')?.value.trim() : document.getElementById('regEvBatteryCost')?.value || '',
+        evMaintCost: document.getElementById('regEvMaintCost')?.value === 'Other' ? document.getElementById('evMaintCostOther')?.value.trim() : document.getElementById('regEvMaintCost')?.value || '',
         fuelMethod: getRadioValue('fuelMethod') === 'Other' ? document.getElementById('regFuelMethodOther')?.value.trim() : getRadioValue('fuelMethod'),
         maintenanceTyre: document.getElementById('regMaintTyre')?.value || '',
         maintenanceOil: document.getElementById('regMaintOil')?.value || '',
         maintenanceService: document.getElementById('regMaintService')?.value || '',
-        maintenanceExpenseMonthly: document.getElementById('regMaintExp')?.value || '',
+        maintenanceExpenseMonthly: document.getElementById('regMaintExp')?.value === 'Other' ? document.getElementById('regMaintExpOther')?.value.trim() : document.getElementById('regMaintExp')?.value || '',
         maintPayServicing: getRadioValue('maintPayServicing'),
         maintPayPuncture: getRadioValue('maintPayPuncture'),
         maintPayWear: getRadioValue('maintPayWear'),
@@ -4606,6 +4597,8 @@ window.savePartialProgress = async function() {
         companyMaintPay: getRadioValue('companyMaintPay'),
         companyInsurance: getRadioValue('companyInsurance'),
         companyDamagePay: getRadioValue('companyDamagePay'),
+        majorRepairs: getRadioValue('majorRepairs'),
+        majorRepairCost: document.getElementById('regMajorRepairCost')?.value === 'Other' ? document.getElementById('regMajorRepairCostOther')?.value.trim() : document.getElementById('regMajorRepairCost')?.value || '',
         companyAccidentPay: getRadioValue('companyAccidentPay'),
         challenges: getCheckedValuesWithOther('challenges', 'regChallengesOther'),
         evChallenges: getCheckedValuesWithOther('evChallenges', 'regEvChallengesOther'),
@@ -4743,7 +4736,7 @@ window.nextStep = async function() {
 
     let firstInvalid = null;
     inputs.forEach(input => {
-        if ((input.offsetParent === null && input.type !== 'hidden') || input?.closest?.('.hidden-section')) {
+        if (input.offsetParent === null || input?.closest?.('.hidden-section')) {
             return;
         }
 
@@ -4804,9 +4797,9 @@ window.nextStep = async function() {
                           isValid = false;
                           if (typeof firstInvalid !== 'undefined' && !firstInvalid) firstInvalid = cbGroup;
                           const cbs = cbGroup.querySelectorAll('input[type="checkbox"]');
-                          cbs.forEach(cb => cb.onchange = () => { 
+                          cbs.forEach(cb => cb.addEventListener('change', () => { 
                               cbGroup.style.border = ''; cbGroup.style.padding = '';
-                          });
+                          }));
                       }
                   }
               });
@@ -4921,59 +4914,7 @@ window.selectPlatformPill = function(value, element) {
         var otherEl=document.getElementById('regPlatformOther');if(otherEl){otherEl.style.display='none';otherEl.required=false;otherEl.value='';}
     }    
 
-    // Update platform IDs container
-    const idsContainer = document.getElementById('platformIdsContainer');
-    if (idsContainer) {
-        Array.from(nativeSelect.options).filter(opt => opt.value !== 'Other' && opt.value !== '').forEach(opt => {
-            const platform = opt.value;
-            const groupId = `group_platformId_${platform}`;
-            let groupEl = document.getElementById(groupId);
-            
-            if (opt.selected) {
-                if (!groupEl) {
-                    groupEl = document.createElement('div');
-                    groupEl.id = groupId;
-                    groupEl.className = 'form-group';
-                    groupEl.style.marginBottom = '0.5rem';
-                    groupEl.innerHTML = `
-                        <div style="font-size: 0.85rem; margin-bottom: 0.2rem;">${
-    (function(){
-        let plat = platform;
-        let lbl = 'ID';
-        if (window.i18next && typeof window.i18next.t === 'function') {
-            let tPlat = window.i18next.t('plat_' + platform.toLowerCase());
-            let tLbl = window.i18next.t('lbl_id');
-            if (tPlat && tPlat !== 'undefined' && tPlat !== 'plat_' + platform.toLowerCase()) plat = tPlat;
-            if (tLbl && tLbl !== 'undefined' && tLbl !== 'lbl_id') lbl = tLbl;
-        }
-        if (plat === platform && window.t) {
-            let tPlat = window.t('plat_' + platform.toLowerCase());
-            if (tPlat && tPlat !== 'undefined' && tPlat !== 'plat_' + platform.toLowerCase()) plat = tPlat;
-        }
-        if (lbl === 'ID' && window.t) {
-            let tLbl = window.t('lbl_id');
-            if (tLbl && tLbl !== 'undefined' && tLbl !== 'lbl_id') lbl = tLbl;
-        }
-        return plat + ' ' + lbl;
-    })()
-}</div>
-                        <input type="text" class="form-control" name="platformId_${platform}" id="platformId_${platform}">
-                    `;
-                    idsContainer.appendChild(groupEl);
-                } else {
-                    groupEl.style.display = 'block';
-                }
-            } else {
-                if (groupEl) {
-                    groupEl.style.display = 'none';
-                    const inputEl = groupEl.querySelector('input');
-                    if (inputEl) {
-                        inputEl.value = '';
-                    }
-                }
-            }
-        });
-    }
+
     // Clear validation error if any
     if (nativeSelect.value) {
         nativeSelect.classList.remove('is-invalid');
@@ -5429,162 +5370,3 @@ if (originalShowProfile) {
         loadMembershipData();
     };
 }
-
-
-/* ----- BUNDLE SEPARATOR ----- */
-
-!function(){function i(i,t,o){if(!window.visitorId||!window.sessionId)return;const e={visitor_id:window.visitorId,session_id:window.sessionId,event_type:i,element_text:t||"",element_id:o||"",page:window.location.pathname+window.location.search};fetch("/api/visitor/event",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(e)}).catch(()=>{})}window._visitorIntelligenceLoaded||(window._visitorIntelligenceLoaded=!0,document.addEventListener("click",function(t){let o=t.target;for(;o&&o!==document.body;){if("A"===o.tagName||"BUTTON"===o.tagName||o.classList.contains("btn")||null!=o.onclick){let t=o.innerText||o.value||o.title||"";t=t.substring(0,50).trim();let e="click";"A"===o.tagName?e=o.href.includes("wa.me")||o.href.includes("whatsapp")?"whatsapp_click":o.href.startsWith("tel:")?"call_click":"link_click":("BUTTON"===o.tagName||o.classList.contains("btn"))&&(e="button_click"),i(e,t,o.id);break}o=o.parentNode}}),document.addEventListener("submit",function(t){let o=t.target;i("form_submit","Form Submitted",o.id||o.name||"unknown_form")}),window.requestVisitorGeolocation=function(){navigator.geolocation?navigator.geolocation.getCurrentPosition(function(i){const t=i.coords.latitude,o=i.coords.longitude;window.visitorId&&fetch("/api/visitor/location",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({visitor_id:window.visitorId,latitude:t,longitude:o,accuracy:i.coords.accuracy})}).catch(()=>{})},function(i){console.warn("Geolocation denied or error:",i.message)},{enableHighAccuracy:!0,timeout:5e3,maximumAge:0}):console.warn("Geolocation is not supported by this browser.")},window.logVisitorEvent=i,console.log("[Intelligence] Visitor event tracking initialized."))}();
-
-/* ----- BUNDLE SEPARATOR ----- */
-
-
-        (function () {
-            'use strict';
-
-            /* ── Drawer toggle ─────────────────────────────────────── */
-            window.toggleMobileDrawer = function () {
-                var drawer = document.getElementById('mobileNavDrawer');
-                var overlay = document.getElementById('mobileNavOverlay');
-                var toggle = document.getElementById('mobileMenuToggle');
-                if (!drawer) return;
-                var isOpen = drawer.classList.contains('is-open');
-                if (isOpen) { closeMobileDrawer(); } else { openMobileDrawer(); }
-            };
-
-            window.openMobileDrawer = function () {
-                var drawer = document.getElementById('mobileNavDrawer');
-                var overlay = document.getElementById('mobileNavOverlay');
-                var toggle = document.getElementById('mobileMenuToggle');
-                if (!drawer) return;
-                drawer.classList.add('is-open');
-                overlay.classList.add('is-visible');
-                toggle && toggle.setAttribute('aria-expanded', 'true');
-                document.body.style.overflow = 'hidden';
-                /* Sync mobile lang selector with desktop one */
-                syncMobileLangSelector();
-            };
-
-            window.closeMobileDrawer = function () {
-                var drawer = document.getElementById('mobileNavDrawer');
-                var overlay = document.getElementById('mobileNavOverlay');
-                var toggle = document.getElementById('mobileMenuToggle');
-                if (!drawer) return;
-                drawer.classList.remove('is-open');
-                overlay.classList.remove('is-visible');
-                toggle && toggle.setAttribute('aria-expanded', 'false');
-                document.body.style.overflow = '';
-            };
-
-            /* ── ESC key closes drawer ─────────────────────────────── */
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') { closeMobileDrawer(); }
-            });
-
-            /* ── Sync mobile lang select value with desktop ─────────── */
-            function syncMobileLangSelector() {
-                var desktop = document.getElementById('langSelector');
-                var mobile = document.getElementById('mobileLangSelector');
-                if (desktop && mobile) { mobile.value = desktop.value; }
-            }
-
-            /* ── Patch updateAuthNavbarState to also update drawer items ─ */
-            /* We hook into the existing function via MutationObserver on the
-               desktop nav items since we cannot safely override the closed
-               IIFE without touching app.js. When a desktop li changes its
-               display, we mirror that to the corresponding mobile drawer li. */
-            function mirrorAuthState() {
-                var map = [
-                    { desktopId: 'navHome', mobileItemId: 'mobileNavHomeItem', mobileLogout: false },
-                    { desktopId: 'navScore', mobileItemId: 'mobileNavScoreItem', mobileLogout: false },
-                    { desktopId: 'navDashboard', mobileItemId: 'mobileNavDashboardItem', mobileLogout: false },
-                    { desktopId: 'navProfile', mobileItemId: 'mobileNavProfileItem', mobileLogout: false },
-                ];
-                map.forEach(function (entry) {
-                    var desktopLink = document.getElementById(entry.desktopId);
-                    var mobileItem = document.getElementById(entry.mobileItemId);
-                    if (!desktopLink || !mobileItem) return;
-                    var desktopLi = desktopLink.parentElement;
-                    var isVisible = desktopLi && desktopLi.style.display !== 'none';
-                    mobileItem.style.display = isVisible ? '' : 'none';
-                });
-
-                /* Logout item mirrors loginLogoutBtn */
-                var loginBtn = document.getElementById('loginLogoutBtn');
-                var logoutItem = document.getElementById('mobileNavLogoutItem');
-                if (loginBtn && logoutItem) {
-                    logoutItem.style.display = (loginBtn.style.display !== 'none' && loginBtn.innerHTML.includes('sign-out')) ? '' : 'none';
-                }
-            }
-
-            /* Poll lightly until the app is ready, then observe */
-            var pollInterval = setInterval(function () {
-                var navHome = document.getElementById('navHome');
-                if (navHome) {
-                    clearInterval(pollInterval);
-                    mirrorAuthState();
-                    /* MutationObserver on the desktop ul to detect show/hide */
-                    var ul = document.querySelector('.navbar-nav');
-                    if (ul && window.MutationObserver) {
-                        var observer = new MutationObserver(function (mutations) {
-                            mutations.forEach(function (m) {
-                                if (m.type === 'attributes' && m.attributeName === 'style') {
-                                    mirrorAuthState();
-                                }
-                            });
-                        });
-                        observer.observe(ul, { attributes: true, subtree: true, attributeFilter: ['style'] });
-                    }
-                    /* Also observe loginLogoutBtn for logout icon */
-                    var btn = document.getElementById('loginLogoutBtn');
-                    if (btn && window.MutationObserver) {
-                        var btnObserver = new MutationObserver(function () { mirrorAuthState(); });
-                        btnObserver.observe(btn, { attributes: true, childList: true, subtree: true, attributeFilter: ['style'] });
-                    }
-                }
-            }, 200);
-
-            /* Sync lang selector whenever drawer opens */
-            document.addEventListener('click', function (e) {
-                var toggle = document.getElementById('mobileMenuToggle');
-                if (toggle && toggle.contains(e.target)) { syncMobileLangSelector(); }
-            });
-
-            /* Keep desktop lang selector in sync when mobile one changes */
-            document.addEventListener('change', function (e) {
-                if (e.target && e.target.id === 'mobileLangSelector') {
-                    var desktop = document.getElementById('langSelector');
-                    if (desktop) { desktop.value = e.target.value; }
-                }
-                if (e.target && e.target.id === 'langSelector') {
-                    var mobile = document.getElementById('mobileLangSelector');
-                    if (mobile) { mobile.value = e.target.value; }
-                }
-            });
-        })();
-    
-
-
-
-
-    document.addEventListener('DOMContentLoaded', async () => {
-        try {
-            const res = await fetch('/api/client-config');
-            const config = await res.json();
-            if(config.VITE_TELEGRAM_LINK && !config.VITE_TELEGRAM_LINK.includes('WAITING')) {
-                const a = document.createElement('a');
-                a.id = 'telegramWidget';
-                a.href = config.VITE_TELEGRAM_LINK;
-                a.target = '_blank';
-                a.rel = 'noopener noreferrer';
-                a.style.cssText = 'position:fixed; bottom:20px; left:20px; background:#229ED9; color:white; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:1000; transition: transform 0.3s;';
-                a.innerHTML = '<i class="fab fa-telegram-plane"></i>';
-                a.onmouseover = () => a.style.transform = 'scale(1.1)';
-                a.onmouseout = () => a.style.transform = 'scale(1)';
-                document.body.appendChild(a);
-            }
-        } catch(e) {}
-    });
-    
-
-
-
