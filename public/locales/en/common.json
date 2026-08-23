@@ -469,5 +469,7 @@
     "val_err_interests": "Please select what you would be interested in.",
     "exp_lt_6": "exp_lt_6",
     "exp_6_12": "exp_6_12",
-    "exp_5_plus": "exp_5_plus"
+    "exp_5_plus": "exp_5_plus",
+    "lbl_bike_fuel_type": "lbl_bike_fuel_type",
+    "fuel_ev": "fuel_ev"
 }

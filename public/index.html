@@ -1555,7 +1555,21 @@ document.addEventListener("DOMContentLoaded", () => {
                                         </div>
                                     </div>
 
-                                    <div class="form-group">
+                                    <div class="form-group" id="fuelTypeSection" style="display:none;">
+                                        <label data-i18n="lbl_fuel_type">Fuel Type <span style="color: var(--danger-color, #ef4444);">*</span></label>
+                                        <div class="radio-group inline" id="fuelTypeGroup">
+                                            <label class="radio-item fuel-opt" data-fuel="Electric"><input type="radio" name="fuelType" required="" value="Electric" onchange="onFuelTypeChange(this.value)" aria-label="fuelType"> ⚡ <span data-i18n="fuel_electric">Electric</span></label>
+                                            <label class="radio-item fuel-opt" data-fuel="Petrol"><input type="radio" name="fuelType" required="" value="Petrol" onchange="onFuelTypeChange(this.value)" aria-label="fuelType"> ⛽ <span data-i18n="fuel_petrol">Petrol</span></label>
+                                            <label class="radio-item fuel-opt" data-fuel="Diesel"><input type="radio" name="fuelType" required="" value="Diesel" onchange="onFuelTypeChange(this.value)" aria-label="fuelType"> ⛽ <span data-i18n="fuel_diesel">Diesel</span></label>
+                                            <label class="radio-item fuel-opt" data-fuel="CNG"><input type="radio" name="fuelType" required="" value="CNG" onchange="onFuelTypeChange(this.value)" aria-label="fuelType"> 💨 <span data-i18n="fuel_cng">CNG</span></label>
+                                            <label class="radio-item fuel-opt" data-fuel="LPG"><input type="radio" name="fuelType" required="" value="LPG" onchange="onFuelTypeChange(this.value)" aria-label="fuelType"> 💨 <span data-i18n="fuel_lpg">LPG</span></label>
+                                            <label class="radio-item fuel-opt" data-fuel="CNG/LPG"><input type="radio" name="fuelType" required="" value="CNG/LPG" onchange="onFuelTypeChange(this.value)" aria-label="fuelType"> 💨 <span data-i18n="fuel_cng_lpg">CNG/LPG</span></label>
+                                        </div>
+                                        <div id="fuelTypeValMsg" style="color:var(--danger-color); display:none; margin-top:0.5rem; font-size:0.875rem;">
+                                            <i class="fas fa-exclamation-triangle"></i> <span data-i18n="val_fuel_req">Please select a valid fuel type.</span></div>
+                                    </div>
+
+                                    <div class="form-group" id="vehicleBrandModelGroup" style="display:none;">
                                         <label for="regVehicleModel" data-i18n="label_vehicle_model">Vehicle Brand &amp;
                                             Model </label>
                                         <select required="" id="regVehicleModel" class="form-control" onchange="handleOtherDropdown(this, 'regVehicleModelOther')">
@@ -1632,19 +1646,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <div class="section-title-badge" style="align-items: center;"><i class="fas fa-gas-pump"></i> <span data-i18n="sec_c_title">Section C — Fuel
                                             &amp; Maintenance</span></div>
 
-                                    <div class="form-group" id="fuelTypeSection" style="display:none;">
-                                        <label data-i18n="lbl_fuel_type">Fuel Type</label>
-                                        <div class="radio-group inline" id="fuelTypeGroup">
-                                            <label class="radio-item fuel-opt" data-fuel="Electric"><input type="radio" name="fuelType" required="" value="Electric" onchange="onFuelTypeChange(this.value)" aria-label="fuelType"> ⚡ <span data-i18n="fuel_electric">Electric</span></label>
-                                            <label class="radio-item fuel-opt" data-fuel="Petrol"><input type="radio" name="fuelType" required="" value="Petrol" onchange="onFuelTypeChange(this.value)" aria-label="fuelType"> ⛽ <span data-i18n="fuel_petrol">Petrol</span></label>
-                                            <label class="radio-item fuel-opt" data-fuel="Diesel"><input type="radio" name="fuelType" required="" value="Diesel" onchange="onFuelTypeChange(this.value)" aria-label="fuelType"> ⛽ <span data-i18n="fuel_diesel">Diesel</span></label>
-                                            <label class="radio-item fuel-opt" data-fuel="CNG"><input type="radio" name="fuelType" required="" value="CNG" onchange="onFuelTypeChange(this.value)" aria-label="fuelType"> 💨 <span data-i18n="fuel_cng">CNG</span></label>
-                                            <label class="radio-item fuel-opt" data-fuel="LPG"><input type="radio" name="fuelType" required="" value="LPG" onchange="onFuelTypeChange(this.value)" aria-label="fuelType"> 💨 <span data-i18n="fuel_lpg">LPG</span></label>
-                                            <label class="radio-item fuel-opt" data-fuel="CNG/LPG"><input type="radio" name="fuelType" required="" value="CNG/LPG" onchange="onFuelTypeChange(this.value)" aria-label="fuelType"> 💨 <span data-i18n="fuel_cng_lpg">CNG/LPG</span></label>
-                                        </div>
-                                        <div id="fuelTypeValMsg" style="color:var(--danger-color); display:none; margin-top:0.5rem; font-size:0.875rem;">
-                                            <i class="fas fa-exclamation-triangle"></i> <span data-i18n="val_fuel_req">Please select a valid fuel type.</span></div>
-                                    </div>
+                                    <!-- Fuel Type Section moved to Section B -->
                                     
                                     <div id="bikeSpeedFields" style="display:none; background:rgba(0,0,0,0.02); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--card-border);">
                                         <div class="form-group" style="margin-bottom:0;">
@@ -3575,4 +3577,71 @@ document.addEventListener("DOMContentLoaded", () => {
 <!-- Combined Marketing Scripts -->
     <script src="/js/insurance-config.js" charset="UTF-8"></script>
     <script defer src="/js/app-bundle.js?v=10" charset="UTF-8"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var originalOnVehicleTypeChange = window.onVehicleTypeChange;
+            window.onVehicleTypeChange = function(val) {
+                if (originalOnVehicleTypeChange) {
+                    originalOnVehicleTypeChange(val);
+                }
+                var vehicleBrandModelGroup = document.getElementById('vehicleBrandModelGroup');
+                var regVehicleModel = document.getElementById('regVehicleModel');
+                
+                if (val && vehicleBrandModelGroup) {
+                    vehicleBrandModelGroup.style.display = 'block';
+                    if (regVehicleModel) {
+                        regVehicleModel.required = true;
+                        regVehicleModel.innerHTML = '<option value="" data-i18n="lbl_select_brand">' + (window.i18next ? window.i18next.t("lbl_select_brand") : "Select Brand/Model") + '</option>';
+                    }
+                } else if (vehicleBrandModelGroup) {
+                    vehicleBrandModelGroup.style.display = 'none';
+                    if (regVehicleModel) {
+                        regVehicleModel.required = false;
+                        regVehicleModel.value = '';
+                    }
+                }
+            };
+
+            var originalOnFuelTypeChange = window.onFuelTypeChange;
+            window.onFuelTypeChange = function(val) {
+                if (originalOnFuelTypeChange) {
+                    originalOnFuelTypeChange(val);
+                }
+                
+                var vtInput = document.querySelector('input[name="vehicleType"]:checked');
+                if(!vtInput) return;
+                var vt = vtInput.value;
+                
+                var regVehicleModel = document.getElementById('regVehicleModel');
+                
+                var brandsToUse = [];
+                if (vt === '2 Wheeler') {
+                    if (val === 'Electric') brandsToUse = ['Ola', 'Ather', 'Yulu', 'TVS iQube', 'Bajaj Chetak', 'Other'];
+                    else brandsToUse = ['Hero', 'Honda', 'Bajaj', 'TVS', 'Yamaha', 'Suzuki', 'Royal Enfield', 'Other'];
+                } else if (vt === '3 Wheeler') {
+                    if (val === 'Electric') brandsToUse = ['Mahindra Treo', 'Piaggio Ape', 'Other'];
+                    else brandsToUse = ['Bajaj RE', 'Piaggio Ape', 'Atul Auto', 'Other'];
+                } else if (vt === '4 Wheeler') {
+                    if (val === 'Electric') brandsToUse = ['Tata', 'Mahindra', 'Hyundai', 'Other'];
+                    else brandsToUse = ['Maruti Suzuki', 'Hyundai', 'Tata', 'Mahindra', 'Toyota', 'Other'];
+                }
+                
+                if (regVehicleModel && val) {
+                    regVehicleModel.innerHTML = '<option value="" data-i18n="lbl_select_brand">' + (window.i18next ? window.i18next.t("lbl_select_brand") : "Select Brand/Model") + '</option>';
+                    brandsToUse.forEach(function(b) {
+                        var opt = document.createElement('option');
+                        opt.value = b;
+                        opt.textContent = b;
+                        regVehicleModel.appendChild(opt);
+                    });
+                }
+                
+                var otherEl = document.getElementById('regVehicleModelOther');
+                if(otherEl){
+                    otherEl.style.display = 'none';
+                    otherEl.value = '';
+                }
+            };
+        });
+    </script>
 </body></html>
