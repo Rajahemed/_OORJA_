@@ -1301,6 +1301,14 @@ async function openDataDrilldown(type) {
 
     // ===== SESSION =====
     function loadSession() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('ref')) {
+            // Bypass session loading and clear existing session so the registration form is shown
+            localStorage.removeItem('riderId');
+            localStorage.removeItem('sessionId');
+            return;
+        }
+
         const riderId = localStorage.getItem('riderId');
         if (riderId) fetchRiderProfile(riderId);
     }
