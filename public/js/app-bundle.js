@@ -1,4 +1,4 @@
-﻿// Reusable tracking loader
+// Reusable tracking loader
 let trackingConfig = null;
 
 async function loadTrackingConfig() {
@@ -1534,6 +1534,13 @@ async function openDataDrilldown(type) {
 
     // ===== SESSION =====
     function loadSession() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('ref')) {
+            localStorage.removeItem('riderId');
+            localStorage.removeItem('sessionId');
+            return;
+        }
+        
         const riderId = localStorage.getItem('riderId');
         if (riderId) fetchRiderProfile(riderId);
     }
@@ -5370,3 +5377,26 @@ if (originalShowProfile) {
         loadMembershipData();
     };
 }
+
+// Mobile drawer navigation
+window.toggleMobileDrawer = function() {
+    const drawer = document.getElementById('mobileNavDrawer');
+    if (drawer) {
+        drawer.classList.toggle('is-open');
+        const btn = document.getElementById('mobileMenuToggle');
+        if (btn) {
+            btn.setAttribute('aria-expanded', drawer.classList.contains('is-open'));
+        }
+    }
+};
+
+window.closeMobileDrawer = function() {
+    const drawer = document.getElementById('mobileNavDrawer');
+    if (drawer) {
+        drawer.classList.remove('is-open');
+        const btn = document.getElementById('mobileMenuToggle');
+        if (btn) {
+            btn.setAttribute('aria-expanded', 'false');
+        }
+    }
+};

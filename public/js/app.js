@@ -5145,3 +5145,26 @@ if (originalShowProfile) {
         loadMembershipData();
     };
 }
+
+// Mobile drawer navigation
+window.toggleMobileDrawer = function() {
+    const drawer = document.getElementById('mobileNavDrawer');
+    if (drawer) {
+        drawer.classList.toggle('is-open');
+        const btn = document.getElementById('mobileMenuToggle');
+        if (btn) {
+            btn.setAttribute('aria-expanded', drawer.classList.contains('is-open'));
+        }
+    }
+};
+
+window.closeMobileDrawer = function() {
+    const drawer = document.getElementById('mobileNavDrawer');
+    if (drawer) {
+        drawer.classList.remove('is-open');
+        const btn = document.getElementById('mobileMenuToggle');
+        if (btn) {
+            btn.setAttribute('aria-expanded', 'false');
+        }
+    }
+};
