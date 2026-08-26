@@ -2924,11 +2924,61 @@ function submitRegistration() {
 
                 let msgHtml = `
                     <div style="background:#eaf8f1; padding:0.75rem; border-radius:8px; border:1px solid #c3e6cf; text-align:left; margin-bottom:10px;">
+                        <canvas id="whatsappBannerCanvas" style="display:none;"></canvas>
                         <img src="${bannerImage}" alt="Share Image" id="whatsappBannerImage" style="width:100%; border-radius:4px; margin-bottom:8px;">
                         <div style="white-space: pre-wrap; font-family: sans-serif; font-size: 0.9rem; color: #333;">${actualText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#007bff; font-weight:600; text-decoration:underline;">$1</a>')}</div>
                     </div>
                 `;
                 document.getElementById('whatsappMsgPreview').innerHTML = msgHtml;
+
+                // Dynamically render the banner with exact QR
+                const canvas = document.getElementById('whatsappBannerCanvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.onload = function() {
+                    canvas.width = img.naturalWidth || img.width;
+                    canvas.height = img.naturalHeight || img.height;
+                    ctx.drawImage(img, 0, 0);
+
+                    const tempDiv = document.createElement('div');
+                    let qrCanvas = null;
+                    if (typeof QRCode !== 'undefined') {
+                        try {
+                            // Extract exact URL from the generated text or build it exactly
+                            const baseUrl = window.location.origin + (window.location.pathname === '/' ? '' : window.location.pathname);
+                            const qrUrl = baseUrl + '/?ref=' + result.referralCode;
+                            
+                            new QRCode(tempDiv, {
+                                text: qrUrl,
+                                width: 200,
+                                height: 200,
+                                colorDark: "#000000",
+                                colorLight: "#ffffff",
+                                correctLevel: QRCode.CorrectLevel.H
+                            });
+                            qrCanvas = tempDiv.querySelector('canvas');
+                        } catch(err) { console.error('QR Gen error:', err); }
+                    }
+
+                    if (qrCanvas) {
+                        const qrWidth = canvas.width * 0.23;
+                        const qrHeight = qrWidth;
+                        const x = canvas.width * 0.73;
+                        const y = canvas.height * 0.86 - qrHeight;
+                        
+                        const padding = canvas.width * 0.01; 
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(x - padding, y - padding, qrWidth + (padding*2), qrHeight + (padding*2));
+                        ctx.drawImage(qrCanvas, x, y, qrWidth, qrHeight);
+                        
+                        const finalDataUrl = canvas.toDataURL('image/png', 1.0);
+                        document.getElementById('whatsappBannerImage').src = finalDataUrl;
+                        window.lastGeneratedWhatsAppPosterUrl = finalDataUrl;
+                    }
+                };
+                img.src = '/' + bannerImage;
+
 
                 const btn = document.getElementById('whatsappSendLink');
                 btn.href = '#';
@@ -3581,6 +3631,24 @@ function submitRegistration() {
         let generatedFile = null;
 
         try {
+            // Use pre-generated exact poster if available from post-registration
+            if (window.lastGeneratedWhatsAppPosterUrl) {
+                const arr = window.lastGeneratedWhatsAppPosterUrl.split(',');
+                const mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]);
+                let n = bstr.length;
+                const u8arr = new Uint8Array(n);
+                while(n--) { u8arr[n] = bstr.charCodeAt(n); }
+                const blob = new Blob([u8arr], {type: mime});
+                generatedFile = new File([blob], 'roadwarrior-referral.png', { type: 'image/png' });
+                
+                if (navigator.canShare && navigator.canShare({ files: [generatedFile] })) {
+                    await navigator.share({ files: [generatedFile], title: 'Join Road Warrior EV', text: text });
+                    if (typeof trackEvent === 'function') trackEvent('share_with_image', { success: true });
+                    return;
+                }
+            }
+            
             // Find an already loaded poster image from the DOM to avoid async fetch/onload
             let img = document.getElementById('welcomeImage') || document.getElementById('qrModalPosterImg');
             
@@ -3600,8 +3668,11 @@ function submitRegistration() {
             let qrCanvas = null;
             if (typeof QRCode !== 'undefined') {
                 try {
+                    // Use EXACT same url format
+                    const baseUrl = window.location.origin + (window.location.pathname === '/' ? '' : window.location.pathname);
+                    const qrUrl = baseUrl + '/?ref=' + code;
                     new QRCode(tempDiv, {
-                        text: window.location.origin + "/?ref=" + code,
+                        text: qrUrl,
                         width: 200,
                         height: 200,
                         colorDark: "#000000",
