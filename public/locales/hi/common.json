@@ -466,5 +466,8 @@
     "val_err_challenges": "Please select at least one Challenge you face on the road.",
     "val_err_safety": "Please answer all questions in the Insurance & Safety section.",
     "val_err_switch": "Please select at least one reason to switch.",
-    "val_err_interests": "Please select what you would be interested in."
+    "val_err_interests": "Please select what you would be interested in.",
+    "exp_lt_6": "exp_lt_6",
+    "exp_6_12": "exp_6_12",
+    "exp_5_plus": "exp_5_plus"
 }

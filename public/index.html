@@ -309,7 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
             border-color: var(--primary-color);
             background: var(--primary-color);
             color: white;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 4px rgba(28, 104, 24, 0.2);
         }
 
         .progress-step.done .step-circle {
@@ -370,7 +370,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         select.form-control.selected {
-            background-color: rgba(59, 130, 246, 0.1);
+            background-color: rgba(28, 104, 24, 0.1);
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
         }
 
@@ -414,7 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         .checkbox-item:hover {
             border-color: var(--primary-color);
-            background: rgba(59, 130, 246, 0.05);
+            background: rgba(28, 104, 24, 0.05);
         }
 
         .checkbox-item input[type="checkbox"] {
@@ -426,7 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         .checkbox-item.checked {
             border-color: var(--primary-color);
-            background: rgba(59, 130, 246, 0.08);
+            background: rgba(28, 104, 24, 0.08);
         }
 
         /* Radio group */
@@ -456,7 +456,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         .radio-item:hover {
             border-color: var(--primary-color);
-            background: rgba(59, 130, 246, 0.05);
+            background: rgba(28, 104, 24, 0.05);
         }
 
         .radio-item input[type="radio"] {
@@ -468,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         .radio-item.selected {
             border-color: var(--primary-color);
-            background: rgba(59, 130, 246, 0.08);
+            background: rgba(28, 104, 24, 0.08);
         }
 
         /* Success registration panel */
@@ -485,7 +485,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         .referral-code-display {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(249, 115, 22, 0.1));
+            background: linear-gradient(135deg, rgba(28, 104, 24, 0.15), rgba(249, 115, 22, 0.1));
             border: 2px solid var(--primary-color);
             border-radius: var(--border-radius-md);
             padding: 1.25rem;
@@ -572,9 +572,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         .tag-swing {
-            background: rgba(59, 130, 246, 0.2);
-            color: #3b82f6;
-            border: 1px solid rgba(59, 130, 246, 0.4);
+            background: rgba(28, 104, 24, 0.2);
+            color: #1c6818;
+            border: 1px solid rgba(28, 104, 24, 0.4);
         }
 
         .tag-personal-ins {
@@ -596,9 +596,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         .tag-ev-rental {
-            background: rgba(59, 130, 246, 0.15);
-            color: #3b82f6;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: rgba(28, 104, 24, 0.15);
+            color: #1c6818;
+            border: 1px solid rgba(28, 104, 24, 0.3);
         }
 
         .tag-product {
@@ -622,7 +622,7 @@ document.addEventListener("DOMContentLoaded", () => {
             font-size: 4rem;
             font-weight: 900;
             font-family: 'Outfit', sans-serif;
-            background: linear-gradient(135deg, #3b82f6, #f97316);
+            background: linear-gradient(135deg, #1c6818, #f97316);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -632,8 +632,8 @@ document.addEventListener("DOMContentLoaded", () => {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: rgba(28, 104, 24, 0.1);
+            border: 1px solid rgba(28, 104, 24, 0.3);
             border-radius: var(--border-radius-md);
             padding: 0.75rem 1.25rem;
             font-family: monospace;
@@ -685,7 +685,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .milestone-fill {
             height: 100%;
             border-radius: 3px;
-            background: linear-gradient(90deg, #3b82f6, #f97316);
+            background: linear-gradient(90deg, #1c6818, #f97316);
             transition: width 0.5s ease;
         }
 
@@ -1287,11 +1287,11 @@ document.addEventListener("DOMContentLoaded", () => {
                                         (mock: use 123456)</small>
                                 </div>
 
-                                <button type="submit" id="loginBtn" class="btn w-100" style="margin-top:0.5rem; background-color: #12b5cb; border-color: #12b5cb; color: #ffffff; font-weight: bold;"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login</span></button>
+                                <button type="submit" id="loginBtn" class="btn w-100" style="margin-top:0.5rem; background-color: var(--primary-color); border-color: var(--primary-color); color: #ffffff; font-weight: bold;"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login</span></button>
 
                             </form>
                             <p style="text-align:center; margin-top:1.5rem; color:var(--text-secondary);" id="loginRegisterText">
-                                <span data-i18n="no_account">Don't have an account?</span> <a href="#" style="color:#12b5cb; font-weight:600; text-decoration:none;" onclick="toggleAuthCards(event)" data-i18n="register_link">Register here</a>
+                                <span data-i18n="no_account">Don't have an account?</span> <a href="#" style="color:var(--primary-color); font-weight:600; text-decoration:none;" onclick="toggleAuthCards(event)" data-i18n="register_link">Register here</a>
                             </p>
 
                             <!-- Rider Forgot Password Form removed -->
@@ -1325,7 +1325,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <div class="form-section active" id="regSection1" style="margin-bottom:1rem; text-align:center;">
                                     <div style="margin: 0.5rem auto; max-width: 500px; position: relative;">
                                         <img width="400" height="300" id="welcomeImage" src="/og-image-English.webp" alt="Welcome" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.3s ease;" loading="lazy">
-                                        <div id="welcomePosterQr" style="position: absolute; bottom: 1.8%; right: 23%; width: 12.5%; height: auto; background: white; padding: 5px; border-radius: 4px; display: flex; align-items: center; justify-content: center; aspect-ratio: 1/1;">
+                                        <div id="welcomePosterQr" style="position: absolute; bottom: 14%; right: 4%; width: 23%; height: auto; background: white; padding: 5px; border-radius: 4px; display: flex; align-items: center; justify-content: center; aspect-ratio: 1/1;">
                                             <img width="400" height="300" src="/img/dummy-qr.webp" style="width:100%; height:auto; opacity:0;" onerror="this.style.display='none'" alt="Road Warrior Image" loading="lazy">
                                         </div>
                                     </div>
@@ -1963,7 +1963,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                     <div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
                                         <button type="button" class="btn btn-primary" onclick="prevStep()"><i class="fas fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
-                                        <button type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#3b82f6,#f97316); flex:1; margin-left:1rem;" onclick="submitRegistration()" id="submitRegBtn">
+                                        <button type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#1c6818,#f97316); flex:1; margin-left:1rem;" onclick="submitRegistration()" id="submitRegBtn">
                                             <i class="fas fa-check-circle"></i> <span data-i18n="btn_submit_reg">Complete Registration</span>
                                         </button>
                                     </div>
@@ -2641,26 +2641,37 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="stat-value" id="adminInsLeads">0</div>
                     <div class="stat-label" data-i18n="adm_ins_leads">Insurance Leads</div>
                 </div>
-                <div class="stat-box" onclick="clickAdminStat('topReferrers')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🏆</span>
+                <div class="stat-box" onclick="clickAdminStat('topReferrers')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">🏆</span>
+                    <div class="stat-value" id="adminTopReferrers">0</div>
                     <div class="stat-label" data-i18n="tab_top_referrers">Top Referrers</div>
                 </div>
-                <div class="stat-box" onclick="clickAdminStat('cityStats')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🏙️</span>
+                <div class="stat-box" onclick="clickAdminStat('cityStats')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">🏙️</span>
+                    <div class="stat-value" id="adminCityStats">0</div>
                     <div class="stat-label" data-i18n="tab_city_stats">City Stats</div>
                 </div>
-                <div class="stat-box" onclick="clickAdminStat('visitorAnalytics')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">📊</span>
+                <div class="stat-box" onclick="clickAdminStat('visitorAnalytics')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">📊</span>
+                    <div class="stat-value" id="adminVisitorAnalytics">0</div>
                     <div class="stat-label" data-i18n="adm_box_analytics">Visitor Analytics</div>
                 </div>
-                <div class="stat-box" onclick="clickAdminStat('emailLeads')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">✉️</span>
+                <div class="stat-box" onclick="clickAdminStat('emailLeads')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">✉️</span>
+                    <div class="stat-value" id="adminEmailLeads">0</div>
                     <div class="stat-label" data-i18n="adm_box_email">Email Leads</div>
                 </div>
-                <div class="stat-box" onclick="clickAdminStat('botIntelligence')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">🤖</span>
+                <div class="stat-box" onclick="clickAdminStat('botIntelligence')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">🤖</span>
+                    <div class="stat-value" id="adminBotIntelligence">0</div>
                     <div class="stat-label" data-i18n="adm_box_bot">Bot Intelligence</div>
                 </div>
-                <div class="stat-box" onclick="clickAdminStat('leadFunnel')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">📉</span>
+                <div class="stat-box" onclick="clickAdminStat('leadFunnel')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">📉</span>
+                    <div class="stat-value" id="adminLeadFunnel">0</div>
                     <div class="stat-label" data-i18n="adm_box_funnel">Lead Funnel</div>
                 </div>
-                <div class="stat-box" onclick="clickAdminStat('premiumMembers')" style="cursor:pointer; transition:transform 0.2s; display:flex; flex-direction:column; justify-content:center; padding-top: 2rem;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon" style="margin-bottom:0.5rem; font-size:2.5rem;">⭐</span>
-                    <div class="stat-label">Premium Members</div>
+                <div class="stat-box" onclick="clickAdminStat('referralAnalytics')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">👥</span>
+                    <div class="stat-value" id="adminReferralAnalytics">0</div>
+                    <div class="stat-label" >Referral Analytics</div>
+                </div>
+                <div class="stat-box" onclick="clickAdminStat('premiumMembers')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><span class="stat-icon">⭐</span>
+                    <div class="stat-value" id="adminPremiumMembers">0</div>
+                    <div class="stat-label" >Premium Members</div>
                 </div>
             </div>
 
@@ -2682,8 +2693,37 @@ document.addEventListener("DOMContentLoaded", () => {
                 <button class="admin-tab" onclick="switchAdminTab('emailLeads')"><i class="fas fa-envelope"></i> <span data-i18n="adm_box_email">Email Leads</span></button>
                 <button class="admin-tab" onclick="switchAdminTab('leadFunnel')"><i class="fas fa-funnel-dollar"></i>
                     <span data-i18n="adm_box_funnel">Lead Funnel</span></button>
+                <button class="admin-tab" onclick="switchAdminTab('referralAnalytics')"><i class="fas fa-sitemap"></i>
+                    <span>Referral Analytics</span></button>
                 <button class="admin-tab" onclick="switchAdminTab('premiumMembers')"><i class="fas fa-star"></i>
                     <span>Premium Members</span></button>
+            </div>
+
+            <!-- Tab: Referral Analytics -->
+            <div class="admin-panel" id="panel-referralAnalytics">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-sitemap text-primary-color"></i> Referral Reward Analytics</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Reward Tier</th>
+                                        <th>Referrals Count</th>
+                                        <th>Points Distributed</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminReferralAnalyticsTableBody">
+                                    <tr>
+                                        <td colspan="3" class="text-center">Loading referral analytics...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Tab: Premium Members -->
@@ -2760,7 +2800,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <div class="stat-value" id="funnelConvRate">0%</div>
                                 <div class="stat-label">Conversion Rate</div>
                             </div>
-                            <div class="stat-box" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3);">
+                            <div class="stat-box" style="background: rgba(28, 104, 24, 0.1); border-color: rgba(28, 104, 24, 0.3);">
                                 <span class="stat-icon">📊</span>
                                 <div class="stat-value" id="funnelAvgCompletion">0%</div>
                                 <div class="stat-label">Avg Form Completion</div>
@@ -3305,8 +3345,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div style="flex: 1; min-width: 250px; text-align: left;">
                 <div class="footer-logo" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1.5rem; cursor: default; display: flex; align-items: center; justify-content: flex-start; margin-top: 0; white-space: nowrap;" onclick="navigateTo('/admin')">
-                    <span class="footer-logo-icon" style="color: #059669;">⚡</span>
-                    <span class="footer-logo-text" style="color: #0f172a; margin-left: 0.5rem;">Road Warrior <span style="color: #059669;">Pro</span></span>
+                    <span class="footer-logo-icon" style="color: var(--primary-color);">⚡</span>
+                    <span class="footer-logo-text" style="color: #0f172a; margin-left: 0.5rem;">Road Warrior <span style="color: var(--primary-color);">Pro</span></span>
                 </div>
                 <p style="color: #000000; font-size: 1.05rem; line-height: 1.6; margin-top: 1.5rem; text-align: left;">
                     Join India's fastest growing community of EV delivery riders. Maximize your earnings, unlock
@@ -3315,7 +3355,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             <div style="flex: 1; min-width: 250px;">
-                <h4 style="color: #059669; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 2rem; letter-spacing: 1px; margin-top: 0;">
+                <h4 style="color: var(--primary-color); font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 2rem; letter-spacing: 1px; margin-top: 0;">
                     CONTACT</h4>
                 <p style="margin-bottom: 1.5rem; font-size: 1.05rem;"><a href="https://wa.me/919886650133" style="color: #000000; text-decoration: none;">WhatsApp: +91 98866 50133</a></p>
                 <p style="margin-bottom: 1.5rem; font-size: 1.05rem;"><a href="tel:+919886650133" style="color: #000000; text-decoration: none;">Phone: +91 98866 50133</a></p>
@@ -3323,7 +3363,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             <div style="flex: 1; min-width: 250px;">
-                <h4 style="color: #059669; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 2rem; letter-spacing: 1px; margin-top: 0;">
+                <h4 style="color: var(--primary-color); font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 2rem; letter-spacing: 1px; margin-top: 0;">
                     LEGAL</h4>
                 <p style="margin-bottom: 1.5rem; font-size: 1.05rem;"><a href="/privacy.html" target="_blank" rel="noopener" style="color: #000000; text-decoration: none;">Privacy Policy</a></p>
                 <p style="margin-bottom: 1.5rem; font-size: 1.05rem;"><a href="/terms.html" target="_blank" rel="noopener" style="color: #000000; text-decoration: none;">Terms of Service</a></p>
@@ -3458,7 +3498,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 under your referral!</p>
             <div style="margin: 0 auto; max-width: 500px; position: relative; margin-bottom: 1.5rem;">
                 <img width="400" height="300" id="qrModalPosterImg" src="/og-image-English.webp" alt="Referral Poster" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.3s ease;" loading="lazy">
-                <div id="qrcode" style="position: absolute; bottom: 1.8%; right: 23%; width: 12.5%; height: auto; background: white; padding: 5px; border-radius: 4px; display: flex; align-items: center; justify-content: center; aspect-ratio: 1/1;">
+                <div id="qrcode" style="position: absolute; bottom: 14%; right: 4%; width: 23%; height: auto; background: white; padding: 5px; border-radius: 4px; display: flex; align-items: center; justify-content: center; aspect-ratio: 1/1;">
                 </div>
             </div>
             <div style="font-size:1.5rem; font-weight:800; letter-spacing:2px; color:var(--primary-color); margin-bottom:1.5rem;">

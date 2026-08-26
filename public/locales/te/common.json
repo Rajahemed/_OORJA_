@@ -466,5 +466,8 @@
     "evc_assistant": "24/7 అసిస్టెంట్",
     "evc_repair": "ఇంజిన్ పునరావృత సమస్యలు",
     "sec_insurance_title": "బీమా వివరాలు",
-    "sec_g_title": "అదనపు సమాచారం"
+    "sec_g_title": "అదనపు సమాచారం",
+    "exp_lt_6": "exp_lt_6",
+    "exp_6_12": "exp_6_12",
+    "exp_5_plus": "exp_5_plus"
 }

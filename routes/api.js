@@ -311,28 +311,8 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
     // Compute auto tags (legacy fields removed; passing available data if needed or empty)
     const tags = computeSegmentTags({ vehicleType, personalInsurance, vehicleInsurance });
 
-    // Process referral code if provided
+    // Referral processing moved to after successful registration
     let milestones = [];
-    if (referredByCode) {
-      const { data: referrerRows } = await supabase.from('riders').select('*').eq('referralCode', referredByCode);
-      const referrer = referrerRows && referrerRows.length > 0 ? referrerRows[0] : null;
-      if (referrer) {
-        referrer.referrals = (referrer.referrals || 0) + 1;
-        referrer.totalPoints = (referrer.totalPoints || 0) + 5;
-        // Increase the rating by 0.1 for the successful referral
-        referrer.rating = (Number(referrer.rating) || 5.0) + 0.1;
-        
-        milestones = checkMilestoneBonuses(referrer);
-        await supabase.from('riders').update({ 
-          referrals: referrer.referrals, 
-          totalPoints: referrer.totalPoints, 
-          rating: referrer.rating,
-          milestone10: referrer.milestone10, 
-          milestone25: referrer.milestone25, 
-          milestone50: referrer.milestone50 
-        }).eq('id', referrer.id);
-      }
-    }
 
     const referralCode = generateReferralCode();
 
@@ -457,6 +437,62 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
       return res.status(500).json({ success: false, error: 'Registration failed: ' + upsertErr.message });
     }
     riderId = upserted.id;
+
+    // Process multi-level referral rewards
+    if (referredByCode) {
+      try {
+        let currentRefCode = referredByCode;
+        let level = 1;
+        const reward_by_level = { 1: 9, 2: 8, 3: 7, 4: 6, 5: 5, 6: 4, 7: 3 };
+        let visited = new Set();
+        
+        while (currentRefCode && level <= 7) {
+          // Fetch the referrer
+          const { data: referrerRows, error: refErr } = await supabase.from('riders').select('*').eq('referralCode', currentRefCode);
+          if (refErr || !referrerRows || referrerRows.length === 0) break;
+          const referrer = referrerRows[0];
+          
+          // Cycle detection
+          if (visited.has(referrer.id)) break;
+          visited.add(referrer.id);
+          
+          let updateData = {};
+          const pointsToAward = reward_by_level[level] || 0;
+          
+          if (level === 1) {
+            referrer.referrals = (referrer.referrals || 0) + 1;
+            referrer.rating = (Number(referrer.rating) || 5.0) + 0.1;
+            milestones = checkMilestoneBonuses(referrer);
+            
+            updateData.referrals = referrer.referrals;
+            updateData.rating = referrer.rating;
+            updateData.milestone10 = referrer.milestone10;
+            updateData.milestone25 = referrer.milestone25;
+            updateData.milestone50 = referrer.milestone50;
+          }
+          
+          referrer.totalPoints = (referrer.totalPoints || 0) + pointsToAward;
+          updateData.totalPoints = referrer.totalPoints;
+          
+          // Update the referrer's points
+          await supabase.from('riders').update(updateData).eq('id', referrer.id);
+          
+          // Record the transaction
+          await supabase.from('referral_rewards').insert({
+            rewarded_rider_id: referrer.id,
+            new_rider_id: riderId,
+            level: level,
+            points_awarded: pointsToAward
+          });
+          
+          // Move up the chain
+          currentRefCode = referrer.referredByCode;
+          level++;
+        }
+      } catch (e) {
+        console.error('[Register] Referral chain processing error:', e);
+      }
+    }
 
     // Use the actual request origin or the configured API_BASE_URL
     // Fallback to a production domain if missing. If origin is localhost, whatsapp won't linkify it but that's expected in dev.

@@ -795,4 +795,39 @@ router.get('/admin/analytics/leads-funnel', adminAuth(), adminAnalyticsRateLimit
   }
 });
 
+// ============================================================
+// GET /api/admin/analytics/referrals
+// Referral rewards breakdown by level
+// ============================================================
+router.get('/admin/analytics/referrals', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEWER']), adminAnalyticsRateLimit, async (req, res) => {
+  try {
+    const { data: rewards, error } = await supabase.from('referral_rewards').select('*');
+    if (error) throw error;
+    
+    // Group by level
+    const breakdown = {
+      "9": { count: 0, points: 0 },
+      "8": { count: 0, points: 0 },
+      "7": { count: 0, points: 0 },
+      "6": { count: 0, points: 0 },
+      "5": { count: 0, points: 0 },
+      "4": { count: 0, points: 0 },
+      "3": { count: 0, points: 0 }
+    };
+    
+    (rewards || []).forEach(r => {
+      const rewardValue = String(r.points_awarded);
+      if (breakdown[rewardValue]) {
+        breakdown[rewardValue].count += 1;
+        breakdown[rewardValue].points += r.points_awarded;
+      }
+    });
+    
+    res.json({ success: true, data: { referral_rewards: breakdown } });
+  } catch(error) {
+    console.error('[analytics] referrals breakdown error:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 module.exports = router;

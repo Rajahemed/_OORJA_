@@ -707,6 +707,60 @@ async function loadEmailLeads() {
             }
         } catch (e) { console.error('Failed to load lead funnel', e); }
     }
+
+    async function loadReferralAnalytics() {
+        const tbody = document.getElementById('adminReferralAnalyticsTableBody');
+        if (!tbody) return;
+        
+        try {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center">Loading referral analytics... <i class="fas fa-spinner fa-spin"></i></td></tr>';
+            
+            const res = await fetch('/api/admin/analytics/referrals', { headers: getAdminAuthHeaders() });
+            const result = await res.json();
+            
+            if (result.success && result.data && result.data.referral_rewards) {
+                const breakdown = result.data.referral_rewards;
+                const tiers = [
+                    { level: 1, points: "9" },
+                    { level: 2, points: "8" },
+                    { level: 3, points: "7" },
+                    { level: 4, points: "6" },
+                    { level: 5, points: "5" },
+                    { level: 6, points: "4" },
+                    { level: 7, points: "3" }
+                ];
+                
+                let html = '';
+                let totalCount = 0;
+                let totalPoints = 0;
+                
+                tiers.forEach(t => {
+                    const data = breakdown[t.points] || { count: 0, points: 0 };
+                    totalCount += data.count;
+                    totalPoints += data.points;
+                    html += `<tr>
+                        <td><strong>Level ${t.level}</strong> (${t.points} pts)</td>
+                        <td>${data.count}</td>
+                        <td>${data.points}</td>
+                    </tr>`;
+                });
+                
+                html += `<tr style="background: rgba(255,255,255,0.05); font-weight: bold;">
+                    <td>Total</td>
+                    <td>${totalCount}</td>
+                    <td>${totalPoints}</td>
+                </tr>`;
+                
+                tbody.innerHTML = html;
+            } else {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Failed to load analytics</td></tr>';
+            }
+        } catch (e) {
+            console.error('Error loading referral analytics:', e);
+            tbody.innerHTML = `<tr><td colspan="3" class="text-center text-danger">Error: ${e.message}</td></tr>`;
+        }
+    }
+
 async function openDataDrilldown(type) {
     if (type === 'conversion') return; // Just a calculated ratio, nothing to drill down
     
@@ -989,10 +1043,10 @@ async function openDataDrilldown(type) {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
 
-            const qrWidth = canvas.width * 0.125;
+            const qrWidth = canvas.width * 0.23;
             const qrHeight = qrWidth;
-            const x = canvas.width - (canvas.width * 0.23) - qrWidth;
-            const y = canvas.height - (canvas.height * 0.018) - qrHeight;
+            const x = canvas.width * 0.73;
+            const y = canvas.height * 0.86 - qrHeight;
             
             const padding = canvas.width * 0.01; 
             ctx.fillStyle = '#ffffff';
@@ -3559,10 +3613,10 @@ function submitRegistration() {
             }
 
             if (qrCanvas) {
-                const qrWidth = canvas.width * 0.125;
+                const qrWidth = canvas.width * 0.23;
                 const qrHeight = qrWidth;
-                const x = canvas.width - (canvas.width * 0.23) - qrWidth;
-                const y = canvas.height - (canvas.height * 0.018) - qrHeight;
+                const x = canvas.width * 0.73;
+                const y = canvas.height * 0.86 - qrHeight;
                 
                 const padding = canvas.width * 0.01; 
                 ctx.fillStyle = '#ffffff';
@@ -3643,6 +3697,7 @@ function submitRegistration() {
         else if (tab === 'botIntelligence') loadBotIntelligence();
         else if (tab === 'emailLeads') loadEmailLeads();
         else if (tab === 'leadFunnel') loadLeadFunnel();
+        else if (tab === 'referralAnalytics') loadReferralAnalytics();
         else if (tab === 'premiumMembers') {
             if (typeof window.renderAdminPremiumMembers === 'function') {
                 window.renderAdminPremiumMembers();
@@ -3879,10 +3934,112 @@ function submitRegistration() {
                     }
                     return r;
                 });
-                document.getElementById('adminTotalRiders').textContent = allAdminRiders.length;
-                document.getElementById('adminEVRiders').textContent = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric')).length;
-                document.getElementById('adminHotLeads').textContent = allAdminRiders.filter(r => r.openToEV === 'Yes' || r.openToEV === 'Need more information' || (r.tags || []).includes('Hot EV Lead')).length;
-                document.getElementById('adminInsLeads').textContent = allAdminRiders.filter(r => r.hasAccidentalInsurance === 'No' || r.hasAccidentalInsurance === 'Not sure' || r.hasHealthInsurance === 'No' || r.hasHealthInsurance === 'Not sure' || (r.tags || []).includes('Insurance Lead')).length;
+                                document.getElementById('adminTotalRiders').textContent = allAdminRiders.length;
+                
+                // Fuel statistics
+                let evCount = 0, petrolCount = 0, dieselCount = 0, cngCount = 0;
+                allAdminRiders.forEach(r => {
+                    const vt = (r.vehicleType || '').toLowerCase();
+                    const ft = (r.fuelType || '').toLowerCase();
+                    if (vt.includes('electric') || vt.includes('ev') || ft.includes('electric') || ft.includes('ev')) evCount++;
+                    else if (vt.includes('petrol') || ft.includes('petrol')) petrolCount++;
+                    else if (vt.includes('diesel') || ft.includes('diesel')) dieselCount++;
+                    else if (vt.includes('cng') || ft.includes('cng') || vt.includes('lpg') || ft.includes('lpg')) cngCount++;
+                });
+                
+                const elEV = document.getElementById('adminEVRiders'); if (elEV) elEV.textContent = evCount;
+                const elPetrol = document.getElementById('adminPetrolRiders'); if (elPetrol) elPetrol.textContent = petrolCount;
+                const elDiesel = document.getElementById('adminDieselRiders'); if (elDiesel) elDiesel.textContent = dieselCount;
+                const elCng = document.getElementById('adminCngLpgRiders'); if (elCng) elCng.textContent = cngCount;
+
+                // Hot EV & Insurance Leads (existing definition)
+                const elHotEV = document.getElementById('adminHotLeads');
+                if (elHotEV) elHotEV.textContent = allAdminRiders.filter(r => r.openToEV === 'Yes' || r.openToEV === 'Need more information' || (r.tags || []).includes('Hot EV Lead')).length;
+                
+                const elIns = document.getElementById('adminInsLeads');
+                if (elIns) elIns.textContent = allAdminRiders.filter(r => r.hasAccidentalInsurance === 'No' || r.hasAccidentalInsurance === 'Not sure' || r.hasHealthInsurance === 'No' || r.hasHealthInsurance === 'Not sure' || (r.tags || []).includes('Insurance Lead')).length;
+
+                // Top Referrers & City Stats
+                const elTopRef = document.getElementById('adminTopReferrers');
+                if (elTopRef) elTopRef.textContent = allAdminRiders.filter(r => (r.referrals || 0) > 0).length;
+                
+                const elCity = document.getElementById('adminCityStats');
+                if (elCity) elCity.textContent = new Set(allAdminRiders.map(r => r.city).filter(Boolean)).size;
+
+                // External APIs with safe fallbacks
+                const headers = getAdminAuthHeaders();
+
+                // Visitor Analytics
+                fetch('/api/admin/analytics/overview', { headers }).then(r=>r.json()).then(res => {
+                    const el = document.getElementById('adminVisitorAnalytics');
+                    if (el) el.textContent = (res.success && res.data && res.data.totalVisitors !== undefined) ? res.data.totalVisitors : '-';
+                }).catch(err => {
+                    console.error('Visitor Analytics Error:', err);
+                    const el = document.getElementById('adminVisitorAnalytics'); if (el) el.textContent = '-';
+                });
+                
+                // Email Leads (using website_leads from analytics/leads)
+                fetch('/api/admin/analytics/leads', { headers }).then(r=>r.json()).then(res => {
+                    const el = document.getElementById('adminEmailLeads');
+                    if (el) el.textContent = (res.success && res.data) ? res.data.length : '-';
+                }).catch(err => {
+                    console.error('Email Leads Error:', err);
+                    const el = document.getElementById('adminEmailLeads'); if (el) el.textContent = '-';
+                });
+
+                // Bot Intelligence
+                fetch('/api/admin/analytics/bot-intelligence', { headers }).then(r=>r.json()).then(res => {
+                    const el = document.getElementById('adminBotIntelligence');
+                    if (el) el.textContent = (res.success && res.data) ? ((res.data.aiBotCount || 0) + (res.data.searchBotCount || 0) + (res.data.datacenterCount || 0)) : '-';
+                }).catch(err => {
+                    console.error('Bot Intelligence Error:', err);
+                    const el = document.getElementById('adminBotIntelligence'); if (el) el.textContent = '-';
+                });
+                
+                // Lead Funnel
+                fetch('/api/admin/analytics/leads-funnel', { headers }).then(r=>r.json()).then(res => {
+                    const el = document.getElementById('adminLeadFunnel');
+                    if (el) el.textContent = (res.success && res.data && res.data.totalLeads !== undefined) ? res.data.totalLeads : '-';
+                }).catch(err => {
+                    console.error('Lead Funnel Error:', err);
+                    const el = document.getElementById('adminLeadFunnel'); if (el) el.textContent = '-';
+                });
+
+                // Premium Members
+                fetch('/api/admin/memberships', { headers }).then(r=>r.json()).then(res => {
+                    const el = document.getElementById('adminPremiumMembers');
+                    if (el) el.textContent = (res.success && res.memberships) ? res.memberships.length : '-';
+                }).catch(err => {
+                    console.error('Premium Members Error:', err);
+                    const el = document.getElementById('adminPremiumMembers'); if (el) el.textContent = '-';
+                });
+
+                // Referral Analytics (Detailed Breakdown)
+                fetch('/api/admin/analytics/referrals', { headers }).then(r=>r.json()).then(res => {
+                    const el = document.getElementById('adminReferralAnalytics');
+                    if (el) {
+                        if (res.success && res.data && res.data.referral_rewards) {
+                            const b = res.data.referral_rewards;
+                            el.style.fontSize = '0.9rem';
+                            el.style.lineHeight = '1.3';
+                            el.style.textAlign = 'left';
+                            el.innerHTML = `
+                                9pt: ${b['9']?.count || 0} (${b['9']?.points || 0})<br>
+                                8pt: ${b['8']?.count || 0} (${b['8']?.points || 0})<br>
+                                7pt: ${b['7']?.count || 0} (${b['7']?.points || 0})<br>
+                                6pt: ${b['6']?.count || 0} (${b['6']?.points || 0})<br>
+                                5pt: ${b['5']?.count || 0} (${b['5']?.points || 0})<br>
+                                4pt: ${b['4']?.count || 0} (${b['4']?.points || 0})<br>
+                                3pt: ${b['3']?.count || 0} (${b['3']?.points || 0})
+                            `;
+                        } else {
+                            el.textContent = '-';
+                        }
+                    }
+                }).catch(err => {
+                    console.error('Referral Analytics Error:', err);
+                    const el = document.getElementById('adminReferralAnalytics'); if (el) el.textContent = '-';
+                });
 
                 const filterEl = document.getElementById('adminLeadFilter');
                 if (filterEl) filterEl.value = 'ALL';

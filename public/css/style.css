@@ -6,12 +6,12 @@
 
 :root {
   /* HSL Tailored Color Palette */
-  --primary-hue: 85; /* Lime Green */
+  --primary-hue: 117; /* Dark Forest Green */
   --secondary-hue: 16;
   
-  --primary-color: hsl(var(--primary-hue), 85%, 42%);        /* Lime Green */
-  --primary-dark:  hsl(var(--primary-hue), 85%, 32%);
-  --primary-glow:  hsla(var(--primary-hue), 85%, 42%, 0.3);
+  --primary-color: #1c6818;
+  --primary-dark:  #11450f;
+  --primary-glow:  rgba(28, 104, 24, 0.3);
   
   --secondary-color: hsl(var(--secondary-hue), 100%, 60%);   /* Sunset Orange */
   --secondary-glow:  hsla(var(--secondary-hue), 100%, 60%, 0.25);
@@ -113,13 +113,13 @@ body {
   font-weight: 800;
   font-size: 20px;
   color: white;
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+  box-shadow: 0 8px 20px rgba(28, 104, 24, 0.35);
   transition: var(--transition);
 }
 
 .navbar-brand:hover .rw-logo {
   transform: rotate(-10deg) scale(1.08);
-  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.55);
+  box-shadow: 0 10px 25px rgba(28, 104, 24, 0.55);
 }
 
 .brand-text {
@@ -160,7 +160,7 @@ body {
 }
 
 .nav-link.active {
-  color: #059669;
+  color: var(--primary-color);
   background-color: rgba(5, 150, 105, 0.1);
   border-color: rgba(5, 150, 105, 0.2);
   box-shadow: inset 0 0 12px rgba(5, 150, 105, 0.05);
@@ -186,8 +186,8 @@ body {
 
 .lang-select:hover,
 .lang-select:focus {
-  border-color: #059669;
-  color: #059669;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .lang-select option {
@@ -219,7 +219,7 @@ body {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px var(--primary-glow), 0 0 10px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 8px 25px var(--primary-glow), 0 0 10px rgba(28, 104, 24, 0.4);
 }
 
 .btn-secondary {
@@ -293,7 +293,7 @@ body {
 .btn-back:hover {
   background-color: rgba(255, 255, 255, 0.08);
   color: var(--primary-color);
-  border-color: rgba(59, 130, 246, 0.3);
+  border-color: rgba(28, 104, 24, 0.3);
 }
 
 .btn:disabled {
@@ -339,7 +339,7 @@ label {
 .form-control:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(28, 104, 24, 0.1);
 }
 
 input[type="password"]::-ms-reveal,
@@ -452,8 +452,8 @@ select.form-control option {
 
 .card:hover {
   transform: translateY(-4px) scale(1.005);
-  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(59, 130, 246, 0.15);
-  border-color: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(28, 104, 24, 0.15);
+  border-color: rgba(28, 104, 24, 0.2);
 }
 
 .card-header {
@@ -657,7 +657,7 @@ select.form-control option {
   padding: 1.125rem 1.25rem;
   font-weight: 600;
   color: var(--primary-color);
-  background-color: rgba(59, 130, 246, 0.03);
+  background-color: rgba(28, 104, 24, 0.03);
   border-bottom: 1px solid var(--card-border);
   text-transform: uppercase;
   font-size: 0.8rem;
@@ -698,9 +698,9 @@ select.form-control option {
 }
 
 .badge-primary {
-  background-color: rgba(59, 130, 246, 0.1);
+  background-color: rgba(28, 104, 24, 0.1);
   color: var(--primary-color);
-  border-color: rgba(59, 130, 246, 0.2);
+  border-color: rgba(28, 104, 24, 0.2);
 }
 
 .badge-success {
@@ -847,11 +847,11 @@ select.form-control option {
 @keyframes pulseGlow {
   0%, 100% {
     opacity: 0.6;
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 10px rgba(28, 104, 24, 0.1);
   }
   50% {
     opacity: 1;
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 20px rgba(28, 104, 24, 0.3);
   }
 }
 
@@ -1388,7 +1388,7 @@ select.form-control option {
   font-size: 1.3rem;
   color: var(--text-primary);
 }
-.footer-logo-text span { color: #4ade80; }
+.footer-logo-text span { color: var(--primary-color); }
 
 .footer-btn-download {
   background: #25D366;
@@ -1404,7 +1404,7 @@ select.form-control option {
   font-size: 0.95rem;
   margin-top: 1rem;
 }
-.footer-btn-download:hover { background: #1ebe57; transform: scale(1.05); color: #111; }
+.footer-btn-download:hover { background: var(--primary-color); transform: scale(1.05); color: #fff; }
 
 /* Headings */
 .footer-heading {
@@ -1998,12 +1998,12 @@ body.register-page-active {
     padding-top: 0 !important; /* Remove 80px offset since navbar is hidden */
 }
 
-/* Make registration theme light blue instead of green */
-body.register-page-active {
+/* Make registration theme use default green */
+/* body.register-page-active {
     --primary-color: var(--info-color);
     --primary-dark: #0891b2;
     --primary-glow: rgba(6, 182, 212, 0.3);
-}
+} */
 
 /* Analytics Metric Boxes */
 .analytics-grid {
