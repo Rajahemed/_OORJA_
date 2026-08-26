@@ -1043,12 +1043,19 @@ async function openDataDrilldown(type) {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
 
-            const qrWidth = canvas.width * 0.23;
+            // Remove Old Static QR from bottom right
+            const oldQrX = canvas.width * 0.65;
+            const oldQrY = canvas.height * 0.905;
+            const oldQrSize = canvas.width * 0.135;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(oldQrX, oldQrY, oldQrSize, oldQrSize);
+
+            // Draw New Dynamic QR near HOW IT WORKS
+            const qrWidth = canvas.width * 0.166;
             const qrHeight = qrWidth;
-            const x = canvas.width * 0.73;
-            const y = canvas.height * 0.86 - qrHeight;
-            
-            const padding = canvas.width * 0.01; 
+            const x = canvas.width * 0.654;
+            const y = canvas.height * 0.722;
+            const padding = canvas.width * 0.01;
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(x - padding, y - padding, qrWidth + (padding*2), qrHeight + (padding*2));
             ctx.drawImage(qrCanvas, x, y, qrWidth, qrHeight);
@@ -2962,12 +2969,19 @@ function submitRegistration() {
                     }
 
                     if (qrCanvas) {
-                        const qrWidth = canvas.width * 0.23;
+                        // Remove Old Static QR from bottom right
+                        const oldQrX = canvas.width * 0.65;
+                        const oldQrY = canvas.height * 0.905;
+                        const oldQrSize = canvas.width * 0.135;
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(oldQrX, oldQrY, oldQrSize, oldQrSize);
+
+                        // Draw New Dynamic QR near HOW IT WORKS
+                        const qrWidth = canvas.width * 0.166;
                         const qrHeight = qrWidth;
-                        const x = canvas.width * 0.73;
-                        const y = canvas.height * 0.86 - qrHeight;
-                        
-                        const padding = canvas.width * 0.01; 
+                        const x = canvas.width * 0.654;
+                        const y = canvas.height * 0.722;
+                        const padding = canvas.width * 0.01;
                         ctx.fillStyle = '#ffffff';
                         ctx.fillRect(x - padding, y - padding, qrWidth + (padding*2), qrHeight + (padding*2));
                         ctx.drawImage(qrCanvas, x, y, qrWidth, qrHeight);
@@ -3684,12 +3698,19 @@ function submitRegistration() {
             }
 
             if (qrCanvas) {
-                const qrWidth = canvas.width * 0.23;
+                // Remove Old Static QR from bottom right
+                const oldQrX = canvas.width * 0.65;
+                const oldQrY = canvas.height * 0.905;
+                const oldQrSize = canvas.width * 0.135;
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(oldQrX, oldQrY, oldQrSize, oldQrSize);
+
+                // Draw New Dynamic QR near HOW IT WORKS
+                const qrWidth = canvas.width * 0.166;
                 const qrHeight = qrWidth;
-                const x = canvas.width * 0.73;
-                const y = canvas.height * 0.86 - qrHeight;
-                
-                const padding = canvas.width * 0.01; 
+                const x = canvas.width * 0.654;
+                const y = canvas.height * 0.722;
+                const padding = canvas.width * 0.01;
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(x - padding, y - padding, qrWidth + (padding*2), qrHeight + (padding*2));
                 ctx.drawImage(qrCanvas, x, y, qrWidth, qrHeight);
