@@ -801,7 +801,7 @@ router.get('/admin/analytics/leads-funnel', adminAuth(), adminAnalyticsRateLimit
 // ============================================================
 router.get('/admin/analytics/referrals', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEWER']), adminAnalyticsRateLimit, async (req, res) => {
   try {
-    const { data: rewards, error } = await supabase.from('referral_rewards').select('*');
+    const { data: riders, error } = await supabase.from('riders').select('referrals').gt('referrals', 0);
     if (error) throw error;
     
     // Group by level
@@ -815,11 +815,12 @@ router.get('/admin/analytics/referrals', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIE
       "3": { count: 0, points: 0 }
     };
     
-    (rewards || []).forEach(r => {
-      const rewardValue = String(r.points_awarded);
-      if (breakdown[rewardValue]) {
-        breakdown[rewardValue].count += 1;
-        breakdown[rewardValue].points += r.points_awarded;
+    // Since referral_rewards table doesn't exist, use riders.referrals (direct referrals = 9pt)
+    (riders || []).forEach(r => {
+      const refs = r.referrals || 0;
+      if (refs > 0) {
+        breakdown["9"].count += refs;
+        breakdown["9"].points += (refs * 9);
       }
     });
     
