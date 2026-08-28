@@ -636,21 +636,20 @@ input, select, textarea {
   .mobile-nav-drawer {
     position: fixed;
     top: 0;
-    right: 0;
+    right: -100vw;
     bottom: 0;
     width: min(300px, 85vw);
     background: var(--bg-color, #ffffff);
     box-shadow: -4px 0 24px rgba(0,0,0,0.12);
     z-index: 1100;
-    transform: translateX(100%);
-    transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+    transition: right 0.32s cubic-bezier(0.4,0,0.2,1);
     display: flex;
     flex-direction: column;
     overflow: hidden;
   }
 
   .mobile-nav-drawer.is-open {
-    transform: translateX(0);
+    right: 0;
   }
 
   /* ── Drawer header ── */
