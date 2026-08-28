@@ -297,7 +297,7 @@
 
 .lead-modal-header {
   background: linear-gradient(135deg, #6c47ff 0%, #00d4ff 100%);
-  padding: 24px 48px 20px 28px;
+  padding: 24px 72px 20px 28px;
   position: relative;
 }
 
@@ -516,7 +516,8 @@
   #leadCaptureFAB { bottom: 20px; right: 16px; font-size: 12px; padding: 12px 16px; }
   #panel-visitorAnalytics .analytics-grid { grid-template-columns: repeat(2, 1fr); }
   .lead-modal-box { border-radius: 16px; }
-  .lead-modal-header, .lead-modal-body { padding: 20px; }
+  .lead-modal-header { padding: 20px 72px 20px 20px; }
+  .lead-modal-body { padding: 20px; }
 }
 
 @media (max-width: 480px) {

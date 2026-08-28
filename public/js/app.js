@@ -1043,12 +1043,30 @@ async function openDataDrilldown(type) {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
 
-            // Remove Old Static QR from bottom right
-            const oldQrX = canvas.width * 0.65;
-            const oldQrY = canvas.height * 0.905;
-            const oldQrSize = canvas.width * 0.135;
+            // Sample the background color from the bottom bar
+            const sampleX = canvas.width * 0.5;
+            const sampleY = canvas.height * 0.95;
+            const pixelData = ctx.getImageData(sampleX, sampleY, 1, 1).data;
+            ctx.fillStyle = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`;
+
+            // Overwrite the old QR area with the sampled background color
+            const oldQrX = canvas.width * 0.60;
+            const oldQrY = canvas.height * 0.88;
+            const eraseWidth = canvas.width * 0.40;
+            const eraseHeight = canvas.height * 0.12;
+            ctx.fillRect(oldQrX, oldQrY, eraseWidth, eraseHeight);
+
+            // Draw "Bharat Warriors" text exactly in the old QR space
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const textX = canvas.width * 0.82;
+
+            ctx.font = 'bold ' + (canvas.width * 0.055) + 'px sans-serif';
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(oldQrX, oldQrY, oldQrSize, oldQrSize);
+            ctx.fillText('Bharat', textX, canvas.height * 0.92);
+
+            ctx.fillStyle = '#e8f334'; // Bright yellow matching the reference
+            ctx.fillText('Warriors', textX, canvas.height * 0.97);
 
             // Draw New Dynamic QR near HOW IT WORKS
             const qrWidth = canvas.width * 0.166;
@@ -3698,12 +3716,30 @@ function submitRegistration() {
             }
 
             if (qrCanvas) {
-                // Remove Old Static QR from bottom right
-                const oldQrX = canvas.width * 0.65;
-                const oldQrY = canvas.height * 0.905;
-                const oldQrSize = canvas.width * 0.135;
+                // Sample the background color from the bottom bar
+                const sampleX = canvas.width * 0.5;
+                const sampleY = canvas.height * 0.95;
+                const pixelData = ctx.getImageData(sampleX, sampleY, 1, 1).data;
+                ctx.fillStyle = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`;
+
+                // Overwrite the old QR area with the sampled background color
+                const oldQrX = canvas.width * 0.60;
+                const oldQrY = canvas.height * 0.88;
+                const eraseWidth = canvas.width * 0.40;
+                const eraseHeight = canvas.height * 0.12;
+                ctx.fillRect(oldQrX, oldQrY, eraseWidth, eraseHeight);
+
+                // Draw "Bharat Warriors" text exactly in the old QR space
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                const textX = canvas.width * 0.82;
+
+                ctx.font = 'bold ' + (canvas.width * 0.055) + 'px sans-serif';
                 ctx.fillStyle = '#ffffff';
-                ctx.fillRect(oldQrX, oldQrY, oldQrSize, oldQrSize);
+                ctx.fillText('Bharat', textX, canvas.height * 0.92);
+
+                ctx.fillStyle = '#e8f334'; // Bright yellow matching the reference
+                ctx.fillText('Warriors', textX, canvas.height * 0.97);
 
                 // Draw New Dynamic QR near HOW IT WORKS
                 const qrWidth = canvas.width * 0.166;

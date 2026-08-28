@@ -1,236 +1,3 @@
-// Reusable tracking loader
-let trackingConfig = null;
-
-async function loadTrackingConfig() {
-    if(trackingConfig) return trackingConfig;
-    try {
-        const res = await fetch('/api/client-config');
-        trackingConfig = await res.json();
-        return trackingConfig;
-    } catch(e) {
-        console.error('Tracking config failed', e);
-        return {};
-    }
-}
-
-function initHotjar(hjid) {
-    if(!hjid || hjid.includes('WAITING')) return;
-    (function(h,o,t,j,a,r){
-        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-        h._hjSettings={hjid:hjid,hjsv:6};
-        a=o.getElementsByTagName('head')[0];
-        r=o.createElement('script');r.async=1;
-        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-        a.appendChild(r);
-    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-}
-
-function initSnapchat(pixelId) {
-    if(!pixelId || pixelId.includes('WAITING')) return;
-    (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function()
-    {a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};
-    a.queue=[];var s='script';r=t.createElement(s);r.async=!0;
-    r.src=n;var u=t.getElementsByTagName(s)[0];
-    u.parentNode.insertBefore(r,u);})(window,document,
-    'https://sc-static.net/scevent.min.js');
-    snaptr('init', pixelId);
-    snaptr('track', 'PAGE_VIEW');
-}
-
-function initPinterest(tagId) {
-    if(!tagId || tagId.includes('WAITING')) return;
-    !function(e){if(!window.pintrk){window.pintrk=function(){
-    window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var
-    n=window.pintrk;n.queue=[],n.version="3.0";var
-    t=document.createElement("script");t.async=!0,t.src=e;var
-    r=document.getElementsByTagName("script")[0];
-    r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
-    pintrk('load', tagId);
-    pintrk('page');
-}
-
-function initMicrosoftUET(tagId) {
-    if(!tagId || tagId.includes('WAITING')) return;
-    (function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:tagId};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");
-}
-
-function initGoogleAds(tagId) {
-    if(!tagId || tagId.includes('WAITING')) return;
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${tagId}`;
-    document.head.appendChild(script);
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', tagId);
-}
-
-function initTikTok(pixelId) {
-    if(!pixelId || pixelId.includes('WAITING')) return;
-    !function (w, d, t) {
-        w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=i+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
-        ttq.load(pixelId);
-        ttq.page();
-    }(window, document, 'ttq');
-}
-
-function initCallRail(companyId) {
-    if(!companyId || companyId.includes('WAITING')) return;
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://cdn.callrail.com/companies/${companyId}/12/swap.js`;
-    document.head.appendChild(script);
-}
-
-window.addEventListener('consent_updated', async () => {
-    const config = await loadTrackingConfig();
-    
-    // Only load if marketing consent is granted
-    try {
-        const consent = JSON.parse(localStorage.getItem('rw_consent_v2') || '{}');
-        if(consent.marketing) {
-            initHotjar(config.VITE_HOTJAR_ID);
-            initSnapchat(config.VITE_SNAPCHAT_PIXEL);
-            initPinterest(config.VITE_PINTEREST_TAG);
-            initMicrosoftUET(config.VITE_MICROSOFT_UET);
-            initGoogleAds('AW-' + config.GOOGLE_ADS_REMARKETING_ID);
-            initTikTok(config.VITE_TIKTOK_PIXEL);
-            initCallRail(config.VITE_CALLRAIL_ID);
-        }
-    } catch(e) {}
-});
-
-
-/* ----- BUNDLE SEPARATOR ----- */
-
-        
-        function updateLanguageUI(lang) {
-            const langNames = {
-                'en': 'English', 'hi': 'Hindi', 'kn': 'Kannada', 'ta': 'Tamil',
-                'te': 'Telugu', 'mr': 'Marathi', 'gu': 'Gujarati', 'bn': 'Bengali'
-            };
-            const langName = langNames[lang] || 'English';
-            
-            const welcomeImg = document.getElementById('welcomeImage');
-            if (welcomeImg) welcomeImg.src = '/og-image-' + langName + '.webp';
-            
-            const qrPosterImg = document.getElementById('qrModalPosterImg');
-            if (qrPosterImg) qrPosterImg.src = '/og-image-' + langName + '.webp';
-
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if (btn.id === 'lang-btn-' + lang) {
-                    btn.style.border = '2px solid var(--primary-color)';
-                    btn.style.background = 'var(--primary-color)';
-                    btn.style.color = '#fff';
-                } else {
-                    btn.style.border = '2px solid var(--card-border)';
-                    btn.style.background = 'transparent';
-                    btn.style.color = 'var(--text-secondary)';
-                }
-            });
-            
-            const langSelect = document.getElementById('langSelector');
-            if (langSelect) langSelect.value = lang;
-        }
-
-        i18next
-            .use(i18nextHttpBackend)
-            .use(i18nextBrowserLanguageDetector)
-            .init({
-                fallbackLng: 'en',
-                debug: false,
-                backend: {
-                    loadPath: '/locales/{{lng}}/common.json',
-                },
-                detection: {
-                    order: ['localStorage'],
-                    lookupLocalStorage: 'selectedLang',
-                    caches: ['localStorage'],
-                }
-            }, function (err, t) {
-                if (err) return console.error(err);
-
-                window.t = i18next.t.bind(i18next);
-                
-                const currentLang = (i18next.language || 'en').split('-')[0];
-                updateLanguageUI(currentLang);
-                applyTranslations();
-            });
-
-        window.changeLanguage = function (lang) {
-            i18next.changeLanguage(lang, (err, t) => {
-                if (err) return console.log('something went wrong loading', err);
-                localStorage.setItem('selectedLang', lang);
-                updateLanguageUI(lang);
-                applyTranslations();
-            });
-        };
-
-        let translationQueue = [];
-        let translationTimer = null;
-
-window.applyTranslations = function () {
-            const currentLang = i18next.language ? i18next.language.split('-')[0] : 'en';
-
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-
-                let enText = i18next.getResource('en', 'translation', key);
-                if (!enText) enText = key;
-
-                const translation = i18next.t(key);
-                const hasTranslation = i18next.getResource(currentLang, 'translation', key) !== undefined;
-
-                const textToDisplay = hasTranslation ? translation : enText;
-
-                if (textToDisplay && textToDisplay !== key || !hasTranslation) {
-                    if (el.tagName === 'INPUT' && (el.type === 'submit' || el.type === 'button')) {
-                        el.value = textToDisplay;
-                    } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                        el.placeholder = textToDisplay;
-                    } else {
-                        el.innerText = textToDisplay;
-                    }
-                }
-
-                if (!hasTranslation) {
-                    if (!translationQueue.find(item => item.key === key)) {
-                        translationQueue.push({ key: key, text: enText });
-                    }
-                }
-            });
-
-            if (translationQueue.length > 0) {
-                clearTimeout(translationTimer);
-                translationTimer = setTimeout(() => {
-                    const keysToTranslate = [...translationQueue];
-                    translationQueue = [];
-
-                    fetch('/api/auto-translate', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ targetLang: currentLang, keys: keysToTranslate })
-                    })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success && data.translations && Object.keys(data.translations).length > 0) {
-                                i18next.addResourceBundle(currentLang, 'translation', data.translations, true, true);
-                                applyTranslations();
-                            }
-                        })
-                        .catch(err => console.error('Auto-translate error:', err));
-                }, 1000);
-            }
-        };
-
-        i18next.on('languageChanged', () => {
-            applyTranslations();
-        });
-    
-
-/* ----- BUNDLE SEPARATOR ----- */
-
 // Register Service Worker for PWA & Push Notifications
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -377,7 +144,7 @@ function openCookieSettings() {
         const isOpen = panel.style.display === 'block';
         panel.style.display = isOpen ? 'none' : 'block';
         const btn = document.getElementById('cookieSettingsToggle');
-        if (btn) btn.textContent = isOpen ? 'Manage â–¾' : 'Manage â–´';
+        if (btn) btn.textContent = isOpen ? 'Manage ▾' : 'Manage ▴';
     }
 }
 
@@ -454,7 +221,7 @@ function trackPageView(page) {
     }
 }
 
-// Reusable Global event tracker â€” call this from anywhere in app.js
+// Reusable Global event tracker — call this from anywhere in app.js
 function trackEvent(eventName, params) {
     if (!analyticsConsent) return;
     
@@ -618,7 +385,7 @@ async function initVisitorTracking() {
         user_agent:       navigator.userAgent
     };
 
-    // Fire and forget â€” silent fail so it never blocks the page
+    // Fire and forget — silent fail so it never blocks the page
     fetch('/api/visitor/track', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -876,16 +643,16 @@ async function loadEmailLeads() {
             const getStatus = (dayIndex) => {
                 // campaigns are ordered by delay_days: 0=day0, 1=day7, 2=day15
                 const log = emails[dayIndex];
-                if (!log) return `<span class="lead-status-badge pending">â€”</span>`;
+                if (!log) return `<span class="lead-status-badge pending">—</span>`;
                 const cls = log.status === 'sent' ? 'sent' : log.status === 'failed' ? 'failed' : log.status === 'skipped' ? 'skipped' : 'pending';
-                const icons = { sent: 'âœ“', failed: 'âœ—', pending: 'â³', skipped: 'â€”' };
+                const icons = { sent: '✓', failed: '✗', pending: '⏳', skipped: '—' };
                 return `<span class="lead-status-badge ${cls}">${icons[cls] || '?'} ${log.status}</span>`;
             };
-            const date = lead.created_at ? new Date(lead.created_at).toLocaleDateString('en-IN') : 'â€”';
+            const date = lead.created_at ? new Date(lead.created_at).toLocaleDateString('en-IN') : '—';
             return `<tr>
-                <td>${lead.full_name || 'â€”'}</td>
-                <td style="font-size:0.85rem;">${lead.email || 'â€”'}</td>
-                <td>${lead.phone || 'â€”'}</td>
+                <td>${lead.full_name || '—'}</td>
+                <td style="font-size:0.85rem;">${lead.email || '—'}</td>
+                <td>${lead.phone || '—'}</td>
                 <td><small style="background:rgba(108,71,255,0.1);padding:2px 8px;border-radius:50px;color:#a78bfa;">${lead.source || 'website'}</small></td>
                 <td>${getStatus(0)}</td>
                 <td>${getStatus(1)}</td>
@@ -940,6 +707,60 @@ async function loadEmailLeads() {
             }
         } catch (e) { console.error('Failed to load lead funnel', e); }
     }
+
+    async function loadReferralAnalytics() {
+        const tbody = document.getElementById('adminReferralAnalyticsTableBody');
+        if (!tbody) return;
+        
+        try {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center">Loading referral analytics... <i class="fas fa-spinner fa-spin"></i></td></tr>';
+            
+            const res = await fetch('/api/admin/analytics/referrals', { headers: getAdminAuthHeaders() });
+            const result = await res.json();
+            
+            if (result.success && result.data && result.data.referral_rewards) {
+                const breakdown = result.data.referral_rewards;
+                const tiers = [
+                    { level: 1, points: "9" },
+                    { level: 2, points: "8" },
+                    { level: 3, points: "7" },
+                    { level: 4, points: "6" },
+                    { level: 5, points: "5" },
+                    { level: 6, points: "4" },
+                    { level: 7, points: "3" }
+                ];
+                
+                let html = '';
+                let totalCount = 0;
+                let totalPoints = 0;
+                
+                tiers.forEach(t => {
+                    const data = breakdown[t.points] || { count: 0, points: 0 };
+                    totalCount += data.count;
+                    totalPoints += data.points;
+                    html += `<tr>
+                        <td><strong>Level ${t.level}</strong> (${t.points} pts)</td>
+                        <td>${data.count}</td>
+                        <td>${data.points}</td>
+                    </tr>`;
+                });
+                
+                html += `<tr style="background: rgba(255,255,255,0.05); font-weight: bold;">
+                    <td>Total</td>
+                    <td>${totalCount}</td>
+                    <td>${totalPoints}</td>
+                </tr>`;
+                
+                tbody.innerHTML = html;
+            } else {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Failed to load analytics</td></tr>';
+            }
+        } catch (e) {
+            console.error('Error loading referral analytics:', e);
+            tbody.innerHTML = `<tr><td colspan="3" class="text-center text-danger">Error: ${e.message}</td></tr>`;
+        }
+    }
+
 async function openDataDrilldown(type) {
     if (type === 'conversion') return; // Just a calculated ratio, nothing to drill down
     
@@ -1222,12 +1043,37 @@ async function openDataDrilldown(type) {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
 
-            const qrWidth = canvas.width * 0.125;
+            // Sample the background color from the bottom bar
+            const sampleX = canvas.width * 0.5;
+            const sampleY = canvas.height * 0.95;
+            const pixelData = ctx.getImageData(sampleX, sampleY, 1, 1).data;
+            ctx.fillStyle = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`;
+
+            // Overwrite the old QR area with the sampled background color
+            const oldQrX = canvas.width * 0.60;
+            const oldQrY = canvas.height * 0.88;
+            const eraseWidth = canvas.width * 0.40;
+            const eraseHeight = canvas.height * 0.12;
+            ctx.fillRect(oldQrX, oldQrY, eraseWidth, eraseHeight);
+
+            // Draw "Bharat Warriors" text exactly in the old QR space
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const textX = canvas.width * 0.82;
+
+            ctx.font = 'bold ' + (canvas.width * 0.055) + 'px sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('Bharat', textX, canvas.height * 0.92);
+
+            ctx.fillStyle = '#e8f334'; // Bright yellow matching the reference
+            ctx.fillText('Warriors', textX, canvas.height * 0.97);
+
+            // Draw New Dynamic QR near HOW IT WORKS
+            const qrWidth = canvas.width * 0.166;
             const qrHeight = qrWidth;
-            const x = canvas.width - (canvas.width * 0.23) - qrWidth;
-            const y = canvas.height - (canvas.height * 0.018) - qrHeight;
-            
-            const padding = canvas.width * 0.01; 
+            const x = canvas.width * 0.654;
+            const y = canvas.height * 0.722;
+            const padding = canvas.width * 0.01;
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(x - padding, y - padding, qrWidth + (padding*2), qrHeight + (padding*2));
             ctx.drawImage(qrCanvas, x, y, qrWidth, qrHeight);
@@ -1325,7 +1171,7 @@ async function openDataDrilldown(type) {
         const map = L.map('evMap').setView([12.9716, 77.5946], 12);
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'â”¬âŒ OpenStreetMap'
+            attribution: '┬⌐ OpenStreetMap'
         }).addTo(map);
         
         const stations = [
@@ -1469,7 +1315,7 @@ async function openDataDrilldown(type) {
         const ogTitle = document.querySelector('meta[property="og:title"]');
         if (ogTitle) ogTitle.content = titleStr;
 
-        // Score page is public â€” no login check
+        // Score page is public — no login check
         if (activeTab === 'admin' && !(sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt'))) {
             activeTab = 'admin-login';
             checkAdminExists();
@@ -1535,12 +1381,13 @@ async function openDataDrilldown(type) {
     // ===== SESSION =====
     function loadSession() {
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('ref')) {
+        if (urlParams.get('ref')) {
+            // Bypass session loading and clear existing session so the registration form is shown
             localStorage.removeItem('riderId');
             localStorage.removeItem('sessionId');
             return;
         }
-        
+
         const riderId = localStorage.getItem('riderId');
         if (riderId) fetchRiderProfile(riderId);
     }
@@ -2964,7 +2811,7 @@ function submitRegistration() {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
 
-        // Always pick up the referral code â€” either from hidden input (auto-filled via link)
+        // Always pick up the referral code — either from hidden input (auto-filled via link)
         // or from the manual "Yes" radio selection, or from localStorage
         const hiddenCodeEl = document.getElementById('regReferralCode');
         const hiddenCode = hiddenCodeEl ? hiddenCodeEl.value.trim().toUpperCase() : '';
@@ -3102,11 +2949,68 @@ function submitRegistration() {
 
                 let msgHtml = `
                     <div style="background:#eaf8f1; padding:0.75rem; border-radius:8px; border:1px solid #c3e6cf; text-align:left; margin-bottom:10px;">
+                        <canvas id="whatsappBannerCanvas" style="display:none;"></canvas>
                         <img src="${bannerImage}" alt="Share Image" id="whatsappBannerImage" style="width:100%; border-radius:4px; margin-bottom:8px;">
                         <div style="white-space: pre-wrap; font-family: sans-serif; font-size: 0.9rem; color: #333;">${actualText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#007bff; font-weight:600; text-decoration:underline;">$1</a>')}</div>
                     </div>
                 `;
                 document.getElementById('whatsappMsgPreview').innerHTML = msgHtml;
+
+                // Dynamically render the banner with exact QR
+                const canvas = document.getElementById('whatsappBannerCanvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.onload = function() {
+                    canvas.width = img.naturalWidth || img.width;
+                    canvas.height = img.naturalHeight || img.height;
+                    ctx.drawImage(img, 0, 0);
+
+                    const tempDiv = document.createElement('div');
+                    let qrCanvas = null;
+                    if (typeof QRCode !== 'undefined') {
+                        try {
+                            // Extract exact URL from the generated text or build it exactly
+                            const baseUrl = window.location.origin + (window.location.pathname === '/' ? '' : window.location.pathname);
+                            const qrUrl = baseUrl + '/?ref=' + result.referralCode;
+                            
+                            new QRCode(tempDiv, {
+                                text: qrUrl,
+                                width: 200,
+                                height: 200,
+                                colorDark: "#000000",
+                                colorLight: "#ffffff",
+                                correctLevel: QRCode.CorrectLevel.H
+                            });
+                            qrCanvas = tempDiv.querySelector('canvas');
+                        } catch(err) { console.error('QR Gen error:', err); }
+                    }
+
+                    if (qrCanvas) {
+                        // Remove Old Static QR from bottom right
+                        const oldQrX = canvas.width * 0.65;
+                        const oldQrY = canvas.height * 0.905;
+                        const oldQrSize = canvas.width * 0.135;
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(oldQrX, oldQrY, oldQrSize, oldQrSize);
+
+                        // Draw New Dynamic QR near HOW IT WORKS
+                        const qrWidth = canvas.width * 0.166;
+                        const qrHeight = qrWidth;
+                        const x = canvas.width * 0.654;
+                        const y = canvas.height * 0.722;
+                        const padding = canvas.width * 0.01;
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(x - padding, y - padding, qrWidth + (padding*2), qrHeight + (padding*2));
+                        ctx.drawImage(qrCanvas, x, y, qrWidth, qrHeight);
+                        
+                        const finalDataUrl = canvas.toDataURL('image/png', 1.0);
+                        document.getElementById('whatsappBannerImage').src = finalDataUrl;
+                        window.lastGeneratedWhatsAppPosterUrl = finalDataUrl;
+                    }
+                };
+                img.src = '/' + bannerImage;
+
 
                 const btn = document.getElementById('whatsappSendLink');
                 btn.href = '#';
@@ -3116,7 +3020,7 @@ function submitRegistration() {
                     }
                 };
 
-                showToast((window.t ? window.t('msg_16____registration') : 'ðŸŽ‰ Registration successful! Welcome to Road Warrior Pro!'), 'success');
+                showToast((window.t ? window.t('msg_16____registration') : '🎉 Registration successful! Welcome to Road Warrior Pro!'), 'success');
             } else {
                 showToast((window.t ? window.t('msg_16_registration_fa') : 'Registration failed: ') + (result.message || result.error || 'Unknown error'), 'error');
             }
@@ -3175,21 +3079,21 @@ function submitRegistration() {
         
         let msg = '';
         if (lang === 'hi') {
-            msg = `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${code}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
+            msg = `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${code}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
         } else if (lang === 'kn') {
-            msg = `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${code}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
+            msg = `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${code}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
         } else if (lang === 'ta') {
-            msg = `Vanakkam ${fullName}! Ungal pathivu mudinthathu. Ungal referral code: ${code}.\n\nIntha link-ai matravargalukku anuppungal, avargal login/register seiyum pothu neengal points peruveergal: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
+            msg = `Vanakkam ${fullName}! Ungal pathivu mudinthathu. Ungal referral code: ${code}.\n\nIntha link-ai matravargalukku anuppungal, avargal login/register seiyum pothu neengal points peruveergal: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
         } else if (lang === 'te') {
-            msg = `Namaskaram ${fullName}! Mee registration poorhtayyindi. Mee referral code: ${code}.\n\nEe link nu itarulaku pampandi, varu login/register ayinapudu meeru points pondutaru: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
+            msg = `Namaskaram ${fullName}! Mee registration poorhtayyindi. Mee referral code: ${code}.\n\nEe link nu itarulaku pampandi, varu login/register ayinapudu meeru points pondutaru: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
         } else if (lang === 'mr') {
-            msg = `Namaskar ${fullName}! Tumchi nondani zali aahe. Tumcha referral code: ${code}.\n\nHi link itaranna pathwa, ani te jevha login/register kartil tevha tumhala points miltil: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
+            msg = `Namaskar ${fullName}! Tumchi nondani zali aahe. Tumcha referral code: ${code}.\n\nHi link itaranna pathwa, ani te jevha login/register kartil tevha tumhala points miltil: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
         } else if (lang === 'gu') {
-            msg = `Namaste ${fullName}! Tamaru registration thai gayu chhe. Tamaro referral code chhe: ${code}.\n\nAa link anya loko ne moklo, ane jyare teo login/register karshe tyare tamne points malshe: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
+            msg = `Namaste ${fullName}! Tamaru registration thai gayu chhe. Tamaro referral code chhe: ${code}.\n\nAa link anya loko ne moklo, ane jyare teo login/register karshe tyare tamne points malshe: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
         } else if (lang === 'bn') {
-            msg = `Nomoskar ${fullName}! Apnar registration somponno hoyeche. Apnar referral code holo: ${code}.\n\nEi link ti onnoder pathan, ebong tara jokhon login/register korbe tokhon apni points paben: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
+            msg = `Nomoskar ${fullName}! Apnar registration somponno hoyeche. Apnar referral code holo: ${code}.\n\nEi link ti onnoder pathan, ebong tara jokhon login/register korbe tokhon apni points paben: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
         } else {
-            msg = `Welcome ${fullName}! You are now registered. Your referral code is ${code}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV ðŸï¸âš¡`;
+            msg = `Welcome ${fullName}! You are now registered. Your referral code is ${code}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
         }
         return msg;
     }
@@ -3211,14 +3115,14 @@ function submitRegistration() {
                 const tags = (rider.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
                 result.innerHTML = `
                     <div class="score-display">
-                        <div style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:0.5rem;">Welcome back, <strong>${rider.fullName}</strong>! ðŸŽ‰</div>
+                        <div style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:0.5rem;">Welcome back, <strong>${rider.fullName}</strong>! 🎉</div>
                         <div class="score-big">${pts}</div>
                         <div style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:1rem;">Total Points</div>
                         <div style="display:flex; gap:1rem; justify-content:center; margin-bottom:1rem;">
                             <div class="stat-box" style="padding:0.75rem 1.5rem; flex:1; text-align:center;"><div style="font-size:1.5rem; font-weight:800; color:var(--primary-color);">${refs}</div><div style="font-size:0.75rem; color:var(--text-secondary);">Referrals</div></div>
                             <div class="stat-box" style="padding:0.75rem 1.5rem; flex:1; text-align:center;"><div style="font-size:1.5rem; font-weight:800; color:var(--secondary-color);">${rider.city}</div><div style="font-size:0.75rem; color:var(--text-secondary);">City</div></div>
                         </div>
-                        <div class="referral-code-badge" style="margin:0 auto; display:inline-flex;">ðŸŽ« ${code}</div>
+                        <div class="referral-code-badge" style="margin:0 auto; display:inline-flex;">🎫 ${code}</div>
                         <div style="margin-top:0.75rem;">${tags}</div>
                         <a href="#" onclick="window.shareWithImage(event, '${code}', '${rider.fullName}')" class="btn btn-success w-100" style="background:#25D366; border-color:#25D366; margin-top:1rem;">
                             <i class="fab fa-whatsapp"></i> Share my referral code
@@ -3278,11 +3182,11 @@ function submitRegistration() {
         const top10 = riders.slice(0, 10);
         tbody.innerHTML = top10.map((r, idx) => {
             const rn = idx + 1;
-            const medal = rn === 1 ? 'ðŸ¥‡' : rn === 2 ? 'ðŸ¥ˆ' : rn === 3 ? 'ðŸ¥‰' : rn;
+            const medal = rn === 1 ? '🥇' : rn === 2 ? '🥈' : rn === 3 ? '🥉' : rn;
             const isSelf = currentUser && r.id === currentUser.id;
             const rowStyle = isSelf ? `style="background:rgba(59, 130, 246, 0.03); font-weight:bold; border-left:3px solid var(--primary-color);"` : '';
         const tags = (r.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
-            return `<tr ${rowStyle}><td>${medal}</td><td>${r.fullName}${isSelf ? ` <strong>(You)</strong>` : ''}</td><td>${r.city}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td>${tags || 'â€”'}</td></tr>`;
+            return `<tr ${rowStyle}><td>${medal}</td><td>${r.fullName}${isSelf ? ` <strong>(You)</strong>` : ''}</td><td>${r.city}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td>${tags || '—'}</td></tr>`;
         }).join('');
         
         // Also update the Top Riders slider on the home page if it's there
@@ -3311,7 +3215,7 @@ function submitRegistration() {
             const platform = (rider.platform && rider.platform !== 'Other') ? rider.platform : 'Delivery';
             return `
                 <div style="flex: 0 0 100%; width: 100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 0 2rem; box-sizing: border-box;">
-                    <div style="font-size:4rem; margin-bottom:15px; text-shadow: 0 4px 15px rgba(249,115,22,0.4);">ðŸ†</div>
+                    <div style="font-size:4rem; margin-bottom:15px; text-shadow: 0 4px 15px rgba(249,115,22,0.4);">🏆</div>
                     <h3 style="font-family:'Outfit',sans-serif; color:var(--text-primary); font-size:2rem; margin-bottom:10px;">#${rank} Ranked Rider</h3>
                     <div style="font-size:2.5rem; font-weight:900; color:var(--primary-color); margin-bottom:20px; letter-spacing: 1px;">${rider.fullName}</div>
                     <div style="display:flex; justify-content:center; gap:30px; font-size:1.25rem; color:var(--text-secondary); margin-bottom:20px; flex-wrap: wrap;">
@@ -3354,10 +3258,10 @@ function submitRegistration() {
         const del = currentUser ? (currentUser.totalDeliveries || 0) : 0;
         const refs = currentUser ? (currentUser.referrals || 0) : 0;
         const achievements = [
-            { title: 'Referral Starter', icon: 'ðŸš€', desc: 'Refer your first rider', unlocked: refs >= 1 },
-            { title: 'Referral Master', icon: 'â­', desc: 'Refer 10 riders', unlocked: refs >= 10 },
-            { title: 'Referral Champion', icon: 'ðŸ’¯', desc: 'Refer 25 riders', unlocked: refs >= 25 },
-            { title: 'Referral King', icon: 'ðŸŒŸ', desc: 'Refer 50 riders', unlocked: refs >= 50 }
+            { title: 'Referral Starter', icon: '🚀', desc: 'Refer your first rider', unlocked: refs >= 1 },
+            { title: 'Referral Master', icon: '⭐', desc: 'Refer 10 riders', unlocked: refs >= 10 },
+            { title: 'Referral Champion', icon: '💯', desc: 'Refer 25 riders', unlocked: refs >= 25 },
+            { title: 'Referral King', icon: '🌟', desc: 'Refer 50 riders', unlocked: refs >= 50 }
         ];
         grid.innerHTML = achievements.map(a => `
             <div style="text-align:center; padding:1.5rem 1rem; border:1px solid var(--card-border); border-radius:var(--border-radius-md); background:rgba(255,255,255,0.01); ${a.unlocked ? '' : 'filter:grayscale(0.8); opacity:0.5;'}">
@@ -3759,6 +3663,24 @@ function submitRegistration() {
         let generatedFile = null;
 
         try {
+            // Use pre-generated exact poster if available from post-registration
+            if (window.lastGeneratedWhatsAppPosterUrl) {
+                const arr = window.lastGeneratedWhatsAppPosterUrl.split(',');
+                const mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]);
+                let n = bstr.length;
+                const u8arr = new Uint8Array(n);
+                while(n--) { u8arr[n] = bstr.charCodeAt(n); }
+                const blob = new Blob([u8arr], {type: mime});
+                generatedFile = new File([blob], 'roadwarrior-referral.png', { type: 'image/png' });
+                
+                if (navigator.canShare && navigator.canShare({ files: [generatedFile] })) {
+                    await navigator.share({ files: [generatedFile], title: 'Join Road Warrior EV', text: text });
+                    if (typeof trackEvent === 'function') trackEvent('share_with_image', { success: true });
+                    return;
+                }
+            }
+            
             // Find an already loaded poster image from the DOM to avoid async fetch/onload
             let img = document.getElementById('welcomeImage') || document.getElementById('qrModalPosterImg');
             
@@ -3778,8 +3700,11 @@ function submitRegistration() {
             let qrCanvas = null;
             if (typeof QRCode !== 'undefined') {
                 try {
+                    // Use EXACT same url format
+                    const baseUrl = window.location.origin + (window.location.pathname === '/' ? '' : window.location.pathname);
+                    const qrUrl = baseUrl + '/?ref=' + code;
                     new QRCode(tempDiv, {
-                        text: window.location.origin + "/?ref=" + code,
+                        text: qrUrl,
                         width: 200,
                         height: 200,
                         colorDark: "#000000",
@@ -3791,12 +3716,37 @@ function submitRegistration() {
             }
 
             if (qrCanvas) {
-                const qrWidth = canvas.width * 0.125;
+                // Sample the background color from the bottom bar
+                const sampleX = canvas.width * 0.5;
+                const sampleY = canvas.height * 0.95;
+                const pixelData = ctx.getImageData(sampleX, sampleY, 1, 1).data;
+                ctx.fillStyle = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`;
+
+                // Overwrite the old QR area with the sampled background color
+                const oldQrX = canvas.width * 0.60;
+                const oldQrY = canvas.height * 0.88;
+                const eraseWidth = canvas.width * 0.40;
+                const eraseHeight = canvas.height * 0.12;
+                ctx.fillRect(oldQrX, oldQrY, eraseWidth, eraseHeight);
+
+                // Draw "Bharat Warriors" text exactly in the old QR space
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                const textX = canvas.width * 0.82;
+
+                ctx.font = 'bold ' + (canvas.width * 0.055) + 'px sans-serif';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText('Bharat', textX, canvas.height * 0.92);
+
+                ctx.fillStyle = '#e8f334'; // Bright yellow matching the reference
+                ctx.fillText('Warriors', textX, canvas.height * 0.97);
+
+                // Draw New Dynamic QR near HOW IT WORKS
+                const qrWidth = canvas.width * 0.166;
                 const qrHeight = qrWidth;
-                const x = canvas.width - (canvas.width * 0.23) - qrWidth;
-                const y = canvas.height - (canvas.height * 0.018) - qrHeight;
-                
-                const padding = canvas.width * 0.01; 
+                const x = canvas.width * 0.654;
+                const y = canvas.height * 0.722;
+                const padding = canvas.width * 0.01;
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(x - padding, y - padding, qrWidth + (padding*2), qrHeight + (padding*2));
                 ctx.drawImage(qrCanvas, x, y, qrWidth, qrHeight);
@@ -3875,6 +3825,7 @@ function submitRegistration() {
         else if (tab === 'botIntelligence') loadBotIntelligence();
         else if (tab === 'emailLeads') loadEmailLeads();
         else if (tab === 'leadFunnel') loadLeadFunnel();
+        else if (tab === 'referralAnalytics') loadReferralAnalytics();
         else if (tab === 'premiumMembers') {
             if (typeof window.renderAdminPremiumMembers === 'function') {
                 window.renderAdminPremiumMembers();
@@ -4111,10 +4062,112 @@ function submitRegistration() {
                     }
                     return r;
                 });
-                document.getElementById('adminTotalRiders').textContent = allAdminRiders.length;
-                document.getElementById('adminEVRiders').textContent = allAdminRiders.filter(r => (r.vehicleType || '').toLowerCase().includes('electric')).length;
-                document.getElementById('adminHotLeads').textContent = allAdminRiders.filter(r => r.openToEV === 'Yes' || r.openToEV === 'Need more information' || (r.tags || []).includes('Hot EV Lead')).length;
-                document.getElementById('adminInsLeads').textContent = allAdminRiders.filter(r => r.hasAccidentalInsurance === 'No' || r.hasAccidentalInsurance === 'Not sure' || r.hasHealthInsurance === 'No' || r.hasHealthInsurance === 'Not sure' || (r.tags || []).includes('Insurance Lead')).length;
+                                document.getElementById('adminTotalRiders').textContent = allAdminRiders.length;
+                
+                // Fuel statistics
+                let evCount = 0, petrolCount = 0, dieselCount = 0, cngCount = 0;
+                allAdminRiders.forEach(r => {
+                    const vt = (r.vehicleType || '').toLowerCase();
+                    const ft = (r.fuelType || '').toLowerCase();
+                    if (vt.includes('electric') || vt.includes('ev') || ft.includes('electric') || ft.includes('ev')) evCount++;
+                    else if (vt.includes('petrol') || ft.includes('petrol')) petrolCount++;
+                    else if (vt.includes('diesel') || ft.includes('diesel')) dieselCount++;
+                    else if (vt.includes('cng') || ft.includes('cng') || vt.includes('lpg') || ft.includes('lpg')) cngCount++;
+                });
+                
+                const elEV = document.getElementById('adminEVRiders'); if (elEV) elEV.textContent = evCount;
+                const elPetrol = document.getElementById('adminPetrolRiders'); if (elPetrol) elPetrol.textContent = petrolCount;
+                const elDiesel = document.getElementById('adminDieselRiders'); if (elDiesel) elDiesel.textContent = dieselCount;
+                const elCng = document.getElementById('adminCngLpgRiders'); if (elCng) elCng.textContent = cngCount;
+
+                // Hot EV & Insurance Leads (existing definition)
+                const elHotEV = document.getElementById('adminHotLeads');
+                if (elHotEV) elHotEV.textContent = allAdminRiders.filter(r => r.openToEV === 'Yes' || r.openToEV === 'Need more information' || (r.tags || []).includes('Hot EV Lead')).length;
+                
+                const elIns = document.getElementById('adminInsLeads');
+                if (elIns) elIns.textContent = allAdminRiders.filter(r => r.hasAccidentalInsurance === 'No' || r.hasAccidentalInsurance === 'Not sure' || r.hasHealthInsurance === 'No' || r.hasHealthInsurance === 'Not sure' || (r.tags || []).includes('Insurance Lead')).length;
+
+                // Top Referrers & City Stats
+                const elTopRef = document.getElementById('adminTopReferrers');
+                if (elTopRef) elTopRef.textContent = allAdminRiders.filter(r => (r.referrals || 0) > 0).length;
+                
+                const elCity = document.getElementById('adminCityStats');
+                if (elCity) elCity.textContent = new Set(allAdminRiders.map(r => r.city).filter(Boolean)).size;
+
+                // External APIs with safe fallbacks
+                const headers = getAdminAuthHeaders();
+
+                // Visitor Analytics
+                fetch('/api/admin/analytics/overview', { headers }).then(r=>r.json()).then(res => {
+                    const el = document.getElementById('adminVisitorAnalytics');
+                    if (el) el.textContent = (res.success && res.data && res.data.totalVisitors !== undefined) ? res.data.totalVisitors : '-';
+                }).catch(err => {
+                    console.error('Visitor Analytics Error:', err);
+                    const el = document.getElementById('adminVisitorAnalytics'); if (el) el.textContent = '-';
+                });
+                
+                // Email Leads (using website_leads from analytics/leads)
+                fetch('/api/admin/analytics/leads', { headers }).then(r=>r.json()).then(res => {
+                    const el = document.getElementById('adminEmailLeads');
+                    if (el) el.textContent = (res.success && res.data) ? res.data.length : '-';
+                }).catch(err => {
+                    console.error('Email Leads Error:', err);
+                    const el = document.getElementById('adminEmailLeads'); if (el) el.textContent = '-';
+                });
+
+                // Bot Intelligence
+                fetch('/api/admin/analytics/bot-intelligence', { headers }).then(r=>r.json()).then(res => {
+                    const el = document.getElementById('adminBotIntelligence');
+                    if (el) el.textContent = (res.success && res.data) ? ((res.data.aiBotCount || 0) + (res.data.searchBotCount || 0) + (res.data.datacenterCount || 0)) : '-';
+                }).catch(err => {
+                    console.error('Bot Intelligence Error:', err);
+                    const el = document.getElementById('adminBotIntelligence'); if (el) el.textContent = '-';
+                });
+                
+                // Lead Funnel
+                fetch('/api/admin/analytics/leads-funnel', { headers }).then(r=>r.json()).then(res => {
+                    const el = document.getElementById('adminLeadFunnel');
+                    if (el) el.textContent = (res.success && res.data && res.data.totalLeads !== undefined) ? res.data.totalLeads : '-';
+                }).catch(err => {
+                    console.error('Lead Funnel Error:', err);
+                    const el = document.getElementById('adminLeadFunnel'); if (el) el.textContent = '-';
+                });
+
+                // Premium Members
+                fetch('/api/admin/memberships', { headers }).then(r=>r.json()).then(res => {
+                    const el = document.getElementById('adminPremiumMembers');
+                    if (el) el.textContent = (res.success && res.memberships) ? res.memberships.length : '-';
+                }).catch(err => {
+                    console.error('Premium Members Error:', err);
+                    const el = document.getElementById('adminPremiumMembers'); if (el) el.textContent = '-';
+                });
+
+                // Referral Analytics (Detailed Breakdown)
+                fetch('/api/admin/analytics/referrals', { headers }).then(r=>r.json()).then(res => {
+                    const el = document.getElementById('adminReferralAnalytics');
+                    if (el) {
+                        if (res.success && res.data && res.data.referral_rewards) {
+                            const b = res.data.referral_rewards;
+                            el.style.fontSize = '0.9rem';
+                            el.style.lineHeight = '1.3';
+                            el.style.textAlign = 'left';
+                            el.innerHTML = `
+                                9pt: ${b['9']?.count || 0} (${b['9']?.points || 0})<br>
+                                8pt: ${b['8']?.count || 0} (${b['8']?.points || 0})<br>
+                                7pt: ${b['7']?.count || 0} (${b['7']?.points || 0})<br>
+                                6pt: ${b['6']?.count || 0} (${b['6']?.points || 0})<br>
+                                5pt: ${b['5']?.count || 0} (${b['5']?.points || 0})<br>
+                                4pt: ${b['4']?.count || 0} (${b['4']?.points || 0})<br>
+                                3pt: ${b['3']?.count || 0} (${b['3']?.points || 0})
+                            `;
+                        } else {
+                            el.textContent = '-';
+                        }
+                    }
+                }).catch(err => {
+                    console.error('Referral Analytics Error:', err);
+                    const el = document.getElementById('adminReferralAnalytics'); if (el) el.textContent = '-';
+                });
 
                 const filterEl = document.getElementById('adminLeadFilter');
                 if (filterEl) filterEl.value = 'ALL';
@@ -4215,7 +4268,7 @@ function submitRegistration() {
         tbody.innerHTML = recentRiders.map(r => {
             const tags = (r.tags || []).map(t => `<span class="tag-pill ${getTagClass(t)}">${t}</span>`).join('');
             const locationLink = (r.latitude && r.longitude) ? `<a href="https://www.google.com/maps?q=${r.latitude},${r.longitude}" target="_blank" style="color: #10b981; font-weight: 600; text-decoration: none;"><i class="fas fa-map-marker-alt"></i> Map (${Math.round(r.location_accuracy || 0)}m)</a>` : '<span class="text-muted">No GPS</span>';
-            return `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || 'â€”'}</td><td>${r.vehicleType || 'â€”'}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td>${locationLink}</td><td>${tags || 'â€”'}</td></tr>`;
+            return `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || '—'}</td><td>${r.vehicleType || '—'}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td>${locationLink}</td><td>${tags || '—'}</td></tr>`;
         }).join('');
     }
 
@@ -4223,7 +4276,7 @@ function submitRegistration() {
         fetch('/api/admin/leads/ev', { headers: getAdminAuthHeaders() }).then(r => r.json()).then(result => {
             const tbody = document.getElementById('evLeadsTableBody');
             if (result.success && result.data.length) {
-                tbody.innerHTML = result.data.map(r => `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || 'â€”'}</td><td>${r.vehicleType || 'â€”'}</td><td><span class="tag-pill tag-hot-ev">${r.openToEV || 'â€”'}</span></td><td>${(r.switchTriggers || []).join(', ') || 'â€”'}</td></tr>`).join('');
+                tbody.innerHTML = result.data.map(r => `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || '—'}</td><td>${r.vehicleType || '—'}</td><td><span class="tag-pill tag-hot-ev">${r.openToEV || '—'}</span></td><td>${(r.switchTriggers || []).join(', ') || '—'}</td></tr>`).join('');
             } else tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No EV leads found</td></tr>';
         });
     }
@@ -4233,12 +4286,12 @@ function submitRegistration() {
             const tbody = document.getElementById('insLeadsTableBody');
             if (result.success && result.data.length) {
                 tbody.innerHTML = result.data.map(r => {
-                    const ac = r.hasAccidentalInsurance || 'â€”';
-                    const hc = r.hasHealthInsurance || 'â€”';
-                    const pp = r.paidOutofPocketAccident || 'â€”';
+                    const ac = r.hasAccidentalInsurance || '—';
+                    const hc = r.hasHealthInsurance || '—';
+                    const pp = r.paidOutofPocketAccident || '—';
                     const acBadge = ac === 'No' ? `<span class="tag-pill tag-insurance">${ac}</span>` : `<span style="color:var(--text-secondary)">${ac}</span>`;
                     const hcBadge = hc === 'No' ? `<span class="tag-pill tag-insurance">${hc}</span>` : `<span style="color:var(--text-secondary)">${hc}</span>`;
-                    return `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || 'â€”'}</td><td>${acBadge}</td><td>${hcBadge}</td><td>${pp === 'Yes' ? '<span class="tag-pill tag-insurance">Yes</span>' : pp}</td></tr>`;
+                    return `<tr><td>${r.fullName}</td><td>${r.city}</td><td>${r.phone || '—'}</td><td>${acBadge}</td><td>${hcBadge}</td><td>${pp === 'Yes' ? '<span class="tag-pill tag-insurance">Yes</span>' : pp}</td></tr>`;
                 }).join('');
             } else tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No insurance leads found</td></tr>';
         });
@@ -4251,10 +4304,10 @@ function submitRegistration() {
                 const tbody = document.getElementById('topReferrersTableBody');
                 tbody.innerHTML = sorted.map((r, i) => {
                     const rn = i + 1;
-                    const medal = rn === 1 ? 'ðŸ¥‡' : rn === 2 ? 'ðŸ¥ˆ' : rn === 3 ? 'ðŸ¥‰' : rn;
+                    const medal = rn === 1 ? '🥇' : rn === 2 ? '🥈' : rn === 3 ? '🥉' : rn;
                     const ms = [];
-                    if (r.milestone10) ms.push('ðŸ… 10'); if (r.milestone25) ms.push('ðŸ† 25'); if (r.milestone50) ms.push('ðŸŽ° 50');
-                    return `<tr><td>${medal}</td><td>${r.fullName}</td><td>${r.city}</td><td style="font-family:monospace; color:var(--primary-color);">${r.referralCode || 'â€”'}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td>${ms.join(' ') || 'â€”'}</td></tr>`;
+                    if (r.milestone10) ms.push('🏅 10'); if (r.milestone25) ms.push('🏆 25'); if (r.milestone50) ms.push('🎰 50');
+                    return `<tr><td>${medal}</td><td>${r.fullName}</td><td>${r.city}</td><td style="font-family:monospace; color:var(--primary-color);">${r.referralCode || '—'}</td><td style="color:var(--secondary-color); font-weight:700;">${r.referrals || 0}</td><td style="color:var(--primary-color); font-weight:700;">${r.totalPoints}</td><td>${ms.join(' ') || '—'}</td></tr>`;
                 }).join('');
             }
         });
@@ -4367,7 +4420,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Update title to be more urgent for exit intent
                 const title = document.getElementById('leadModalTitle');
                 if (title) {
-                    title.innerHTML = 'âš ï¸ Wait! Don\'t leave without your EV Consultation!';
+                    title.innerHTML = '⚠️ Wait! Don\'t leave without your EV Consultation!';
                 }
                 
                 // Show the modal
