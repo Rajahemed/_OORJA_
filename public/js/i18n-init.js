@@ -15,9 +15,9 @@
                 }
             }, function (err, t) {
                 if (err) return console.error(err);
-
-                window.t = i18next.t.bind(i18next);
-
+                window.t = function(key, defaultVal) {
+                    return i18next.t(key, typeof defaultVal === 'string' ? { defaultValue: defaultVal } : undefined) || defaultVal || key;
+                };
                 // Update dropdown to match detected lang
                 const langSelect = document.getElementById('langSelector');
                 if (langSelect) {
