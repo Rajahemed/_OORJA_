@@ -1411,11 +1411,19 @@ async function openDataDrilldown(type) {
     function updateAuthNavbarState() {
         const btn = document.getElementById('loginLogoutBtn');
         
+        // Desktop nav items
         const navScore = document.getElementById('navScore');
         const navDashboard = document.getElementById('navDashboard');
         const navProfile = document.getElementById('navProfile');
         const navHome = document.getElementById('navHome');
         const navAdmin = document.getElementById('navAdmin');
+        
+        // Mobile drawer nav items
+        const mobileNavScore = document.getElementById('mobileNavScoreItem');
+        const mobileNavDashboard = document.getElementById('mobileNavDashboardItem');
+        const mobileNavProfile = document.getElementById('mobileNavProfileItem');
+        const mobileNavHome = document.getElementById('mobileNavHomeItem');
+        const mobileNavLogout = document.getElementById('mobileNavLogoutItem');
 
         if (isLoggedIn) {
             if (btn) {
@@ -1429,6 +1437,12 @@ async function openDataDrilldown(type) {
             if (navProfile) navProfile.parentElement.style.display = '';
             if (navHome) navHome.parentElement.style.display = '';
             if (navAdmin) navAdmin.parentElement.style.display = '';
+            
+            if (mobileNavScore) mobileNavScore.style.display = '';
+            if (mobileNavDashboard) mobileNavDashboard.style.display = '';
+            if (mobileNavProfile) mobileNavProfile.style.display = '';
+            if (mobileNavHome) mobileNavHome.style.display = '';
+            if (mobileNavLogout) mobileNavLogout.style.display = '';
         } else {
             if (btn) {
                 btn.style.display = 'none';
@@ -1439,6 +1453,12 @@ async function openDataDrilldown(type) {
             if (navProfile) navProfile.parentElement.style.display = 'none';
             if (navHome) navHome.parentElement.style.display = 'none';
             if (navAdmin) navAdmin.parentElement.style.display = 'none';
+            
+            if (mobileNavScore) mobileNavScore.style.display = 'none';
+            if (mobileNavDashboard) mobileNavDashboard.style.display = 'none';
+            if (mobileNavProfile) mobileNavProfile.style.display = 'none';
+            if (mobileNavHome) mobileNavHome.style.display = 'none';
+            if (mobileNavLogout) mobileNavLogout.style.display = 'none';
         }
     }
 
@@ -5434,19 +5454,23 @@ if (originalShowProfile) {
 // Mobile drawer navigation
 window.toggleMobileDrawer = function() {
     const drawer = document.getElementById('mobileNavDrawer');
+    const overlay = document.getElementById('mobileNavOverlay');
     if (drawer) {
-        drawer.classList.toggle('is-open');
+        const isOpen = drawer.classList.toggle('is-open');
+        if (overlay) overlay.classList.toggle('is-visible', isOpen);
         const btn = document.getElementById('mobileMenuToggle');
         if (btn) {
-            btn.setAttribute('aria-expanded', drawer.classList.contains('is-open'));
+            btn.setAttribute('aria-expanded', isOpen);
         }
     }
 };
 
 window.closeMobileDrawer = function() {
     const drawer = document.getElementById('mobileNavDrawer');
+    const overlay = document.getElementById('mobileNavOverlay');
     if (drawer) {
         drawer.classList.remove('is-open');
+        if (overlay) overlay.classList.remove('is-visible');
         const btn = document.getElementById('mobileMenuToggle');
         if (btn) {
             btn.setAttribute('aria-expanded', 'false');
