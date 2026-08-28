@@ -794,3 +794,9 @@ input, select, textarea {
   }
 }
 
+/* Ensure dashboard charts stack vertically on mobile to prevent overflow */
+@media (max-width: 768px) {
+  #dashboard-view .row.cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+}

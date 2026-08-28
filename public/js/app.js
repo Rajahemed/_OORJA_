@@ -880,19 +880,19 @@ async function openDataDrilldown(type) {
         const imgEl = document.getElementById('welcomeImage');
         if (imgEl && imgMap[lang]) {
             imgEl.style.opacity = '0';
-            setTimeout(() => { imgEl.src = '/og-image-' + imgMap[lang] + '.png'; imgEl.style.opacity = '1'; }, 300);
+            setTimeout(() => { imgEl.src = '/og-image-' + imgMap[lang] + '.webp'; imgEl.style.opacity = '1'; }, 300);
         }
 
         const waImgEl = document.getElementById('whatsappBannerImage');
         if (waImgEl && imgMap[lang]) {
             waImgEl.style.opacity = '0';
-            setTimeout(() => { waImgEl.src = '/og-image-' + imgMap[lang] + '.png'; waImgEl.style.opacity = '1'; }, 300);
+            setTimeout(() => { waImgEl.src = '/og-image-' + imgMap[lang] + '.webp'; waImgEl.style.opacity = '1'; }, 300);
         }
 
         const qrModalImgEl = document.getElementById('qrModalPosterImg');
         if (qrModalImgEl && imgMap[lang]) {
             qrModalImgEl.style.opacity = '0';
-            setTimeout(() => { qrModalImgEl.src = '/og-image-' + imgMap[lang] + '.png'; qrModalImgEl.style.opacity = '1'; }, 300);
+            setTimeout(() => { qrModalImgEl.src = '/og-image-' + imgMap[lang] + '.webp'; qrModalImgEl.style.opacity = '1'; }, 300);
         }
         
         // Update grid buttons
@@ -2934,18 +2934,18 @@ function submitRegistration() {
                 const actualText = result.whatsappMessage || getWhatsAppMessageText(regFullName, result.referralCode);
                 
                 const langMap = {
-                    'en': 'og-image-English.png',
-                    'hi': 'og-image-Hindi.png',
-                    'kn': 'og-image-Kannada.png',
-                    'ta': 'og-image-Tamil.png',
-                    'te': 'og-image-Telugu.png',
-                    'mr': 'og-image-Marathi.png',
-                    'gu': 'og-image-Gujarati.png',
-                    'bn': 'og-image-Bengali.png'
+                    'en': 'og-image-English.webp',
+                    'hi': 'og-image-Hindi.webp',
+                    'kn': 'og-image-Kannada.webp',
+                    'ta': 'og-image-Tamil.webp',
+                    'te': 'og-image-Telugu.webp',
+                    'mr': 'og-image-Marathi.webp',
+                    'gu': 'og-image-Gujarati.webp',
+                    'bn': 'og-image-Bengali.webp'
                 };
                 const currentLng = (window.i18next && window.i18next.language) || localStorage.getItem('i18nextLng') || 'en';
                 const baseLng = currentLng.split('-')[0];
-                const bannerImage = langMap[baseLng] || 'og-image.png';
+                const bannerImage = langMap[baseLng] || 'og-image.webp';
 
                 let msgHtml = `
                     <div style="background:#eaf8f1; padding:0.75rem; border-radius:8px; border:1px solid #c3e6cf; text-align:left; margin-bottom:10px;">
@@ -5434,19 +5434,23 @@ if (originalShowProfile) {
 // Mobile drawer navigation
 window.toggleMobileDrawer = function() {
     const drawer = document.getElementById('mobileNavDrawer');
+    const overlay = document.getElementById('mobileNavOverlay');
     if (drawer) {
-        drawer.classList.toggle('is-open');
+        const isOpen = drawer.classList.toggle('is-open');
+        if (overlay) overlay.classList.toggle('is-visible', isOpen);
         const btn = document.getElementById('mobileMenuToggle');
         if (btn) {
-            btn.setAttribute('aria-expanded', drawer.classList.contains('is-open'));
+            btn.setAttribute('aria-expanded', isOpen);
         }
     }
 };
 
 window.closeMobileDrawer = function() {
     const drawer = document.getElementById('mobileNavDrawer');
+    const overlay = document.getElementById('mobileNavOverlay');
     if (drawer) {
         drawer.classList.remove('is-open');
+        if (overlay) overlay.classList.remove('is-visible');
         const btn = document.getElementById('mobileMenuToggle');
         if (btn) {
             btn.setAttribute('aria-expanded', 'false');
