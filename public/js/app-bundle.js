@@ -5131,10 +5131,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof loadSession === 'function') {
         loadSession();
     }
+    // Process referral URL parameters BEFORE initial routing
+    let wantsRegister = false;
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        const registerParam = urlParams.get('register');
+        if (refCode || registerParam === 'true') {
+            wantsRegister = true;
+        }
+    } catch (e) {
+        console.error('Error checking referral URL:', e);
+    }
     
     // Initialize the correct view based on URL
     if (typeof routeSPA === 'function') {
-        routeSPA(window.location.pathname);
+        if (wantsRegister && window.location.pathname === '/') {
+            routeSPA('/register');
+        } else {
+            routeSPA(window.location.pathname);
+        }
     }
 
     // Process referral URL parameters
