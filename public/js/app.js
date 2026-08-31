@@ -3302,6 +3302,21 @@ function submitRegistration() {
                 const totalRefsEl = document.getElementById('totalReferrals');
                 if (totalRefsEl) totalRefsEl.textContent = s.referrals || 0;
                 
+                const breakdownContainer = document.getElementById('referralBreakdownContainer');
+                const breakdownList = document.getElementById('referralBreakdownList');
+                if (breakdownContainer && breakdownList && s.referralBreakdown) {
+                    breakdownContainer.style.display = 'block';
+                    let html = '';
+                    for (let i = 9; i >= 3; i--) {
+                        const count = s.referralBreakdown[i] || 0;
+                        html += `<div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                            <span>${i} Referrals</span>
+                            <span>${count} Rider${count !== 1 ? 's' : ''}</span>
+                        </div>`;
+                    }
+                    breakdownList.innerHTML = html;
+                }
+                
                 const ratingEl = document.getElementById('riderRating');
                 if (ratingEl) ratingEl.textContent = s.averageRating || '5.0';
                 
