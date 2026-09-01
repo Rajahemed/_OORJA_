@@ -34,7 +34,7 @@ router.post('/send-otp', otpLimiter, async (req, res) => {
       otpCache.set(phone, { otp, expires: Date.now() + 5 * 60 * 1000 });
       
       await twilioClient.messages.create({
-        body: `Your Road Warrior OTP is ${otp}. Valid for 5 minutes.`,
+        body: `Your OORJA OTP is ${otp}. Valid for 5 minutes.`,
         from: `whatsapp:${process.env.TWILIO_PHONE_NUMBER}`,
         to: `whatsapp:+91${phone.replace(/\D/g, '')}`
       });

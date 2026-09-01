@@ -1,5 +1,5 @@
 -- ============================================================
--- Road Warrior EV — Visitor Intelligence Migration
+-- OORJA — Visitor Intelligence Migration
 -- Adds GPS tracking, ISP info, and event logging
 -- ============================================================
 

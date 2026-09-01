@@ -1,7 +1,7 @@
-# Road Warrior Pro - Business Information
+# OORJA - Business Information
 
 ## Business Description
-Road Warrior Pro is India's leading EV Delivery Rider Platform. We empower delivery professionals to maximize their earnings by transitioning to electric vehicles. Our platform allows riders to track their deliveries, accumulate points, earn rewards, and refer friends to build a strong community. We are dedicated to providing sustainable mobility solutions and elevating the delivery rider experience.
+OORJA is India's leading EV Delivery Rider Platform. We empower delivery professionals to maximize their earnings by transitioning to electric vehicles. Our platform allows riders to track their deliveries, accumulate points, earn rewards, and refer friends to build a strong community. We are dedicated to providing sustainable mobility solutions and elevating the delivery rider experience.
 
 ## Services Offered
 - **Rider Registration & Management:** Easy onboarding for new delivery riders.
@@ -22,7 +22,7 @@ Road Warrior Pro is India's leading EV Delivery Rider Platform. We empower deliv
 - **Sitemap:** https://roadwarrior.pro/sitemap
 
 ## Contact Details
-**Company Name:** Road Warrior Pro
+**Company Name:** OORJA
 **Email:** contact@roadwarriorev.com
 **Phone:** +91 6360 483 386
 **Address:** 1028, Mangammanapalya, 11th main road Bengaluru 560068

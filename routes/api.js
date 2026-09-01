@@ -85,12 +85,12 @@ function checkMilestoneBonuses(referrer) {
   if (refs === 10 && !referrer.milestone10) {
     referrer.totalPoints += 100;
     referrer.milestone10 = true;
-    milestones.push({ milestone: 10, bonus: 100, type: 'badge', message: `🎉 Congrats ${referrer.fullName}! You've referred 10 riders! +100 bonus points added. You earned a Road Warrior Badge!` });
+    milestones.push({ milestone: 10, bonus: 100, type: 'badge', message: `🎉 Congrats ${referrer.fullName}! You've referred 10 riders! +100 bonus points added. You earned a OORJA Badge!` });
   }
   if (refs === 25 && !referrer.milestone25) {
     referrer.totalPoints += 300;
     referrer.milestone25 = true;
-    milestones.push({ milestone: 25, bonus: 300, type: 'milestone', message: `🏆 Amazing ${referrer.fullName}! 25 referrals achieved! +300 bonus points. You are a Road Warrior Champion!` });
+    milestones.push({ milestone: 25, bonus: 300, type: 'milestone', message: `🏆 Amazing ${referrer.fullName}! 25 referrals achieved! +300 bonus points. You are a OORJA Champion!` });
   }
   if (refs === 50 && !referrer.milestone50) {
     referrer.totalPoints += 500;
@@ -501,21 +501,21 @@ router.post('/riders/register', registerLimiter, async (req, res) => {
 
     let whatsappMessage = '';
     if (language === 'hi') {
-      whatsappMessage = `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${referralCode}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nRoad Warrior EV 🏆`;
+      whatsappMessage = `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${referralCode}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nOORJA 🏆`;
     } else if (language === 'kn') {
-      whatsappMessage = `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${referralCode}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nRoad Warrior EV 🏆`;
+      whatsappMessage = `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${referralCode}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nOORJA 🏆`;
     } else if (language === 'ta') {
-      whatsappMessage = `Vanakkam ${fullName}! Ungal pathivu mudinthathu. Ungal referral code: ${referralCode}.\n\nIntha link-ai matravargalukku anuppungal, avargal login/register seiyum pothu neengal points peruveergal: ${refLink}\n\nRoad Warrior EV 🏆`;
+      whatsappMessage = `Vanakkam ${fullName}! Ungal pathivu mudinthathu. Ungal referral code: ${referralCode}.\n\nIntha link-ai matravargalukku anuppungal, avargal login/register seiyum pothu neengal points peruveergal: ${refLink}\n\nOORJA 🏆`;
     } else if (language === 'te') {
-      whatsappMessage = `Namaskaram ${fullName}! Mee registration poorhtayyindi. Mee referral code: ${referralCode}.\n\nEe link nu itarulaku pampandi, varu login/register ayinapudu meeru points pondutaru: ${refLink}\n\nRoad Warrior EV 🏆`;
+      whatsappMessage = `Namaskaram ${fullName}! Mee registration poorhtayyindi. Mee referral code: ${referralCode}.\n\nEe link nu itarulaku pampandi, varu login/register ayinapudu meeru points pondutaru: ${refLink}\n\nOORJA 🏆`;
     } else if (language === 'mr') {
-      whatsappMessage = `Namaskar ${fullName}! Tumchi nondani zali aahe. Tumcha referral code: ${referralCode}.\n\nHi link itaranna pathwa, ani te jevha login/register kartil tevha tumhala points miltil: ${refLink}\n\nRoad Warrior EV 🏆`;
+      whatsappMessage = `Namaskar ${fullName}! Tumchi nondani zali aahe. Tumcha referral code: ${referralCode}.\n\nHi link itaranna pathwa, ani te jevha login/register kartil tevha tumhala points miltil: ${refLink}\n\nOORJA 🏆`;
     } else if (language === 'gu') {
-      whatsappMessage = `Namaste ${fullName}! Tamaru registration thai gayu chhe. Tamaro referral code chhe: ${referralCode}.\n\nAa link anya loko ne moklo, ane jyare teo login/register karshe tyare tamne points malshe: ${refLink}\n\nRoad Warrior EV 🏆`;
+      whatsappMessage = `Namaste ${fullName}! Tamaru registration thai gayu chhe. Tamaro referral code chhe: ${referralCode}.\n\nAa link anya loko ne moklo, ane jyare teo login/register karshe tyare tamne points malshe: ${refLink}\n\nOORJA 🏆`;
     } else if (language === 'bn') {
-      whatsappMessage = `Nomoskar ${fullName}! Apnar registration somponno hoyeche. Apnar referral code holo: ${referralCode}.\n\nEi link ti onnoder pathan, ebong tara jokhon login/register korbe tokhon apni points paben: ${refLink}\n\nRoad Warrior EV 🏆`;
+      whatsappMessage = `Nomoskar ${fullName}! Apnar registration somponno hoyeche. Apnar referral code holo: ${referralCode}.\n\nEi link ti onnoder pathan, ebong tara jokhon login/register korbe tokhon apni points paben: ${refLink}\n\nOORJA 🏆`;
     } else {
-      whatsappMessage = `Welcome ${fullName}! You are now registered. Your referral code is ${referralCode}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV 🏆`;
+      whatsappMessage = `Welcome ${fullName}! You are now registered. Your referral code is ${referralCode}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nOORJA 🏆`;
     }
 
     // Location is no longer appended to the WhatsApp message for privacy reasons
@@ -877,7 +877,7 @@ router.get('/admin/export/pdf', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEWER']), a
 
     doc.pipe(res);
 
-    doc.fontSize(20).text(`Road Warrior EV Leads - ${segment || 'ALL'}`, { align: 'center' });
+    doc.fontSize(20).text(`OORJA Leads - ${segment || 'ALL'}`, { align: 'center' });
     doc.moveDown();
 
     leads.forEach((lead, i) => {

@@ -1,4 +1,4 @@
--- V3 Migrations for Road Warrior EV: Lead Capture & Progressive Form Save
+-- V3 Migrations for OORJA: Lead Capture & Progressive Form Save
 
 ALTER TABLE riders ADD COLUMN IF NOT EXISTS "current_step" INTEGER DEFAULT 1;
 ALTER TABLE riders ADD COLUMN IF NOT EXISTS "progress_percentage" INTEGER DEFAULT 0;

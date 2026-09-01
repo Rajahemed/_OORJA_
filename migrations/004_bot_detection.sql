@@ -1,5 +1,5 @@
 -- ============================================================
--- Road Warrior EV — Bot Detection & Advanced Analytics
+-- OORJA — Bot Detection & Advanced Analytics
 -- Adds user_agent, asn, org, bot detection, and datacenter tracking
 -- ============================================================
 

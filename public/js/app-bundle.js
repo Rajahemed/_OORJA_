@@ -979,7 +979,7 @@ async function openDataDrilldown(type) {
                     showToast('Push notifications enabled!', 'success');
                     if ('serviceWorker' in navigator) {
                         navigator.serviceWorker.ready.then(registration => {
-                            registration.showNotification('Welcome to Road Warrior!', {
+                            registration.showNotification('Welcome to OORJA!', {
                                 body: 'You will now receive updates on your ranking and rewards.',
                                 icon: '/og-image.png'
                             });
@@ -1111,7 +1111,7 @@ async function openDataDrilldown(type) {
                     if (generatedFile) URL.revokeObjectURL(a.href);
                 }
                 
-                const text = "Join Road Warrior and earn rewards! My referral code is " + currentUser.referralCode;
+                const text = "Join OORJA and earn rewards! My referral code is " + currentUser.referralCode;
                 const url = window.location.origin + "/?ref=" + currentUser.referralCode;
                 const fallbackUrl = `whatsapp://send?text=${encodeURIComponent(text + " " + url)}`;
                 const webFallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + " " + url)}`;
@@ -1305,12 +1305,12 @@ async function openDataDrilldown(type) {
         const ogUrl = document.querySelector('meta[property="og:url"]');
         if (ogUrl) ogUrl.content = fullUrl;
 
-        let titleStr = "Road Warrior EV - Rider Registration & Management";
-        if (activeTab === 'dashboard') titleStr = "Dashboard - Road Warrior EV";
-        else if (activeTab === 'score') titleStr = "Leaderboard - Road Warrior EV";
-        else if (activeTab === 'privacy') titleStr = "Privacy Policy - Road Warrior EV";
-        else if (activeTab === 'login') titleStr = "Login - Road Warrior EV";
-        else if (activeTab === 'register') titleStr = "Register - Road Warrior EV";
+        let titleStr = "OORJA - Rider Registration & Management";
+        if (activeTab === 'dashboard') titleStr = "Dashboard - OORJA";
+        else if (activeTab === 'score') titleStr = "Leaderboard - OORJA";
+        else if (activeTab === 'privacy') titleStr = "Privacy Policy - OORJA";
+        else if (activeTab === 'login') titleStr = "Login - OORJA";
+        else if (activeTab === 'register') titleStr = "Register - OORJA";
         document.title = titleStr;
         const ogTitle = document.querySelector('meta[property="og:title"]');
         if (ogTitle) ogTitle.content = titleStr;
@@ -3040,7 +3040,7 @@ function submitRegistration() {
                     }
                 };
 
-                showToast((window.t ? window.t('msg_16____registration') : '🎉 Registration successful! Welcome to Road Warrior Pro!'), 'success');
+                showToast((window.t ? window.t('msg_16____registration') : '🎉 Registration successful! Welcome to OORJA!'), 'success');
             } else {
                 showToast((window.t ? window.t('msg_16_registration_fa') : 'Registration failed: ') + (result.message || result.error || 'Unknown error'), 'error');
             }
@@ -3099,21 +3099,21 @@ function submitRegistration() {
         
         let msg = '';
         if (lang === 'hi') {
-            msg = `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${code}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Namaste ${fullName}! Aapka registration ho gaya. Aapka referral code hai: ${code}.\n\nIs link ko apne doston ko bheje aur jab wo login/register karenge toh aap points kamaenge: ${refLink}\n\nOORJA 🏍️⚡`;
         } else if (lang === 'kn') {
-            msg = `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${code}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Namaskara ${fullName}! Nimma nondane aayitu. Nimma referral code: ${code}.\n\nEe link annu nimma snehitrige kalisi, avaru login/register madidaga neevu points gaLisi: ${refLink}\n\nOORJA 🏍️⚡`;
         } else if (lang === 'ta') {
-            msg = `Vanakkam ${fullName}! Ungal pathivu mudinthathu. Ungal referral code: ${code}.\n\nIntha link-ai matravargalukku anuppungal, avargal login/register seiyum pothu neengal points peruveergal: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Vanakkam ${fullName}! Ungal pathivu mudinthathu. Ungal referral code: ${code}.\n\nIntha link-ai matravargalukku anuppungal, avargal login/register seiyum pothu neengal points peruveergal: ${refLink}\n\nOORJA 🏍️⚡`;
         } else if (lang === 'te') {
-            msg = `Namaskaram ${fullName}! Mee registration poorhtayyindi. Mee referral code: ${code}.\n\nEe link nu itarulaku pampandi, varu login/register ayinapudu meeru points pondutaru: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Namaskaram ${fullName}! Mee registration poorhtayyindi. Mee referral code: ${code}.\n\nEe link nu itarulaku pampandi, varu login/register ayinapudu meeru points pondutaru: ${refLink}\n\nOORJA 🏍️⚡`;
         } else if (lang === 'mr') {
-            msg = `Namaskar ${fullName}! Tumchi nondani zali aahe. Tumcha referral code: ${code}.\n\nHi link itaranna pathwa, ani te jevha login/register kartil tevha tumhala points miltil: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Namaskar ${fullName}! Tumchi nondani zali aahe. Tumcha referral code: ${code}.\n\nHi link itaranna pathwa, ani te jevha login/register kartil tevha tumhala points miltil: ${refLink}\n\nOORJA 🏍️⚡`;
         } else if (lang === 'gu') {
-            msg = `Namaste ${fullName}! Tamaru registration thai gayu chhe. Tamaro referral code chhe: ${code}.\n\nAa link anya loko ne moklo, ane jyare teo login/register karshe tyare tamne points malshe: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Namaste ${fullName}! Tamaru registration thai gayu chhe. Tamaro referral code chhe: ${code}.\n\nAa link anya loko ne moklo, ane jyare teo login/register karshe tyare tamne points malshe: ${refLink}\n\nOORJA 🏍️⚡`;
         } else if (lang === 'bn') {
-            msg = `Nomoskar ${fullName}! Apnar registration somponno hoyeche. Apnar referral code holo: ${code}.\n\nEi link ti onnoder pathan, ebong tara jokhon login/register korbe tokhon apni points paben: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Nomoskar ${fullName}! Apnar registration somponno hoyeche. Apnar referral code holo: ${code}.\n\nEi link ti onnoder pathan, ebong tara jokhon login/register korbe tokhon apni points paben: ${refLink}\n\nOORJA 🏍️⚡`;
         } else {
-            msg = `Welcome ${fullName}! You are now registered. Your referral code is ${code}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nRoad Warrior EV 🏍️⚡`;
+            msg = `Welcome ${fullName}! You are now registered. Your referral code is ${code}.\n\nSend this link to others, and when they register with your code, you earn points: ${refLink}\n\nOORJA 🏍️⚡`;
         }
         return msg;
     }
@@ -3711,7 +3711,7 @@ function submitRegistration() {
                 generatedFile = new File([blob], 'roadwarrior-referral.png', { type: 'image/png' });
                 
                 if (navigator.canShare && navigator.canShare({ files: [generatedFile] })) {
-                    await navigator.share({ files: [generatedFile], title: 'Join Road Warrior EV', text: text });
+                    await navigator.share({ files: [generatedFile], title: 'Join OORJA', text: text });
                     if (typeof trackEvent === 'function') trackEvent('share_with_image', { success: true });
                     return;
                 }
@@ -3805,7 +3805,7 @@ function submitRegistration() {
             if (navigator.canShare && navigator.canShare({ files: [generatedFile] })) {
                 await navigator.share({
                     files: [generatedFile],
-                    title: 'Join Road Warrior EV',
+                    title: 'Join OORJA',
                     text: text
                 });
                 if (typeof trackEvent === 'function') trackEvent('share_with_image', { success: true });
@@ -5448,7 +5448,7 @@ async function simulatePaymentProcessing() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     userId: currentUser.id,
-                    plan_name: 'Road Warrior Premium',
+                    plan_name: 'OORJA Premium',
                     price: 499.00,
                     duration: '1 Year',
                     payment_id: 'pay_' + Math.random().toString(36).substring(2, 10),

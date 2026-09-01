@@ -1,5 +1,5 @@
 -- ============================================================
--- Road Warrior EV — Intelligence System Migration
+-- OORJA — Intelligence System Migration
 -- Run AFTER apply_schema.sql — does NOT touch existing tables
 -- Supabase SQL Editor: https://app.supabase.com
 -- ============================================================
@@ -140,7 +140,7 @@ CREATE POLICY "Allow all for email_logs"      ON email_logs      FOR ALL TO anon
 -- SEED: Email Campaign Definitions
 -- ============================================================
 INSERT INTO email_campaigns (name, subject, template, delay_days, active) VALUES
-  ('welcome',        'Welcome to Road Warrior EV! 🚗⚡',                'welcome',  0,  true),
+  ('welcome',        'Welcome to OORJA! 🚗⚡',                'welcome',  0,  true),
   ('followup_day7',  'How are you progressing? Your EV journey awaits 🏍️', 'followup', 7,  true),
   ('reminder_day15', 'Still interested? Exclusive EV offers inside 🎁',    'reminder', 15, true)
 ON CONFLICT (name) DO NOTHING;

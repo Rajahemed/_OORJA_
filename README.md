@@ -1,4 +1,4 @@
-# 🚗 Road Warrior Pro - Professional Management System v2.0
+# 🚗 OORJA - Professional Management System v2.0
 
 A complete, production-ready delivery rider management and analytics platform with real-time features, professional UI/UX, and comprehensive admin dashboard.
 
@@ -334,7 +334,7 @@ For issues, bugs, or feature requests:
 
 ## 📄 License
 
-Road Warrior Pro v2.0
+OORJA v2.0
 All Rights Reserved 2024
 
 ## 🔄 Version History
@@ -411,4 +411,4 @@ road-warrior-pro/
 
 **Built with ❤️ for Delivery Excellence**
 
-Road Warrior Pro v2.0 - Empowering Last-Mile Delivery Professionals
+OORJA v2.0 - Empowering Last-Mile Delivery Professionals

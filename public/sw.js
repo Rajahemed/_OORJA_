@@ -58,6 +58,6 @@ self.addEventListener('push', (event) => {
     badge: '/og-image.png'
   };
   event.waitUntil(
-    self.registration.showNotification('Road Warrior Pro', options)
+    self.registration.showNotification('OORJA', options)
   );
 });

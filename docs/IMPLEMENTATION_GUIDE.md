@@ -1,7 +1,7 @@
 # Implementation Guide
 
 ## Application Overview
-Road Warrior Pro is a last-mile delivery rider dashboard, registration platform, and AI WhatsApp bot system. It consists of a Node.js Express backend serving the web application and a FastAPI backend serving the WhatsApp AI Integration.
+OORJA is a last-mile delivery rider dashboard, registration platform, and AI WhatsApp bot system. It consists of a Node.js Express backend serving the web application and a FastAPI backend serving the WhatsApp AI Integration.
 
 ## Component Architecture
 - **Web Backend**: Node.js (Express), Twilio (SMS), Resend (Emails)

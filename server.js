@@ -355,7 +355,7 @@ function startServer(port) {
     console.log(`
     ╔════════════════════════════════════════════════════════════════╗
     ║                                                                ║
-    ║   🚗 ROAD WARRIOR EV         ║
+    ║   🚗 OORJA         ║
     ║   ═══════════════════════════════════════════════════════════  ║
     ║                                                                ║
     ║   Server is running at: http://localhost:${port}                  

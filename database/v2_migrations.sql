@@ -1,4 +1,4 @@
--- V2 Migrations for Road Warrior EV
+-- V2 Migrations for OORJA
 
 -- Add Consent Fields (Phase 3)
 ALTER TABLE riders ADD COLUMN IF NOT EXISTS "consentPrivacy" BOOLEAN DEFAULT false;

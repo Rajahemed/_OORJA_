@@ -87,7 +87,7 @@ npm start
 # You should see:
 # ╔════════════════════════════════════════════════════════════════╗
 # ║                                                                ║
-# ║   🚗 ROAD WARRIOR PRO - Delivery Management System             ║
+# ║   🚗 OORJA - Delivery Management System             ║
 # ║   ═══════════════════════════════════════════════════════════  ║
 # ║                                                                ║
 # ║   Server is running at: http://localhost:3000                 ║
@@ -101,7 +101,7 @@ npm start
 
 1. Open your web browser
 2. Go to: `http://localhost:3000`
-3. You should see the Road Warrior Pro login page
+3. You should see the OORJA login page
 4. Test by registering a new account
 
 ## Configuration
@@ -360,4 +360,4 @@ pm2 save
 
 **Installation Complete!** 🎉
 
-Your Road Warrior Pro instance is ready to use.
+Your OORJA instance is ready to use.

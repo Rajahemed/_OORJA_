@@ -70,11 +70,11 @@ class WhatsAppClient {
     const refLink = `https://roadwarrior.pro/?ref=${rider.referralCode}`;
 
     if (language === 'hi') {
-      message = `नमस्ते ${rider.fullName} भाई! आपका रजिस्ट्रेशन हो गया। आपका रेफरल कोड है: ${rider.referralCode}\n\nइस लिंक से दोस्तों को इन्वाइट करो और पॉइंट्स कमाओ: ${refLink}\n\nRoad Warrior बनो!`;
+      message = `नमस्ते ${rider.fullName} भाई! आपका रजिस्ट्रेशन हो गया। आपका रेफरल कोड है: ${rider.referralCode}\n\nइस लिंक से दोस्तों को इन्वाइट करो और पॉइंट्स कमाओ: ${refLink}\n\nOORJA बनो!`;
     } else if (language === 'kn') {
-      message = `ನಮಸ್ಕಾರ ${rider.fullName}! ನಿಮ್ಮ ನೋಂದಣಿ ಆಯಿತು. ನಿಮ್ಮ ರೆಫರಲ್ ಕೋಡ್: ${rider.referralCode}\n\nಈ ಲಿಂಕ್ ಅನ್ನು ನಿಮ್ಮ ಸ್ನೇಹಿತರೊಂದಿಗೆ ಶೇರ್ ಮಾಡಿ ಮತ್ತು ಪಾಯಿಂಟ್ಸ್ ಗಳಿಸಿ: ${refLink}\n\nRoad Warrior ಆಗಿ!`;
+      message = `ನಮಸ್ಕಾರ ${rider.fullName}! ನಿಮ್ಮ ನೋಂದಣಿ ಆಯಿತು. ನಿಮ್ಮ ರೆಫರಲ್ ಕೋಡ್: ${rider.referralCode}\n\nಈ ಲಿಂಕ್ ಅನ್ನು ನಿಮ್ಮ ಸ್ನೇಹಿತರೊಂದಿಗೆ ಶೇರ್ ಮಾಡಿ ಮತ್ತು ಪಾಯಿಂಟ್ಸ್ ಗಳಿಸಿ: ${refLink}\n\nOORJA ಆಗಿ!`;
     } else {
-      message = `Welcome ${rider.fullName}! You are now registered. Your referral code is ${rider.referralCode}\n\nShare this link with other riders to earn points and rewards: ${refLink}\n\nRoad Warrior — let's go!`;
+      message = `Welcome ${rider.fullName}! You are now registered. Your referral code is ${rider.referralCode}\n\nShare this link with other riders to earn points and rewards: ${refLink}\n\nOORJA — let's go!`;
     }
 
     return this.sendMessage(to, message, rider.id, language, 'registration');
@@ -85,11 +85,11 @@ class WhatsAppClient {
     let message = '';
     
     if (milestone === 10) {
-      message = `🎉 Congrats ${rider.fullName}! You have achieved the 10 Referrals Milestone! We have added +${bonus} bonus points to your account. You've earned the Road Warrior Badge! 🥇`;
+      message = `🎉 Congrats ${rider.fullName}! You have achieved the 10 Referrals Milestone! We have added +${bonus} bonus points to your account. You've earned the OORJA Badge! 🥇`;
     } else if (milestone === 25) {
-      message = `🏆 Amazing ${rider.fullName}! You have achieved 25 Referrals! +${bonus} bonus points added. You are officially a Road Warrior Champion! 👑`;
+      message = `🏆 Amazing ${rider.fullName}! You have achieved 25 Referrals! +${bonus} bonus points added. You are officially a OORJA Champion! 👑`;
     } else if (milestone === 50) {
-      message = `🚀 LEGEND! ${rider.fullName}, you have achieved 50 Referrals! +${bonus} points added. You are entered into the Road Warrior Lucky Draw! 🎁`;
+      message = `🚀 LEGEND! ${rider.fullName}, you have achieved 50 Referrals! +${bonus} points added. You are entered into the OORJA Lucky Draw! 🎁`;
     }
 
     return this.sendMessage(to, message, rider.id, rider.language || 'en', `milestone_${milestone}`);

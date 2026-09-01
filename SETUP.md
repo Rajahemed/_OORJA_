@@ -1,4 +1,4 @@
-# 🚀 Road Warrior Pro - Quick Start Guide
+# 🚀 OORJA - Quick Start Guide
 
 ## ⚡ 5-Minute Quick Start
 
@@ -353,6 +353,6 @@ The application is fully functional and ready to use!
 
 ---
 
-**Happy using Road Warrior Pro! 🚗**
+**Happy using OORJA! 🚗**
 
 For more information, see README.md

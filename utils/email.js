@@ -1,5 +1,5 @@
 // utils/email.js
-// Resend email client — HTML templates + send utilities for Road Warrior EV
+// Resend email client — HTML templates + send utilities for OORJA
 // Drip sequence: Day 0 (Welcome) → Day 7 (Follow-up) → Day 15 (Reminder)
 
 require('dotenv').config();
@@ -27,7 +27,7 @@ const emailBase = (content, previewText = '') => `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Road Warrior EV</title>
+  <title>OORJA</title>
   <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -70,7 +70,7 @@ const emailBase = (content, previewText = '') => `
     <tr><td align="center">
       <div class="wrapper">
         <div class="header">
-          <h1>🚗⚡ Road Warrior EV</h1>
+          <h1>🚗⚡ OORJA</h1>
           <p>India's Delivery Rider Intelligence Platform</p>
         </div>
         <div class="body">
@@ -78,12 +78,12 @@ const emailBase = (content, previewText = '') => `
         </div>
         <div class="footer">
           <p>
-            You're receiving this because you expressed interest in Road Warrior EV.<br>
+            You're receiving this because you expressed interest in OORJA.<br>
             <a href="${SITE_URL}/unsubscribe?email={{EMAIL}}">Unsubscribe</a> &nbsp;|&nbsp;
             <a href="${SITE_URL}">Visit Website</a> &nbsp;|&nbsp;
             <a href="mailto:${ADMIN_EMAIL}">Contact Us</a>
           </p>
-          <p style="margin-top:8px;">© ${new Date().getFullYear()} Road Warrior EV. All rights reserved.</p>
+          <p style="margin-top:8px;">© ${new Date().getFullYear()} OORJA. All rights reserved.</p>
         </div>
       </div>
     </td></tr>
@@ -97,7 +97,7 @@ function welcomeTemplate(data) {
   const name = full_name ? full_name.split(' ')[0] : 'there';
   const html = emailBase(`
     <h2>Welcome aboard, ${name}! 🎉</h2>
-    <p>Thank you for reaching out to <strong>Road Warrior EV</strong>. We're excited to connect with you and help you discover how our platform empowers delivery riders across India.</p>
+    <p>Thank you for reaching out to <strong>OORJA</strong>. We're excited to connect with you and help you discover how our platform empowers delivery riders across India.</p>
 
     <div class="stats-row">
       <div class="stat-box"><div class="num">2,450+</div><div class="lbl">Active Riders</div></div>
@@ -105,7 +105,7 @@ function welcomeTemplate(data) {
       <div class="stat-box"><div class="num">₹5k</div><div class="lbl">Avg Monthly Savings</div></div>
     </div>
 
-    <p>Here's what Road Warrior EV offers you:</p>
+    <p>Here's what OORJA offers you:</p>
     <p>🏍️ <strong>EV Rental Program</strong> — Switch to electric and save on fuel costs<br>
        🛡️ <strong>Insurance Solutions</strong> — Tailored accidental & health cover for riders<br>
        🏆 <strong>Referral Rewards</strong> — Earn points for every rider you refer<br>
@@ -120,8 +120,8 @@ function welcomeTemplate(data) {
     </div>
 
     <p>Have questions? Just reply to this email — we're here to help!</p>
-    <p style="color:#94a3b8; font-size:13px;">Warm regards,<br><strong style="color:#a78bfa;">The Road Warrior EV Team</strong></p>
-  `, `Welcome to Road Warrior EV, ${name}! Start your journey today.`);
+    <p style="color:#94a3b8; font-size:13px;">Warm regards,<br><strong style="color:#a78bfa;">The OORJA Team</strong></p>
+  `, `Welcome to OORJA, ${name}! Start your journey today.`);
   return html.replace(/\{\{EMAIL\}\}/g, encodeURIComponent(email));
 }
 
@@ -131,7 +131,7 @@ function followupTemplate(data) {
   const name = full_name ? full_name.split(' ')[0] : 'there';
   const html = emailBase(`
     <h2>How's it going, ${name}? 👋</h2>
-    <p>It's been a week since you first connected with us, and we wanted to check in to see if you have any questions about Road Warrior EV.</p>
+    <p>It's been a week since you first connected with us, and we wanted to check in to see if you have any questions about OORJA.</p>
 
     <div class="tip-box">
       <p>🔥 <strong>Did you know?</strong> Riders on our platform save an average of <strong>₹5,000/month</strong> by switching to EV and using our insurance products.</p>
@@ -148,7 +148,7 @@ function followupTemplate(data) {
       <a href="${SITE_URL}" class="cta-btn">📞 Book Free Consultation</a>
     </div>
 
-    <p style="color:#94a3b8; font-size:13px;">Best regards,<br><strong style="color:#a78bfa;">Road Warrior EV Team</strong></p>
+    <p style="color:#94a3b8; font-size:13px;">Best regards,<br><strong style="color:#a78bfa;">OORJA Team</strong></p>
   `, `Checking in — your EV journey starts here, ${name}.`);
   return html.replace(/\{\{EMAIL\}\}/g, encodeURIComponent(email));
 }
@@ -159,7 +159,7 @@ function reminderTemplate(data) {
   const name = full_name ? full_name.split(' ')[0] : 'there';
   const html = emailBase(`
     <h2>Don't miss out, ${name}! 🏆</h2>
-    <p>We've reached out a couple of times, and we want to make sure you don't miss the benefits Road Warrior EV can offer you.</p>
+    <p>We've reached out a couple of times, and we want to make sure you don't miss the benefits OORJA can offer you.</p>
 
     <div class="stats-row">
       <div class="stat-box"><div class="num">₹0</div><div class="lbl">Cost to Register</div></div>
@@ -178,7 +178,7 @@ function reminderTemplate(data) {
     </div>
 
     <p style="color:#475569; font-size:13px; margin-top:20px;">If you're no longer interested, you can <a href="${SITE_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#6c47ff;">unsubscribe here</a> and we won't bother you again.</p>
-    <p style="color:#94a3b8; font-size:13px;">Best wishes,<br><strong style="color:#a78bfa;">Road Warrior EV Team</strong></p>
+    <p style="color:#94a3b8; font-size:13px;">Best wishes,<br><strong style="color:#a78bfa;">OORJA Team</strong></p>
   `, `Last chance, ${name} — your exclusive EV benefits are waiting!`);
   return html.replace(/\{\{EMAIL\}\}/g, encodeURIComponent(email));
 }
