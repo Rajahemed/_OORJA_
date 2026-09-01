@@ -3309,9 +3309,10 @@ function submitRegistration() {
                     let html = '';
                     for (let i = 9; i >= 3; i--) {
                         const count = s.referralBreakdown[i] || 0;
+                        const level = 10 - i;
                         html += `<div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                            <span>${i} Referrals</span>
-                            <span>${count} Rider${count !== 1 ? 's' : ''}</span>
+                            <span>Level ${level} (${i} Points)</span>
+                            <span>${count} Referral${count !== 1 ? 's' : ''}</span>
                         </div>`;
                     }
                     breakdownList.innerHTML = html;

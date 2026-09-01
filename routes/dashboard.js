@@ -6,7 +6,7 @@ const supabase = require('../utils/supabase');
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-// Dashboard analytics (Evaluates actual database details combined with seed/mock fallbacks)
+// Dashboard analytics
 router.get('/analytics/:riderId', async (req, res) => {
   try {
     const { riderId } = req.params;
@@ -14,28 +14,62 @@ router.get('/analytics/:riderId', async (req, res) => {
     // Find actual stats for this rider
     const { data: riderRowsDash } = await supabase.from('riders').select('*').eq('id', riderId);
     const rider = riderRowsDash && riderRowsDash.length > 0 ? riderRowsDash[0] : null;
-    const actualRefsCount = rider ? (rider.referrals || 0) : 0;
-    const actualPointsCount = rider ? (rider.totalPoints || 0) : 0;
+
+    // Fetch all riders to build referral tree
+    const { data: allRiders } = await supabase.from('riders').select('referralCode, referredByCode, "joinedDate", "registeredAt"');
+    
+    let actualRefsCount = 0;
+    let actualPointsCount = 0;
+    
+    // Map of days 0 (Sun) - 6 (Sat)
+    const weeklyRefs = [0, 0, 0, 0, 0, 0, 0];
+    const weeklyPoints = [0, 0, 0, 0, 0, 0, 0];
+
+    if (allRiders && rider) {
+      const childrenMap = {};
+      allRiders.forEach(r => {
+        if (r.referredByCode) {
+          if (!childrenMap[r.referredByCode]) childrenMap[r.referredByCode] = [];
+          childrenMap[r.referredByCode].push(r);
+        }
+      });
+
+      let currentLevelRiders = rider.referralCode ? (childrenMap[rider.referralCode] || []) : [];
+      let level = 1;
+      const pointsByLevel = { 1: 9, 2: 8, 3: 7, 4: 6, 5: 5, 6: 4, 7: 3 };
+
+      while (currentLevelRiders.length > 0 && level <= 7) {
+        const points = pointsByLevel[level];
+        
+        currentLevelRiders.forEach(child => {
+          actualPointsCount += points;
+          if (level === 1) actualRefsCount++;
+
+          const childDate = new Date(child.registeredAt || child.joinedDate || new Date());
+          if (childDate && !isNaN(childDate.getTime())) {
+            const dayIdx = (childDate.getDay() + 6) % 7;
+            weeklyPoints[dayIdx] += points;
+            if (level === 1) weeklyRefs[dayIdx]++;
+          }
+        });
+
+        let nextLevelRiders = [];
+        currentLevelRiders.forEach(r => {
+          if (r.referralCode && childrenMap[r.referralCode]) {
+            nextLevelRiders.push(...childrenMap[r.referralCode]);
+          }
+        });
+        currentLevelRiders = nextLevelRiders;
+        level++;
+      }
+    }
 
     // Distribute actual referrals/points across weekly data points
     const weeklyData = DAYS.map((day, idx) => {
-      // Base mock values for visual richness
-      const baseReferrals = [1, 2, 0, 3, 2, 4, 1][idx];
-      const basePoints = [10, 15, 10, 25, 20, 40, 30][idx];
-
-      let addedRefs = 0;
-      let addedPoints = 0;
-
-      // Overlay actual user data on the current day
-      if (idx === (new Date().getDay() + 6) % 7) {
-        addedRefs = actualRefsCount;
-        addedPoints = actualPointsCount;
-      }
-
       return {
         day,
-        referrals: baseReferrals + addedRefs,
-        points: basePoints + addedPoints
+        referrals: weeklyRefs[idx],
+        points: weeklyPoints[idx]
       };
     });
 

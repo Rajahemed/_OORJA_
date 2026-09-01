@@ -801,10 +801,9 @@ router.get('/admin/analytics/leads-funnel', adminAuth(), adminAnalyticsRateLimit
 // ============================================================
 router.get('/admin/analytics/referrals', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIEWER']), adminAnalyticsRateLimit, async (req, res) => {
   try {
-    const { data: riders, error } = await supabase.from('riders').select('referrals').gt('referrals', 0);
+    const { data: allRiders, error } = await supabase.from('riders').select('referralCode, referredByCode');
     if (error) throw error;
     
-    // Group by level
     const breakdown = {
       "9": { count: 0, points: 0 },
       "8": { count: 0, points: 0 },
@@ -815,14 +814,39 @@ router.get('/admin/analytics/referrals', adminAuth(['SUPER_ADMIN', 'ADMIN', 'VIE
       "3": { count: 0, points: 0 }
     };
     
-    // Since referral_rewards table doesn't exist, use riders.referrals (direct referrals = 9pt)
-    (riders || []).forEach(r => {
-      const refs = r.referrals || 0;
-      if (refs > 0) {
-        breakdown["9"].count += refs;
-        breakdown["9"].points += (refs * 9);
-      }
-    });
+    if (allRiders) {
+      const childrenMap = {};
+      allRiders.forEach(r => {
+        if (r.referredByCode) {
+          if (!childrenMap[r.referredByCode]) childrenMap[r.referredByCode] = [];
+          childrenMap[r.referredByCode].push(r);
+        }
+      });
+
+      const pointsByLevel = { 1: 9, 2: 8, 3: 7, 4: 6, 5: 5, 6: 4, 7: 3 };
+
+      allRiders.forEach(rider => {
+        let currentLevelRiders = rider.referralCode ? (childrenMap[rider.referralCode] || []) : [];
+        let level = 1;
+        
+        while (currentLevelRiders.length > 0 && level <= 7) {
+          const points = pointsByLevel[level];
+          const count = currentLevelRiders.length;
+          
+          breakdown[points].count += count;
+          breakdown[points].points += (count * points);
+          
+          let nextLevelRiders = [];
+          currentLevelRiders.forEach(r => {
+            if (r.referralCode && childrenMap[r.referralCode]) {
+              nextLevelRiders.push(...childrenMap[r.referralCode]);
+            }
+          });
+          currentLevelRiders = nextLevelRiders;
+          level++;
+        }
+      });
+    }
     
     res.json({ success: true, data: { referral_rewards: breakdown } });
   } catch(error) {

@@ -975,25 +975,46 @@ router.get('/stats/:riderId', async (req, res) => {
         : 5.0
     };
 
-    const { data: allRiders } = await supabase.from('riders').select('referralCode, referredByCode, is_completed');
+    const { data: allRiders } = await supabase.from('riders').select('referralCode, referredByCode');
     const referralBreakdown = { 9: 0, 8: 0, 7: 0, 6: 0, 5: 0, 4: 0, 3: 0 };
-    
-    if (allRiders) {
-      const actualReferralsMap = {};
-      
+    let totalReferralPoints = 0;
+    let totalReferrals = 0;
+
+    if (allRiders && rider) {
+      const childrenMap = {};
       allRiders.forEach(r => {
-        // Only count as a successful referral if the referred rider has completed registration
-        if (r.referredByCode && r.is_completed) {
-          actualReferralsMap[r.referredByCode] = (actualReferralsMap[r.referredByCode] || 0) + 1;
+        if (r.referredByCode) {
+          if (!childrenMap[r.referredByCode]) childrenMap[r.referredByCode] = [];
+          childrenMap[r.referredByCode].push(r);
         }
       });
 
-      Object.values(actualReferralsMap).forEach(refs => {
-        if (refs >= 3 && refs <= 9) {
-          referralBreakdown[refs]++;
-        }
-      });
+      let currentLevelRiders = rider.referralCode ? (childrenMap[rider.referralCode] || []) : [];
+      let level = 1;
+      const pointsByLevel = { 1: 9, 2: 8, 3: 7, 4: 6, 5: 5, 6: 4, 7: 3 };
+
+      while (currentLevelRiders.length > 0 && level <= 7) {
+        const points = pointsByLevel[level];
+        const count = currentLevelRiders.length;
+        
+        referralBreakdown[points] = count;
+        totalReferralPoints += (count * points);
+        totalReferrals += count;
+
+        let nextLevelRiders = [];
+        currentLevelRiders.forEach(r => {
+          if (r.referralCode && childrenMap[r.referralCode]) {
+            nextLevelRiders.push(...childrenMap[r.referralCode]);
+          }
+        });
+
+        currentLevelRiders = nextLevelRiders;
+        level++;
+      }
     }
+
+    stats.referrals = totalReferrals;
+    stats.totalReferralPoints = totalReferralPoints;
     stats.referralBreakdown = referralBreakdown;
 
     res.json({ success: true, data: stats });
