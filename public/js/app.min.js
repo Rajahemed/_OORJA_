@@ -3871,7 +3871,8 @@ function submitRegistration() {
 
     // Helper to include admin JWT token in Authorization header
     function getAdminAuthHeaders() {
-        const token = sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt') || localStorage.getItem('adminToken') || localStorage.getItem('adminJwt');
+        let token = sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt') || localStorage.getItem('adminToken') || localStorage.getItem('adminJwt');
+        if (token === 'null' || token === 'undefined') token = null;
         return token ? { 'Authorization': `Bearer ${token}` } : {};
     }
 
@@ -4210,6 +4211,12 @@ function submitRegistration() {
 
                 filterAdminRiders();
             } else {
+                
+                if (result.message === 'Invalid token.' || result.message === 'Admin authentication required.' || result.error === 'Unauthorized. Not recognized as admin.') {
+                    showToast('Admin session expired. Please login again.', 'error');
+                    setTimeout(() => handleAdminLogout(), 1500);
+                    return;
+                }
                 showToast(`Failed to load admin riders: ${result.message || result.error || 'Unknown error'}`, 'error');
             }
         }).catch(err => showToast(`Network error: ${err.message}`, 'error'));

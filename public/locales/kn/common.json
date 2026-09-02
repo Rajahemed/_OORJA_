@@ -469,5 +469,8 @@
     "val_err_interests": "Please select what you would be interested in.",
     "exp_lt_6": "exp_lt_6",
     "exp_6_12": "exp_6_12",
-    "exp_5_plus": "exp_5_plus"
+    "exp_5_plus": "exp_5_plus",
+    "nav_about": "About Us",
+    "select_range": "Select Range",
+    "referral_breakdown": "Referral Breakdown"
 }
