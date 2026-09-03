@@ -472,5 +472,21 @@
     "exp_5_plus": "exp_5_plus",
     "nav_about": "About Us",
     "select_range": "Select Range",
-    "referral_breakdown": "Referral Breakdown"
+    "referral_breakdown": "Referral Breakdown",
+    "nav_services": "Services",
+    "nav_ecosystem": "Ecosystem Watch",
+    "nav_login": "Login",
+    "login_hero_title": "Energy and equality for every rider, every ride.",
+    "login_hero_desc": "Oorja is building India's first complete ecosystem for gig riders — not just an EV, but everything that comes with it: the paperwork, the protection, the training, and the everyday support no platform is offering today.",
+    "about_heading": "35+ years of retail and customer-first thinking, now built for India's gig riders.",
+    "about_p1": "Oorja — Sanskrit for energy — is built on more than 35 years of experience in retail and customer handling. Running stores, managing teams, and staying close to customers day after day taught one lesson above everything else: a business only lasts when the people doing the hardest, most visible work are treated as partners, not just hands on the ground.",
+    "about_p2": "India's delivery and gig economy runs on millions of riders, but the system around them rarely runs in their favour — rising fuel costs, out-of-reach vehicle ownership, and insurance or safety left for riders to figure out alone. Oorja exists to build a complete EV ecosystem designed around the rider, not around extracting the most from them.",
+    "stand_equality": "Equality",
+    "stand_equality_desc": "every rider gets a fair shot, not just the ones with capital or connections.",
+    "stand_profit": "More profit, less leakage",
+    "stand_profit_desc": "lower running costs than petrol, and a real path to ownership.",
+    "stand_support": "Support from every angle",
+    "stand_support_desc": "financing, insurance, servicing, and safety built in, not bolted on.",
+    "stand_sustain": "Sustainability",
+    "stand_sustain_desc": "a cleaner alternative that's better for riders and the cities they ride in."
 }

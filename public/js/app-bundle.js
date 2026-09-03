@@ -414,10 +414,7 @@ function openLeadModal() {
     }
 }
 
-function closeLeadModal() {
-    const modal = document.getElementById('leadCaptureModal');
-    if (modal) modal.classList.remove('show');
-}
+
 
 // Close modal on backdrop click
 document.addEventListener('click', function(e) {
@@ -1264,7 +1261,7 @@ async function openDataDrilldown(type) {
         if (siteFooter) siteFooter.style.display = 'block';
             if (topRidersSection) topRidersSection.style.display = 'block';
 
-        let activeTab = 'login';
+        let activeTab = (path === '/' || path === '') ? 'home' : 'login';
         if (path === '/home') activeTab = 'home';
         else if (path === '/vehicles') activeTab = 'vehicles';
         else if (path === '/dashboard') activeTab = 'dashboard';
@@ -1280,21 +1277,22 @@ async function openDataDrilldown(type) {
             document.body.classList.remove('login-route-active');
         } else {
             document.body.classList.add('login-route-active');
-            if (activeTab === 'register') {
-                document.body.classList.add('register-page-active');
-            } else {
-                document.body.classList.remove('register-page-active');
-            }
             
             const loginCard = document.getElementById('loginCard');
             const regCard = document.getElementById('registerCard');
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const registerParam = urlParams.get('register') === 'true';
+
             if (loginCard && regCard) {
-                if (activeTab === 'register') {
+                if (activeTab === 'register' || registerParam) {
                     loginCard.style.display = 'none';
                     regCard.style.display = 'block';
+                    document.body.classList.add('register-page-active');
                 } else {
                     loginCard.style.display = 'block';
                     regCard.style.display = 'none';
+                    document.body.classList.remove('register-page-active');
                 }
             }
         }
@@ -1319,7 +1317,7 @@ async function openDataDrilldown(type) {
         if (activeTab === 'admin' && !(sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt'))) {
             activeTab = 'admin-login';
             checkAdminExists();
-        } else if (activeTab !== 'score' && activeTab !== 'admin-login' && activeTab !== 'admin' && activeTab !== 'privacy' && activeTab !== 'login' && activeTab !== 'register' && !isLoggedIn) {
+        } else if (activeTab !== 'home' && activeTab !== 'score' && activeTab !== 'admin-login' && activeTab !== 'admin' && activeTab !== 'privacy' && activeTab !== 'login' && activeTab !== 'register' && !isLoggedIn) {
             showToast((window.t ? window.t('msg_0_please_login_or') : 'Please login or register first.'), 'warning');
             routeSPA('/login'); return;
         }
@@ -1330,7 +1328,8 @@ async function openDataDrilldown(type) {
         const av = document.getElementById(`${viewToActivate}-view`);
         if (av) av.classList.add('active');
         
-        document.body.classList.toggle('home-page-active', activeTab === 'home' || activeTab === 'login' || activeTab === 'register');
+        document.body.classList.toggle('home-page-active', activeTab === 'home');
+        document.body.classList.toggle('login-page-active', activeTab === 'login' || activeTab === 'register');
 
         document.querySelectorAll('.navbar-nav .nav-link').forEach(l => l.classList.remove('active'));
         const al = document.getElementById(`nav${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}`);
@@ -1359,11 +1358,28 @@ async function openDataDrilldown(type) {
         if (navbar) {
             navbar.style.display = isRegOpen ? 'none' : '';
         }
+
+        // On the public Home page, always hide authenticated nav items
+        // regardless of login state — home is a public landing page
+        if (activeTab === 'home') {
+            const authNavIds = ['navHome', 'navScore', 'navDashboard', 'navProfile', 'navAdmin'];
+            authNavIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && el.parentElement) el.parentElement.style.display = 'none';
+            });
+            const mobileAuthIds = ['mobileNavHomeItem', 'mobileNavScoreItem', 'mobileNavDashboardItem', 'mobileNavProfileItem', 'mobileNavLogoutItem'];
+            mobileAuthIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+            const btn = document.getElementById('loginLogoutBtn');
+            if (btn) btn.style.display = 'none';
+        }
     }
 
     function refreshActiveView() {
         const path = window.location.pathname;
-        let tab = 'login';
+        let tab = (path === '/' || path === '') ? 'home' : 'login';
         if (path === '/home') tab = 'home';
         else if (path === '/vehicles') tab = 'vehicles';
         else if (path === '/dashboard') tab = 'dashboard';
@@ -1397,7 +1413,7 @@ async function openDataDrilldown(type) {
             if (result.success) {
                 currentUser = result.data; isLoggedIn = true;
                 updateAuthNavbarState();
-                if (['/', '/login', '/register', '/index.html'].some(p => window.location.pathname.endsWith(p))) routeSPA('/dashboard');
+                if (['/', '/home', '/login', '/register', '/index.html'].some(p => window.location.pathname.endsWith(p))) routeSPA('/dashboard');
             } else {
                 if (result.error === 'Rider not found') logoutUser();
                 else showToast(`Session verification error: ${result.error}`, 'warning');
@@ -1493,6 +1509,7 @@ async function openDataDrilldown(type) {
         if (login && reg) {
             login.style.display = 'none';
             reg.style.display = 'block';
+            document.body.classList.add('register-page-active');
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -1517,7 +1534,7 @@ async function openDataDrilldown(type) {
             localStorage.removeItem('riderId'); localStorage.removeItem('sessionId');
             localStorage.removeItem('rw_pending_reg_phone');
             currentUser = null; isLoggedIn = false;
-            updateAuthNavbarState(); routeSPA('/login');
+            updateAuthNavbarState(); navigateTo('/home');
         });
     }
 
@@ -1836,12 +1853,14 @@ async function openDataDrilldown(type) {
         const login = document.getElementById('loginCard');
         const reg = document.getElementById('registerCard');
         
-        if (login.style.display === 'none') {
-            login.style.display = 'block'; reg.style.display = 'none';
-            document.body.classList.remove('register-page-active');
-        } else {
-            login.style.display = 'none'; reg.style.display = 'block';
-            document.body.classList.add('register-page-active');
+        if (login && reg) {
+            if (login.style.display === 'none') {
+                login.style.display = 'block'; reg.style.display = 'none';
+                document.body.classList.remove('register-page-active');
+            } else {
+                login.style.display = 'none'; reg.style.display = 'block';
+                document.body.classList.add('register-page-active');
+            }
         }
     }
 

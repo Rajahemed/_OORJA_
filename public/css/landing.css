@@ -1,0 +1,377 @@
+/* public/css/landing.css — Premium Hero & Landing Styles */
+
+/* ============================================================
+   HERO SLIDER
+   ============================================================ */
+.login-hero-slider {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 80px);
+    min-height: 620px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0d2b1a 100%);
+}
+
+.login-hero-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* ---- Slide 1 – Image slide ---- */
+.image-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    box-sizing: border-box;
+    animation: heroSlide1Anim 20s infinite;
+    z-index: 1;
+    background: linear-gradient(135deg, #0f172a 0%, #1a3a5c 40%, #0d2b1a 100%);
+}
+
+/* Glow overlay on slide 1 */
+.image-slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 60% 50% at 30% 50%, rgba(28, 104, 24, 0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 70% 50%, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+    animation: gradientPulse 8s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+.image-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: none;
+    animation: none;
+    position: relative;
+    z-index: 2;
+}
+
+/* ---- Slide 2 – Text slide ---- */
+.text-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 6vw;
+    box-sizing: border-box;
+    animation: heroSlide2Anim 20s infinite;
+    z-index: 2;
+    background: linear-gradient(135deg, #0f172a 0%, #162a45 50%, #0a1f0d 100%);
+}
+
+.text-slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 70% 60% at 20% 60%, rgba(28, 104, 24, 0.2) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 80% 30%, rgba(249, 115, 22, 0.12) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+/* Animated mesh grid */
+.text-slide::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+}
+
+.hero-text-col {
+    max-width: 900px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-text-col h1 {
+    font-family: 'Outfit', sans-serif !important;
+    font-size: clamp(2.8rem, 5.5vw, 5.5rem) !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 2rem !important;
+    white-space: normal;
+    background: linear-gradient(135deg, #ffffff 40%, #86efac 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fadeSlideDown 0.7s 0.1s ease both;
+}
+
+.hero-text-col p {
+    font-size: clamp(1.2rem, 2vw, 1.55rem) !important;
+    color: rgba(219, 234, 254, 0.85) !important;
+    line-height: 1.65 !important;
+    margin-bottom: 3rem !important;
+    max-width: 780px;
+    font-weight: 400 !important;
+    animation: fadeSlideDown 0.7s 0.2s ease both;
+}
+
+/* ---- Hero Buttons ---- */
+.hero-buttons {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeSlideDown 0.7s 0.3s ease both;
+}
+
+.hero-buttons .btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700 !important;
+    padding: 1rem 2.5rem !important;
+    border-radius: 12px !important;
+    cursor: pointer;
+    font-size: clamp(1.05rem, 1.8vw, 1.25rem) !important;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 58px;
+    letter-spacing: 0.01em;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-buttons .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.12);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.hero-buttons .btn:hover::before {
+    opacity: 1;
+}
+
+.hero-buttons .btn-primary-custom {
+    background: linear-gradient(135deg, #1c6818 0%, #16a34a 100%);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 4px 24px rgba(28, 104, 24, 0.45), 0 1px 0 rgba(255,255,255,0.15) inset;
+}
+
+.hero-buttons .btn-primary-custom:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 40px rgba(28, 104, 24, 0.55);
+}
+
+.hero-buttons .btn-secondary-custom {
+    background: rgba(255,255,255,0.08);
+    color: #ffffff;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(8px);
+}
+
+.hero-buttons .btn-secondary-custom:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.5);
+    transform: translateY(-3px);
+}
+
+/* ============================================================
+   SLIDE ANIMATIONS
+   ============================================================ */
+@keyframes heroSlide1Anim {
+    0%, 44%  { opacity: 1; visibility: visible; }
+    49%, 95% { opacity: 0; visibility: hidden;  }
+    100%     { opacity: 1; visibility: visible; }
+}
+
+@keyframes heroSlide2Anim {
+    0%, 44%  { opacity: 0; visibility: hidden;  }
+    49%, 95% { opacity: 1; visibility: visible; }
+    100%     { opacity: 0; visibility: hidden;  }
+}
+
+@keyframes logoFloat {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50%      { transform: translateY(-14px) scale(1.02); }
+}
+
+@keyframes gradientPulse {
+    0%   { opacity: 0.7; }
+    100% { opacity: 1;   }
+}
+
+@keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   CAROUSEL INDICATORS
+   ============================================================ */
+.login-carousel-indicators {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.login-carousel-indicators .dot {
+    height: 8px;
+    width: 8px;
+    background-color: rgba(255,255,255,0.35);
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.login-carousel-indicators .dot.active {
+    background-color: #6ee7a0;
+    width: 24px;
+    border-radius: 4px;
+}
+
+/* ============================================================
+   DASHED DIVIDER
+   ============================================================ */
+.dashed-divider {
+    position: absolute;
+    bottom: -15px;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    background-image: radial-gradient(circle at 10px 0, transparent 10px, #ffffff 11px);
+    background-size: 25px 15px;
+    background-repeat: repeat-x;
+    transform: rotate(180deg);
+    z-index: 5;
+}
+
+/* ============================================================
+   SERVICE CARD HOVER
+   ============================================================ */
+.service-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.service-card:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.10) !important;
+}
+
+/* ============================================================
+   REFER SLIDE (legacy)
+   ============================================================ */
+.refer-slide {
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)), url('/img/referral-poster.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-align: center;
+    padding: 6rem 1rem;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.refer-slide h2 {
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.refer-slide p {
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+    margin-bottom: 2rem;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 992px) {
+    .hero-text-col h1 {
+        font-size: clamp(2.4rem, 5vw, 3.8rem) !important;
+        white-space: normal;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .login-hero-slider {
+        min-height: 560px;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-hero-slider {
+        height: 100svh;
+        min-height: 480px;
+    }
+
+    .text-slide {
+        padding: 3rem 1.5rem;
+    }
+
+    .hero-text-col h1 {
+        font-size: clamp(2rem, 7vw, 3rem) !important;
+    }
+
+    .hero-text-col p {
+        font-size: clamp(1.05rem, 3.5vw, 1.3rem) !important;
+    }
+
+    .hero-buttons .btn {
+        font-size: 1.05rem !important;
+        padding: 0.9rem 1.8rem !important;
+        min-height: 52px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-text-col h1 {
+        font-size: clamp(1.8rem, 7.5vw, 2.6rem) !important;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .hero-buttons .btn {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .refer-slide h2 {
+        font-size: 2rem;
+    }
+}
+
+

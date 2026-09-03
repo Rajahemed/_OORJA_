@@ -1013,6 +1013,15 @@ router.get('/stats/:riderId', async (req, res) => {
       }
     }
 
+    // If the database has more referrals than the active tree (e.g., referred users were deleted)
+    // we should credit them as Level 1 orphaned referrals so the count matches the DB state.
+    if (rider.referrals > totalReferrals) {
+      const orphanedCount = rider.referrals - totalReferrals;
+      referralBreakdown[9] = (referralBreakdown[9] || 0) + orphanedCount;
+      totalReferrals = rider.referrals;
+      totalReferralPoints += (orphanedCount * 9);
+    }
+
     stats.referrals = totalReferrals;
     stats.totalReferralPoints = totalReferralPoints;
     stats.referralBreakdown = referralBreakdown;

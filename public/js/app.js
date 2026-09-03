@@ -414,10 +414,7 @@ function openLeadModal() {
     }
 }
 
-function closeLeadModal() {
-    const modal = document.getElementById('leadCaptureModal');
-    if (modal) modal.classList.remove('show');
-}
+
 
 // Close modal on backdrop click
 document.addEventListener('click', function(e) {
@@ -1255,7 +1252,9 @@ async function openDataDrilldown(type) {
 
     // ===== ROUTING & NAVIGATION =====
     function handleNavLinkClick(event, path) { event.preventDefault(); navigateTo(path); }
+    window.handleNavLinkClick = handleNavLinkClick;
     function navigateTo(path) { if (window.location.pathname !== path) history.pushState(null, '', path); routeSPA(path); }
+    window.navigateTo = navigateTo;
     function handlePopState() { routeSPA(window.location.pathname); }
 
     function routeSPA(path) {
@@ -1264,7 +1263,7 @@ async function openDataDrilldown(type) {
         if (siteFooter) siteFooter.style.display = 'block';
             if (topRidersSection) topRidersSection.style.display = 'block';
 
-        let activeTab = 'login';
+        let activeTab = (path === '/' || path === '') ? 'home' : 'login';
         if (path === '/home') activeTab = 'home';
         else if (path === '/vehicles') activeTab = 'vehicles';
         else if (path === '/dashboard') activeTab = 'dashboard';
@@ -1319,7 +1318,7 @@ async function openDataDrilldown(type) {
         if (activeTab === 'admin' && !(sessionStorage.getItem('adminToken') || sessionStorage.getItem('adminJwt'))) {
             activeTab = 'admin-login';
             checkAdminExists();
-        } else if (activeTab !== 'score' && activeTab !== 'admin-login' && activeTab !== 'admin' && activeTab !== 'privacy' && activeTab !== 'login' && activeTab !== 'register' && !isLoggedIn) {
+        } else if (activeTab !== 'home' && activeTab !== 'score' && activeTab !== 'admin-login' && activeTab !== 'admin' && activeTab !== 'privacy' && activeTab !== 'login' && activeTab !== 'register' && !isLoggedIn) {
             showToast((window.t ? window.t('msg_0_please_login_or') : 'Please login or register first.'), 'warning');
             routeSPA('/login'); return;
         }
@@ -1347,23 +1346,7 @@ async function openDataDrilldown(type) {
         // Header and Footer visibility logic
         const reg = document.getElementById('registerCard');
         const isRegOpen = (reg && reg.style.display !== 'none' && (activeTab === 'home' || activeTab === 'login'));
-        
-        if (siteFooter) {
-            siteFooter.style.display = ((activeTab === 'home' || activeTab === 'login') && !isRegOpen) ? 'block' : 'none';
-        }
-        if (topRidersSection) {
-            topRidersSection.style.display = (activeTab === 'home' && !isRegOpen) ? 'block' : 'none';
-        }
-        
-        const navbar = document.querySelector('nav.navbar');
-        if (navbar) {
-            navbar.style.display = isRegOpen ? 'none' : '';
-        }
-    }
-
-    function refreshActiveView() {
-        const path = window.location.pathname;
-        let tab = 'login';
+        let tab = (path === '/' || path === '') ? 'home' : 'login';
         if (path === '/home') tab = 'home';
         else if (path === '/vehicles') tab = 'vehicles';
         else if (path === '/dashboard') tab = 'dashboard';
@@ -1397,7 +1380,7 @@ async function openDataDrilldown(type) {
             if (result.success) {
                 currentUser = result.data; isLoggedIn = true;
                 updateAuthNavbarState();
-                if (['/', '/login', '/register', '/index.html'].some(p => window.location.pathname.endsWith(p))) routeSPA('/dashboard');
+                if (['/', '/home', '/login', '/register', '/index.html'].some(p => window.location.pathname.endsWith(p))) routeSPA('/dashboard');
             } else {
                 if (result.error === 'Rider not found') logoutUser();
                 else showToast(`Session verification error: ${result.error}`, 'warning');
