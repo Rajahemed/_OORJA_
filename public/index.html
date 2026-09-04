@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head>
-
+    <meta charset="UTF-8">
     <!-- Performance Preloads -->
     <link rel="preload" as="image" href="/img/home-bg.jpg" fetchpriority="high">
     <link rel="stylesheet" href="/css/main.min.css">
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </script>
 
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OORJA - Rider Registration &amp; Management</title>
     <meta name="description" content="OORJA - Register as a delivery rider, track your points, referrals, and compete on the leaderboard.">
@@ -1223,8 +1223,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 .login-hero-slider {
                     position: relative;
                     width: 100%;
-                    height: calc(100vh - 80px);
-                    min-height: 500px;
+                    /* Height controlled by landing.css + responsive-patch.css */
                     overflow: hidden;
                     /* background handled by landing.css (dark gradient) */
                 }
@@ -1245,7 +1244,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 .login-hero-slide.image-slide img {
                     width: 100%;
                     height: 100%;
-                    object-fit: cover;
+                    object-fit: contain;
                     object-position: center;
                 }
                 /* Text slide styling */
@@ -1421,9 +1420,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div style="width: 72px; height: 72px; font-size: 2rem; font-weight: 800; background: rgba(217, 70, 239, 0.1); color: #d946ef; border-radius: 12px; display: flex; align-items: center; justify-content: center;   margin-bottom: 1.5rem;">11</div>
                 <h3 style="margin-bottom: 1rem; color: var(--text-primary);  ">Rider amenities map</h3>
                 <p style="color: var(--text-secondary);  ">Find the nearest washroom, drinking water, and a safe place to rest — because long shifts deserve basic dignity.</p>
-
-        
-
+            </div>
+        </div>
     </div>
 </section>
 
@@ -1457,7 +1455,6 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
         </div>
-    </div>
     </div>
 </section>
 
@@ -1552,13 +1549,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <!-- ======= SECTION 1.5: LOGIN / REGISTER VIEW ======= -->
         <section id="login-view" class="section-view" style="min-height: calc(100vh - 250px);">
-            <div id="login-section" style="padding: 4rem 2.5rem; background: var(--bg-color);">
-                <div class="row" id="authLayout" style="justify-content: center; align-items: flex-start; flex-direction: column; margin-top: 0px;">
+            <div id="login-section" style="padding: 4rem 0; background: var(--bg-color);">
+                <div id="authLayout" style="display: flex; justify-content: center; align-items: flex-start; flex-direction: column; margin-top: 0px; width: 100%;">
 
 
 
                 <!-- Auth/Register Card -->
-                <div class="card" id="authBox" style="width: 100%; max-width: 720px; margin: 0 auto; background-color: var(--bg-color) !important; padding: 2.5rem 3rem;">
+                <div class="card" id="authBox" style="width: 100%; margin: 0 auto; background-color: var(--bg-color) !important; padding: 2.5rem 3rem;">
 
                     <!-- Login Form -->
                     <div id="loginCard">
@@ -1877,7 +1874,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <label data-i18n="lbl_ownership">Who owns the vehicle?</label>
                                         <div class="radio-group inline" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
                                             <label class="radio-item"><input type="radio" name="vehicleOwnership" required="" value="My Own Vehicle" onchange="toggleOwnershipFields(this.value)" aria-label="vehicleOwnership"> 👤 <span data-i18n="own_own">My Own Vehicle</span></label>
-                                            <label class="radio-item"><input type="radio" name="vehicleOwnership" required="" value="Company Vehicle" onchange="toggleOwnershipFields(this.value)" aria-label="vehicleOwnership"> ðŸ¢ <span data-i18n="own_company">Company Vehicle</span></label>
+                                            <label class="radio-item"><input type="radio" name="vehicleOwnership" required="" value="Company Vehicle" onchange="toggleOwnershipFields(this.value)" aria-label="vehicleOwnership"> 🏢 <span data-i18n="own_company">Company Vehicle</span></label>
                                             <label class="radio-item"><input type="radio" name="vehicleOwnership" required="" value="Rental Vehicle" onchange="toggleOwnershipFields(this.value)" aria-label="vehicleOwnership"> 🔄 <span data-i18n="own_rented">Rental Vehicle</span></label>
                                         </div>
                                     </div>
@@ -1947,8 +1944,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <div class="form-group" style="margin-bottom:0;">
                                             <label>Vehicle Speed Classification</label>
                                             <div class="radio-group inline" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
-                                                <label class="radio-item"><input type="radio" name="bikeSpeed" required="" value="Slow (up to 25km/h)"> ðŸ¢ Slow (up to 25km/h)</label>
-                                                <label class="radio-item"><input type="radio" name="bikeSpeed" required="" value="High Speed (above 25km/h)"> ðŸš€ High Speed (above 25km/h)</label>
+                                                <label class="radio-item"><input type="radio" name="bikeSpeed" required="" value="Slow (up to 25km/h)"> 🐢 Slow (up to 25km/h)</label>
+                                                <label class="radio-item"><input type="radio" name="bikeSpeed" required="" value="High Speed (above 25km/h)"> 🚀 High Speed (above 25km/h)</label>
                                             </div>
                                         </div>
                                     </div>
@@ -1957,9 +1954,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <div class="form-group conditional-section hidden-section" id="evChargingSection">
                                         <label data-i18n="label_fuel_method">How do you fuel/charge? <span style="color: var(--danger-color, #ef4444);">*</span></label>
                                         <div class="radio-group inline">
-                                            <label class="radio-item"><input type="radio" name="fuelMethod" required="" value="Home charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> ðŸ&nbsp; <span data-i18n="fm_home">Home Charging</span></label>
-                                            <label class="radio-item"><input type="radio" name="fuelMethod" required="" value="Battery swapping station" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> ðŸ”‹ <span data-i18n="fm_swap">Battery Swap</span></label>
-                                            <label class="radio-item"><input type="radio" name="fuelMethod" required="" value="Public charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> ðŸ”Œ <span data-i18n="fm_public">Public Charging</span></label>
+                                            <label class="radio-item"><input type="radio" name="fuelMethod" required="" value="Home charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🏠  <span data-i18n="fm_home">Home Charging</span></label>
+                                            <label class="radio-item"><input type="radio" name="fuelMethod" required="" value="Battery swapping station" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🔋 <span data-i18n="fm_swap">Battery Swap</span></label>
+                                            <label class="radio-item"><input type="radio" name="fuelMethod" required="" value="Public charging" onchange="toggleOtherRadio(this, 'regFuelMethodOther')" aria-label="fuelMethod"> 🔌 <span data-i18n="fm_public">Public Charging</span></label>
                                         </div>
                                         <div class="form-group" style="margin-top: 1rem;">
                                             <label data-i18n="lbl_ev_batt_cost">Monthly Battery Charging Cost (₹) </label>
@@ -2115,17 +2112,17 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <div class="form-group conditional-section hidden-section" id="evChallengesSection">
                                         <label><span data-i18n="label_ev_challenges">EV Specific Challenges</span></label>
                                         <div class="checkbox-group">
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="No nearby charging station" aria-label="challenges"> ðŸ”Œ <span data-i18n="ch_charging">No nearby charging station</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Battery range anxiety" aria-label="challenges"> ðŸ“‰ <span data-i18n="ch_range">Battery range anxiety</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="No nearby charging station" aria-label="challenges"> 🔌 <span data-i18n="ch_charging">No nearby charging station</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Battery range anxiety" aria-label="challenges"> 📉 <span data-i18n="ch_range">Battery range anxiety</span></label>
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Battery drains too fast" aria-label="challenges"> ⚡ <span data-i18n="evc_drain">Battery drains too fast</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="RTO and Police issue" aria-label="challenges"> ðŸ‘® <span data-i18n="evc_rto">RTO and Police issue</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Long charging time at home" aria-label="challenges"> ðŸ&nbsp; <span data-i18n="evc_charge">Long charging time at home</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Vehicle not powerful enough" aria-label="challenges"> ðŸ’ª <span data-i18n="evc_power">Vehicle not powerful enough</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Service centre not nearby" aria-label="challenges"> ðŸ”§ <span data-i18n="evc_service">Service centre not nearby</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Parking issue" aria-label="challenges"> ðŸ…¿ï¸ <span data-i18n="evc_parking">Parking issue</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="24/7 assistant" aria-label="challenges"> ðŸ•’ <span data-i18n="evc_assistant">24/7 assistant</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="High repair cost" aria-label="challenges"> ðŸ’¸ <span data-i18n="evc_repair">High repair cost</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regEvChallengesOther')" aria-label="challenges"> ðŸ“
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="RTO and Police issue" aria-label="challenges"> 👮 <span data-i18n="evc_rto">RTO and Police issue</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Long charging time at home" aria-label="challenges"> 🏠  <span data-i18n="evc_charge">Long charging time at home</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Vehicle not powerful enough" aria-label="challenges"> 💪 <span data-i18n="evc_power">Vehicle not powerful enough</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Service centre not nearby" aria-label="challenges"> 🔧 <span data-i18n="evc_service">Service centre not nearby</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Parking issue" aria-label="challenges"> 🅿️ <span data-i18n="evc_parking">Parking issue</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="24/7 assistant" aria-label="challenges"> 🕒 <span data-i18n="evc_assistant">24/7 assistant</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="High repair cost" aria-label="challenges"> 💸 <span data-i18n="evc_repair">High repair cost</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regEvChallengesOther')" aria-label="challenges"> 📋
                                                 <span data-i18n="ch_other">Other</span></label>
                                         </div>
                                         <input type="text" id="regEvChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *" aria-label="inputField">
@@ -2137,14 +2134,14 @@ document.addEventListener("DOMContentLoaded", () => {
                                                 Challenges</span></label>
                                         <div class="checkbox-group">
                                             <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="High fuel cost" aria-label="challenges"> ⛽ <span data-i18n="ch_fuel">High fuel cost</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Frequent breakdown" aria-label="challenges"> ðŸ”§ <span data-i18n="ch_breakdown">Frequent breakdown</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Long refuelling time" aria-label="challenges"> â±ï¸ <span data-i18n="ch_refuel">Long refuelling time</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Frequent engine issues" aria-label="challenges"> ðŸ”§ <span data-i18n="pc_engine">Frequent engine issues</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Traffic Police / RTO Issue" aria-label="challenges"> ðŸ‘® <span data-i18n="ch_traffic_rto">Traffic Police / RTO Issue</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Parking issue" aria-label="challenges"> ðŸ…¿ï¸ <span data-i18n="ch_parking">Parking issue</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="High servicing cost" aria-label="challenges"> ðŸ’¸ <span data-i18n="pc_service">High servicing cost</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="24/7 assistant" aria-label="challenges"> ðŸ•’ <span data-i18n="evc_assistant">24/7 assistant</span></label>
-                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regPetrolChallengesOther')" aria-label="challenges"> ðŸ“
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Frequent breakdown" aria-label="challenges"> 🔧 <span data-i18n="ch_breakdown">Frequent breakdown</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Long refuelling time" aria-label="challenges"> ⏱ï¸ <span data-i18n="ch_refuel">Long refuelling time</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Frequent engine issues" aria-label="challenges"> 🔧 <span data-i18n="pc_engine">Frequent engine issues</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Traffic Police / RTO Issue" aria-label="challenges"> 👮 <span data-i18n="ch_traffic_rto">Traffic Police / RTO Issue</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Parking issue" aria-label="challenges"> 🅿️ <span data-i18n="ch_parking">Parking issue</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="High servicing cost" aria-label="challenges"> 💸 <span data-i18n="pc_service">High servicing cost</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="24/7 assistant" aria-label="challenges"> 🕒 <span data-i18n="evc_assistant">24/7 assistant</span></label>
+                                            <label class="checkbox-item"><input type="checkbox" required="" name="challenges" value="Other" onchange="toggleOtherCheckbox(this, 'regPetrolChallengesOther')" aria-label="challenges"> 📋
                                                 <span data-i18n="ch_other">Other</span></label>
                                         </div>
                                         <input type="text" id="regPetrolChallengesOther" class="form-control" style="display:none; margin-top:0.5rem;" placeholder="Please specify *" aria-label="inputField">
@@ -2224,7 +2221,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                             <div class="radio-group inline">
                                                 <label class="radio-item"><input type="radio" name="referredBy" required="" value="yes" onchange="toggleReferralInput('yes')" aria-label="referredBy"> âœ…
                                                     <span data-i18n="opt_yes">Yes</span></label>
-                                                <label class="radio-item"><input type="radio" name="referredBy" required="" value="no" onchange="toggleReferralInput('no')" aria-label="referredBy"> âŒ
+                                                <label class="radio-item"><input type="radio" name="referredBy" required="" value="no" onchange="toggleReferralInput('no')" aria-label="referredBy"> ❌
                                                     <span data-i18n="opt_no">No</span></label>
                                             </div>
                                         </div>
@@ -2269,7 +2266,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <!-- SUCCESS PANEL -->
                         <div class="form-section" id="regSuccessPanel">
                             <div class="success-panel">
-                                <div class="success-icon">ðŸŽ‰</div>
+                                <div class="success-icon">🎉</div>
                                 <h2 style="font-family:'Outfit',sans-serif;  " data-i18n="success_title">Registration Complete!</h2>
                                 <h3 style="font-family:'Outfit',sans-serif;   color:var(--text-primary); margin-top:0.5rem;">
                                     <span id="successWelcomeName" style="color:var(--primary-color);"></span></h3>
@@ -3530,8 +3527,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <label class="cookie-toggle"><input type="checkbox" id="cookieAnalytics" checked="" aria-label="inputField"><span class="cookie-toggle-slider"></span></label>
             </div>
             <div class="cookie-setting-row">
-                <div class="cookie-setting-info"><strong>Marketing Cookies</strong><span>Used for remarketing and
-                        tracking conversions.</span></div>
+                <div class="cookie-setting-info"><strong>Marketing Cookies</strong><span>Used for remarketing and tracking conversions.</span></div>
                 <label class="cookie-toggle"><input type="checkbox" id="cookieMarketing" aria-label="inputField"><span class="cookie-toggle-slider"></span></label>
             </div>
             <button class="cookie-save-btn" onclick="saveCookieSettings()">💾 Save Preferences</button>
@@ -3548,7 +3544,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="lead-modal-box">
             <div class="lead-modal-header">
                 <h3 id="leadModalTitle">🚗 Get Free EV Consultation</h3>
-                <p>Talk to an expert about EVs, insurance & referral rewards</p>
+                <p>Register now — get <strong>10 bonus points instantly</strong> + earn 5 more for every friend you refer! 🎁</p>
                 <button type="button" class="lead-modal-close" style="z-index: 10; cursor: pointer; pointer-events: auto;" onclick="if(typeof closeLeadModal==='function') closeLeadModal(event);" aria-label="Close">×</button>
             </div>
             <div class="lead-modal-body">
@@ -3771,13 +3767,13 @@ document.addEventListener("DOMContentLoaded", () => {
             <h3 style="margin-bottom:0.75rem;"><i class="fas fa-store"></i> Rewards Catalog</h3>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
                 <div style="border:1px solid var(--card-border); padding:1rem; border-radius:8px; text-align:center;">
-                    <div style=" margin-bottom:0.5rem;">ðŸ”‹</div>
+                    <div style=" margin-bottom:0.5rem;">🔋</div>
                     <h4>Free EV Fast Charge</h4>
                     <p style=" color:var(--text-secondary);">Redeem for 50 Points</p>
                     <button class="btn btn-primary btn-small w-100" onclick="redeemReward(50, 'Free EV Fast Charge')">Redeem</button>
                 </div>
                 <div style="border:1px solid var(--card-border); padding:1rem; border-radius:8px; text-align:center;">
-                    <div style=" margin-bottom:0.5rem;">ðŸ›¡ï¸</div>
+                    <div style=" margin-bottom:0.5rem;">🛡️</div>
                     <h4>Helmet Visor Upgrade</h4>
                     <p style=" color:var(--text-secondary);">Redeem for 120 Points</p>
                     <button class="btn btn-primary btn-small w-100" onclick="redeemReward(120, 'Helmet Visor Upgrade')">Redeem</button>
@@ -3913,7 +3909,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <!-- Combined Marketing Scripts -->
     <script src="/js/insurance-config.js" charset="UTF-8"></script>
-    <script defer="" src="/js/app-bundle.js?v=14" charset="UTF-8"></script>
+    <script defer="" src="/js/app-bundle.js?v=15" charset="UTF-8"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var originalOnVehicleTypeChange = window.onVehicleTypeChange;

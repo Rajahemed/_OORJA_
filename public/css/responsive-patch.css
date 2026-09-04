@@ -18,6 +18,16 @@ html {
   max-width: 100%;
 }
 
+/* Exempt absolutely/fixed-positioned elements and buttons from max-width:100%
+   so modal close buttons and FABs are not clipped or lose their click target */
+button,
+[style*="position: absolute"],
+[style*="position:absolute"],
+[style*="position: fixed"],
+[style*="position:fixed"] {
+  max-width: none;
+}
+
 img, video, svg, canvas {
   max-width: 100%;
   height: auto;
@@ -806,4 +816,890 @@ input, select, textarea {
   #dashboard-view .row.cols-2 {
     grid-template-columns: 1fr !important;
   }
+}
+
+/* ==========================================================================
+   17. COMPREHENSIVE RESPONSIVE SYSTEM (OPTIMIZED FOR LAPTOPS & ALL VIEWPORTS)
+   ========================================================================== */
+
+/* ── Global Viewport Base ── */
+html {
+  overflow-x: hidden;
+  width: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  padding-top: 76px;
+}
+
+body.register-page-active {
+  padding-top: 0 !important;
+}
+
+/* ── Universal Container Sizing ── */
+.container,
+.main-container {
+  width: 100%;
+  max-width: min(100% - clamp(20px, 4vw, 56px), 1140px);
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+/* ── Fixed Navbar Responsive Behavior ── */
+@media (min-width: 1024px) {
+  .navbar {
+    height: 76px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  .nav-container {
+    height: 100% !important;
+    max-width: 1360px !important;
+    margin: 0 auto !important;
+    padding: 0 clamp(1rem, 3.5vw, 2.5rem) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  .navbar-brand img {
+    height: 40px !important;
+    width: auto !important;
+    max-width: 200px !important;
+    object-fit: contain !important;
+  }
+  .navbar-nav {
+    display: flex !important;
+    gap: clamp(0.25rem, 0.6vw, 0.75rem) !important;
+    align-items: center !important;
+  }
+  .nav-link {
+    font-size: clamp(13.5px, 0.9vw, 15px) !important;
+    padding: 0.45rem clamp(0.5rem, 0.9vw, 0.85rem) !important;
+    white-space: nowrap !important;
+  }
+  .navbar-end {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .navbar {
+    height: 64px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  body {
+    padding-top: 64px !important;
+  }
+  .nav-container {
+    padding: 0 1rem !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  .navbar-brand img {
+    height: 32px !important;
+    width: auto !important;
+    max-width: 150px !important;
+    object-fit: contain !important;
+  }
+}
+
+/* ── Home Page Hero Slider Responsiveness ── */
+.login-hero-slider {
+  width: 100% !important;
+  height: calc(100vh - 76px) !important;
+  height: calc(100dvh - 76px) !important;
+  min-height: 480px !important;
+  max-height: 720px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.login-hero-slide.image-slide img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+.login-hero-slide.text-slide {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: clamp(1.75rem, 4vw, 3rem) clamp(1rem, 4vw, 2.5rem) !important;
+  box-sizing: border-box !important;
+}
+
+.hero-text-col {
+  max-width: 820px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+
+.hero-text-col h1 {
+  font-family: 'Outfit', sans-serif !important;
+  font-size: clamp(30px, 3.5vw, 50px) !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.02em !important;
+  margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem) !important;
+  color: #ffffff !important;
+}
+
+.hero-text-col p {
+  font-size: clamp(14.5px, 1.05vw, 17.5px) !important;
+  line-height: 1.65 !important;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem) !important;
+  max-width: 700px !important;
+  margin-inline: auto !important;
+  color: rgba(219, 234, 254, 0.9) !important;
+}
+
+.hero-buttons {
+  display: flex !important;
+  gap: clamp(0.75rem, 1.25vw, 1.25rem) !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.hero-buttons .btn {
+  padding: clamp(0.65rem, 1vw, 0.85rem) clamp(1.25rem, 2vw, 2rem) !important;
+  font-size: clamp(13.5px, 0.95vw, 15.5px) !important;
+  font-weight: 700 !important;
+  min-height: 48px !important;
+  border-radius: 10px !important;
+}
+
+@media (max-width: 768px) {
+  .login-hero-slider {
+    height: auto !important;
+    min-height: 440px !important;
+    max-height: none !important;
+  }
+  .hero-buttons {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .hero-buttons .btn {
+    width: 100% !important;
+    max-width: 300px !important;
+  }
+}
+
+/* ── General Home Sections Wrapper ── */
+#about-oorja,
+#services,
+#beyond-basics,
+#products,
+#pricing-banner,
+#ecosystem-watch {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding-left: clamp(16px, 4vw, 48px) !important;
+  padding-right: clamp(16px, 4vw, 48px) !important;
+  padding-top: clamp(2.5rem, 4.5vw, 4.5rem) !important;
+  padding-bottom: clamp(2.5rem, 4.5vw, 4.5rem) !important;
+}
+
+#about-oorja > div,
+#services > div,
+#beyond-basics > div,
+#products > div,
+#pricing-banner > div,
+#ecosystem-watch > div {
+  width: 100% !important;
+  max-width: 1360px !important;
+  margin-inline: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Section Headings */
+#about-oorja h2,
+#services h2,
+#beyond-basics h2,
+#products h2,
+#pricing-banner h2,
+#ecosystem-watch h2 {
+  font-family: 'Outfit', sans-serif !important;
+  font-size: clamp(24px, 2.4vw, 38px) !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.015em !important;
+  color: #0f172a !important;
+}
+
+/* Section Header Margins (remove excessive 4rem / 64px gaps) */
+#services > div > div:first-child,
+#beyond-basics > div > div:first-child,
+#products > div > div:first-child,
+#ecosystem-watch > div > div:first-child {
+  margin-bottom: clamp(1.5rem, 2.5vw, 2.5rem) !important;
+  padding: 0 !important;
+}
+
+/* Section Eyebrow Labels */
+#about-oorja p[style*="uppercase"],
+#services p[style*="uppercase"],
+#beyond-basics p[style*="basics"],
+#products p[style*="uppercase"],
+#ecosystem-watch p[style*="watch"] {
+  font-family: 'Outfit', sans-serif !important;
+  font-size: clamp(11.5px, 0.8vw, 13px) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+  color: #1e3a8a !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* ── About Oorja Section (natural height, zero vertical stretching) ── */
+#about-oorja {
+  min-height: auto !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+
+#about-oorja > div:first-child {
+  flex: 1 1 50% !important;
+  min-width: min(100%, 320px) !important;
+  padding: clamp(2.5rem, 4vw, 4rem) clamp(1.5rem, 3.5vw, 3.5rem) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  min-height: auto !important;
+}
+
+#about-oorja > div:last-child {
+  flex: 1 1 50% !important;
+  min-width: min(100%, 320px) !important;
+  padding: clamp(2.5rem, 4vw, 4rem) clamp(1.5rem, 3.5vw, 3.5rem) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  background-color: #f8fafc !important;
+  box-sizing: border-box !important;
+  min-height: auto !important;
+}
+
+@media (max-width: 900px) {
+  #about-oorja {
+    flex-direction: column !important;
+  }
+  #about-oorja > div:first-child,
+  #about-oorja > div:last-child {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    padding: clamp(1.75rem, 4vw, 3rem) clamp(1rem, 3.5vw, 2rem) !important;
+  }
+}
+
+/* ── Services Section: strictly 2 columns on desktop, 1 on mobile ── */
+.services-grid.two-col-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: clamp(1rem, 1.8vw, 1.75rem) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.service-card {
+  padding: clamp(1.25rem, 1.8vw, 1.85rem) !important;
+  border-radius: 14px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
+.service-card > div:first-child {
+  width: 52px !important;
+  height: 52px !important;
+  font-size: 1.4rem !important;
+  border-radius: 10px !important;
+  margin-bottom: 0.85rem !important;
+}
+
+.service-card h3 {
+  font-family: 'Outfit', sans-serif !important;
+  font-size: clamp(16.5px, 1.25vw, 20px) !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.service-card p {
+  font-size: clamp(13.5px, 0.95vw, 15px) !important;
+  line-height: 1.6 !important;
+  color: var(--text-secondary, #475569) !important;
+  margin: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .services-grid.two-col-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+}
+
+/* ── Beyond the Basics (3-card grid across laptops & desktops) ── */
+@media (min-width: 901px) {
+  #beyond-basics > div > div:nth-child(2) {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: clamp(1rem, 1.8vw, 1.75rem) !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 900px) and (min-width: 601px) {
+  #beyond-basics > div > div:nth-child(2) {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 600px) {
+  #beyond-basics > div > div:nth-child(2) {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    width: 100% !important;
+  }
+}
+
+#beyond-basics > div > div:nth-child(2) > div {
+  padding: clamp(1.5rem, 2vw, 2.25rem) !important;
+}
+
+#beyond-basics h3 {
+  font-family: 'Outfit', sans-serif !important;
+  font-size: clamp(16.5px, 1.25vw, 20px) !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  margin-bottom: 0.6rem !important;
+}
+
+#beyond-basics p {
+  font-size: clamp(13.5px, 0.95vw, 15px) !important;
+  line-height: 1.6 !important;
+  color: var(--text-secondary, #475569) !important;
+}
+
+/* ── Products Section ── */
+#products div[style*="border-radius: 40px"],
+#products div[style*="40px"] {
+  padding: clamp(0.6rem, 0.9vw, 0.8rem) clamp(1rem, 1.4vw, 1.5rem) !important;
+  font-size: clamp(13px, 0.9vw, 15px) !important;
+  font-weight: 600 !important;
+  box-sizing: border-box !important;
+}
+
+#products > div > div:nth-child(2) {
+  gap: clamp(0.5rem, 0.8vw, 0.75rem) !important;
+  margin-bottom: 1.75rem !important;
+}
+
+/* ── Pricing Banner ── */
+#pricing-banner {
+  background: #1e3a8a !important;
+}
+
+#pricing-banner > div {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: clamp(1.25rem, 2.5vw, 2.5rem) !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 !important;
+}
+
+#pricing-banner h2 {
+  color: #ffffff !important;
+  font-size: clamp(22px, 2.2vw, 34px) !important;
+}
+
+#pricing-banner p {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: clamp(14px, 1vw, 16.5px) !important;
+  line-height: 1.65 !important;
+}
+
+@media (max-width: 768px) {
+  #pricing-banner > div {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
+
+/* ── Ecosystem Watch Section ── */
+#ecosystem-watch {
+  background: #f8fafc !important;
+}
+
+#ecosystem-watch > div {
+  padding: 0 !important;
+}
+
+#ecosystem-watch > div > div:nth-child(2) > div {
+  padding: clamp(1.25rem, 1.8vw, 1.75rem) 0 !important;
+  border-bottom: 1px solid var(--border-color, #e2e8f0) !important;
+  gap: clamp(1.25rem, 2vw, 2.5rem) !important;
+  align-items: flex-start !important;
+  box-sizing: border-box !important;
+}
+
+/* Desktop & Laptop 2-column layout */
+@media (min-width: 769px) {
+  #ecosystem-watch > div > div:nth-child(2) > div {
+    display: grid !important;
+    grid-template-columns: minmax(170px, 220px) 1fr !important;
+  }
+  #ecosystem-watch > div > div:nth-child(2) > div > div:first-child {
+    flex: none !important;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+  #ecosystem-watch > div > div:nth-child(2) > div > div:last-child {
+    flex: none !important;
+    width: 100% !important;
+    max-width: 820px !important;
+    min-width: 0 !important;
+  }
+  #ecosystem-watch h3 {
+    font-family: 'Outfit', sans-serif !important;
+    font-size: clamp(16px, 1.15vw, 19px) !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
+    color: #1e293b !important;
+    margin: 0 !important;
+  }
+  #ecosystem-watch p {
+    font-size: clamp(14px, 1vw, 16px) !important;
+    line-height: 1.65 !important;
+    color: #475569 !important;
+    margin: 0 !important;
+  }
+}
+
+/* Tablet & Mobile Stacked layout */
+@media (max-width: 768px) {
+  #ecosystem-watch > div > div:nth-child(2) > div {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+  #ecosystem-watch > div > div:nth-child(2) > div > div:first-child,
+  #ecosystem-watch > div > div:nth-child(2) > div > div:last-child {
+    flex: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  #ecosystem-watch h3 {
+    font-family: 'Outfit', sans-serif !important;
+    font-size: clamp(15.5px, 3.2vw, 18px) !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin: 0 !important;
+  }
+  #ecosystem-watch p {
+    font-size: clamp(13.5px, 2.8vw, 15px) !important;
+    line-height: 1.6 !important;
+    color: #475569 !important;
+    margin: 0 !important;
+  }
+}
+
+/* ── Login / Auth / Registration Card Responsiveness ── */
+#login-view {
+  min-height: auto !important;
+}
+
+#login-section {
+  padding-top: clamp(2rem, 4vw, 3.5rem) !important;
+  padding-bottom: clamp(2rem, 4vw, 3.5rem) !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+#authBox {
+  width: 100% !important;
+  max-width: 680px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+  padding: clamp(1.5rem, 3.5vw, 2.5rem) !important;
+}
+
+/* ── Dashboard Metrics Grid ── */
+.analytics-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)) !important;
+  gap: clamp(1rem, 1.5vw, 1.5rem) !important;
+}
+
+.analytics-metric-box {
+  padding: clamp(1.25rem, 2vw, 1.75rem) 1rem !important;
+}
+
+.analytics-metric-box .metric-value {
+  font-size: clamp(1.8rem, 2.2vw, 2.2rem) !important;
+}
+
+/* ── Prevent Horizontal Scrolling / Elements Overflow ── */
+* {
+  box-sizing: border-box;
+}
+
+img, video, canvas, svg, table {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   HOME PAGE — PRODUCTION RESPONSIVE LAYOUT SYSTEM
+   Covers: 320px → 2560px | portrait & landscape | touch & mouse
+   Principle: fluid containers, auto grids, clamp() typography, no fixed px heights
+   ========================================================================== */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   1. DESIGN TOKENS — single source of truth
+   ───────────────────────────────────────────────────────────────────────── */
+:root {
+  --home-max-w:     1200px;
+  --home-pad-x:     clamp(1rem, 5vw, 4rem);
+  --home-pad-y:     clamp(3rem, 6vh, 5.5rem);
+  --home-gap:       clamp(1.25rem, 2.5vw, 2.5rem);
+  --home-radius:    clamp(10px, 1.5vw, 18px);
+  --home-card-pad:  clamp(1.25rem, 3vw, 2.5rem);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   2. UNIVERSAL HOME SECTION RESET + CENTERED CONTAINER
+   All home sections get 0 horizontal padding; a centred inner div handles it.
+   ───────────────────────────────────────────────────────────────────────── */
+#about-oorja,
+#services,
+#beyond-basics,
+#products,
+#pricing-banner,
+#ecosystem-watch {
+  padding-left:  0 !important;
+  padding-right: 0 !important;
+  padding-top:    var(--home-pad-y) !important;
+  padding-bottom: var(--home-pad-y) !important;
+  width: 100%;
+  box-sizing: border-box;
+  /* NO overflow-x:hidden here — clips child sliders */
+}
+
+/* #home-view is the outer shell — no padding, no overflow clipping */
+#home-view {
+  padding: 0 !important;
+  width: 100%;
+  overflow: visible;
+}
+
+/* Centered inner wrapper for every direct child div of a home section */
+#services      > div,
+#beyond-basics > div,
+#products      > div,
+#pricing-banner > div,
+#ecosystem-watch > div {
+  max-width:    var(--home-max-w);
+  width:        100%;
+  margin-left:  auto;
+  margin-right: auto;
+  padding-left:  var(--home-pad-x);
+  padding-right: var(--home-pad-x);
+  box-sizing:   border-box;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   3. HERO SLIDER — responsive height, never full-viewport on desktop
+   ───────────────────────────────────────────────────────────────────────── */
+.login-hero-slider {
+  height:     clamp(360px, 60vh, 680px) !important;
+  min-height: 320px !important;
+  max-height: 680px !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   4. ABOUT OORJA — full-bleed two-column split, centered content
+   ───────────────────────────────────────────────────────────────────────── */
+#about-oorja {
+  display:    flex !important;
+  flex-wrap:  wrap !important;
+  padding-top:    0 !important;
+  padding-bottom: 0 !important;
+  min-height: unset !important;
+}
+
+#about-oorja > div {
+  flex:       1 1 min(340px, 100%);
+  padding:    clamp(3rem, 6vw, 6rem) clamp(1.5rem, 5vw, 5rem);
+  box-sizing: border-box;
+}
+
+/* Stack about columns on tablet and below */
+@media (max-width: 860px) {
+  #about-oorja > div { flex: 1 1 100%; }
+  #about-oorja > div:last-child { background-color: #f8fafc; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   5. SERVICES GRID — auto responsive columns
+   ───────────────────────────────────────────────────────────────────────── */
+.services-grid,
+.services-grid.two-col-grid {
+  display:               grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)) !important;
+  gap:                   var(--home-gap) !important;
+}
+
+.service-card {
+  padding:       var(--home-card-pad) !important;
+  border-radius: var(--home-radius) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   6. BEYOND-THE-BASICS CARDS GRID — 3 col → 2 col → 1 col
+   ───────────────────────────────────────────────────────────────────────── */
+#beyond-basics [style*="display: grid"],
+#beyond-basics [style*="display:grid"] {
+  display:               grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)) !important;
+  gap:                   var(--home-gap) !important;
+}
+
+#beyond-basics [style*="padding: 3rem"] {
+  padding:       var(--home-card-pad) !important;
+  border-radius: var(--home-radius) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   7. PRODUCTS PILL TAGS — wrap cleanly on small screens
+   ───────────────────────────────────────────────────────────────────────── */
+#products [style*="display: flex"][style*="flex-wrap"] {
+  gap: clamp(0.6rem, 1.5vw, 1rem) !important;
+}
+
+#products [style*="padding: 1.2rem"] {
+  padding:   clamp(0.75rem, 2vw, 1.2rem) clamp(1rem, 3vw, 2rem) !important;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   8. PRICING BANNER — flex → stack on mobile
+   ───────────────────────────────────────────────────────────────────────── */
+#pricing-banner {
+  background: #1e3a8a;
+}
+
+#pricing-banner > div {
+  display:        flex !important;
+  flex-wrap:      wrap !important;
+  gap:            clamp(2rem, 4vw, 4rem) !important;
+  align-items:    center !important;
+  justify-content: space-between !important;
+}
+
+#pricing-banner > div > div {
+  flex:      1 1 min(280px, 100%);
+  min-width: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   9. ECOSYSTEM WATCH — label + body rows adapt to narrow screens
+   ───────────────────────────────────────────────────────────────────────── */
+#ecosystem-watch [style*="display: flex"][style*="flex-wrap"] {
+  gap: clamp(1rem, 3vw, 2rem) !important;
+}
+
+#ecosystem-watch [style*="flex: 0 0 25vw"] {
+  flex:       0 0 clamp(120px, 20vw, 280px) !important;
+  min-width:  clamp(120px, 20vw, 280px) !important;
+  max-width:  280px !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   10. FLUID TYPOGRAPHY — headings scale across all viewports
+   ───────────────────────────────────────────────────────────────────────── */
+#home-view h2,
+#about-oorja h2,
+#services h2,
+#beyond-basics h2,
+#products h2,
+#pricing-banner h2,
+#ecosystem-watch h2 {
+  font-size: clamp(1.65rem, 3.5vw + 0.5rem, 3.5rem) !important;
+  line-height: 1.18 !important;
+}
+
+#home-view h3,
+#services h3,
+#beyond-basics h3,
+#ecosystem-watch h3 {
+  font-size: clamp(1.1rem, 2vw + 0.25rem, 1.6rem) !important;
+  line-height: 1.3 !important;
+}
+
+#home-view p,
+#about-oorja p,
+#services p,
+#beyond-basics p,
+#products p,
+#pricing-banner p,
+#ecosystem-watch p {
+  font-size: clamp(0.95rem, 1.2vw + 0.25rem, 1.15rem) !important;
+  line-height: 1.7 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   11. MEDIA QUERIES — targeted layout shifts at key breakpoints
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Large desktop (≥ 1600px): slightly wider inner container */
+@media (min-width: 1600px) {
+  :root { --home-max-w: 1380px; --home-pad-x: 3rem; }
+}
+
+/* Standard desktop / laptop (1024–1599px): default tokens apply */
+
+/* Small laptop / tablet landscape (768–1023px) */
+@media (max-width: 1023px) {
+  :root {
+    --home-pad-x: clamp(1.25rem, 4vw, 2.5rem);
+    --home-pad-y: clamp(2.5rem, 5vh, 4rem);
+    --home-gap:   clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .login-hero-slider {
+    height:     clamp(300px, 50vh, 520px) !important;
+    min-height: 280px !important;
+  }
+
+  .services-grid,
+  .services-grid.two-col-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) !important;
+  }
+}
+
+/* Tablet portrait (600–767px) */
+@media (max-width: 767px) {
+  :root {
+    --home-pad-x: clamp(1rem, 3.5vw, 1.75rem);
+    --home-pad-y: clamp(2rem, 4vh, 3rem);
+    --home-gap:   1rem;
+  }
+
+  .login-hero-slider {
+    height:     clamp(260px, 45vw, 400px) !important;
+    min-height: 240px !important;
+  }
+
+  /* Stack ecosystem rows */
+  #ecosystem-watch [style*="display: flex"][style*="flex-wrap"] {
+    flex-direction: column !important;
+  }
+  #ecosystem-watch [style*="flex: 0 0 25vw"] {
+    flex: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  #pricing-banner > div {
+    flex-direction: column !important;
+    text-align: left !important;
+  }
+}
+
+/* Large mobile (480–599px) */
+@media (max-width: 599px) {
+  :root {
+    --home-pad-x: 1rem;
+    --home-pad-y: 2rem;
+    --home-gap:   0.875rem;
+    --home-card-pad: 1.25rem;
+  }
+
+  .login-hero-slider {
+    height:     clamp(220px, 55vw, 360px) !important;
+    min-height: 200px !important;
+  }
+
+  .services-grid,
+  .services-grid.two-col-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  #beyond-basics [style*="display: grid"],
+  #beyond-basics [style*="display:grid"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  #products [style*="display: flex"][style*="flex-wrap"] {
+    flex-direction: column !important;
+  }
+
+  #products [style*="padding: 1.2rem"] {
+    width: 100%;
+    justify-content: flex-start !important;
+  }
+}
+
+/* Standard mobile (360–479px) */
+@media (max-width: 479px) {
+  :root {
+    --home-pad-x: 0.875rem;
+    --home-pad-y: 1.75rem;
+  }
+
+  .login-hero-slider {
+    height:     clamp(200px, 52vw, 320px) !important;
+    min-height: 180px !important;
+  }
+}
+
+/* Minimum safe floor (< 360px) — allow scroll, no clipping */
+@media (max-width: 359px) {
+  :root { --home-pad-x: 0.75rem; }
+  .login-hero-slider { height: 220px !important; min-height: 180px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   12. LANDSCAPE ORIENTATION on short mobile screens
+   ───────────────────────────────────────────────────────────────────────── */
+@media (max-height: 500px) and (orientation: landscape) {
+  .login-hero-slider {
+    height:     clamp(200px, 75vw, 340px) !important;
+    min-height: 180px !important;
+  }
+  :root { --home-pad-y: 1.5rem; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   13. HIGH-DPI / RETINA — ensure images stay crisp
+   ───────────────────────────────────────────────────────────────────────── */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .image-slide img { image-rendering: -webkit-optimize-contrast; }
 }

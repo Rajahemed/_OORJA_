@@ -49,70 +49,87 @@
   box-sizing: border-box;
 }
 
-/* ==================== GLOBAL TYPOGRAPHY (PREMIUM SCALE) ==================== */
+/* Cross-Browser Normalization */
+body {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+/* Prevent flex children blowout in Firefox/Safari */
+.d-flex > *, .flex-column > *, .flex-row > * {
+  min-width: 0;
+}
+
+/* ==================== GLOBAL TYPOGRAPHY (FLUID RESPONSIVE SCALE) ==================== */
 h1 {
-  font-size: clamp(3rem, 8vw, 5rem) !important; /* 80px */
-  line-height: 1.08 !important;
-  font-weight: 800 !important;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(36px, 3.8vw, 60px);
+  line-height: 1.15;
+  font-weight: 800;
   letter-spacing: -0.02em;
 }
 
 h2 {
-  font-size: clamp(2.5rem, 6vw, 3.75rem) !important; /* 60px */
-  line-height: 1.12 !important;
-  font-weight: 800 !important;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(26px, 2.6vw, 44px);
+  line-height: 1.2;
+  font-weight: 800;
   letter-spacing: -0.01em;
 }
 
 h3 {
-  font-size: clamp(1.75rem, 4vw, 2.5rem) !important; /* 40px */
-  line-height: 1.2 !important;
-  font-weight: 700 !important;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(19px, 1.8vw, 28px);
+  line-height: 1.3;
+  font-weight: 700;
 }
 
 h4 {
-  font-size: clamp(1.5rem, 3.5vw, 2.25rem) !important; /* 36px */
-  line-height: 1.3 !important;
-  font-weight: 700 !important;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(16px, 1.4vw, 22px);
+  line-height: 1.35;
+  font-weight: 700;
 }
 
 p,
-li,
-span,
-div.body-text,
-a:not(.nav-link):not(.btn) {
-  font-size: clamp(1.25rem, 2.5vw, 1.625rem) !important; /* 26px */
-  font-weight: 500 !important;
-  line-height: 1.6 !important;
+li {
+  font-size: clamp(15px, 1.05vw, 18px);
+  font-weight: 400;
+  line-height: 1.65;
 }
 
 .nav-link,
 .nav-item a,
 .mobile-drawer-link {
-  font-size: clamp(1.25rem, 2.5vw, 1.625rem) !important; /* 26px */
-  font-weight: 700 !important;
+  font-size: clamp(14px, 0.95vw, 16px);
+  font-weight: 600;
 }
 
 .btn,
 button,
 .lang-btn {
-  font-size: clamp(1.125rem, 2.2vw, 1.375rem) !important; /* 22px */
-  font-weight: 700 !important;
+  font-size: clamp(14px, 1vw, 17px);
+  font-weight: 600;
 }
 
-/* Service/product card specific typography overrides (if classes exist) */
+/* Service/product card specific typography */
 .card-title,
 .service-title {
-  font-size: clamp(1.5rem, 3.2vw, 2rem) !important; /* 32px */
-  font-weight: 700 !important;
-  line-height: 1.3 !important;
+  font-size: clamp(18px, 1.5vw, 24px);
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .card-desc,
 .service-desc,
 .card p {
-  font-size: clamp(1.25rem, 2.4vw, 1.5rem) !important; /* 24px */
-  line-height: 1.55 !important;
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.6;
 }
 /* ==================== END GLOBAL TYPOGRAPHY ==================== */
 
@@ -144,50 +161,53 @@ body.dark-theme {
   background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-bottom: 2px solid rgba(28, 104, 24, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   width: 100%;
-  height: 220px;
+  height: 76px;
   padding: 0;
   z-index: 1000;
-  box-shadow: 0 4px 32px rgba(28, 104, 24, 0.10), 0 1px 0 rgba(0,0,0,0.04);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
   transition: var(--transition);
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
 }
 
 .nav-container {
   display: flex;
   justify-content: space-between;
-  align-items: stretch;
+  align-items: center;
   width: 100%;
-  max-width: none;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 0 6vw;
+  padding: 0 clamp(1rem, 4vw, 3rem);
   box-sizing: border-box;
+  height: 100%;
 }
 
 body {
-  padding-top: 220px;
+  padding-top: 76px;
   /* Offset to match fixed navbar height */
 }
 
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: 0.5rem;
   cursor: pointer;
   padding: 0;
   height: 100%;
 }
 
 .navbar-brand img {
-  height: 220px;
+  height: 42px;
   width: auto;
   object-fit: contain;
-  filter: contrast(1.2) saturate(1.25);
+  filter: contrast(1.15) saturate(1.2);
   mix-blend-mode: multiply;
   display: block;
 }
@@ -602,7 +622,7 @@ select.form-control option {
 
 /* ==================== CONTAINERS ==================== */
 .container {
-  max-width: 1320px;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem;
   width: 100%;
@@ -706,6 +726,7 @@ select.form-control option {
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -1610,6 +1631,10 @@ select.form-control option {
 }
 
 /* Custom scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) var(--dark-bg);
+}
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -2326,6 +2351,7 @@ body.login-route-active:not(.register-page-active) #leadCaptureFAB {
 /* Full Page Top Riders Slider Additions */
 .home-top-riders-section.full-page-slider {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;

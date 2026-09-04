@@ -40,7 +40,7 @@
     "sec_a_title": "பிரிவு A - அடிப்படை சுயவிவரம்",
     "sec_b_title": "பிரிவு B - தற்போதைய வாகனம்",
     "sec_c_title": "பிரிவு C — சவால்கள் & வலி புள்ளிகள்",
-    "sec_f_title": "பிரிவு F - பரிந்துரை",
+    "sec_f_title": "Section F - Training",
     "label_vehicle_type": "வாகன வகை",
     "vt_petrol": "பெட்ரோல் இரு சக்கர வாகனம்",
     "vt_diesel": "டீசல் இரு சக்கர வாகனம்",
@@ -466,7 +466,7 @@
     "evc_assistant": "24/7 உதவியாளர்",
     "evc_repair": "எஞ்சின் தொடர்ச்சியான சிக்கல்கள்",
     "sec_insurance_title": "காப்பீட்டு விவரங்கள்",
-    "sec_g_title": "கூடுதல் தகவல்",
+    "sec_g_title": "Section G - Winning Gifts",
     "exp_lt_6": "exp_lt_6",
     "exp_6_12": "exp_6_12",
     "exp_5_plus": "exp_5_plus"

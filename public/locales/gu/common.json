@@ -40,7 +40,7 @@
     "sec_a_title": "વિભાગ A — મૂળભૂત પ્રોફાઇલ",
     "sec_b_title": "વિભાગ B — વર્તમાન વાહન",
     "sec_c_title": "વિભાગ C — પડકારો અને પીડા બિંદુઓ",
-    "sec_f_title": "વિભાગ F — રેફરલ",
+    "sec_f_title": "Section F - Training",
     "label_vehicle_type": "વાહનનો પ્રકાર",
     "vt_petrol": "પેટ્રોલ ટુ-વ્હીલર",
     "vt_diesel": "ડીઝલ ટુ-વ્હીલર",
@@ -468,5 +468,5 @@
     "evc_assistant": "24/7 મદદનીશ",
     "evc_repair": "એન્જિન રિકરિંગ સમસ્યાઓ",
     "sec_insurance_title": "વીમા વિગતો",
-    "sec_g_title": "વધારાની માહિતી"
+    "sec_g_title": "Section G - Winning Gifts"
 }

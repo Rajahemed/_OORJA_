@@ -40,7 +40,7 @@
     "sec_a_title": "বিভাগ A — মৌলিক প্রোফাইল",
     "sec_b_title": "বিভাগ B — বর্তমান যান",
     "sec_c_title": "বিভাগ সি — চ্যালেঞ্জ এবং ব্যথা পয়েন্ট",
-    "sec_f_title": "বিভাগ F — রেফারেল",
+    "sec_f_title": "Section F - Training",
     "label_vehicle_type": "যানবাহনের ধরন",
     "vt_petrol": "পেট্রোল টু-হুইলার",
     "vt_diesel": "ডিজেল টু-হুইলার",
@@ -468,5 +468,5 @@
     "evc_assistant": "24/7 assistant",
     "evc_repair": "Engine recurring issues",
     "sec_insurance_title": "Insurance Details",
-    "sec_g_title": "Additional Information"
+    "sec_g_title": "Section G - Winning Gifts"
 }

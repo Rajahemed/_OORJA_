@@ -40,7 +40,7 @@
     "sec_a_title": "विभाग A — मूलभूत प्रोफाइल",
     "sec_b_title": "विभाग B — सध्याचे वाहन",
     "sec_c_title": "विभाग C — आव्हाने आणि वेदना बिंदू",
-    "sec_f_title": "विभाग F — रेफरल",
+    "sec_f_title": "Section F - Training",
     "label_vehicle_type": "वाहनाचा प्रकार",
     "vt_petrol": "पेट्रोल दुचाकी",
     "vt_diesel": "डिझेल दुचाकी",
@@ -468,5 +468,5 @@
     "evc_assistant": "24/7 सहाय्यक",
     "evc_repair": "इंजिन आवर्ती समस्या",
     "sec_insurance_title": "विमा तपशील",
-    "sec_g_title": "अतिरिक्त माहिती"
+    "sec_g_title": "Section G - Winning Gifts"
 }
