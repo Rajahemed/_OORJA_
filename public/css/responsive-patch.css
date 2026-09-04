@@ -1435,12 +1435,12 @@ img, video, canvas, svg, table {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   3. HERO SLIDER — responsive height, never full-viewport on desktop
+   3. HERO SLIDER — responsive height; min tall enough for text slide content
    ───────────────────────────────────────────────────────────────────────── */
 .login-hero-slider {
-  height:     clamp(360px, 60vh, 680px) !important;
-  min-height: 320px !important;
-  max-height: 680px !important;
+  height:     clamp(480px, 65vh, 720px) !important;
+  min-height: 480px !important;
+  max-height: 720px !important;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

@@ -65,11 +65,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 3rem 6vw;
+    /* Use safe alignment: content starts from safe area, not hard-center that clips top */
+    padding: clamp(2rem, 5vh, 4rem) clamp(1.5rem, 6vw, 5rem);
     box-sizing: border-box;
     animation: heroSlide2Anim 20s infinite;
     z-index: 2;
     background: linear-gradient(135deg, #0f172a 0%, #162a45 50%, #0a1f0d 100%);
+    /* Allow the slide to scroll if content is truly taller than viewport */
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .text-slide::before {
@@ -107,12 +111,12 @@
 
 .hero-text-col h1 {
     font-family: 'Outfit', sans-serif !important;
-    font-size: clamp(2.8rem, 5.5vw, 5.5rem) !important;
+    font-size: clamp(2rem, 4.5vw, 4.5rem) !important;
     font-weight: 800 !important;
     color: #ffffff !important;
-    line-height: 1.08 !important;
+    line-height: 1.1 !important;
     letter-spacing: -0.02em !important;
-    margin-bottom: 2rem !important;
+    margin-bottom: 1.5rem !important;
     white-space: normal;
     background: linear-gradient(135deg, #ffffff 40%, #86efac 100%);
     -webkit-background-clip: text;
