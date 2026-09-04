@@ -1703,3 +1703,42 @@ img, video, canvas, svg, table {
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .image-slide img { image-rendering: -webkit-optimize-contrast; }
 }
+
+/* --- 17. HOME PAGE RESPONSIVE CONTAINER ALIGNMENT --------------------- */
+
+/* Standardize the outer bounds of all home page sections */
+#home-view > section#services,
+#home-view > section#beyond-basics,
+#home-view > section#products,
+#home-view > section#pricing-banner,
+#home-view > section#ecosystem-watch {
+    padding-left: max(6vw, calc(50vw - 600px)) !important;
+    padding-right: max(6vw, calc(50vw - 600px)) !important;
+}
+
+/* Remove uneven inner padding from headers and wrappers that causes misalignment */
+#home-view > section#services > div > div:first-child,
+#home-view > section#beyond-basics > div > div:first-child,
+#home-view > section#products > div:first-child,
+#home-view > section#pricing-banner > div:first-child,
+#home-view > section#ecosystem-watch > div:first-child {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Fix #about-oorja which is split into two columns */
+#about-oorja {
+    display: flex !important;
+    justify-content: center !important;
+}
+
+#about-oorja > div:first-child {
+    padding-left: max(5vw, calc(50vw - 600px)) !important;
+    padding-right: 5vw !important;
+}
+
+#about-oorja > div:last-child {
+    padding-right: max(5vw, calc(50vw - 600px)) !important;
+    padding-left: 5vw !important;
+}
+
